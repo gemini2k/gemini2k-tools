@@ -4,11 +4,11 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>QR코드 생성기 — gemini2k 도구</title>
-<meta name="description" content="URL이나 텍스트를 입력하면 QR코드를 즉시 만들어 이미지(PNG)로 저장하는 무료 도구. 가입·설치 없이 브라우저에서 바로."/>
+<meta name="description" content="URL이나 텍스트를 입력하면 QR코드를 즉시 만들어 이미지(PNG)로 저장하는 무료 도구. 충분한 여백으로 스캔이 잘 됩니다. 설치 없이 브라우저에서 바로."/>
 <link rel="preconnect" href="https://cdn.jsdelivr.net"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
 <link rel="stylesheet" href="style.css"/>
-<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
 <body>
 <header class="top"><div class="top-in">
@@ -24,12 +24,13 @@
   <div class="card">
     <label for="text">URL 또는 텍스트</label>
     <textarea id="text" style="min-height:90px;" placeholder="https://gemini2k.kr  또는  원하는 텍스트" autofocus></textarea>
-    <div style="margin-top:.9rem;max-width:240px;">
+    <p class="hint">💡 링크로 바로 열리게 하려면 <b>https://</b> 부터 입력하세요. (예: <code>gemini2k.kr</code> ❌ → <code>https://gemini2k.kr</code> ✅)</p>
+    <div style="margin-top:.6rem;max-width:240px;">
       <label for="size">크기</label>
       <select id="size">
-        <option value="180">작게 (180px)</option>
-        <option value="280" selected>보통 (280px)</option>
-        <option value="440">크게 (440px)</option>
+        <option value="4">작게</option>
+        <option value="6" selected>보통</option>
+        <option value="9">크게</option>
       </select>
     </div>
   </div>
@@ -37,7 +38,7 @@
   <div class="card">
     <div id="qrbox">
       <span class="hint" id="ph" style="margin:0;">위에 입력하면 QR코드가 여기에 표시됩니다.</span>
-      <div id="qrtarget"></div>
+      <canvas id="qrcanvas" style="display:none;"></canvas>
     </div>
     <div class="row" style="margin-top:1rem;">
       <button class="btn" id="download" disabled>⬇️ PNG 다운로드</button>
@@ -54,29 +55,49 @@
 <div class="toast" id="toast"></div>
 <script>
   var text = document.getElementById('text'), size = document.getElementById('size'),
-      target = document.getElementById('qrtarget'), ph = document.getElementById('ph'),
+      canvas = document.getElementById('qrcanvas'), ph = document.getElementById('ph'),
       dl = document.getElementById('download');
   function toast(m){ var el=document.getElementById('toast'); el.textContent=m; el.classList.add('show');
     clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1600); }
+
+  function showPh(msg){ ph.style.display=''; ph.textContent=msg; canvas.style.display='none'; dl.disabled=true; }
+
   function render(){
     var v = text.value.trim();
-    if(!v){ target.innerHTML=''; ph.style.display=''; ph.textContent='위에 입력하면 QR코드가 여기에 표시됩니다.'; dl.disabled=true; return; }
-    if(typeof QRCode === 'undefined'){ target.innerHTML=''; ph.style.display=''; ph.textContent='QR 라이브러리를 불러오지 못했습니다. 새로고침해 주세요.'; dl.disabled=true; return; }
-    ph.style.display='none';
-    target.innerHTML='';   // 이전 QR 제거 후 재생성
-    var px = parseInt(size.value, 10);
-    new QRCode(target, { text: v, width: px, height: px,
-      colorDark: '#16181F', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
-    dl.disabled = false;
+    if(!v){ showPh('위에 입력하면 QR코드가 여기에 표시됩니다.'); return; }
+    if(typeof qrcode === 'undefined'){ showPh('QR 라이브러리를 불러오지 못했습니다. 새로고침해 주세요.'); return; }
+    try{
+      // 한글 등 UTF-8 안전 인코딩
+      try{ qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8']; }catch(e){}
+      var qr = qrcode(0, 'M');          // 0=자동 버전, M=오류정정
+      qr.addData(v);
+      qr.make();
+      var count = qr.getModuleCount();
+      var cell = parseInt(size.value, 10);
+      var margin = cell * 4;            // 권장 여백(quiet zone) 4모듈 — 스캔 안정성 핵심
+      var dim = count * cell + margin * 2;
+      var ctx = canvas.getContext('2d');
+      canvas.width = dim; canvas.height = dim;
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, dim, dim);
+      ctx.fillStyle = '#000000';       // 순수 검정 — 대비 최대(스캔↑)
+      for(var r=0; r<count; r++){
+        for(var c=0; c<count; c++){
+          if(qr.isDark(r, c)) ctx.fillRect(margin + c*cell, margin + r*cell, cell, cell);
+        }
+      }
+      // 화면 표시 크기는 CSS로 제한(원본은 고해상도 유지)
+      canvas.style.display = ''; canvas.style.width = Math.min(dim, 300) + 'px'; canvas.style.height = 'auto';
+      ph.style.display = 'none'; dl.disabled = false;
+    }catch(err){
+      showPh('생성 실패: 입력이 너무 길거나 지원되지 않습니다. (' + (err && err.message || err) + ')');
+    }
   }
   text.addEventListener('input', render);
   size.addEventListener('change', render);
   dl.addEventListener('click', function(){
     if(dl.disabled) return;
-    var canvas = target.querySelector('canvas'), img = target.querySelector('img');
-    var url = canvas ? canvas.toDataURL('image/png') : (img ? img.src : null);
-    if(!url){ toast('다운로드할 QR이 없습니다'); return; }
-    var a = document.createElement('a'); a.href = url; a.download = 'qrcode.png';
+    var a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png'); a.download = 'qrcode.png';
     document.body.appendChild(a); a.click(); a.remove();
     toast('이미지를 저장했습니다');
   });
