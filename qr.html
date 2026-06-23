@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>QR코드 생성기 — gemini2k 도구</title>
+<meta name="description" content="URL이나 텍스트를 입력하면 QR코드를 즉시 만들어 이미지(PNG)로 저장하는 무료 도구. 가입·설치 없이 브라우저에서 바로."/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><span class="mk">🧰</span> gemini2k 도구</a>
+  <nav><a href="index.html">전체 도구</a><a href="https://gemini2k.kr" target="_blank" rel="noopener">블로그</a></nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html">← 전체 도구</a>
+  <h1>QR코드 생성기</h1>
+  <p class="sub">URL이나 텍스트를 입력하면 QR코드가 즉시 만들어집니다.</p>
+
+  <div class="card">
+    <label for="text">URL 또는 텍스트</label>
+    <textarea id="text" style="min-height:90px;" placeholder="https://gemini2k.kr  또는  원하는 텍스트" autofocus></textarea>
+    <div class="row" style="margin-top:.9rem;align-items:center;">
+      <div style="flex:1;min-width:160px;">
+        <label for="size">크기</label>
+        <select id="size">
+          <option value="180">작게 (180px)</option>
+          <option value="280" selected>보통 (280px)</option>
+          <option value="440">크게 (440px)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="qrbox"><span class="hint" id="ph" style="margin:0;">위에 입력하면 QR코드가 여기에 표시됩니다.</span><canvas id="qrcanvas" style="display:none;"></canvas></div>
+    <div class="row" style="margin-top:1rem;">
+      <button class="btn" id="download" disabled>⬇️ PNG 다운로드</button>
+    </div>
+    <p class="hint">QR코드는 브라우저에서 직접 생성되며 어디에도 전송되지 않습니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© gemini2k 도구</span><span>· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  var text = document.getElementById('text'), size = document.getElementById('size'),
+      canvas = document.getElementById('qrcanvas'), ph = document.getElementById('ph'),
+      dl = document.getElementById('download');
+  function toast(m){ var el=document.getElementById('toast'); el.textContent=m; el.classList.add('show');
+    clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1600); }
+  function render(){
+    var v = text.value.trim();
+    if(!v){ canvas.style.display='none'; ph.style.display=''; ph.textContent='위에 입력하면 QR코드가 여기에 표시됩니다.'; dl.disabled=true; return; }
+    if(typeof QRCode === 'undefined'){ ph.style.display=''; ph.textContent='QR 라이브러리를 불러오지 못했습니다. 새로고침해 주세요.'; canvas.style.display='none'; dl.disabled=true; return; }
+    QRCode.toCanvas(canvas, v, { width: parseInt(size.value,10), margin: 2,
+      color: { dark:'#16181F', light:'#ffffff' } }, function(err){
+      if(err){ ph.style.display=''; ph.textContent='QR코드 생성 실패: ' + err.message; canvas.style.display='none'; dl.disabled=true; return; }
+      ph.style.display='none'; canvas.style.display=''; dl.disabled=false;
+    });
+  }
+  text.addEventListener('input', render);
+  size.addEventListener('change', render);
+  dl.addEventListener('click', function(){
+    if(dl.disabled) return;
+    var a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'qrcode.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('이미지를 저장했습니다');
+  });
+</script>
+</body>
+</html>
