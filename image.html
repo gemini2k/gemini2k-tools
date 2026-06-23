@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>이미지 압축·리사이즈 — gemini2k 도구</title>
+<meta name="description" content="이미지 용량을 줄이고 크기를 조절하며 PNG/JPG/WebP로 변환하는 무료 도구. 업로드 없이 브라우저에서 처리되어 개인정보가 안전합니다."/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><span class="mk">🧰</span> gemini2k 도구</a>
+  <nav><a href="index.html">전체 도구</a><a href="https://gemini2k.kr" target="_blank" rel="noopener">블로그</a></nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html">← 전체 도구</a>
+  <h1>이미지 압축·리사이즈</h1>
+  <p class="sub">용량을 줄이고 크기·포맷을 바꿉니다. 업로드 없이 브라우저에서만 처리됩니다.</p>
+
+  <div class="card">
+    <label for="file">이미지 선택 (JPG·PNG·WebP)</label>
+    <input type="file" id="file" accept="image/*"/>
+    <p class="hint" id="orig">아직 선택된 이미지가 없습니다.</p>
+  </div>
+
+  <div class="card" id="opts" style="display:none;">
+    <label for="maxw">최대 가로 폭: <b id="maxwv" style="color:var(--text);">1280</b> px</label>
+    <input type="range" id="maxw" min="100" max="4000" step="20" value="1280"/>
+    <label for="fmt" style="margin-top:1rem;">출력 포맷</label>
+    <select id="fmt">
+      <option value="image/jpeg">JPG (작은 용량)</option>
+      <option value="image/webp">WebP (가장 작음)</option>
+      <option value="image/png">PNG (무손실)</option>
+    </select>
+    <div id="qwrap">
+      <label for="q" style="margin-top:1rem;">품질: <b id="qv" style="color:var(--text);">80</b></label>
+      <input type="range" id="q" min="10" max="100" step="1" value="80"/>
+    </div>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none;">
+    <div id="preview" style="text-align:center;"></div>
+    <p class="hint" id="result"></p>
+    <div class="row" style="margin-top:.6rem;"><button class="btn" id="download">⬇️ 다운로드</button></div>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© gemini2k 도구</span><span>· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  var file=document.getElementById('file'), orig=document.getElementById('orig'),
+      opts=document.getElementById('opts'), maxw=document.getElementById('maxw'), maxwv=document.getElementById('maxwv'),
+      fmt=document.getElementById('fmt'), q=document.getElementById('q'), qv=document.getElementById('qv'), qwrap=document.getElementById('qwrap'),
+      resultCard=document.getElementById('resultCard'), preview=document.getElementById('preview'),
+      result=document.getElementById('result'), dl=document.getElementById('download');
+  var img=new Image(), origSize=0, origName='image', outBlob=null;
+  function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+  function kb(n){ return n<1024 ? n+' B' : n<1048576 ? (n/1024).toFixed(1)+' KB' : (n/1048576).toFixed(2)+' MB'; }
+
+  file.addEventListener('change', function(){
+    var f=file.files[0]; if(!f) return;
+    origSize=f.size; origName=(f.name||'image').replace(/\.[^.]+$/,'');
+    var rd=new FileReader();
+    rd.onload=function(){ img.onload=function(){
+      orig.textContent='원본: '+img.naturalWidth+'×'+img.naturalHeight+'px · '+kb(origSize);
+      maxw.value=Math.min(img.naturalWidth,4000); maxwv.textContent=maxw.value;
+      maxw.max=Math.max(img.naturalWidth,100);
+      opts.style.display=''; process();
+    }; img.src=rd.result; };
+    rd.readAsDataURL(f);
+  });
+  function process(){
+    if(!img.src) return;
+    var tw=Math.min(parseInt(maxw.value,10), img.naturalWidth) || img.naturalWidth;
+    var scale=tw/img.naturalWidth, th=Math.round(img.naturalHeight*scale);
+    var cv=document.createElement('canvas'); cv.width=tw; cv.height=th;
+    var ctx=cv.getContext('2d'); ctx.drawImage(img,0,0,tw,th);
+    var type=fmt.value, quality=parseInt(q.value,10)/100;
+    qwrap.style.display = (type==='image/png') ? 'none' : '';
+    cv.toBlob(function(blob){
+      if(!blob){ result.textContent='변환 실패'; return; }
+      outBlob=blob;
+      var url=URL.createObjectURL(blob);
+      preview.innerHTML='<img src="'+url+'" style="max-width:100%;border-radius:10px;border:1px solid var(--border);"/>';
+      var pct=origSize? Math.round((1-blob.size/origSize)*100) : 0;
+      result.textContent='결과: '+tw+'×'+th+'px · '+kb(blob.size)+(pct>0?(' ('+pct+'% 절감)'):'');
+      resultCard.style.display='';
+    }, type, quality);
+  }
+  maxw.addEventListener('input', function(){ maxwv.textContent=maxw.value; process(); });
+  fmt.addEventListener('change', process);
+  q.addEventListener('input', function(){ qv.textContent=q.value; process(); });
+  dl.addEventListener('click', function(){
+    if(!outBlob) return;
+    var ext=fmt.value==='image/png'?'png':fmt.value==='image/webp'?'webp':'jpg';
+    var a=document.createElement('a'); a.href=URL.createObjectURL(outBlob); a.download=origName+'_min.'+ext;
+    document.body.appendChild(a); a.click(); a.remove(); toast('다운로드했습니다');
+  });
+</script>
+</body>
+</html>

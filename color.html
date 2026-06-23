@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>색상 변환기 — gemini2k 도구</title>
+<meta name="description" content="HEX·RGB·HSL 색상 코드를 서로 변환하고 색을 미리보는 무료 도구. 디자이너·개발자용. 설치 없이 브라우저에서 바로."/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><span class="mk">🧰</span> gemini2k 도구</a>
+  <nav><a href="index.html">전체 도구</a><a href="https://gemini2k.kr" target="_blank" rel="noopener">블로그</a></nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html">← 전체 도구</a>
+  <h1>색상 변환기</h1>
+  <p class="sub">HEX · RGB · HSL을 서로 변환하고 색을 미리봅니다.</p>
+
+  <div class="card">
+    <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+      <input type="color" id="picker" value="#5b5bf5" style="width:80px;height:80px;border:1px solid var(--border);border-radius:14px;padding:0;background:none;cursor:pointer;"/>
+      <div id="sw" style="flex:1;min-width:140px;height:80px;border-radius:14px;border:1px solid var(--border);background:#5b5bf5;"></div>
+    </div>
+
+    <label for="hex" style="margin-top:1.3rem;">HEX</label>
+    <div class="result"><span class="val" id="hex-v">#5B5BF5</span><button class="btn btn-ghost" data-copy="hex-v" style="padding:.5rem .8rem;">복사</button></div>
+
+    <label style="margin-top:1rem;">RGB</label>
+    <div class="row" style="gap:.5rem;">
+      <input type="number" id="r" min="0" max="255" value="91" style="flex:1;min-width:70px;"/>
+      <input type="number" id="g" min="0" max="255" value="91" style="flex:1;min-width:70px;"/>
+      <input type="number" id="b" min="0" max="255" value="245" style="flex:1;min-width:70px;"/>
+      <button class="btn btn-ghost" data-copy="rgb-v" style="padding:.5rem .8rem;">복사</button>
+    </div>
+    <p class="hint" id="rgb-v" style="font-family:ui-monospace,monospace;">rgb(91, 91, 245)</p>
+
+    <label style="margin-top:.6rem;">HSL</label>
+    <div class="result"><span class="val" id="hsl-v">hsl(240, 89%, 66%)</span><button class="btn btn-ghost" data-copy="hsl-v" style="padding:.5rem .8rem;">복사</button></div>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© gemini2k 도구</span><span>· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  var picker=document.getElementById('picker'), sw=document.getElementById('sw'),
+      hexV=document.getElementById('hex-v'), rgbV=document.getElementById('rgb-v'), hslV=document.getElementById('hsl-v'),
+      R=document.getElementById('r'), G=document.getElementById('g'), B=document.getElementById('b');
+  function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+  function clamp(n){ return Math.max(0, Math.min(255, n|0)); }
+  function toHex(n){ return clamp(n).toString(16).padStart(2,'0'); }
+  function rgbToHsl(r,g,b){
+    r/=255;g/=255;b/=255; var mx=Math.max(r,g,b),mn=Math.min(r,g,b),h,s,l=(mx+mn)/2;
+    if(mx===mn){h=s=0;} else { var d=mx-mn; s=l>0.5?d/(2-mx-mn):d/(mx+mn);
+      h = mx===r ? (g-b)/d+(g<b?6:0) : mx===g ? (b-r)/d+2 : (r-g)/d+4; h/=6; }
+    return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+  }
+  function render(r,g,b){
+    r=clamp(r);g=clamp(g);b=clamp(b);
+    var hex='#'+ (toHex(r)+toHex(g)+toHex(b)).toUpperCase();
+    sw.style.background=hex; picker.value=hex.toLowerCase();
+    hexV.textContent=hex;
+    R.value=r;G.value=g;B.value=b;
+    rgbV.textContent='rgb('+r+', '+g+', '+b+')';
+    var hsl=rgbToHsl(r,g,b); hslV.textContent='hsl('+hsl[0]+', '+hsl[1]+'%, '+hsl[2]+'%)';
+  }
+  picker.addEventListener('input', function(){
+    var v=picker.value; render(parseInt(v.substr(1,2),16),parseInt(v.substr(3,2),16),parseInt(v.substr(5,2),16));
+  });
+  [R,G,B].forEach(function(el){ el.addEventListener('input', function(){ render(+R.value,+G.value,+B.value); }); });
+  document.querySelectorAll('[data-copy]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var txt=document.getElementById(btn.dataset.copy).textContent;
+      navigator.clipboard.writeText(txt).then(function(){toast('복사: '+txt);}).catch(function(){toast('복사 실패');});
+    });
+  });
+  render(91,91,245);
+</script>
+</body>
+</html>
