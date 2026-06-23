@@ -27,7 +27,9 @@ window.I18N = {
     'char.s.all':'글자수 (공백 포함)','char.s.nospace':'글자수 (공백 제외)','char.s.word':'단어 수','char.s.line':'줄 수','char.s.manu':'원고지 (200자)','char.s.byte':'바이트 (UTF-8)',
     'btn.clear':'지우기',
     'b64.sub':'텍스트를 Base64로 인코딩하거나, Base64를 원래 텍스트로 디코딩합니다. (한글 UTF-8 지원)','b64.in':'입력','b64.inph':'텍스트 또는 Base64 문자열을 입력하세요…','b64.enc':'인코딩 →','b64.dec':'← 디코딩','b64.out':'결과','b64.outph':'결과가 여기에 표시됩니다.','b64.copy':'📋 결과 복사','b64.hint':'모든 처리는 브라우저에서만 이루어집니다.','b64.noinput':'입력을 넣어주세요','b64.badb64':'올바른 Base64가 아닙니다','b64.failed':'변환 실패',
-    'lot.sub':'1~45 중 6개를 무작위로 뽑아 5게임을 생성합니다.','lot.gen':'🎲 번호 생성','lot.copy':'📋 복사','lot.hint':'재미로 즐기세요. 당첨을 보장하지 않으며, 암호학적 난수로 공정하게 추첨합니다.','lot.nogen':'먼저 번호를 생성하세요'
+    'lot.sub':'1~45 중 6개를 무작위로 뽑아 5게임을 생성합니다.','lot.gen':'🎲 번호 생성','lot.copy':'📋 복사','lot.hint':'재미로 즐기세요. 당첨을 보장하지 않으며, 암호학적 난수로 공정하게 추첨합니다.','lot.nogen':'먼저 번호를 생성하세요',
+    'pw.sub':'안전한 무작위 비밀번호를 원하는 조건으로 만들어 드립니다.','pw.copy':'복사','pw.len':'길이','pw.lower':'소문자 (a–z)','pw.upper':'대문자 (A–Z)','pw.digit':'숫자 (0–9)','pw.symbol':'특수문자 (!@#…)','pw.noamb':'헷갈리는 문자 제외 (Il1O0)','pw.gen':'🔄 새로 생성','pw.hint':'암호학적 난수(crypto)로 브라우저에서 생성하며, 어디에도 전송·저장되지 않습니다.','pw.s.weak':'약함','pw.s.fair':'보통','pw.s.strong':'강함','pw.s.vstrong':'매우 강함','pw.strength':'강도: {label} (약 {bits} 비트)','pw.noset':'문자 종류를 하나 이상 선택하세요','pw.nocopy':'복사할 비밀번호가 없습니다',
+    'tt.sub':'버튼을 누르면 아래 텍스트가 바로 정리됩니다.','tt.label':'텍스트','tt.ph':'여기에 텍스트를 입력하거나 붙여넣으세요…','tt.upper':'대문자','tt.lower':'소문자','tt.title':'단어 첫글자 대문자','tt.spaces':'공백 정리','tt.blank':'빈 줄 제거','tt.dedup':'중복 줄 제거','tt.sort':'줄 가나다 정렬','tt.nl2sp':'줄바꿈→공백','tt.info':'글자 {c} · 줄 {l}','tt.done':'정리 완료'
   },
   en: {
     'nav.tools':'All tools', 'nav.blog':'Blog',
@@ -54,7 +56,9 @@ window.I18N = {
     'char.s.all':'Characters (with spaces)','char.s.nospace':'Characters (no spaces)','char.s.word':'Words','char.s.line':'Lines','char.s.manu':'Manuscript (200 chars)','char.s.byte':'Bytes (UTF-8)',
     'btn.clear':'Clear',
     'b64.sub':'Encode text to Base64, or decode Base64 back to text. (UTF-8 safe)','b64.in':'Input','b64.inph':'Enter text or a Base64 string…','b64.enc':'Encode →','b64.dec':'← Decode','b64.out':'Result','b64.outph':'The result appears here.','b64.copy':'📋 Copy result','b64.hint':'All processing happens in your browser only.','b64.noinput':'Enter some input','b64.badb64':'Not valid Base64','b64.failed':'Conversion failed',
-    'lot.sub':'Picks 6 of 1–45 at random and generates 5 games.','lot.gen':'🎲 Generate','lot.copy':'📋 Copy','lot.hint':'Just for fun — winning is not guaranteed. Drawn fairly with a cryptographic RNG.','lot.nogen':'Generate numbers first'
+    'lot.sub':'Picks 6 of 1–45 at random and generates 5 games.','lot.gen':'🎲 Generate','lot.copy':'📋 Copy','lot.hint':'Just for fun — winning is not guaranteed. Drawn fairly with a cryptographic RNG.','lot.nogen':'Generate numbers first',
+    'pw.sub':'Creates a strong random password to your specification.','pw.copy':'Copy','pw.len':'Length','pw.lower':'Lowercase (a–z)','pw.upper':'Uppercase (A–Z)','pw.digit':'Digits (0–9)','pw.symbol':'Symbols (!@#…)','pw.noamb':'Exclude look-alikes (Il1O0)','pw.gen':'🔄 Generate new','pw.hint':'Generated in your browser with a cryptographic RNG — never sent or stored anywhere.','pw.s.weak':'Weak','pw.s.fair':'Fair','pw.s.strong':'Strong','pw.s.vstrong':'Very strong','pw.strength':'Strength: {label} (~{bits} bits)','pw.noset':'Select at least one character type','pw.nocopy':'No password to copy',
+    'tt.sub':'Press a button to instantly transform the text below.','tt.label':'Text','tt.ph':'Type or paste your text here…','tt.upper':'UPPERCASE','tt.lower':'lowercase','tt.title':'Title Case','tt.spaces':'Trim spaces','tt.blank':'Remove blank lines','tt.dedup':'Remove duplicate lines','tt.sort':'Sort lines','tt.nl2sp':'Newlines → spaces','tt.info':'{c} chars · {l} lines','tt.done':'Done'
   },
   zh: {
     'nav.tools':'全部工具', 'nav.blog':'博客',
@@ -81,7 +85,9 @@ window.I18N = {
     'char.s.all':'字数（含空格）','char.s.nospace':'字数（不含空格）','char.s.word':'单词数','char.s.line':'行数','char.s.manu':'稿纸（200字）','char.s.byte':'字节 (UTF-8)',
     'btn.clear':'清除',
     'b64.sub':'将文本编码为 Base64，或将 Base64 解码为原文。（支持中文 UTF-8）','b64.in':'输入','b64.inph':'输入文本或 Base64 字符串…','b64.enc':'编码 →','b64.dec':'← 解码','b64.out':'结果','b64.outph':'结果将显示在此处。','b64.copy':'📋 复制结果','b64.hint':'所有处理仅在浏览器中进行。','b64.noinput':'请输入内容','b64.badb64':'不是有效的 Base64','b64.failed':'转换失败',
-    'lot.sub':'从 1~45 中随机抽取 6 个，生成 5 组号码。','lot.gen':'🎲 生成号码','lot.copy':'📋 复制','lot.hint':'仅供娱乐，不保证中奖。使用密码学随机数公平抽取。','lot.nogen':'请先生成号码'
+    'lot.sub':'从 1~45 中随机抽取 6 个，生成 5 组号码。','lot.gen':'🎲 生成号码','lot.copy':'📋 复制','lot.hint':'仅供娱乐，不保证中奖。使用密码学随机数公平抽取。','lot.nogen':'请先生成号码',
+    'pw.sub':'按你的条件生成安全的随机密码。','pw.copy':'复制','pw.len':'长度','pw.lower':'小写字母 (a–z)','pw.upper':'大写字母 (A–Z)','pw.digit':'数字 (0–9)','pw.symbol':'符号 (!@#…)','pw.noamb':'排除易混字符 (Il1O0)','pw.gen':'🔄 重新生成','pw.hint':'在浏览器中使用密码学随机数生成，不会发送或存储到任何地方。','pw.s.weak':'弱','pw.s.fair':'中等','pw.s.strong':'强','pw.s.vstrong':'非常强','pw.strength':'强度：{label}（约 {bits} 位）','pw.noset':'请至少选择一种字符类型','pw.nocopy':'没有可复制的密码',
+    'tt.sub':'点击按钮即可立即整理下方文本。','tt.label':'文本','tt.ph':'在此输入或粘贴文本…','tt.upper':'大写','tt.lower':'小写','tt.title':'单词首字母大写','tt.spaces':'整理空格','tt.blank':'删除空行','tt.dedup':'删除重复行','tt.sort':'按行排序','tt.nl2sp':'换行→空格','tt.info':'{c} 字 · {l} 行','tt.done':'整理完成'
   },
   ja: {
     'nav.tools':'すべてのツール', 'nav.blog':'ブログ',
@@ -108,7 +114,9 @@ window.I18N = {
     'char.s.all':'文字数（空白含む）','char.s.nospace':'文字数（空白除く）','char.s.word':'単語数','char.s.line':'行数','char.s.manu':'原稿用紙（200字）','char.s.byte':'バイト (UTF-8)',
     'btn.clear':'クリア',
     'b64.sub':'テキストを Base64 にエンコード、または Base64 を元のテキストにデコードします。（日本語 UTF-8 対応）','b64.in':'入力','b64.inph':'テキストまたは Base64 文字列を入力…','b64.enc':'エンコード →','b64.dec':'← デコード','b64.out':'結果','b64.outph':'ここに結果が表示されます。','b64.copy':'📋 結果をコピー','b64.hint':'すべての処理はブラウザ内のみで行われます。','b64.noinput':'入力してください','b64.badb64':'正しい Base64 ではありません','b64.failed':'変換に失敗しました',
-    'lot.sub':'1〜45 から6個をランダムに選び、5ゲーム生成します。','lot.gen':'🎲 番号生成','lot.copy':'📋 コピー','lot.hint':'お楽しみ用です。当選は保証されません。暗号学的乱数で公正に抽選します。','lot.nogen':'先に番号を生成してください'
+    'lot.sub':'1〜45 から6個をランダムに選び、5ゲーム生成します。','lot.gen':'🎲 番号生成','lot.copy':'📋 コピー','lot.hint':'お楽しみ用です。当選は保証されません。暗号学的乱数で公正に抽選します。','lot.nogen':'先に番号を生成してください',
+    'pw.sub':'条件に合わせて安全なランダムパスワードを生成します。','pw.copy':'コピー','pw.len':'長さ','pw.lower':'小文字 (a–z)','pw.upper':'大文字 (A–Z)','pw.digit':'数字 (0–9)','pw.symbol':'記号 (!@#…)','pw.noamb':'紛らわしい文字を除外 (Il1O0)','pw.gen':'🔄 新規生成','pw.hint':'暗号学的乱数でブラウザ内で生成され、どこにも送信・保存されません。','pw.s.weak':'弱い','pw.s.fair':'普通','pw.s.strong':'強い','pw.s.vstrong':'非常に強い','pw.strength':'強度: {label}（約 {bits} ビット）','pw.noset':'文字種を1つ以上選択してください','pw.nocopy':'コピーするパスワードがありません',
+    'tt.sub':'ボタンを押すと下のテキストがすぐに整います。','tt.label':'テキスト','tt.ph':'ここにテキストを入力または貼り付け…','tt.upper':'大文字','tt.lower':'小文字','tt.title':'各単語の頭文字を大文字','tt.spaces':'空白を整理','tt.blank':'空行を削除','tt.dedup':'重複行を削除','tt.sort':'行を並べ替え','tt.nl2sp':'改行→空白','tt.info':'{c} 文字 · {l} 行','tt.done':'整理しました'
   }
 };
 (function(){
