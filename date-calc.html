@@ -22,88 +22,97 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
 <link rel="stylesheet" href="style.css"/>
 <script src="ga.js"></script>
+<script src="i18n.js"></script>
 </head>
 <body>
 <header class="top"><div class="top-in">
   <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
-  <nav><a href="index.html">전체 도구</a><a href="https://gemini2k.kr" target="_blank" rel="noopener">블로그</a></nav>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
 </div></header>
 
 <div class="toolwrap">
-  <a class="back" href="index.html">← 전체 도구</a>
-  <h1>만나이·D-Day 계산기</h1>
-  <p class="sub">만 나이, 디데이, 두 날짜 사이 일수를 즉시 계산합니다.</p>
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.date.t">만나이·D-Day 계산기</h1>
+  <p class="sub" data-i18n="dt.sub">만 나이, 디데이, 두 날짜 사이 일수를 즉시 계산합니다.</p>
 
   <div class="card">
-    <label for="birth">🎂 만 나이 — 생년월일</label>
+    <label for="birth" data-i18n="dt.age.label">🎂 만 나이 — 생년월일</label>
     <input type="date" id="birth"/>
-    <div class="result big" style="margin-top:1rem;"><span class="val" id="age">생년월일을 선택하세요</span></div>
+    <div class="result big" style="margin-top:1rem;"><span class="val" id="age"></span></div>
     <p class="hint" id="age-sub"></p>
   </div>
 
   <div class="card">
-    <label for="target">🎯 D-Day — 목표 날짜</label>
+    <label for="target" data-i18n="dt.dday.label">🎯 D-Day — 목표 날짜</label>
     <input type="date" id="target"/>
-    <div class="result big" style="margin-top:1rem;"><span class="val" id="dday">목표 날짜를 선택하세요</span></div>
+    <div class="result big" style="margin-top:1rem;"><span class="val" id="dday"></span></div>
     <p class="hint" id="dday-sub"></p>
   </div>
 
   <div class="card">
-    <label>📏 두 날짜 사이 일수</label>
+    <label data-i18n="dt.diff.label">📏 두 날짜 사이 일수</label>
     <div class="row">
       <input type="date" id="d1" style="flex:1;min-width:140px;"/>
       <input type="date" id="d2" style="flex:1;min-width:140px;"/>
     </div>
-    <div class="result big" style="margin-top:1rem;"><span class="val" id="diff">두 날짜를 선택하세요</span></div>
+    <div class="result big" style="margin-top:1rem;"><span class="val" id="diff"></span></div>
   </div>
 </div>
 
 <footer class="foot"><div class="foot-in">
-  <span>© 빛의여행(gemini2k) 도구</span><span>· 모든 처리는 브라우저에서</span>
-  <span class="sp"></span><a href="index.html">다른 도구 보기 →</a>
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
 </div></footer>
 
 <script>
+  function T(k){ return window.t ? window.t(k) : k; }
   var DAY = 86400000;
   function parse(v){ return v ? new Date(v + 'T00:00:00') : null; }   // 로컬 자정 기준
   function today0(){ var t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
-  function fmt(n){ return Math.abs(n).toLocaleString('ko-KR'); }
+  function fmt(n){ return Math.abs(n).toLocaleString(); }
 
-  // 만 나이
-  var birth = document.getElementById('birth');
-  birth.addEventListener('input', function(){
+  var birth = document.getElementById('birth'), target = document.getElementById('target'),
+      d1 = document.getElementById('d1'), d2 = document.getElementById('d2');
+
+  function calcAge(){
     var b = parse(birth.value), out = document.getElementById('age'), sub = document.getElementById('age-sub');
-    if(!b){ out.textContent='생년월일을 선택하세요'; sub.textContent=''; return; }
+    sub.textContent = '';
+    if(!b){ out.textContent = T('dt.age.empty'); return; }
     var t = today0();
-    if(b > t){ out.textContent='미래 날짜예요'; sub.textContent=''; return; }
+    if(b > t){ out.textContent = T('dt.future'); return; }
     var age = t.getFullYear() - b.getFullYear();
     if(t.getMonth() < b.getMonth() || (t.getMonth()===b.getMonth() && t.getDate() < b.getDate())) age--;
     var days = Math.floor((t - b) / DAY);
-    out.textContent = '만 ' + age + '세';
-    sub.textContent = '태어난 지 ' + fmt(days) + '일째입니다.';
-  });
-
-  // D-Day
-  var target = document.getElementById('target');
-  target.addEventListener('input', function(){
+    out.textContent = T('dt.age.val').replace('{n}', age);
+    sub.textContent = T('dt.age.sub').replace('{d}', fmt(days));
+  }
+  function calcDday(){
     var d = parse(target.value), out = document.getElementById('dday'), sub = document.getElementById('dday-sub');
-    if(!d){ out.textContent='목표 날짜를 선택하세요'; sub.textContent=''; return; }
+    sub.textContent = '';
+    if(!d){ out.textContent = T('dt.dday.empty'); return; }
     var n = Math.round((d - today0()) / DAY);
-    if(n === 0){ out.textContent='D-Day 🎉'; sub.textContent='바로 오늘입니다.'; }
-    else if(n > 0){ out.textContent='D-' + fmt(n); sub.textContent= fmt(n) + '일 남았습니다.'; }
-    else { out.textContent='D+' + fmt(n); sub.textContent= fmt(n) + '일 지났습니다.'; }
-  });
-
-  // 두 날짜 차이
-  var d1 = document.getElementById('d1'), d2 = document.getElementById('d2');
+    if(n === 0){ out.textContent = T('dt.dday.today'); sub.textContent = T('dt.dday.todaysub'); }
+    else if(n > 0){ out.textContent = 'D-' + fmt(n); sub.textContent = T('dt.dday.left').replace('{n}', fmt(n)); }
+    else { out.textContent = 'D+' + fmt(n); sub.textContent = T('dt.dday.past').replace('{n}', fmt(n)); }
+  }
   function diffCalc(){
     var a = parse(d1.value), b = parse(d2.value), out = document.getElementById('diff');
-    if(!a || !b){ out.textContent='두 날짜를 선택하세요'; return; }
+    if(!a || !b){ out.textContent = T('dt.diff.empty'); return; }
     var n = Math.round((b - a) / DAY);
-    out.textContent = fmt(n) + '일' + (n!==0 ? ' 차이' : '');
+    out.textContent = n === 0 ? T('dt.diff.same') : T('dt.diff.val').replace('{n}', fmt(n));
   }
+  birth.addEventListener('input', calcAge);
+  target.addEventListener('input', calcDday);
   d1.addEventListener('input', diffCalc);
   d2.addEventListener('input', diffCalc);
+  window.onI18n = function(){ calcAge(); calcDday(); diffCalc(); };
+  calcAge(); calcDday(); diffCalc();
 </script>
 </body>
 </html>

@@ -22,35 +22,42 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
 <link rel="stylesheet" href="style.css"/>
 <script src="ga.js"></script>
+<script src="i18n.js"></script>
 </head>
 <body>
 <header class="top"><div class="top-in">
   <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
-  <nav><a href="index.html">전체 도구</a><a href="https://gemini2k.kr" target="_blank" rel="noopener">블로그</a></nav>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
 </div></header>
 
 <div class="toolwrap">
-  <a class="back" href="index.html">← 전체 도구</a>
-  <h1>이미지 압축·리사이즈</h1>
-  <p class="sub">용량을 줄이고 크기·포맷을 바꿉니다. 업로드 없이 브라우저에서만 처리됩니다.</p>
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.image.t">이미지 압축·리사이즈</h1>
+  <p class="sub" data-i18n="im.sub">용량을 줄이고 크기·포맷을 바꿉니다. 업로드 없이 브라우저에서만 처리됩니다.</p>
 
   <div class="card">
-    <label for="file">이미지 선택 (JPG·PNG·WebP)</label>
+    <label for="file" data-i18n="im.file">이미지 선택 (JPG·PNG·WebP)</label>
     <input type="file" id="file" accept="image/*"/>
-    <p class="hint" id="orig">아직 선택된 이미지가 없습니다.</p>
+    <p class="hint" id="orig"></p>
   </div>
 
   <div class="card" id="opts" style="display:none;">
-    <label for="maxw">최대 가로 폭: <b id="maxwv" style="color:var(--text);">1280</b> px</label>
+    <label for="maxw"><span data-i18n="im.maxw">최대 가로 폭</span>: <b id="maxwv" style="color:var(--text);">1280</b> px</label>
     <input type="range" id="maxw" min="100" max="4000" step="20" value="1280"/>
-    <label for="fmt" style="margin-top:1rem;">출력 포맷</label>
+    <label for="fmt" style="margin-top:1rem;" data-i18n="im.fmt">출력 포맷</label>
     <select id="fmt">
-      <option value="image/jpeg">JPG (작은 용량)</option>
-      <option value="image/webp">WebP (가장 작음)</option>
-      <option value="image/png">PNG (무손실)</option>
+      <option value="image/jpeg" data-i18n="im.fmt.jpg">JPG (작은 용량)</option>
+      <option value="image/webp" data-i18n="im.fmt.webp">WebP (가장 작음)</option>
+      <option value="image/png" data-i18n="im.fmt.png">PNG (무손실)</option>
     </select>
     <div id="qwrap">
-      <label for="q" style="margin-top:1rem;">품질: <b id="qv" style="color:var(--text);">80</b></label>
+      <label for="q" style="margin-top:1rem;"><span data-i18n="im.q">품질</span>: <b id="qv" style="color:var(--text);">80</b></label>
       <input type="range" id="q" min="10" max="100" step="1" value="80"/>
     </div>
   </div>
@@ -58,13 +65,13 @@
   <div class="card" id="resultCard" style="display:none;">
     <div id="preview" style="text-align:center;"></div>
     <p class="hint" id="result"></p>
-    <div class="row" style="margin-top:.6rem;"><button class="btn" id="download">⬇️ 다운로드</button></div>
+    <div class="row" style="margin-top:.6rem;"><button class="btn" id="download" data-i18n="im.dl">⬇️ 다운로드</button></div>
   </div>
 </div>
 
 <footer class="foot"><div class="foot-in">
-  <span>© 빛의여행(gemini2k) 도구</span><span>· 모든 처리는 브라우저에서</span>
-  <span class="sp"></span><a href="index.html">다른 도구 보기 →</a>
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
 </div></footer>
 
 <div class="toast" id="toast"></div>
@@ -75,15 +82,20 @@
       resultCard=document.getElementById('resultCard'), preview=document.getElementById('preview'),
       result=document.getElementById('result'), dl=document.getElementById('download');
   var img=new Image(), origSize=0, origName='image', outBlob=null;
+  function T(k){ return window.t ? window.t(k) : k; }
   function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
   function kb(n){ return n<1024 ? n+' B' : n<1048576 ? (n/1024).toFixed(1)+' KB' : (n/1048576).toFixed(2)+' MB'; }
+  function renderOrig(){
+    if(!origSize){ orig.textContent=T('im.noimg'); return; }
+    orig.textContent=T('im.orig').replace('{w}',img.naturalWidth).replace('{h}',img.naturalHeight).replace('{s}',kb(origSize));
+  }
 
   file.addEventListener('change', function(){
     var f=file.files[0]; if(!f) return;
     origSize=f.size; origName=(f.name||'image').replace(/\.[^.]+$/,'');
     var rd=new FileReader();
     rd.onload=function(){ img.onload=function(){
-      orig.textContent='원본: '+img.naturalWidth+'×'+img.naturalHeight+'px · '+kb(origSize);
+      renderOrig();
       maxw.value=Math.min(img.naturalWidth,4000); maxwv.textContent=maxw.value;
       maxw.max=Math.max(img.naturalWidth,100);
       opts.style.display=''; process();
@@ -99,12 +111,12 @@
     var type=fmt.value, quality=parseInt(q.value,10)/100;
     qwrap.style.display = (type==='image/png') ? 'none' : '';
     cv.toBlob(function(blob){
-      if(!blob){ result.textContent='변환 실패'; return; }
+      if(!blob){ result.textContent=T('im.fail'); return; }
       outBlob=blob;
       var url=URL.createObjectURL(blob);
       preview.innerHTML='<img src="'+url+'" style="max-width:100%;border-radius:10px;border:1px solid var(--border);"/>';
       var pct=origSize? Math.round((1-blob.size/origSize)*100) : 0;
-      result.textContent='결과: '+tw+'×'+th+'px · '+kb(blob.size)+(pct>0?(' ('+pct+'% 절감)'):'');
+      result.textContent=T('im.result').replace('{w}',tw).replace('{h}',th).replace('{s}',kb(blob.size))+(pct>0?T('im.saving').replace('{p}',pct):'');
       resultCard.style.display='';
     }, type, quality);
   }
@@ -115,8 +127,10 @@
     if(!outBlob) return;
     var ext=fmt.value==='image/png'?'png':fmt.value==='image/webp'?'webp':'jpg';
     var a=document.createElement('a'); a.href=URL.createObjectURL(outBlob); a.download=origName+'_min.'+ext;
-    document.body.appendChild(a); a.click(); a.remove(); toast('다운로드했습니다');
+    document.body.appendChild(a); a.click(); a.remove(); toast(T('im.downloaded'));
   });
+  window.onI18n = function(){ renderOrig(); if(img.src) process(); };
+  renderOrig();
 </script>
 </body>
 </html>

@@ -22,32 +22,39 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
 <link rel="stylesheet" href="style.css"/>
 <script src="ga.js"></script>
+<script src="i18n.js"></script>
 </head>
 <body>
 <header class="top"><div class="top-in">
   <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
-  <nav><a href="index.html">전체 도구</a><a href="https://gemini2k.kr" target="_blank" rel="noopener">블로그</a></nav>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
 </div></header>
 
 <div class="toolwrap">
-  <a class="back" href="index.html">← 전체 도구</a>
-  <h1>단위 변환기</h1>
-  <p class="sub">길이·무게·넓이·온도를 즉시 변환합니다.</p>
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.unit.t">단위 변환기</h1>
+  <p class="sub" data-i18n="un.sub">길이·무게·넓이·온도를 즉시 변환합니다.</p>
 
   <div class="card">
     <div class="chips" id="cats" style="padding:0;margin-bottom:1.2rem;justify-content:flex-start;"></div>
     <div class="row" style="align-items:flex-end;gap:.6rem;">
       <div style="flex:1;min-width:130px;">
-        <label for="fval">값</label>
+        <label for="fval" data-i18n="un.val">값</label>
         <input type="number" id="fval" value="1" step="any"/>
       </div>
       <div style="flex:1;min-width:110px;">
-        <label for="funit">기준 단위</label>
+        <label for="funit" data-i18n="un.from">기준 단위</label>
         <select id="funit"></select>
       </div>
       <button class="btn btn-ghost" id="swap" title="단위 교환" style="padding:.75rem .9rem;">⇅</button>
       <div style="flex:1;min-width:110px;">
-        <label for="tunit">변환 단위</label>
+        <label for="tunit" data-i18n="un.to">변환 단위</label>
         <select id="tunit"></select>
       </div>
     </div>
@@ -57,8 +64,8 @@
 </div>
 
 <footer class="foot"><div class="foot-in">
-  <span>© 빛의여행(gemini2k) 도구</span><span>· 모든 처리는 브라우저에서</span>
-  <span class="sp"></span><a href="index.html">다른 도구 보기 →</a>
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
 </div></footer>
 
 <script>
@@ -69,14 +76,19 @@
     '넓이': { 'm²':1, '평':3.3057851, 'km²':1000000, 'ha':10000, 'ft²':0.09290304, '㏊':10000 },
     '온도': { '℃':1, '℉':1, 'K':1 }   // 값은 placeholder, 변환은 함수로
   };
+  function T(k){ return window.t ? window.t(k) : k; }
+  var CATKEY = { '길이':'un.cat.length','무게':'un.cat.weight','넓이':'un.cat.area','온도':'un.cat.temp' };
   var cur = '길이';
   var cats = document.getElementById('cats'), fval = document.getElementById('fval'),
       funit = document.getElementById('funit'), tunit = document.getElementById('tunit'),
-      out = document.getElementById('out'), formula = document.getElementById('formula');
+      out = document.getElementById('out'), formula = document.getElementById('formula'),
+      swap = document.getElementById('swap');
 
-  cats.innerHTML = Object.keys(DATA).map(function(c,i){
-    return '<button class="chip'+(i===0?' on':'')+'" data-c="'+c+'">'+c+'</button>';
-  }).join('');
+  function renderCats(){
+    cats.innerHTML = Object.keys(DATA).map(function(c){
+      return '<button class="chip'+(c===cur?' on':'')+'" data-c="'+c+'">'+T(CATKEY[c])+'</button>';
+    }).join('');
+  }
 
   function fillUnits(){
     var keys = Object.keys(DATA[cur]);
@@ -94,8 +106,8 @@
     var r;
     if(cur==='온도'){ r = tempFrom(tempTo(v, fu), tu); }
     else { r = v * DATA[cur][fu] / DATA[cur][tu]; }
-    out.textContent = round(r).toLocaleString('ko-KR', {maximumFractionDigits:6}) + ' ' + tu;
-    formula.textContent = v.toLocaleString('ko-KR') + ' ' + fu + ' = ' + round(r).toLocaleString('ko-KR',{maximumFractionDigits:6}) + ' ' + tu;
+    out.textContent = round(r).toLocaleString(undefined, {maximumFractionDigits:6}) + ' ' + tu;
+    formula.textContent = v.toLocaleString() + ' ' + fu + ' = ' + round(r).toLocaleString(undefined,{maximumFractionDigits:6}) + ' ' + tu;
   }
   cats.addEventListener('click', function(e){
     var b=e.target.closest('.chip'); if(!b) return;
@@ -103,10 +115,11 @@
     fillUnits(); calc();
   });
   [fval,funit,tunit].forEach(function(el){ el.addEventListener('input', calc); });
-  document.getElementById('swap').addEventListener('click', function(){
+  swap.addEventListener('click', function(){
     var i=funit.selectedIndex; funit.selectedIndex=tunit.selectedIndex; tunit.selectedIndex=i; calc();
   });
-  fillUnits(); calc();
+  window.onI18n = function(){ renderCats(); swap.title = T('un.swap'); calc(); };
+  renderCats(); fillUnits(); calc();
 </script>
 </body>
 </html>
