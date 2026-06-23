@@ -19,7 +19,12 @@ window.I18N = {
     'tool.image.t':'이미지 압축·리사이즈','tool.image.d':'용량 줄이기·크기 조절·포맷 변환. 업로드 없이.',
     'tool.text.t':'텍스트 정리 도구','tool.text.d':'대소문자, 공백·빈 줄·중복 정리, 줄 정렬 등.',
     'tool.base64.t':'Base64 인코더·디코더','tool.base64.d':'텍스트 ↔ Base64 인코딩/디코딩 (UTF-8).',
-    'tool.lotto.t':'로또 번호 생성기','tool.lotto.d':'로또 6/45 번호를 5게임 무작위 생성.'
+    'tool.lotto.t':'로또 번호 생성기','tool.lotto.d':'로또 6/45 번호를 5게임 무작위 생성.',
+    'back':'← 전체 도구','foot.more':'다른 도구 보기 →','foot.tail':'· 모든 처리는 브라우저에서',
+    'toast.copied':'복사됐습니다','toast.nocopy':'복사할 내용이 없습니다',
+    'char.sub':'공백 포함/제외, 단어·줄·원고지 매수를 실시간으로 보여줍니다.','char.label':'텍스트 입력','char.ph':'여기에 글을 붙여넣거나 입력하세요…',
+    'char.copy':'📋 텍스트 복사','char.clear':'지우기','char.hint':'입력한 내용은 서버로 전송되지 않고 브라우저에서만 계산됩니다.',
+    'char.s.all':'글자수 (공백 포함)','char.s.nospace':'글자수 (공백 제외)','char.s.word':'단어 수','char.s.line':'줄 수','char.s.manu':'원고지 (200자)','char.s.byte':'바이트 (UTF-8)'
   },
   en: {
     'nav.tools':'All tools', 'nav.blog':'Blog',
@@ -38,7 +43,12 @@ window.I18N = {
     'tool.image.t':'Image Compressor','tool.image.d':'Shrink, resize and convert — no upload.',
     'tool.text.t':'Text Cleaner','tool.text.d':'Case, spaces, blank/duplicate lines, sorting.',
     'tool.base64.t':'Base64 Encoder/Decoder','tool.base64.d':'Encode/decode text ↔ Base64 (UTF-8).',
-    'tool.lotto.t':'Lotto Number Generator','tool.lotto.d':'Random 6/45 lotto numbers, 5 games.'
+    'tool.lotto.t':'Lotto Number Generator','tool.lotto.d':'Random 6/45 lotto numbers, 5 games.',
+    'back':'← All tools','foot.more':'More tools →','foot.tail':'· All processing in your browser',
+    'toast.copied':'Copied','toast.nocopy':'Nothing to copy',
+    'char.sub':'Counts characters (with/without spaces), words, lines and manuscript pages in real time.','char.label':'Text input','char.ph':'Paste or type your text here…',
+    'char.copy':'📋 Copy text','char.clear':'Clear','char.hint':'Your text is never sent to a server — everything is computed in your browser.',
+    'char.s.all':'Characters (with spaces)','char.s.nospace':'Characters (no spaces)','char.s.word':'Words','char.s.line':'Lines','char.s.manu':'Manuscript (200 chars)','char.s.byte':'Bytes (UTF-8)'
   },
   zh: {
     'nav.tools':'全部工具', 'nav.blog':'博客',
@@ -57,7 +67,12 @@ window.I18N = {
     'tool.image.t':'图片压缩·缩放','tool.image.d':'压缩·缩放·转格式，无需上传。',
     'tool.text.t':'文本整理','tool.text.d':'大小写、空格、空行/重复行、排序。',
     'tool.base64.t':'Base64 编解码','tool.base64.d':'文本 ↔ Base64 编码/解码（UTF-8）。',
-    'tool.lotto.t':'乐透号码生成器','tool.lotto.d':'随机生成 6/45 乐透号码，共 5 组。'
+    'tool.lotto.t':'乐透号码生成器','tool.lotto.d':'随机生成 6/45 乐透号码，共 5 组。',
+    'back':'← 全部工具','foot.more':'更多工具 →','foot.tail':'· 全部在浏览器中处理',
+    'toast.copied':'已复制','toast.nocopy':'没有可复制的内容',
+    'char.sub':'实时统计含/不含空格的字数、单词、行数与稿纸张数。','char.label':'输入文本','char.ph':'在此粘贴或输入文本…',
+    'char.copy':'📋 复制文本','char.clear':'清除','char.hint':'输入内容不会发送到服务器，全部在浏览器中计算。',
+    'char.s.all':'字数（含空格）','char.s.nospace':'字数（不含空格）','char.s.word':'单词数','char.s.line':'行数','char.s.manu':'稿纸（200字）','char.s.byte':'字节 (UTF-8)'
   },
   ja: {
     'nav.tools':'すべてのツール', 'nav.blog':'ブログ',
@@ -76,7 +91,12 @@ window.I18N = {
     'tool.image.t':'画像圧縮・リサイズ','tool.image.d':'圧縮・リサイズ・変換、アップロード不要。',
     'tool.text.t':'テキスト整理','tool.text.d':'大文字小文字・空白・重複・並べ替え。',
     'tool.base64.t':'Base64 エンコード/デコード','tool.base64.d':'テキスト ↔ Base64 変換（UTF-8）。',
-    'tool.lotto.t':'ロト番号ジェネレーター','tool.lotto.d':'ロト6/45 を5ゲーム自動生成。'
+    'tool.lotto.t':'ロト番号ジェネレーター','tool.lotto.d':'ロト6/45 を5ゲーム自動生成。',
+    'back':'← すべてのツール','foot.more':'他のツール →','foot.tail':'· すべてブラウザ内で処理',
+    'toast.copied':'コピーしました','toast.nocopy':'コピーする内容がありません',
+    'char.sub':'空白あり/なしの文字数・単語・行・原稿用紙の枚数をリアルタイム表示。','char.label':'テキスト入力','char.ph':'ここに貼り付けるか入力してください…',
+    'char.copy':'📋 テキストをコピー','char.clear':'クリア','char.hint':'入力内容はサーバーに送信されず、ブラウザ内だけで計算されます。',
+    'char.s.all':'文字数（空白含む）','char.s.nospace':'文字数（空白除く）','char.s.word':'単語数','char.s.line':'行数','char.s.manu':'原稿用紙（200字）','char.s.byte':'バイト (UTF-8)'
   }
 };
 (function(){
@@ -96,7 +116,8 @@ window.I18N = {
     document.querySelectorAll('[data-i18n]').forEach(function(el){ var v=d[el.getAttribute('data-i18n')]; if(v!=null) el.textContent=v; });
     document.querySelectorAll('[data-i18n-html]').forEach(function(el){ var v=d[el.getAttribute('data-i18n-html')]; if(v!=null) el.innerHTML=v; });
     document.querySelectorAll('[data-i18n-ph]').forEach(function(el){ var v=d[el.getAttribute('data-i18n-ph')]; if(v!=null) el.placeholder=v; });
-    var sel = document.getElementById('langsel'); if(sel) sel.value = lang;
+    var sel = document.getElementById('langsel');
+    if(sel){ sel.value = lang; if(!sel._bound){ sel._bound = 1; sel.addEventListener('change', function(){ setLang(sel.value); }); } }
     if(typeof window.onI18n === 'function') window.onI18n(lang);
   }
   window.setLang = function(l){ if(SUP.indexOf(l)<0) return; lang=l; try{localStorage.setItem('lang',l);}catch(e){} apply(); };
