@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>Base64 인코더·디코더 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="텍스트를 Base64로 인코딩하거나 디코딩하는 무료 도구. 한글(UTF-8) 지원, 설치 없이 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/base64.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="Base64 인코더·디코더 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="텍스트를 Base64로 인코딩하거나 디코딩하는 무료 도구. 한글(UTF-8) 지원, 설치 없이 브라우저에서 바로."/>
+<meta property="og:url" content="https://gemini2k.co.kr/base64.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Base64 인코더·디코더 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="텍스트를 Base64로 인코딩하거나 디코딩하는 무료 도구. 한글(UTF-8) 지원, 설치 없이 브라우저에서 바로."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행 gemini2k"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav><a href="index.html">전체 도구</a><a href="https://gemini2k.kr" target="_blank" rel="noopener">블로그</a></nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html">← 전체 도구</a>
+  <h1>Base64 인코더·디코더</h1>
+  <p class="sub">텍스트를 Base64로 인코딩하거나, Base64를 원래 텍스트로 디코딩합니다. (한글 UTF-8 지원)</p>
+
+  <div class="card">
+    <label for="input">입력</label>
+    <textarea id="input" placeholder="텍스트 또는 Base64 문자열을 입력하세요…" autofocus></textarea>
+    <div class="row" style="margin-top:1rem;">
+      <button class="btn" data-act="encode">인코딩 →</button>
+      <button class="btn btn-ghost" data-act="decode">← 디코딩</button>
+    </div>
+    <label for="output" style="margin-top:1.2rem;">결과</label>
+    <textarea id="output" placeholder="결과가 여기에 표시됩니다." readonly></textarea>
+    <div class="row" style="margin-top:.9rem;">
+      <button class="btn" data-act="copy">📋 결과 복사</button>
+      <button class="btn btn-ghost" data-act="clear">지우기</button>
+    </div>
+    <p class="hint">모든 처리는 브라우저에서만 이루어집니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span>· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  var inp=document.getElementById('input'), out=document.getElementById('output');
+  function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+  function enc(s){ return btoa(unescape(encodeURIComponent(s))); }       // UTF-8 안전
+  function dec(s){ return decodeURIComponent(escape(atob(s.trim()))); }
+  document.querySelectorAll('[data-act]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var a=b.dataset.act;
+      if(a==='copy'){ if(!out.value){toast('복사할 결과가 없습니다');return;} navigator.clipboard.writeText(out.value).then(function(){toast('복사됐습니다');}).catch(function(){toast('복사 실패');}); return; }
+      if(a==='clear'){ inp.value=''; out.value=''; inp.focus(); return; }
+      if(!inp.value){ toast('입력을 넣어주세요'); return; }
+      try{ out.value = a==='encode' ? enc(inp.value) : dec(inp.value); }
+      catch(e){ out.value=''; toast(a==='decode' ? '올바른 Base64가 아닙니다' : '변환 실패'); }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>로또 번호 생성기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="로또 6/45 번호를 무작위로 생성하는 무료 도구. 한 번에 5게임, 공 색상 표시. 설치 없이 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/lotto.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="로또 번호 생성기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="로또 6/45 번호를 무작위로 생성하는 무료 도구. 한 번에 5게임, 공 색상 표시. 설치 없이 브라우저에서 바로."/>
+<meta property="og:url" content="https://gemini2k.co.kr/lotto.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="로또 번호 생성기 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="로또 6/45 번호를 무작위로 생성하는 무료 도구. 한 번에 5게임, 공 색상 표시. 설치 없이 브라우저에서 바로."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<style>
+  .games{display:flex;flex-direction:column;gap:.8rem;margin-top:.5rem;}
+  .game{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;}
+  .game .lbl{width:1.4rem;color:var(--muted);font-weight:700;font-size:.9rem;}
+  .ball{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;
+    font-weight:800;font-size:1.05rem;box-shadow:0 2px 4px rgba(0,0,0,.12);}
+  .b1{background:#FBC400;} .b2{background:#69C8F2;} .b3{background:#FF7272;}
+  .b4{background:#AAAAAA;} .b5{background:#B0D840;}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행 gemini2k"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav><a href="index.html">전체 도구</a><a href="https://gemini2k.kr" target="_blank" rel="noopener">블로그</a></nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html">← 전체 도구</a>
+  <h1>로또 번호 생성기</h1>
+  <p class="sub">1~45 중 6개를 무작위로 뽑아 5게임을 생성합니다.</p>
+
+  <div class="card">
+    <div class="games" id="games"></div>
+    <div class="row" style="margin-top:1.3rem;">
+      <button class="btn" id="gen">🎲 번호 생성</button>
+      <button class="btn btn-ghost" id="copy">📋 복사</button>
+    </div>
+    <p class="hint">재미로 즐기세요. 당첨을 보장하지 않으며, 암호학적 난수로 공정하게 추첨합니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span>· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  var box=document.getElementById('games');
+  function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+  function rnd(n){ var a=new Uint32Array(1), lim=Math.floor(0xFFFFFFFF/n)*n, x; do{crypto.getRandomValues(a);x=a[0];}while(x>=lim); return x%n; }
+  function pick6(){ var pool=[]; for(var i=1;i<=45;i++) pool.push(i);
+    for(var k=0;k<6;k++){ var j=k+rnd(pool.length-k); var t=pool[k]; pool[k]=pool[j]; pool[j]=t; }
+    return pool.slice(0,6).sort(function(a,b){return a-b;}); }
+  function cls(n){ return n<=10?'b1':n<=20?'b2':n<=30?'b3':n<=40?'b4':'b5'; }
+  function gen(){
+    var html='';
+    for(var g=0; g<5; g++){
+      var nums=pick6();
+      html+='<div class="game"><span class="lbl">'+String.fromCharCode(65+g)+'</span>'
+        + nums.map(function(n){return '<span class="ball '+cls(n)+'">'+n+'</span>';}).join('') + '</div>';
+    }
+    box.innerHTML=html;
+  }
+  function text(){
+    return Array.from(box.querySelectorAll('.game')).map(function(row){
+      var lbl=row.querySelector('.lbl').textContent;
+      var ns=Array.from(row.querySelectorAll('.ball')).map(function(b){return b.textContent;}).join(', ');
+      return lbl+': '+ns;
+    }).join('\n');
+  }
+  document.getElementById('gen').addEventListener('click', gen);
+  document.getElementById('copy').addEventListener('click', function(){
+    var t=text(); if(!t){toast('먼저 번호를 생성하세요');return;}
+    navigator.clipboard.writeText(t).then(function(){toast('복사됐습니다');}).catch(function(){toast('복사 실패');});
+  });
+  gen();
+</script>
+</body>
+</html>

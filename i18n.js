@@ -17,7 +17,9 @@ window.I18N = {
     'tool.unit.t':'단위 변환기','tool.unit.d':'길이·무게·넓이·온도를 즉시 변환. 평↔㎡, kg↔lb 등.',
     'tool.color.t':'색상 변환기','tool.color.d':'HEX·RGB·HSL을 서로 변환하고 색을 미리보기.',
     'tool.image.t':'이미지 압축·리사이즈','tool.image.d':'용량 줄이기·크기 조절·포맷 변환. 업로드 없이.',
-    'tool.text.t':'텍스트 정리 도구','tool.text.d':'대소문자, 공백·빈 줄·중복 정리, 줄 정렬 등.'
+    'tool.text.t':'텍스트 정리 도구','tool.text.d':'대소문자, 공백·빈 줄·중복 정리, 줄 정렬 등.',
+    'tool.base64.t':'Base64 인코더·디코더','tool.base64.d':'텍스트 ↔ Base64 인코딩/디코딩 (UTF-8).',
+    'tool.lotto.t':'로또 번호 생성기','tool.lotto.d':'로또 6/45 번호를 5게임 무작위 생성.'
   },
   en: {
     'nav.tools':'All tools', 'nav.blog':'Blog',
@@ -34,7 +36,9 @@ window.I18N = {
     'tool.unit.t':'Unit Converter','tool.unit.d':'Convert length, weight, area, temperature.',
     'tool.color.t':'Color Converter','tool.color.d':'Convert between HEX, RGB and HSL with preview.',
     'tool.image.t':'Image Compressor','tool.image.d':'Shrink, resize and convert — no upload.',
-    'tool.text.t':'Text Cleaner','tool.text.d':'Case, spaces, blank/duplicate lines, sorting.'
+    'tool.text.t':'Text Cleaner','tool.text.d':'Case, spaces, blank/duplicate lines, sorting.',
+    'tool.base64.t':'Base64 Encoder/Decoder','tool.base64.d':'Encode/decode text ↔ Base64 (UTF-8).',
+    'tool.lotto.t':'Lotto Number Generator','tool.lotto.d':'Random 6/45 lotto numbers, 5 games.'
   },
   zh: {
     'nav.tools':'全部工具', 'nav.blog':'博客',
@@ -51,7 +55,9 @@ window.I18N = {
     'tool.unit.t':'单位换算','tool.unit.d':'长度·重量·面积·温度即时换算。',
     'tool.color.t':'颜色转换器','tool.color.d':'HEX·RGB·HSL 互转并预览。',
     'tool.image.t':'图片压缩·缩放','tool.image.d':'压缩·缩放·转格式，无需上传。',
-    'tool.text.t':'文本整理','tool.text.d':'大小写、空格、空行/重复行、排序。'
+    'tool.text.t':'文本整理','tool.text.d':'大小写、空格、空行/重复行、排序。',
+    'tool.base64.t':'Base64 编解码','tool.base64.d':'文本 ↔ Base64 编码/解码（UTF-8）。',
+    'tool.lotto.t':'乐透号码生成器','tool.lotto.d':'随机生成 6/45 乐透号码，共 5 组。'
   },
   ja: {
     'nav.tools':'すべてのツール', 'nav.blog':'ブログ',
@@ -68,7 +74,9 @@ window.I18N = {
     'tool.unit.t':'単位変換','tool.unit.d':'長さ・重さ・面積・温度を即変換。',
     'tool.color.t':'カラー変換','tool.color.d':'HEX・RGB・HSLを相互変換しプレビュー。',
     'tool.image.t':'画像圧縮・リサイズ','tool.image.d':'圧縮・リサイズ・変換、アップロード不要。',
-    'tool.text.t':'テキスト整理','tool.text.d':'大文字小文字・空白・重複・並べ替え。'
+    'tool.text.t':'テキスト整理','tool.text.d':'大文字小文字・空白・重複・並べ替え。',
+    'tool.base64.t':'Base64 エンコード/デコード','tool.base64.d':'テキスト ↔ Base64 変換（UTF-8）。',
+    'tool.lotto.t':'ロト番号ジェネレーター','tool.lotto.d':'ロト6/45 を5ゲーム自動生成。'
   }
 };
 (function(){
