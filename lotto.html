@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
 <link rel="stylesheet" href="style.css"/>
 <script src="ga.js"></script>
+<script src="i18n.js"></script>
 <style>
   .games{display:flex;flex-direction:column;gap:.8rem;margin-top:.5rem;}
   .game{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;}
@@ -35,27 +36,33 @@
 <body>
 <header class="top"><div class="top-in">
   <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행 gemini2k"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
-  <nav><a href="index.html">전체 도구</a><a href="https://gemini2k.kr" target="_blank" rel="noopener">블로그</a></nav>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
 </div></header>
 
 <div class="toolwrap">
-  <a class="back" href="index.html">← 전체 도구</a>
-  <h1>로또 번호 생성기</h1>
-  <p class="sub">1~45 중 6개를 무작위로 뽑아 5게임을 생성합니다.</p>
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.lotto.t">로또 번호 생성기</h1>
+  <p class="sub" data-i18n="lot.sub">1~45 중 6개를 무작위로 뽑아 5게임을 생성합니다.</p>
 
   <div class="card">
     <div class="games" id="games"></div>
     <div class="row" style="margin-top:1.3rem;">
-      <button class="btn" id="gen">🎲 번호 생성</button>
-      <button class="btn btn-ghost" id="copy">📋 복사</button>
+      <button class="btn" id="gen" data-i18n="lot.gen">🎲 번호 생성</button>
+      <button class="btn btn-ghost" id="copy" data-i18n="lot.copy">📋 복사</button>
     </div>
-    <p class="hint">재미로 즐기세요. 당첨을 보장하지 않으며, 암호학적 난수로 공정하게 추첨합니다.</p>
+    <p class="hint" data-i18n="lot.hint">재미로 즐기세요. 당첨을 보장하지 않으며, 암호학적 난수로 공정하게 추첨합니다.</p>
   </div>
 </div>
 
 <footer class="foot"><div class="foot-in">
-  <span>© 빛의여행(gemini2k) 도구</span><span>· 모든 처리는 브라우저에서</span>
-  <span class="sp"></span><a href="index.html">다른 도구 보기 →</a>
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
 </div></footer>
 
 <div class="toast" id="toast"></div>
@@ -85,8 +92,9 @@
   }
   document.getElementById('gen').addEventListener('click', gen);
   document.getElementById('copy').addEventListener('click', function(){
-    var t=text(); if(!t){toast('먼저 번호를 생성하세요');return;}
-    navigator.clipboard.writeText(t).then(function(){toast('복사됐습니다');}).catch(function(){toast('복사 실패');});
+    var s=text(); if(!s){toast(window.t?window.t('lot.nogen'):'먼저 번호를 생성하세요');return;}
+    var ok=window.t?window.t('toast.copied'):'복사됐습니다';
+    navigator.clipboard.writeText(s).then(function(){toast(ok);}).catch(function(){toast(ok);});
   });
   gen();
 </script>

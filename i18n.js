@@ -24,7 +24,10 @@ window.I18N = {
     'toast.copied':'복사됐습니다','toast.nocopy':'복사할 내용이 없습니다',
     'char.sub':'공백 포함/제외, 단어·줄·원고지 매수를 실시간으로 보여줍니다.','char.label':'텍스트 입력','char.ph':'여기에 글을 붙여넣거나 입력하세요…',
     'char.copy':'📋 텍스트 복사','char.clear':'지우기','char.hint':'입력한 내용은 서버로 전송되지 않고 브라우저에서만 계산됩니다.',
-    'char.s.all':'글자수 (공백 포함)','char.s.nospace':'글자수 (공백 제외)','char.s.word':'단어 수','char.s.line':'줄 수','char.s.manu':'원고지 (200자)','char.s.byte':'바이트 (UTF-8)'
+    'char.s.all':'글자수 (공백 포함)','char.s.nospace':'글자수 (공백 제외)','char.s.word':'단어 수','char.s.line':'줄 수','char.s.manu':'원고지 (200자)','char.s.byte':'바이트 (UTF-8)',
+    'btn.clear':'지우기',
+    'b64.sub':'텍스트를 Base64로 인코딩하거나, Base64를 원래 텍스트로 디코딩합니다. (한글 UTF-8 지원)','b64.in':'입력','b64.inph':'텍스트 또는 Base64 문자열을 입력하세요…','b64.enc':'인코딩 →','b64.dec':'← 디코딩','b64.out':'결과','b64.outph':'결과가 여기에 표시됩니다.','b64.copy':'📋 결과 복사','b64.hint':'모든 처리는 브라우저에서만 이루어집니다.','b64.noinput':'입력을 넣어주세요','b64.badb64':'올바른 Base64가 아닙니다','b64.failed':'변환 실패',
+    'lot.sub':'1~45 중 6개를 무작위로 뽑아 5게임을 생성합니다.','lot.gen':'🎲 번호 생성','lot.copy':'📋 복사','lot.hint':'재미로 즐기세요. 당첨을 보장하지 않으며, 암호학적 난수로 공정하게 추첨합니다.','lot.nogen':'먼저 번호를 생성하세요'
   },
   en: {
     'nav.tools':'All tools', 'nav.blog':'Blog',
@@ -48,7 +51,10 @@ window.I18N = {
     'toast.copied':'Copied','toast.nocopy':'Nothing to copy',
     'char.sub':'Counts characters (with/without spaces), words, lines and manuscript pages in real time.','char.label':'Text input','char.ph':'Paste or type your text here…',
     'char.copy':'📋 Copy text','char.clear':'Clear','char.hint':'Your text is never sent to a server — everything is computed in your browser.',
-    'char.s.all':'Characters (with spaces)','char.s.nospace':'Characters (no spaces)','char.s.word':'Words','char.s.line':'Lines','char.s.manu':'Manuscript (200 chars)','char.s.byte':'Bytes (UTF-8)'
+    'char.s.all':'Characters (with spaces)','char.s.nospace':'Characters (no spaces)','char.s.word':'Words','char.s.line':'Lines','char.s.manu':'Manuscript (200 chars)','char.s.byte':'Bytes (UTF-8)',
+    'btn.clear':'Clear',
+    'b64.sub':'Encode text to Base64, or decode Base64 back to text. (UTF-8 safe)','b64.in':'Input','b64.inph':'Enter text or a Base64 string…','b64.enc':'Encode →','b64.dec':'← Decode','b64.out':'Result','b64.outph':'The result appears here.','b64.copy':'📋 Copy result','b64.hint':'All processing happens in your browser only.','b64.noinput':'Enter some input','b64.badb64':'Not valid Base64','b64.failed':'Conversion failed',
+    'lot.sub':'Picks 6 of 1–45 at random and generates 5 games.','lot.gen':'🎲 Generate','lot.copy':'📋 Copy','lot.hint':'Just for fun — winning is not guaranteed. Drawn fairly with a cryptographic RNG.','lot.nogen':'Generate numbers first'
   },
   zh: {
     'nav.tools':'全部工具', 'nav.blog':'博客',
@@ -72,7 +78,10 @@ window.I18N = {
     'toast.copied':'已复制','toast.nocopy':'没有可复制的内容',
     'char.sub':'实时统计含/不含空格的字数、单词、行数与稿纸张数。','char.label':'输入文本','char.ph':'在此粘贴或输入文本…',
     'char.copy':'📋 复制文本','char.clear':'清除','char.hint':'输入内容不会发送到服务器，全部在浏览器中计算。',
-    'char.s.all':'字数（含空格）','char.s.nospace':'字数（不含空格）','char.s.word':'单词数','char.s.line':'行数','char.s.manu':'稿纸（200字）','char.s.byte':'字节 (UTF-8)'
+    'char.s.all':'字数（含空格）','char.s.nospace':'字数（不含空格）','char.s.word':'单词数','char.s.line':'行数','char.s.manu':'稿纸（200字）','char.s.byte':'字节 (UTF-8)',
+    'btn.clear':'清除',
+    'b64.sub':'将文本编码为 Base64，或将 Base64 解码为原文。（支持中文 UTF-8）','b64.in':'输入','b64.inph':'输入文本或 Base64 字符串…','b64.enc':'编码 →','b64.dec':'← 解码','b64.out':'结果','b64.outph':'结果将显示在此处。','b64.copy':'📋 复制结果','b64.hint':'所有处理仅在浏览器中进行。','b64.noinput':'请输入内容','b64.badb64':'不是有效的 Base64','b64.failed':'转换失败',
+    'lot.sub':'从 1~45 中随机抽取 6 个，生成 5 组号码。','lot.gen':'🎲 生成号码','lot.copy':'📋 复制','lot.hint':'仅供娱乐，不保证中奖。使用密码学随机数公平抽取。','lot.nogen':'请先生成号码'
   },
   ja: {
     'nav.tools':'すべてのツール', 'nav.blog':'ブログ',
@@ -96,7 +105,10 @@ window.I18N = {
     'toast.copied':'コピーしました','toast.nocopy':'コピーする内容がありません',
     'char.sub':'空白あり/なしの文字数・単語・行・原稿用紙の枚数をリアルタイム表示。','char.label':'テキスト入力','char.ph':'ここに貼り付けるか入力してください…',
     'char.copy':'📋 テキストをコピー','char.clear':'クリア','char.hint':'入力内容はサーバーに送信されず、ブラウザ内だけで計算されます。',
-    'char.s.all':'文字数（空白含む）','char.s.nospace':'文字数（空白除く）','char.s.word':'単語数','char.s.line':'行数','char.s.manu':'原稿用紙（200字）','char.s.byte':'バイト (UTF-8)'
+    'char.s.all':'文字数（空白含む）','char.s.nospace':'文字数（空白除く）','char.s.word':'単語数','char.s.line':'行数','char.s.manu':'原稿用紙（200字）','char.s.byte':'バイト (UTF-8)',
+    'btn.clear':'クリア',
+    'b64.sub':'テキストを Base64 にエンコード、または Base64 を元のテキストにデコードします。（日本語 UTF-8 対応）','b64.in':'入力','b64.inph':'テキストまたは Base64 文字列を入力…','b64.enc':'エンコード →','b64.dec':'← デコード','b64.out':'結果','b64.outph':'ここに結果が表示されます。','b64.copy':'📋 結果をコピー','b64.hint':'すべての処理はブラウザ内のみで行われます。','b64.noinput':'入力してください','b64.badb64':'正しい Base64 ではありません','b64.failed':'変換に失敗しました',
+    'lot.sub':'1〜45 から6個をランダムに選び、5ゲーム生成します。','lot.gen':'🎲 番号生成','lot.copy':'📋 コピー','lot.hint':'お楽しみ用です。当選は保証されません。暗号学的乱数で公正に抽選します。','lot.nogen':'先に番号を生成してください'
   }
 };
 (function(){
