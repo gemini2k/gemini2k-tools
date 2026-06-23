@@ -87,4 +87,7 @@ nginx 설정은 `deploy/nginx-tools.conf` 참고.
 
 ## 📄 라이선스
 
-개인·상업적 자유 이용 가능. 만든이 © 빛의여행(gemini2k).
+- 이 프로젝트 코드: **MIT License** — [`LICENSE`](LICENSE) 참고 (개인·상업 자유 이용, 저작권 표시 유지)
+- 사용한 오픈소스 고지: [`NOTICE`](NOTICE) — Pretendard(OFL 1.1), qrcode-generator(MIT)
+
+© 2026 빛의여행(gemini2k)
