@@ -61,15 +61,15 @@ def build_og():
     img = Image.new("RGB", (W, H), "#FFFFFF")
     d = ImageDraw.Draw(img)
     # 상단 인디고 바
-    d.rectangle([0, 0, W, 12], fill="#5B5BF5")
+    d.rectangle([0, 0, W, 12], fill="#1AA3E0")
     def font(path, size):
         try: return ImageFont.truetype(path, size)
         except Exception: return ImageFont.load_default()
     bd = "C:/Windows/Fonts/malgunbd.ttf"; rg = "C:/Windows/Fonts/malgun.ttf"
     f_brand = font(bd, 40); f_title = font(bd, 92); f_sub = font(rg, 40); f_url = font(bd, 36)
-    # G2K 그라데이션 마크 (파랑→인디고) + 브랜드 텍스트
+    # 빛(별) 마크 — 녹색→파랑 그라데이션 사각 + 흰 별 + 브랜드 텍스트
     sq, gx, gy = 60, 80, 74
-    c1, c2 = (61, 110, 232), (110, 84, 240)
+    c1, c2 = (21, 195, 154), (61, 123, 240)   # green → blue
     grad = Image.new("RGB", (sq, sq))
     for y in range(sq):
         for x in range(sq):
@@ -78,12 +78,16 @@ def build_og():
     mask = Image.new("L", (sq, sq), 0)
     ImageDraw.Draw(mask).rounded_rectangle([0, 0, sq - 1, sq - 1], radius=15, fill=255)
     img.paste(grad, (gx, gy), mask)
-    d.text((gx + sq // 2, gy + sq // 2), "G2K", font=font(bd, 24), fill="#FFFFFF", anchor="mm")
+    f = sq / 32.0
+    star_vb = [(16,3.5),(18,13.5),(28.5,16),(18,18.5),(16,28.5),(14,18.5),(3.5,16),(14,13.5)]
+    d.polygon([(gx + x*f, gy + y*f) for (x, y) in star_vb], fill="#FFFFFF")
+    r = 1.7*f; cxx, cyy = gx+23.5*f, gy+9*f
+    d.ellipse([cxx-r, cyy-r, cxx+r, cyy+r], fill="#FFFFFF")
     d.text((gx + sq + 20, 82), SITE, font=f_brand, fill="#16181F")
     d.text((80, 200), "필요한 도구,", font=f_title, fill="#16181F")
-    d.text((80, 310), "바로 여기", font=f_title, fill="#5B5BF5")
+    d.text((80, 310), "바로 여기", font=f_title, fill="#1AA3E0")
     d.text((80, 450), "글자수 · 날짜 · QR · 비밀번호 · 단위 · 색상 · 이미지 · 텍스트", font=f_sub, fill="#6B7280")
-    d.text((80, 540), "gemini2k.co.kr", font=f_url, fill="#5B5BF5")
+    d.text((80, 540), "gemini2k.co.kr", font=f_url, fill="#1AA3E0")
     img.save(os.path.join(HERE, "og.png"))
 
 if __name__ == "__main__":
