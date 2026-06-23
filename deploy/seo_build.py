@@ -79,10 +79,9 @@ def build_og():
     ImageDraw.Draw(mask).rounded_rectangle([0, 0, sq - 1, sq - 1], radius=15, fill=255)
     img.paste(grad, (gx, gy), mask)
     f = sq / 32.0
-    star_vb = [(16,3.5),(18,13.5),(28.5,16),(18,18.5),(16,28.5),(14,18.5),(3.5,16),(14,13.5)]
-    d.polygon([(gx + x*f, gy + y*f) for (x, y) in star_vb], fill="#FFFFFF")
-    r = 1.7*f; cxx, cyy = gx+23.5*f, gy+9*f
-    d.ellipse([cxx-r, cyy-r, cxx+r, cyy+r], fill="#FFFFFF")
+    spark = [(25.5,3.6),(26.5,6.5),(29.4,7.5),(26.5,8.5),(25.5,11.4),(24.5,8.5),(21.6,7.5),(24.5,6.5)]
+    d.polygon([(gx + x*f, gy + y*f) for (x, y) in spark], fill="#FFFFFF")
+    d.text((gx + 15.5*f, gy + 18*f), "G2K", font=font(bd, 26), fill="#FFFFFF", anchor="mm")
     d.text((gx + sq + 20, 82), SITE, font=f_brand, fill="#16181F")
     d.text((80, 200), "필요한 도구,", font=f_title, fill="#16181F")
     d.text((80, 310), "바로 여기", font=f_title, fill="#1AA3E0")
