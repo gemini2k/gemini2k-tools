@@ -67,9 +67,19 @@ def build_og():
         except Exception: return ImageFont.load_default()
     bd = "C:/Windows/Fonts/malgunbd.ttf"; rg = "C:/Windows/Fonts/malgun.ttf"
     f_brand = font(bd, 40); f_title = font(bd, 92); f_sub = font(rg, 40); f_url = font(bd, 36)
-    # 인디고 사각 마크 + 브랜드 텍스트 (이모지는 맑은고딕에 없어 두부됨 → 직접 그림)
-    d.rounded_rectangle([80, 78, 128, 126], radius=12, fill="#5B5BF5")
-    d.text((148, 80), SITE, font=f_brand, fill="#16181F")
+    # G2K 그라데이션 마크 (파랑→인디고) + 브랜드 텍스트
+    sq, gx, gy = 60, 80, 74
+    c1, c2 = (61, 110, 232), (110, 84, 240)
+    grad = Image.new("RGB", (sq, sq))
+    for y in range(sq):
+        for x in range(sq):
+            tt = (x + y) / (2 * sq)
+            grad.putpixel((x, y), tuple(int(c1[i] + (c2[i] - c1[i]) * tt) for i in range(3)))
+    mask = Image.new("L", (sq, sq), 0)
+    ImageDraw.Draw(mask).rounded_rectangle([0, 0, sq - 1, sq - 1], radius=15, fill=255)
+    img.paste(grad, (gx, gy), mask)
+    d.text((gx + sq // 2, gy + sq // 2), "G2K", font=font(bd, 24), fill="#FFFFFF", anchor="mm")
+    d.text((gx + sq + 20, 82), SITE, font=f_brand, fill="#16181F")
     d.text((80, 200), "필요한 도구,", font=f_title, fill="#16181F")
     d.text((80, 310), "바로 여기", font=f_title, fill="#5B5BF5")
     d.text((80, 450), "글자수 · 날짜 · QR · 비밀번호 · 단위 · 색상 · 이미지 · 텍스트", font=f_sub, fill="#6B7280")

@@ -24,8 +24,8 @@ button{font-family:inherit;cursor:pointer;}
   border-bottom:1px solid var(--border);}
 .top-in{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.8rem 1.4rem;}
 .logo{display:flex;align-items:center;gap:.5rem;font-weight:800;font-size:1.12rem;letter-spacing:-.03em;}
-.logo .mk{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:#fff;
-  background:linear-gradient(135deg,var(--accent),#8B5CF6);font-size:.9rem;}
+.logo .mk{width:30px;height:26px;border-radius:8px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(135deg,#3D6EE8,#6E54F0);font-size:.62rem;font-weight:800;letter-spacing:-.02em;}
 .top nav{margin-left:auto;display:flex;gap:.9rem;align-items:center;font-size:.92rem;color:var(--muted);font-weight:500;}
 .top nav a{white-space:nowrap;flex-shrink:0;}
 .top nav a:hover{color:var(--text);}
