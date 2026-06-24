@@ -307,10 +307,10 @@
   });
 
   // 시작 예시 — 도형·직각·점선·라벨 데모
-  nodes=[ {id:seq++,x:170,y:100,text:T('dg.start'),color:COLORS[1],shape:'ellipse'},
+  nodes=[ {id:seq++,x:170,y:90,text:T('dg.start'),color:COLORS[1],shape:'ellipse'},
           {id:seq++,x:170,y:250,text:T('dg.process'),color:COLORS[0],shape:'round'},
-          {id:seq++,x:470,y:250,text:T('dg.decision'),color:COLORS[2],shape:'diamond'},
-          {id:seq++,x:470,y:410,text:T('dg.box'),color:COLORS[0],shape:'round'} ];
+          {id:seq++,x:500,y:360,text:T('dg.decision'),color:COLORS[2],shape:'diamond'},
+          {id:seq++,x:500,y:490,text:T('dg.box'),color:COLORS[0],shape:'round'} ];
   edges=[ {id:eseq++,a:1,b:2,line:'solid',arrow:'end',route:'straight',label:''},
           {id:eseq++,a:2,b:3,line:'solid',arrow:'end',route:'ortho',label:''},
           {id:eseq++,a:3,b:4,line:'dashed',arrow:'end',route:'straight',label:T('dg.yes')} ];
