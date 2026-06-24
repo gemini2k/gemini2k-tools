@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>CSV → 지도·GeoJSON 변환기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="위경도(또는 UTM-K·중부원점 등 한국 좌표계) 좌표가 든 CSV를 지도 위 마커로 시각화하고 GeoJSON으로 내보내는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/csvmap.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="CSV → 지도·GeoJSON 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="위경도(또는 UTM-K·중부원점 등 한국 좌표계) 좌표가 든 CSV를 지도 위 마커로 시각화하고 GeoJSON으로 내보내는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<meta property="og:url" content="https://gemini2k.co.kr/csvmap.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="CSV → 지도·GeoJSON 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="위경도(또는 UTM-K·중부원점 등 한국 좌표계) 좌표가 든 CSV를 지도 위 마커로 시각화하고 GeoJSON으로 내보내는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="/vendor/ol-7.5.2/ol.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<script src="/vendor/proj4-2.15.0/proj4.js"></script>
+<script src="/vendor/ol-7.5.2/ol.js"></script>
+<style>
+  #cin{ width:100%; min-height:120px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.85rem; line-height:1.55; }
+  .ctrls{ display:flex; flex-wrap:wrap; gap:.6rem; align-items:flex-end; margin-top:.8rem; }
+  .ctrls .fld{ display:flex; flex-direction:column; gap:.25rem; }
+  .ctrls label{ font-size:.78rem; font-weight:700; color:var(--muted); }
+  .ctrls select{ width:auto; min-width:120px; padding:.5rem .6rem; }
+  #cmap{ width:100%; height:420px; border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-top:1rem; }
+  #cmap .ol-viewport, #cmap .ol-viewport canvas{ cursor:grab; }
+  #cmap .ol-viewport:active, #cmap .ol-viewport:active canvas{ cursor:grabbing; }
+  .stats{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
+  .stat{ background:#fafbff; border:1px solid var(--border); border-radius:10px; padding:.5rem .8rem; font-size:.85rem; }
+  .stat b{ color:var(--accent); }
+  .err{ color:#c0392b; font-size:.88rem; margin-top:.5rem; min-height:1.2em; }
+  .ol-popup{ position:absolute; background:#fff; border:1px solid var(--border); border-radius:10px; padding:.6rem .8rem; font-size:.82rem; box-shadow:0 6px 20px rgba(0,0,0,.15); max-width:280px; max-height:200px; overflow:auto; transform:translate(-50%,-100%); margin-top:-12px; pointer-events:auto; }
+  .ol-popup table{ border-collapse:collapse; }
+  .ol-popup td{ padding:1px 6px 1px 0; vertical-align:top; }
+  .ol-popup td:first-child{ color:var(--muted); font-weight:600; white-space:nowrap; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap" style="max-width:1100px;">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.csvmap.t">CSV → 지도·GeoJSON</h1>
+  <p class="sub" data-i18n="cm.sub">위경도(또는 한국 좌표계) 좌표가 든 CSV를 붙여넣으면 지도 위 마커로 시각화하고 GeoJSON으로 내보냅니다.</p>
+
+  <div class="card">
+    <textarea id="cin" data-i18n-ph="cm.ph" placeholder="CSV/TSV 를 붙여넣으세요. 첫 줄은 헤더…&#10;예)&#10;name,lat,lng&#10;서울시청,37.5663,126.9779&#10;부산시청,35.1796,129.0756"></textarea>
+    <div class="row" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem;">
+      <button class="btn btn-ghost" id="fileBtn" data-i18n="cm.file">파일 선택</button>
+      <input type="file" id="file" accept=".csv,.tsv,.txt" style="display:none"/>
+      <button class="btn btn-ghost" id="sampleBtn" data-i18n="cm.sample">예시</button>
+      <button class="btn btn-ghost" id="clearBtn" data-i18n="cm.clear">지우기</button>
+    </div>
+
+    <div class="ctrls">
+      <div class="fld"><label data-i18n="cm.crs">좌표계</label>
+        <select id="crs">
+          <option value="EPSG:4326">WGS84 경위도 (lon/lat)</option>
+          <option value="EPSG:5179">UTM-K (EPSG:5179)</option>
+          <option value="EPSG:5186">중부원점 (EPSG:5186)</option>
+          <option value="EPSG:5187">동부원점 (EPSG:5187)</option>
+          <option value="EPSG:5185">서부원점 (EPSG:5185)</option>
+          <option value="EPSG:3857">웹 메르카토르 (EPSG:3857)</option>
+        </select>
+      </div>
+      <div class="fld"><label><span data-i18n="cm.xcol">X (경도/E)</span></label><select id="xcol"></select></div>
+      <div class="fld"><label><span data-i18n="cm.ycol">Y (위도/N)</span></label><select id="ycol"></select></div>
+      <button class="btn" id="renderBtn" data-i18n="cm.render">지도에 표시</button>
+    </div>
+    <div class="err" id="err"></div>
+    <div class="stats" id="stats"></div>
+
+    <div id="cmap"></div>
+    <div id="popup" class="ol-popup" style="display:none"></div>
+
+    <div class="row" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem;">
+      <button class="btn" id="dlBtn" data-i18n="cm.download" disabled>GeoJSON 내려받기</button>
+      <button class="btn btn-ghost" id="copyBtn" data-i18n="cm.copy" disabled>GeoJSON 복사</button>
+    </div>
+    <p class="hint" data-i18n="cm.note">※ 좌표계가 경위도가 아니면 proj4로 WGS84로 변환해 표시·저장합니다. 점을 클릭하면 속성이 보입니다. 모든 처리는 브라우저에서만 이루어집니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function $(id){ return document.getElementById(id); }
+  function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+
+  // 한국 좌표계 proj4 정의 (GRS80)
+  proj4.defs('EPSG:5179','+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs');
+  proj4.defs('EPSG:5186','+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs');
+  proj4.defs('EPSG:5187','+proj=tmerc +lat_0=38 +lon_0=129 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs');
+  proj4.defs('EPSG:5185','+proj=tmerc +lat_0=38 +lon_0=125 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs');
+
+  var DATA=null, GEOJSON=null;
+
+  function parseCSV(text, delim){
+    var rows=[],row=[],field='',i=0,inQ=false,n=text.length;
+    if(text.charCodeAt(0)===0xFEFF) i=1;
+    while(i<n){var c=text[i];
+      if(inQ){ if(c==='"'){ if(text[i+1]==='"'){field+='"';i+=2;continue;} inQ=false;i++;continue; } field+=c;i++;continue; }
+      if(c==='"'){inQ=true;i++;continue;}
+      if(c===delim){row.push(field);field='';i++;continue;}
+      if(c==='\r'){ if(text[i+1]==='\n')i++; row.push(field);rows.push(row);row=[];field='';i++;continue; }
+      if(c==='\n'){row.push(field);rows.push(row);row=[];field='';i++;continue;}
+      field+=c;i++;
+    }
+    row.push(field);rows.push(row);
+    if(rows.length && rows[rows.length-1].length===1 && rows[rows.length-1][0]==='') rows.pop();
+    return rows;
+  }
+  function detectDelim(text){ var l=(text.split(/\r?\n/)[0]||''); return (l.match(/\t/g)||[]).length>(l.match(/,/g)||[]).length?'\t':','; }
+
+  function loadCSV(text){
+    $('err').textContent='';
+    var grid=parseCSV(text, detectDelim(text));
+    if(grid.length<2){ $('err').textContent=T('cm.e.rows'); return; }
+    var headers=grid[0].map(function(h,i){ h=String(h).trim(); return h||('열'+(i+1)); });
+    var rows=[];
+    for(var r=1;r<grid.length;r++){ var g=grid[r]; if(g.length===1&&g[0]==='')continue; var o={}; for(var j=0;j<headers.length;j++)o[headers[j]]=g[j]!==undefined?g[j]:''; rows.push(o); }
+    DATA={headers:headers, rows:rows};
+    // 컬럼 셀렉트 채우기
+    var opt=headers.map(function(h){ return '<option value="'+h.replace(/"/g,'&quot;')+'">'+h+'</option>'; }).join('');
+    $('xcol').innerHTML=opt; $('ycol').innerHTML=opt;
+    // 자동 감지
+    var lat=headers.find(function(h){return /^(lat|latitude|위도|y|y좌표|ycoord|north|n)$/i.test(h.trim());});
+    var lng=headers.find(function(h){return /^(lng|lon|long|longitude|경도|x|x좌표|xcoord|east|e)$/i.test(h.trim());});
+    if(lng) $('xcol').value=lng; if(lat) $('ycol').value=lat;
+    render();
+  }
+
+  // ── 지도 ──
+  var src=new ol.source.Vector();
+  var layer=new ol.layer.Vector({ source:src, style:new ol.style.Style({
+    image:new ol.style.Circle({radius:5,fill:new ol.style.Fill({color:'#5B5BF5'}),stroke:new ol.style.Stroke({color:'#fff',width:1.5})}) }) });
+  var popup=new ol.Overlay({ element:$('popup'), autoPan:{animation:{duration:200}} });
+  var cmap=new ol.Map({ target:'cmap',
+    layers:[ new ol.layer.Tile({source:new ol.source.OSM()}), layer ],
+    overlays:[popup],
+    view:new ol.View({ center:ol.proj.fromLonLat([127.6,36.3]), zoom:6 }),
+    controls:[ new ol.control.Zoom(), new ol.control.Attribution({collapsible:true}) ] });
+
+  cmap.on('singleclick', function(evt){
+    var feat=cmap.forEachFeatureAtPixel(evt.pixel, function(f){return f;});
+    if(!feat){ $('popup').style.display='none'; return; }
+    var props=feat.get('props')||{};
+    var rows=Object.keys(props).map(function(k){ return '<tr><td>'+escapeHtml(k)+'</td><td>'+escapeHtml(String(props[k]))+'</td></tr>'; }).join('');
+    $('popup').innerHTML='<table>'+rows+'</table>';
+    $('popup').style.display='block';
+    popup.setPosition(feat.getGeometry().getCoordinates());
+  });
+  function escapeHtml(s){return s.replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+  function render(){
+    $('err').textContent=''; $('popup').style.display='none';
+    if(!DATA){ return; }
+    var crs=$('crs').value, xcol=$('xcol').value, ycol=$('ycol').value;
+    if(!xcol||!ycol){ $('err').textContent=T('cm.e.cols'); return; }
+    src.clear();
+    var feats=[], gjFeats=[], skipped=0;
+    DATA.rows.forEach(function(row){
+      var xs=String(row[xcol]).trim(), ys=String(row[ycol]).trim();
+      var x=Number(xs), y=Number(ys);
+      if(xs===''||ys===''||isNaN(x)||isNaN(y)){ skipped++; return; }
+      var lon, lat;
+      try{
+        if(crs==='EPSG:4326'){ lon=x; lat=y; }
+        else { var ll=proj4(crs,'EPSG:4326',[x,y]); lon=ll[0]; lat=ll[1]; }
+      }catch(e){ skipped++; return; }
+      if(!isFinite(lon)||!isFinite(lat)||Math.abs(lat)>90||Math.abs(lon)>180){ skipped++; return; }
+      var f=new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([lon,lat])));
+      f.set('props', row);
+      feats.push(f);
+      gjFeats.push({type:'Feature', properties:row, geometry:{type:'Point', coordinates:[+lon.toFixed(8), +lat.toFixed(8)]}});
+    });
+    src.addFeatures(feats);
+    GEOJSON={type:'FeatureCollection', features:gjFeats};
+    $('dlBtn').disabled=feats.length===0; $('copyBtn').disabled=feats.length===0;
+    // stats
+    var st=[['cm.s.total', DATA.rows.length.toLocaleString()],['cm.s.mapped', feats.length.toLocaleString()]];
+    if(skipped) st.push(['cm.s.skipped', skipped.toLocaleString()]);
+    $('stats').innerHTML=st.map(function(s){return '<span class="stat">'+T(s[0])+' <b>'+s[1]+'</b></span>';}).join('');
+    if(feats.length){ var ext=src.getExtent(); if(isFinite(ext[0])) cmap.getView().fit(ext,{padding:[40,40,40,40],maxZoom:16,duration:300}); }
+    else $('err').textContent=T('cm.e.none');
+  }
+
+  function download(name,content,type){ var b=new Blob([content],{type:type||'text/plain;charset=utf-8'}); var u=URL.createObjectURL(b); var a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(u);a.remove();},100); }
+
+  $('renderBtn').addEventListener('click', render);
+  $('crs').addEventListener('change', function(){ if(DATA) render(); });
+  $('fileBtn').addEventListener('click', function(){ $('file').click(); });
+  $('file').addEventListener('change', function(e){ var f=e.target.files[0]; if(!f)return; var rd=new FileReader(); rd.onload=function(){ $('cin').value=rd.result; loadCSV(rd.result); }; rd.readAsText(f); });
+  $('sampleBtn').addEventListener('click', function(){ $('cin').value='name,lat,lng\n서울시청,37.5663,126.9779\n부산시청,35.1796,129.0756\n대전시청,36.3504,127.3845\n광주시청,35.1595,126.8526\n제주도청,33.4890,126.4983'; loadCSV($('cin').value); });
+  $('clearBtn').addEventListener('click', function(){ $('cin').value=''; DATA=null; GEOJSON=null; src.clear(); $('stats').innerHTML=''; $('err').textContent=''; $('xcol').innerHTML=''; $('ycol').innerHTML=''; $('dlBtn').disabled=true; $('copyBtn').disabled=true; $('popup').style.display='none'; $('cin').focus(); });
+  $('dlBtn').addEventListener('click', function(){ if(GEOJSON) download('points.geojson', JSON.stringify(GEOJSON), 'application/geo+json'); });
+  $('copyBtn').addEventListener('click', function(){ if(GEOJSON&&navigator.clipboard) navigator.clipboard.writeText(JSON.stringify(GEOJSON,null,2)).then(function(){toast(T('toast.copied'));}); });
+  $('cin').addEventListener('blur', function(){ if($('cin').value.trim()) loadCSV($('cin').value); });
+</script>
+</body>
+</html>
