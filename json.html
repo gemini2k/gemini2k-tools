@@ -25,7 +25,9 @@
 <script src="i18n.js"></script>
 <style>
   #input, #output{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.9rem; min-height:200px; line-height:1.5; }
-  .stat{ font-weight:700; margin:.7rem 0 0; }
+  .stat{ font-weight:700; margin:.8rem 0 0; min-height:1.4em; font-size:.95rem; }
+  .stat.ok{ display:inline-block; color:#0a7d52; background:#e7f7ef; border:1px solid #b6e7d2; padding:.45rem .8rem; border-radius:9px; }
+  .stat.err{ display:inline-block; color:#c4322f; background:#fdeceb; border:1px solid #f6c9c6; padding:.45rem .8rem; border-radius:9px; }
   .opts{ display:flex; gap:1rem; align-items:center; flex-wrap:wrap; margin-top:1rem; }
   .opts label{ margin:0; font-weight:500; color:var(--text); }
 </style>
@@ -85,7 +87,7 @@
 <script>
   function T(k){ return window.t ? window.t(k) : k; }
   function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1700);}
-  var input=document.getElementById('input'), output=document.getElementById('output'), status=document.getElementById('status'),
+  var input=document.getElementById('input'), output=document.getElementById('output'), statusEl=document.getElementById('status'),
       indentSel=document.getElementById('indent'), sortChk=document.getElementById('sort');
   var lastMin=false;
   function sortDeep(v){
@@ -95,8 +97,8 @@
   }
   function indentVal(){ var s=indentSel.value; return s==='tab' ? '\t' : parseInt(s,10); }
   function setStatus(kind, msg){
-    status.textContent = msg;
-    status.style.color = kind==='ok' ? '#0EA46A' : kind==='err' ? '#E5484D' : 'var(--muted)';
+    statusEl.textContent = msg;
+    statusEl.className = 'stat' + (kind ? ' '+kind : '');
   }
   function validate(){
     var t=input.value.trim();
@@ -113,7 +115,7 @@
     output.value = min ? JSON.stringify(v) : JSON.stringify(v, null, indentVal());
     setStatus('ok', T('jn.valid'));
   }
-  input.addEventListener('input', validate);
+  input.addEventListener('input', function(){ run(lastMin); });
   document.getElementById('format').addEventListener('click', function(){ run(false); });
   document.getElementById('min').addEventListener('click', function(){ run(true); });
   indentSel.addEventListener('change', function(){ if(output.value) run(lastMin); });
