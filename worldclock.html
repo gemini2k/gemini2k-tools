@@ -84,7 +84,36 @@
   var ALL=[]; try{ if(Intl.supportedValuesOf) ALL=Intl.supportedValuesOf('timeZone'); }catch(e){}
   if(!ALL.length) ALL=DEFAULT.concat(['Asia/Hong_Kong','Asia/Taipei','Asia/Kolkata','Asia/Dubai','Asia/Bangkok','Europe/Berlin','Europe/Moscow','America/Chicago','America/Sao_Paulo','Australia/Sydney','Pacific/Auckland','UTC']);
 
-  function cityName(tz){ return tz.split('/').pop().replace(/_/g,' '); }
+  var CITY={
+    'Asia/Seoul':{ko:'서울',en:'Seoul',zh:'首尔',ja:'ソウル'},
+    'Asia/Pyongyang':{ko:'평양',en:'Pyongyang',zh:'平壤',ja:'平壌'},
+    'Asia/Tokyo':{ko:'도쿄',en:'Tokyo',zh:'东京',ja:'東京'},
+    'Asia/Shanghai':{ko:'상하이',en:'Shanghai',zh:'上海',ja:'上海'},
+    'Asia/Hong_Kong':{ko:'홍콩',en:'Hong Kong',zh:'香港',ja:'香港'},
+    'Asia/Taipei':{ko:'타이베이',en:'Taipei',zh:'台北',ja:'台北'},
+    'Asia/Singapore':{ko:'싱가포르',en:'Singapore',zh:'新加坡',ja:'シンガポール'},
+    'Asia/Bangkok':{ko:'방콕',en:'Bangkok',zh:'曼谷',ja:'バンコク'},
+    'Asia/Ho_Chi_Minh':{ko:'호치민',en:'Ho Chi Minh',zh:'胡志明市',ja:'ホーチミン'},
+    'Asia/Jakarta':{ko:'자카르타',en:'Jakarta',zh:'雅加达',ja:'ジャカルタ'},
+    'Asia/Manila':{ko:'마닐라',en:'Manila',zh:'马尼拉',ja:'マニラ'},
+    'Asia/Kolkata':{ko:'인도(콜카타)',en:'India (Kolkata)',zh:'印度(加尔各答)',ja:'インド(コルカタ)'},
+    'Asia/Dubai':{ko:'두바이',en:'Dubai',zh:'迪拜',ja:'ドバイ'},
+    'Europe/London':{ko:'런던',en:'London',zh:'伦敦',ja:'ロンドン'},
+    'Europe/Paris':{ko:'파리',en:'Paris',zh:'巴黎',ja:'パリ'},
+    'Europe/Berlin':{ko:'베를린',en:'Berlin',zh:'柏林',ja:'ベルリン'},
+    'Europe/Madrid':{ko:'마드리드',en:'Madrid',zh:'马德里',ja:'マドリード'},
+    'Europe/Rome':{ko:'로마',en:'Rome',zh:'罗马',ja:'ローマ'},
+    'Europe/Moscow':{ko:'모스크바',en:'Moscow',zh:'莫斯科',ja:'モスクワ'},
+    'America/New_York':{ko:'뉴욕',en:'New York',zh:'纽约',ja:'ニューヨーク'},
+    'America/Chicago':{ko:'시카고',en:'Chicago',zh:'芝加哥',ja:'シカゴ'},
+    'America/Los_Angeles':{ko:'로스앤젤레스',en:'Los Angeles',zh:'洛杉矶',ja:'ロサンゼルス'},
+    'America/Toronto':{ko:'토론토',en:'Toronto',zh:'多伦多',ja:'トロント'},
+    'America/Sao_Paulo':{ko:'상파울루',en:'São Paulo',zh:'圣保罗',ja:'サンパウロ'},
+    'Australia/Sydney':{ko:'시드니',en:'Sydney',zh:'悉尼',ja:'シドニー'},
+    'Pacific/Auckland':{ko:'오클랜드',en:'Auckland',zh:'奥克兰',ja:'オークランド'},
+    'UTC':{ko:'협정세계시 UTC',en:'UTC',zh:'协调世界时 UTC',ja:'協定世界時 UTC'}
+  };
+  function cityName(tz){ var l=(window.curLang?window.curLang():'ko'), m=CITY[tz]; return m?(m[l]||m.en):tz.split('/').pop().replace(/_/g,' '); }
   function localeOf(){ var l=(window.curLang?window.curLang():'ko'); return l==='zh'?'zh-CN':l==='ja'?'ja':l==='en'?'en-US':'ko-KR'; }
   function tzOffsetMin(date,tz){ var s=new Date(date.toLocaleString('en-US',{timeZone:tz})), u=new Date(date.toLocaleString('en-US',{timeZone:'UTC'})); return Math.round((s-u)/60000); }
   function gmt(min){ var sign=min<0?'-':'+', a=Math.abs(min); return 'GMT'+sign+Math.floor(a/60)+(a%60?(':'+('0'+(a%60)).slice(-2)):''); }
@@ -123,7 +152,7 @@
   document.getElementById('add').addEventListener('click', function(){ var tz=addsel.value; if(tz && zones.indexOf(tz)<0){ zones.push(tz); save(); fillSelect(refzone, zones, refzone.value); render(); } });
   customEl.addEventListener('change', render);
   [refdate,reftime,refzone].forEach(function(el){ el.addEventListener('input', render); });
-  window.onI18n = render;
+  window.onI18n = function(){ fillSelect(addsel, ALL, addsel.value); fillSelect(refzone, zones, refzone.value); render(); };
 
   fillSelect(addsel, ALL, 'Asia/Seoul');
   fillSelect(refzone, zones, zones[0]);
