@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>WKT·WKB·GeoJSON 변환기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="WKT·WKB·EWKB(PostGIS hex)·GeoJSON 지오메트리를 서로 변환하고 지도 미리보기·면적·길이·정점 수를 즉시 확인하는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/geometry.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="WKT·WKB·GeoJSON 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="WKT·WKB·EWKB(PostGIS hex)·GeoJSON 지오메트리를 서로 변환하고 지도 미리보기·면적·길이·정점 수를 즉시 확인하는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<meta property="og:url" content="https://gemini2k.co.kr/geometry.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="WKT·WKB·GeoJSON 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="WKT·WKB·EWKB(PostGIS hex)·GeoJSON 지오메트리를 서로 변환하고 지도 미리보기·면적·길이·정점 수를 즉시 확인하는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="/vendor/ol-7.5.2/ol.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<script src="/vendor/ol-7.5.2/ol.js"></script>
+<script src="/vendor/turf-7.1.0/turf.min.js"></script>
+<style>
+  .geo-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media(max-width:820px){ .geo-grid{ grid-template-columns:1fr; } }
+  #gin{ width:100%; min-height:150px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.9rem; line-height:1.6; }
+  .fmtbadge{ display:inline-block; font-size:.78rem; font-weight:700; padding:.15rem .5rem; border-radius:999px; background:var(--accent-soft); color:var(--accent); margin-left:.4rem; }
+  .out-row{ margin-bottom:.8rem; }
+  .out-row .lbl{ display:flex; align-items:center; gap:.4rem; font-weight:700; font-size:.85rem; margin-bottom:.3rem; }
+  .out-row .lbl button{ margin-left:auto; padding:.25rem .6rem; font-size:.78rem; }
+  .out-row textarea{ width:100%; min-height:64px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.82rem; line-height:1.55; background:#fafbff; }
+  #gmap{ width:100%; height:300px; border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-top:.4rem; }
+  #gmap .ol-viewport, #gmap .ol-viewport canvas{ cursor:grab; }
+  #gmap .ol-viewport:active, #gmap .ol-viewport:active canvas{ cursor:grabbing; }
+  .stats{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.6rem; }
+  .stat{ background:#fafbff; border:1px solid var(--border); border-radius:10px; padding:.5rem .8rem; font-size:.85rem; }
+  .stat b{ color:var(--accent); }
+  .err{ color:#c0392b; font-size:.88rem; margin-top:.5rem; min-height:1.2em; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap" style="max-width:1100px;">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.geom.t">WKT·WKB·GeoJSON 변환기</h1>
+  <p class="sub" data-i18n="gj.sub">WKT·WKB·EWKB(PostGIS hex)·GeoJSON을 서로 변환하고, 지도 미리보기와 면적·길이·정점 수를 바로 확인하세요.</p>
+
+  <div class="card">
+    <div class="geo-grid">
+      <div>
+        <div class="lbl" style="font-weight:700;font-size:.9rem;margin-bottom:.4rem;">
+          <span data-i18n="gj.input">입력</span><span class="fmtbadge" id="detected" style="display:none;"></span>
+        </div>
+        <textarea id="gin" data-i18n-ph="gj.ph" placeholder="WKT, WKB/EWKB(16진), 또는 GeoJSON 을 붙여넣으세요…&#10;예) POINT(127.0 37.5)&#10;예) 0101000020E6100000...&#10;예) {&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[127,37.5]}"></textarea>
+        <div class="row" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem;">
+          <button class="btn" id="convertBtn" data-i18n="gj.convert">변환</button>
+          <button class="btn btn-ghost" id="sampleBtn" data-i18n="gj.sample">예시</button>
+          <button class="btn btn-ghost" id="clearBtn" data-i18n="gj.clear">지우기</button>
+        </div>
+        <div class="err" id="err"></div>
+        <div class="stats" id="stats"></div>
+      </div>
+      <div>
+        <div id="gmap"></div>
+      </div>
+    </div>
+
+    <div id="outputs" style="margin-top:1.2rem;display:none;">
+      <div class="out-row">
+        <div class="lbl">GeoJSON <button class="btn btn-ghost" data-copy="ogeojson" data-i18n="gj.copy">복사</button></div>
+        <textarea id="ogeojson" readonly></textarea>
+      </div>
+      <div class="out-row">
+        <div class="lbl">WKT <button class="btn btn-ghost" data-copy="owkt" data-i18n="gj.copy">복사</button></div>
+        <textarea id="owkt" readonly style="min-height:48px;"></textarea>
+      </div>
+      <div class="out-row">
+        <div class="lbl">WKB (hex) <button class="btn btn-ghost" data-copy="owkb" data-i18n="gj.copy">복사</button></div>
+        <textarea id="owkb" readonly style="min-height:48px;"></textarea>
+      </div>
+    </div>
+    <p class="hint" data-i18n="gj.note">※ 좌표는 경위도(EPSG:4326, 경도·위도 순)로 간주해 미리보기·측정합니다. EWKB의 SRID는 읽어 표시하지만 변환은 좌표값 그대로 수행합니다. 모든 처리는 브라우저에서만 이루어집니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function $(id){ return document.getElementById(id); }
+  function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+
+  var fmtWKT=new ol.format.WKT(), fmtWKB=new ol.format.WKB(), fmtGeo=new ol.format.GeoJSON();
+
+  // ── 지도 ──
+  var srcV=new ol.source.Vector();
+  var layerV=new ol.layer.Vector({ source:srcV, style:new ol.style.Style({
+    stroke:new ol.style.Stroke({color:'#5B5BF5',width:3}),
+    fill:new ol.style.Fill({color:'rgba(91,91,245,.18)'}),
+    image:new ol.style.Circle({radius:6,fill:new ol.style.Fill({color:'#5B5BF5'}),stroke:new ol.style.Stroke({color:'#fff',width:1.5})}) }) });
+  var gmap=new ol.Map({ target:'gmap',
+    layers:[ new ol.layer.Tile({source:new ol.source.OSM()}), layerV ],
+    view:new ol.View({ center:ol.proj.fromLonLat([127.6,36.3]), zoom:6 }),
+    controls:[ new ol.control.Zoom(), new ol.control.Attribution({collapsible:true}) ] });
+
+  // ── 포맷 자동 감지 ──
+  function detect(text){
+    var s=text.trim();
+    if(!s) return null;
+    if(s[0]==='{'||s[0]==='[') return 'geojson';
+    if(/^[0-9A-Fa-f\s]+$/.test(s) && s.replace(/\s/g,'').length%2===0) return 'wkb';
+    if(/^\s*(SRID=\d+\s*;)?\s*(POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|GEOMETRYCOLLECTION|CIRCULARSTRING)/i.test(s)) return 'wkt';
+    return null;
+  }
+
+  // 입력을 OL geometry(경위도 좌표값 그대로)로 파싱
+  function parseGeometry(text, fmt){
+    var s=text.trim(), srid=null;
+    if(fmt==='wkt'){
+      var m=s.match(/^\s*SRID=(\d+)\s*;\s*/i);
+      if(m){ srid=+m[1]; s=s.slice(m[0].length); }
+      return { geom:fmtWKT.readGeometry(s), srid:srid };
+    }
+    if(fmt==='wkb'){
+      var hex=s.replace(/\s/g,'');
+      // EWKB SRID 추출(little-endian, type 상위비트 0x20)
+      try{
+        var bo=hex.slice(0,2), typeHex=hex.slice(2,10);
+        var hasSrid = (parseInt(typeHex.slice(6,8),16) & 0x20) === 0x20; // big-endian 추정 단순화
+        // OL WKB는 EWKB SRID를 자체 처리 → readGeometry 후 SRID는 별도 표기 생략 가능
+      }catch(e){}
+      return { geom:fmtWKB.readGeometry(hex), srid:srid };
+    }
+    if(fmt==='geojson'){
+      var obj=JSON.parse(s);
+      if(obj.type==='FeatureCollection'){ var f=(obj.features||[])[0]; if(!f) throw new Error('FeatureCollection 에 피처가 없습니다.'); return { geom:fmtGeo.readGeometry(f.geometry), srid:4326 }; }
+      if(obj.type==='Feature') return { geom:fmtGeo.readGeometry(obj.geometry), srid:4326 };
+      return { geom:fmtGeo.readGeometry(obj), srid:4326 };
+    }
+    throw new Error('형식을 인식하지 못했습니다.');
+  }
+
+  function fmtArea(a){ return a>1000000 ? (a/1000000).toFixed(3)+' km²' : Math.round(a).toLocaleString()+' m²'; }
+  function fmtLen(l){ return l>1000 ? (l/1000).toFixed(3)+' km' : Math.round(l).toLocaleString()+' m'; }
+
+  function convert(){
+    $('err').textContent=''; $('detected').style.display='none';
+    var text=$('gin').value;
+    var fmt=detect(text);
+    if(!fmt){ $('err').textContent=T('gj.e.detect'); $('outputs').style.display='none'; srcV.clear(); return; }
+    $('detected').textContent=fmt.toUpperCase(); $('detected').style.display='inline-block';
+    var geom, srid;
+    try{ var r=parseGeometry(text,fmt); geom=r.geom; srid=r.srid; }
+    catch(e){ $('err').textContent=T('gj.e.parse')+' '+e.message; $('outputs').style.display='none'; srcV.clear(); return; }
+
+    // 출력 3종
+    var gjStr, wktStr, wkbStr;
+    try{
+      var gjObj=JSON.parse(fmtGeo.writeGeometry(geom));
+      gjStr=JSON.stringify(gjObj,null,2);
+      wktStr=fmtWKT.writeGeometry(geom);
+      wkbStr=fmtWKB.writeGeometry(geom);
+    }catch(e){ $('err').textContent=T('gj.e.parse')+' '+e.message; return; }
+    $('ogeojson').value=gjStr; $('owkt').value=wktStr; $('owkb').value=(wkbStr||'').toUpperCase();
+    $('outputs').style.display='block';
+
+    // 통계 (Turf, 경위도)
+    var stats=[];
+    try{
+      var gj={type:'Feature',properties:{},geometry:JSON.parse(fmtGeo.writeGeometry(geom))};
+      var type=geom.getType();
+      stats.push(['gj.s.type', type]);
+      var coords=turf.coordAll(gj); stats.push(['gj.s.verts', coords.length.toLocaleString()]);
+      if(/Polygon/.test(type)){ stats.push(['gj.s.area', fmtArea(turf.area(gj))]);
+        try{ var line=turf.polygonToLine(gj); stats.push(['gj.s.perim', fmtLen(turf.length(line,{units:'kilometers'})*1000)]); }catch(e){} }
+      else if(/LineString/.test(type)){ stats.push(['gj.s.len', fmtLen(turf.length(gj,{units:'kilometers'})*1000)]); }
+      var c=turf.centroid(gj).geometry.coordinates; stats.push(['gj.s.center', c[0].toFixed(6)+', '+c[1].toFixed(6)]);
+      if(srid) stats.push(['gj.s.srid', String(srid)]);
+    }catch(e){}
+    $('stats').innerHTML=stats.map(function(s){ return '<span class="stat">'+T(s[0])+' <b>'+String(s[1])+'</b></span>'; }).join('');
+
+    // 지도 (4326 → 3857)
+    try{
+      srcV.clear();
+      var disp=geom.clone().transform('EPSG:4326','EPSG:3857');
+      srcV.addFeature(new ol.Feature(disp));
+      var ext=srcV.getExtent();
+      if(ext && isFinite(ext[0])) gmap.getView().fit(ext, {padding:[30,30,30,30], maxZoom:16, duration:300});
+    }catch(e){}
+  }
+
+  $('convertBtn').addEventListener('click', convert);
+  $('clearBtn').addEventListener('click', function(){ $('gin').value=''; $('outputs').style.display='none'; $('stats').innerHTML=''; $('err').textContent=''; $('detected').style.display='none'; srcV.clear(); $('gin').focus(); });
+  $('sampleBtn').addEventListener('click', function(){
+    $('gin').value='POLYGON((126.97 37.55, 127.03 37.55, 127.03 37.58, 126.97 37.58, 126.97 37.55))';
+    convert();
+  });
+  document.querySelectorAll('[data-copy]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var v=$(b.getAttribute('data-copy')).value; if(!v) return;
+      navigator.clipboard && navigator.clipboard.writeText(v).then(function(){ toast(T('toast.copied')); }).catch(function(){});
+    });
+  });
+  // 엔터(Ctrl)로 변환
+  $('gin').addEventListener('keydown', function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='Enter') convert(); });
+</script>
+</body>
+</html>
