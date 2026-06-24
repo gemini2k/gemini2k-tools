@@ -98,9 +98,10 @@
     goBtn.disabled=true; var label=goBtn.textContent; goBtn.textContent=T('pdf.processing');
     try{
       var quality = parseInt(qEl.value,10)/100, scale = parseInt(scaleEl.value,10)/100;
+      // ① 래스터화(JPEG 재인코딩) — 스캔·이미지 PDF에 효과적
       var data = new Uint8Array(srcBuf.slice(0));
       var pdf = await pdfjsLib.getDocument({data:data}).promise;
-      var out = await PDFLib.PDFDocument.create();
+      var rout = await PDFLib.PDFDocument.create();
       for(var i=1;i<=pdf.numPages;i++){
         goBtn.textContent = T('pdf.processing') + ' ' + i + '/' + pdf.numPages;
         var page = await pdf.getPage(i);
@@ -110,16 +111,30 @@
         await page.render({canvasContext:ctx, viewport:vp}).promise;
         var dataUrl = cv.toDataURL('image/jpeg', quality);
         var jpg = await (await fetch(dataUrl)).arrayBuffer();
-        var img = await out.embedJpg(jpg);
-        var pg = out.addPage([cv.width, cv.height]);
+        var img = await rout.embedJpg(jpg);
+        var pg = rout.addPage([cv.width, cv.height]);
         pg.drawImage(img, {x:0, y:0, width:cv.width, height:cv.height});
       }
-      var bytes = await out.save();
-      outBlob = new Blob([bytes], {type:'application/pdf'});
-      var pct = origSize ? Math.round((1 - outBlob.size/origSize)*100) : 0;
-      var base = T('pc.result').replace('{a}', kb(origSize)).replace('{b}', kb(outBlob.size));
-      result.textContent = base + (pct>0 ? T('pc.saving').replace('{p}', pct) : ' ' + T('pc.nogain'));
-      resultCard.style.display='';
+      var best = await rout.save();
+      // ② 무손실 재저장(구조 최적화) — 텍스트 PDF에 효과적. 더 작으면 채택
+      try{
+        var ld = await PDFLib.PDFDocument.load(new Uint8Array(srcBuf.slice(0)), {ignoreEncryption:true});
+        var lossless = await ld.save({useObjectStreams:true});
+        if(lossless.length < best.length) best = lossless;
+      }catch(e){}
+      goBtn.textContent=label; goBtn.disabled=false;
+      // ③ 원본보다 작을 때만 결과 제공 — 절대 더 큰 파일을 내주지 않음
+      if(best.length < origSize){
+        outBlob = new Blob([best], {type:'application/pdf'});
+        var pct = Math.round((1 - outBlob.size/origSize)*100);
+        result.textContent = T('pc.result').replace('{a}', kb(origSize)).replace('{b}', kb(outBlob.size)) + T('pc.saving').replace('{p}', pct);
+        dl.style.display=''; resultCard.style.display='';
+      } else {
+        outBlob = null;
+        result.textContent = T('pc.kept').replace('{a}', kb(origSize));
+        dl.style.display='none'; resultCard.style.display='';
+      }
+      return;
     }catch(err){ toast(T('pdf.err')); }
     goBtn.textContent=label; goBtn.disabled=false;
   });

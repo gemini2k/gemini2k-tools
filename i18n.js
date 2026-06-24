@@ -41,7 +41,7 @@ window.I18N = {
     'pm.sub':'여러 PDF를 원하는 순서로 하나로 합칩니다.','pm.pick':'PDF 파일 선택 (여러 개)','pm.empty':'선택된 PDF가 없습니다. (2개 이상 선택하세요)','pm.merge':'📎 PDF 합치기','pm.done':'합치기 완료 — {p}페이지 · {s}',
     'ps.sub':'PDF에서 원하는 페이지만 골라 새 PDF로 추출합니다.','ps.pick':'PDF 파일 선택','ps.empty':'선택된 PDF가 없습니다.','ps.info':'총 {n} 페이지','ps.range':'추출할 페이지','ps.rangeph':'예: 1-3, 5, 8-10','ps.extract':'✂️ 페이지 추출','ps.all':'전체 선택','ps.badrange':'페이지 범위가 올바르지 않습니다.','ps.done':'추출 완료 — {p}페이지 · {s}',
     'ip.sub':'여러 이미지를 원하는 순서로 한 개의 PDF로 만듭니다.','ip.pick':'이미지 선택 (여러 장, JPG·PNG·WebP)','ip.empty':'선택된 이미지가 없습니다.','ip.mode':'페이지 크기','ip.mode.a4':'A4 (이미지를 가운데 맞춤)','ip.mode.fit':'이미지 원본 크기','ip.make':'📄 PDF 만들기','ip.done':'변환 완료 — {p}페이지 · {s}',
-    'pc.sub':'스캔·이미지 PDF의 용량을 줄입니다.','pc.pick':'PDF 파일 선택','pc.empty':'선택된 PDF가 없습니다.','pc.q':'품질','pc.scale':'해상도','pc.warn':'※ 텍스트가 이미지로 변환되어 선택·검색이 불가해집니다. 스캔 문서·이미지 PDF에 적합합니다.','pc.go':'🗜️ 압축하기','pc.orig':'원본: {s}','pc.result':'원본 {a} → 결과 {b}','pc.saving':' ({p}% 절감)','pc.nogain':'(압축 효과 없음)'
+    'pc.sub':'스캔·이미지 PDF의 용량을 줄입니다.','pc.pick':'PDF 파일 선택','pc.empty':'선택된 PDF가 없습니다.','pc.q':'품질','pc.scale':'해상도','pc.warn':'※ 텍스트가 이미지로 변환되어 선택·검색이 불가해집니다. 스캔 문서·이미지 PDF에 적합합니다.','pc.go':'🗜️ 압축하기','pc.orig':'원본: {s}','pc.result':'원본 {a} → 결과 {b}','pc.saving':' ({p}% 절감)','pc.nogain':'(압축 효과 없음)','pc.kept':'이미 최적화된 PDF예요 — 기본값으로는 더 줄지 않습니다. 품질·해상도를 낮추면 줄일 수 있어요. (원본 {a})'
   },
   en: {
     'nav.tools':'All tools', 'nav.blog':'Blog',
@@ -82,7 +82,7 @@ window.I18N = {
     'pm.sub':'Combine several PDFs into one, in the order you choose.','pm.pick':'Choose PDF files (multiple)','pm.empty':'No PDFs selected. (choose 2 or more)','pm.merge':'📎 Merge PDF','pm.done':'Done — {p} pages · {s}',
     'ps.sub':'Pick the pages you want and extract them into a new PDF.','ps.pick':'Choose a PDF file','ps.empty':'No PDF selected.','ps.info':'{n} pages total','ps.range':'Pages to extract','ps.rangeph':'e.g. 1-3, 5, 8-10','ps.extract':'✂️ Extract pages','ps.all':'Select all','ps.badrange':'Invalid page range.','ps.done':'Done — {p} pages · {s}',
     'ip.sub':'Turn several images into a single PDF, in your order.','ip.pick':'Choose images (multiple — JPG · PNG · WebP)','ip.empty':'No images selected.','ip.mode':'Page size','ip.mode.a4':'A4 (image centered)','ip.mode.fit':'Original image size','ip.make':'📄 Create PDF','ip.done':'Done — {p} pages · {s}',
-    'pc.sub':'Reduce the size of scanned or image-heavy PDFs.','pc.pick':'Choose a PDF file','pc.empty':'No PDF selected.','pc.q':'Quality','pc.scale':'Resolution','pc.warn':'※ Text becomes an image (no longer selectable/searchable). Best for scans and image PDFs.','pc.go':'🗜️ Compress','pc.orig':'Original: {s}','pc.result':'Original {a} → Result {b}','pc.saving':' ({p}% smaller)','pc.nogain':'(no size gain)'
+    'pc.sub':'Reduce the size of scanned or image-heavy PDFs.','pc.pick':'Choose a PDF file','pc.empty':'No PDF selected.','pc.q':'Quality','pc.scale':'Resolution','pc.warn':'※ Text becomes an image (no longer selectable/searchable). Best for scans and image PDFs.','pc.go':'🗜️ Compress','pc.orig':'Original: {s}','pc.result':'Original {a} → Result {b}','pc.saving':' ({p}% smaller)','pc.nogain':'(no size gain)','pc.kept':'This PDF is already optimized — defaults won’t shrink it. Lower the quality/resolution to reduce size. (original {a})'
   },
   zh: {
     'nav.tools':'全部工具', 'nav.blog':'博客',
@@ -123,7 +123,7 @@ window.I18N = {
     'pm.sub':'按你选择的顺序，将多个 PDF 合并为一个。','pm.pick':'选择 PDF 文件（多个）','pm.empty':'未选择 PDF。（请选择 2 个以上）','pm.merge':'📎 合并 PDF','pm.done':'完成 — {p} 页 · {s}',
     'ps.sub':'挑选所需页面并提取为新的 PDF。','ps.pick':'选择 PDF 文件','ps.empty':'未选择 PDF。','ps.info':'共 {n} 页','ps.range':'要提取的页面','ps.rangeph':'如：1-3, 5, 8-10','ps.extract':'✂️ 提取页面','ps.all':'全选','ps.badrange':'页面范围无效。','ps.done':'完成 — {p} 页 · {s}',
     'ip.sub':'按你的顺序将多张图片合成一个 PDF。','ip.pick':'选择图片（多张 — JPG · PNG · WebP）','ip.empty':'未选择图片。','ip.mode':'页面尺寸','ip.mode.a4':'A4（图片居中）','ip.mode.fit':'图片原始尺寸','ip.make':'📄 生成 PDF','ip.done':'完成 — {p} 页 · {s}',
-    'pc.sub':'减小扫描或图片型 PDF 的文件大小。','pc.pick':'选择 PDF 文件','pc.empty':'未选择 PDF。','pc.q':'质量','pc.scale':'分辨率','pc.warn':'※ 文本将转为图片（无法选择/搜索）。适用于扫描件和图片 PDF。','pc.go':'🗜️ 压缩','pc.orig':'原始：{s}','pc.result':'原始 {a} → 结果 {b}','pc.saving':'（节省 {p}%）','pc.nogain':'（无压缩效果）'
+    'pc.sub':'减小扫描或图片型 PDF 的文件大小。','pc.pick':'选择 PDF 文件','pc.empty':'未选择 PDF。','pc.q':'质量','pc.scale':'分辨率','pc.warn':'※ 文本将转为图片（无法选择/搜索）。适用于扫描件和图片 PDF。','pc.go':'🗜️ 压缩','pc.orig':'原始：{s}','pc.result':'原始 {a} → 结果 {b}','pc.saving':'（节省 {p}%）','pc.nogain':'（无压缩效果）','pc.kept':'该 PDF 已优化 — 默认设置无法再压缩。降低质量/分辨率可减小体积。（原始 {a}）'
   },
   ja: {
     'nav.tools':'すべてのツール', 'nav.blog':'ブログ',
@@ -164,7 +164,7 @@ window.I18N = {
     'pm.sub':'複数の PDF を好きな順で1つに結合します。','pm.pick':'PDF ファイルを選択（複数）','pm.empty':'PDF が選択されていません。（2つ以上選択してください）','pm.merge':'📎 PDF を結合','pm.done':'完了 — {p}ページ · {s}',
     'ps.sub':'必要なページを選んで新しい PDF に抽出します。','ps.pick':'PDF ファイルを選択','ps.empty':'PDF が選択されていません。','ps.info':'全 {n} ページ','ps.range':'抽出するページ','ps.rangeph':'例: 1-3, 5, 8-10','ps.extract':'✂️ ページ抽出','ps.all':'すべて選択','ps.badrange':'ページ範囲が正しくありません。','ps.done':'完了 — {p}ページ · {s}',
     'ip.sub':'複数の画像を好きな順で1つの PDF にします。','ip.pick':'画像を選択（複数 — JPG · PNG · WebP）','ip.empty':'画像が選択されていません。','ip.mode':'ページサイズ','ip.mode.a4':'A4（画像を中央に配置）','ip.mode.fit':'画像の元サイズ','ip.make':'📄 PDF を作成','ip.done':'完了 — {p}ページ · {s}',
-    'pc.sub':'スキャン・画像 PDF のサイズを縮小します。','pc.pick':'PDF ファイルを選択','pc.empty':'PDF が選択されていません。','pc.q':'品質','pc.scale':'解像度','pc.warn':'※ テキストが画像化され、選択・検索ができなくなります。スキャン文書・画像 PDF に最適です。','pc.go':'🗜️ 圧縮する','pc.orig':'元: {s}','pc.result':'元 {a} → 結果 {b}','pc.saving':'（{p}% 削減）','pc.nogain':'（圧縮効果なし）'
+    'pc.sub':'スキャン・画像 PDF のサイズを縮小します。','pc.pick':'PDF ファイルを選択','pc.empty':'PDF が選択されていません。','pc.q':'品質','pc.scale':'解像度','pc.warn':'※ テキストが画像化され、選択・検索ができなくなります。スキャン文書・画像 PDF に最適です。','pc.go':'🗜️ 圧縮する','pc.orig':'元: {s}','pc.result':'元 {a} → 結果 {b}','pc.saving':'（{p}% 削減）','pc.nogain':'（圧縮効果なし）','pc.kept':'この PDF はすでに最適化されています — 既定値では縮小できません。品質・解像度を下げると縮小できます。（元 {a}）'
   }
 };
 (function(){
