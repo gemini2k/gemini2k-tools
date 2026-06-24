@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>GIS 웹맵 뷰어 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="배경지도(OSM·VWorld) 위에서 거리·면적 측정, 버퍼, 히트맵, 클러스터를 바로 쓰는 무료 GIS 웹맵 도구. 설치 없이 브라우저에서."/>
+<link rel="canonical" href="https://gemini2k.co.kr/map.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="GIS 웹맵 뷰어 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="배경지도(OSM·VWorld) 위에서 거리·면적 측정, 버퍼, 히트맵, 클러스터를 바로 쓰는 무료 GIS 웹맵 도구. 설치 없이 브라우저에서."/>
+<meta property="og:url" content="https://gemini2k.co.kr/map.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="GIS 웹맵 뷰어 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="배경지도(OSM·VWorld) 위에서 거리·면적 측정, 버퍼, 히트맵, 클러스터를 바로 쓰는 무료 GIS 웹맵 도구. 설치 없이 브라우저에서."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@7.5.2/ol.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<script src="vworld-key.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol@7.5.2/dist/ol.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>
+<style>
+  .maptools{ display:flex; gap:.4rem; flex-wrap:wrap; align-items:center; margin-bottom:.7rem; }
+  .maptools .btn{ padding:.45rem .75rem; }
+  .maptools select{ width:auto; padding:.45rem .6rem; }
+  .maptools .on-btn{ background:#5B5BF5 !important; color:#fff !important; border-color:#5B5BF5 !important; }
+  #map{ width:100%; height:70vh; min-height:440px; border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .ol-tooltip{ background:rgba(17,24,39,.78); color:#fff; padding:3px 8px; border-radius:6px; font-size:.82rem; white-space:nowrap; pointer-events:none; }
+  .ol-tooltip-static{ background:#5B5BF5; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap" style="max-width:1100px;">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.gmap.t">GIS 웹맵 뷰어</h1>
+  <p class="sub" data-i18n="gm.sub">배경지도 위에서 거리·면적 측정, 버퍼, 히트맵, 클러스터를 바로 사용하세요.</p>
+
+  <div class="card">
+    <div class="maptools">
+      <span class="lbl" style="font-weight:700;font-size:.86rem;" data-i18n="gm.base">배경지도</span>
+      <select id="base"></select>
+      <button class="btn btn-ghost" data-mode="dist" data-i18n="gm.dist">📏 거리</button>
+      <button class="btn btn-ghost" data-mode="area" data-i18n="gm.area">📐 면적</button>
+      <button class="btn btn-ghost" data-mode="point" data-i18n="gm.point">📍 점 찍기</button>
+      <button class="btn btn-ghost" id="buffer" data-i18n="gm.buffer">⭕ 버퍼</button>
+      <button class="btn btn-ghost" id="heat" data-i18n="gm.heat">🔥 히트맵</button>
+      <button class="btn btn-ghost" id="cluster" data-i18n="gm.cluster">🔵 클러스터</button>
+      <button class="btn btn-ghost" id="clear" data-i18n="gm.clear">🗑 지우기</button>
+    </div>
+    <p class="hint" id="tip" data-i18n="gm.tip" style="margin-top:0;">측정·점 모드를 켜고 지도를 클릭해 그리세요. 좌상단 ＋/－·전체화면 버튼도 사용할 수 있어요.</p>
+    <div id="map"></div>
+    <p class="hint" data-i18n="gm.note">© OpenStreetMap 기여자 · VWorld(국토교통부). 모든 처리는 브라우저에서 이루어집니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1800);}
+  var KEY = window.VWORLD_KEY || "";
+
+  // ── 배경지도 레이어 ──
+  var osm = new ol.layer.Tile({ source: new ol.source.OSM() });
+  var layers = [osm];
+  var vbase, vsat, vhyb;
+  if(KEY){
+    function vxyz(type, ext){ return new ol.layer.Tile({ visible:false, source: new ol.source.XYZ({
+      url:'https://api.vworld.kr/req/wmts/1.0.0/'+KEY+'/'+type+'/{z}/{y}/{x}.'+ext, attributions:'© VWorld', maxZoom:19, crossOrigin:null }) }); }
+    vbase = vxyz('Base','png'); vsat = vxyz('Satellite','jpeg'); vhyb = vxyz('Hybrid','png');
+    layers.push(vbase, vsat, vhyb);
+  }
+
+  // ── 벡터 레이어 ──
+  var drawSrc = new ol.source.Vector();
+  var measureStyle = new ol.style.Style({ stroke:new ol.style.Stroke({color:'#5B5BF5',width:3}),
+    fill:new ol.style.Fill({color:'rgba(91,91,245,.15)'}), image:new ol.style.Circle({radius:5,fill:new ol.style.Fill({color:'#5B5BF5'})}) });
+  var drawLayer = new ol.layer.Vector({ source:drawSrc, style:measureStyle });
+
+  var bufSrc = new ol.source.Vector();
+  var bufLayer = new ol.layer.Vector({ source:bufSrc, style:new ol.style.Style({
+    stroke:new ol.style.Stroke({color:'#0EA46A',width:2}), fill:new ol.style.Fill({color:'rgba(14,164,106,.18)'}) }) });
+
+  var ptSrc = new ol.source.Vector();
+  var ptLayer = new ol.layer.Vector({ source:ptSrc, style:new ol.style.Style({
+    image:new ol.style.Circle({radius:5,fill:new ol.style.Fill({color:'#E5484D'}),stroke:new ol.style.Stroke({color:'#fff',width:1.5})}) }) });
+  var heatLayer = new ol.layer.Heatmap({ source:ptSrc, blur:18, radius:12, visible:false });
+  var clusterLayer = new ol.layer.Vector({ visible:false, source:new ol.source.Cluster({distance:42, source:ptSrc}),
+    style:function(f){ var n=f.get('features').length; return new ol.style.Style({
+      image:new ol.style.Circle({radius:11+Math.min(n,18), fill:new ol.style.Fill({color:'rgba(91,91,245,.78)'}), stroke:new ol.style.Stroke({color:'#fff',width:2})}),
+      text:new ol.style.Text({text:String(n), fill:new ol.style.Fill({color:'#fff'}), font:'bold 12px Pretendard,sans-serif'}) }); } });
+
+  var map = new ol.Map({
+    target:'map',
+    layers: layers.concat([bufLayer, drawLayer, ptLayer, heatLayer, clusterLayer]),
+    view: new ol.View({ center: ol.proj.fromLonLat([127.6, 36.3]), zoom:7 }),
+    controls: [ new ol.control.Zoom(), new ol.control.Attribution({collapsible:true}), new ol.control.ScaleLine(), new ol.control.FullScreen() ]
+  });
+
+  // ── 배경지도 전환 ──
+  var baseSel = document.getElementById('base');
+  function renderBaseOptions(){
+    var opts = '<option value="osm">OpenStreetMap</option>';
+    if(KEY){ opts += '<option value="vbase">'+T('gm.base.vbase')+'</option><option value="vsat">'+T('gm.base.vsat')+'</option>'; }
+    var cur = baseSel.value || 'osm';
+    baseSel.innerHTML = opts; baseSel.value = cur;
+  }
+  function switchBase(v){
+    osm.setVisible(v==='osm');
+    if(KEY){ vbase.setVisible(v==='vbase'); vsat.setVisible(v==='vsat'); vhyb.setVisible(v==='vsat'); }
+  }
+  baseSel.addEventListener('change', function(){ switchBase(baseSel.value); });
+
+  // ── 측정 (거리/면적) + 점 찍기 ──
+  var draw=null, sketch=null, measureTip=null, measureEl=null;
+  function fmtLen(line){ var l=ol.sphere.getLength(line); return l>1000 ? (l/1000).toFixed(2)+' km' : Math.round(l)+' m'; }
+  function fmtArea(poly){ var a=ol.sphere.getArea(poly);
+    var base = a>1000000 ? (a/1000000).toFixed(2)+' km²' : Math.round(a).toLocaleString()+' m²';
+    if((window.curLang?window.curLang():'ko')==='ko') base += ' · ' + Math.round(a/3.305785).toLocaleString()+'평';
+    return base; }
+  function newMeasureTip(){ if(measureEl) measureEl.remove(); measureEl=document.createElement('div'); measureEl.className='ol-tooltip ol-tooltip-static';
+    measureTip=new ol.Overlay({element:measureEl, offset:[0,-12], positioning:'bottom-center', stopEvent:false, insertFirst:false}); map.addOverlay(measureTip); }
+  function setMode(mode, btn){
+    document.querySelectorAll('.maptools [data-mode]').forEach(function(b){ b.classList.remove('on-btn'); });
+    if(draw){ map.removeInteraction(draw); draw=null; }
+    if(!mode) return;
+    btn.classList.add('on-btn');
+    var type = mode==='point'?'Point' : mode==='area'?'Polygon':'LineString';
+    draw = new ol.interaction.Draw({ source: mode==='point'?ptSrc:drawSrc, type:type, style:measureStyle });
+    if(mode!=='point'){
+      draw.on('drawstart', function(e){ sketch=e.feature; newMeasureTip();
+        sketch.getGeometry().on('change', function(ev){ var g=ev.target;
+          measureEl.innerHTML = (g instanceof ol.geom.Polygon)?fmtArea(g):fmtLen(g);
+          measureTip.setPosition((g instanceof ol.geom.Polygon)?g.getInteriorPoint().getCoordinates():g.getLastCoordinate()); }); });
+      draw.on('drawend', function(){ measureEl.className='ol-tooltip ol-tooltip-static'; measureTip.setOffset([0,-8]); sketch=null; measureEl=null; });
+    }
+    map.addInteraction(draw);
+  }
+  document.querySelectorAll('.maptools [data-mode]').forEach(function(b){
+    b.addEventListener('click', function(){ if(b.classList.contains('on-btn')) setMode(null); else setMode(b.dataset.mode, b); });
+  });
+
+  // ── 버퍼 (Turf) ──
+  document.getElementById('buffer').addEventListener('click', function(){
+    var feats = drawSrc.getFeatures().concat(ptSrc.getFeatures());
+    if(!feats.length){ toast(T('gm.bufneed')); return; }
+    var v = prompt(T('gm.bufferprompt'), '500'); if(v===null) return;
+    var dist = parseFloat(v); if(isNaN(dist)||dist<=0){ toast(T('gm.bufbad')); return; }
+    var fmt = new ol.format.GeoJSON(); var added=0;
+    feats.forEach(function(f){
+      try{
+        var gj = fmt.writeFeatureObject(f, {featureProjection:'EPSG:3857', dataProjection:'EPSG:4326'});
+        var b = turf.buffer(gj, dist/1000, {units:'kilometers'});
+        if(b){ bufSrc.addFeature(fmt.readFeature(b, {dataProjection:'EPSG:4326', featureProjection:'EPSG:3857'})); added++; }
+      }catch(e){}
+    });
+    toast(T('gm.bufdone').replace('{n}', added));
+  });
+
+  // ── 히트맵 / 클러스터 토글 ──
+  function toggle(layer, btn){ var on=!layer.getVisible(); layer.setVisible(on); btn.classList.toggle('on-btn', on); }
+  document.getElementById('heat').addEventListener('click', function(){ toggle(heatLayer, this); });
+  document.getElementById('cluster').addEventListener('click', function(){ toggle(clusterLayer, this); ptLayer.setVisible(!clusterLayer.getVisible()); });
+
+  // ── 지우기 ──
+  document.getElementById('clear').addEventListener('click', function(){
+    drawSrc.clear(); ptSrc.clear(); bufSrc.clear();
+    map.getOverlays().clear(); setMode(null);
+    heatLayer.setVisible(false); clusterLayer.setVisible(false); ptLayer.setVisible(true);
+    document.getElementById('heat').classList.remove('on-btn'); document.getElementById('cluster').classList.remove('on-btn');
+  });
+
+  renderBaseOptions(); switchBase('osm');
+  window.onI18n = function(){ var v=baseSel.value; renderBaseOptions(); baseSel.value=v; };
+</script>
+</body>
+</html>

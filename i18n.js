@@ -56,7 +56,10 @@ window.I18N = {
     'wc.sub':'세계 주요 도시의 현재 시각을 한눈에. 회의 시각도 변환하세요.','wc.custom':'사용자 지정 시각','wc.refcity':'기준 도시','wc.add':'추가','wc.remove':'삭제','wc.note':'모든 계산은 브라우저에서 이루어집니다. 도시 목록은 이 브라우저에 저장됩니다.',
     'cat.개인정보':'개인정보',
     'tool.mask.t':'개인정보 마스킹기','tool.mask.d':'주민번호·전화·이메일·카드 자동 탐지·마스킹.',
-    'msk.sub':'텍스트 속 개인정보를 자동 탐지해 마스킹합니다. 업로드 없이 브라우저에서만.','msk.label':'원문 (붙여넣기)','msk.ph':'개인정보가 포함된 텍스트를 붙여넣으세요…','msk.types':'탐지 항목','msk.t.rrn':'주민등록번호','msk.t.phone':'전화번호','msk.t.email':'이메일','msk.t.card':'카드번호','msk.style':'마스킹 방식','msk.style.partial':'부분 가림','msk.style.full':'전체 가림','msk.style.remove':'[항목]으로 치환','msk.out':'결과','msk.outph':'마스킹 결과가 여기에 표시됩니다.','msk.count':'{n}건 마스킹됨','msk.note':'※ 보조 도구입니다 — 결과를 반드시 확인하세요. 계좌번호·이름·주소는 형식이 다양해 자동 탐지에서 제외됩니다. 모든 처리는 브라우저에서만 이루어집니다.'
+    'msk.sub':'텍스트 속 개인정보를 자동 탐지해 마스킹합니다. 업로드 없이 브라우저에서만.','msk.label':'원문 (붙여넣기)','msk.ph':'개인정보가 포함된 텍스트를 붙여넣으세요…','msk.types':'탐지 항목','msk.t.rrn':'주민등록번호','msk.t.phone':'전화번호','msk.t.email':'이메일','msk.t.card':'카드번호','msk.style':'마스킹 방식','msk.style.partial':'부분 가림','msk.style.full':'전체 가림','msk.style.remove':'[항목]으로 치환','msk.out':'결과','msk.outph':'마스킹 결과가 여기에 표시됩니다.','msk.count':'{n}건 마스킹됨','msk.note':'※ 보조 도구입니다 — 결과를 반드시 확인하세요. 계좌번호·이름·주소는 형식이 다양해 자동 탐지에서 제외됩니다. 모든 처리는 브라우저에서만 이루어집니다.',
+    'cat.GIS':'공간정보',
+    'tool.gmap.t':'GIS 웹맵 뷰어','tool.gmap.d':'배경지도 위 거리·면적 측정·버퍼·히트맵·클러스터.',
+    'gm.sub':'배경지도 위에서 거리·면적 측정, 버퍼, 히트맵, 클러스터를 바로 사용하세요.','gm.base':'배경지도','gm.base.vbase':'VWorld 일반','gm.base.vsat':'VWorld 위성','gm.dist':'📏 거리','gm.area':'📐 면적','gm.point':'📍 점 찍기','gm.buffer':'⭕ 버퍼','gm.heat':'🔥 히트맵','gm.cluster':'🔵 클러스터','gm.clear':'🗑 지우기','gm.tip':'측정·점 모드를 켜고 지도를 클릭해 그리세요. 좌상단 ＋/－·전체화면 버튼도 사용할 수 있어요.','gm.note':'© OpenStreetMap 기여자 · VWorld(국토교통부). 모든 처리는 브라우저에서 이루어집니다.','gm.bufferprompt':'버퍼 거리(미터)를 입력하세요','gm.bufneed':'먼저 점·선·면을 그려주세요','gm.bufbad':'올바른 거리를 입력하세요','gm.bufdone':'{n}개 버퍼 생성'
   },
   en: {
     'nav.tools':'All tools', 'nav.blog':'Blog',
@@ -112,7 +115,10 @@ window.I18N = {
     'wc.sub':'See current times across major cities — and convert meeting times.','wc.custom':'Custom time','wc.refcity':'Reference city','wc.add':'Add','wc.remove':'Remove','wc.note':'All calculations run in your browser. Your city list is saved in this browser.',
     'cat.개인정보':'Privacy',
     'tool.mask.t':'Personal Info Masker','tool.mask.d':'Auto-detect & mask SSN, phone, email, card.',
-    'msk.sub':'Auto-detect and mask personal info in text. Processed in your browser only — no upload.','msk.label':'Original text (paste)','msk.ph':'Paste text that contains personal info…','msk.types':'Detect','msk.t.rrn':'Resident reg. no.','msk.t.phone':'Phone','msk.t.email':'Email','msk.t.card':'Card number','msk.style':'Masking','msk.style.partial':'Partial','msk.style.full':'Full','msk.style.remove':'Replace with [type]','msk.out':'Result','msk.outph':'Masked result appears here.','msk.count':'{n} item(s) masked','msk.note':'※ A helper tool — always review the result. Account numbers, names and addresses vary too much and are excluded from auto-detection. All processing happens in your browser only.'
+    'msk.sub':'Auto-detect and mask personal info in text. Processed in your browser only — no upload.','msk.label':'Original text (paste)','msk.ph':'Paste text that contains personal info…','msk.types':'Detect','msk.t.rrn':'Resident reg. no.','msk.t.phone':'Phone','msk.t.email':'Email','msk.t.card':'Card number','msk.style':'Masking','msk.style.partial':'Partial','msk.style.full':'Full','msk.style.remove':'Replace with [type]','msk.out':'Result','msk.outph':'Masked result appears here.','msk.count':'{n} item(s) masked','msk.note':'※ A helper tool — always review the result. Account numbers, names and addresses vary too much and are excluded from auto-detection. All processing happens in your browser only.',
+    'cat.GIS':'GIS',
+    'tool.gmap.t':'GIS Web Map','tool.gmap.d':'Measure, buffer, heatmap & clusters on a map.',
+    'gm.sub':'Measure distance/area, buffer, heatmap and clusters on a base map.','gm.base':'Base map','gm.base.vbase':'VWorld Street','gm.base.vsat':'VWorld Satellite','gm.dist':'📏 Distance','gm.area':'📐 Area','gm.point':'📍 Points','gm.buffer':'⭕ Buffer','gm.heat':'🔥 Heatmap','gm.cluster':'🔵 Cluster','gm.clear':'🗑 Clear','gm.tip':'Turn on a measure/point mode and click the map to draw. Use the ＋/－ and fullscreen buttons too.','gm.note':'© OpenStreetMap contributors · VWorld (MOLIT, Korea). All processing happens in your browser.','gm.bufferprompt':'Enter buffer distance (meters)','gm.bufneed':'Draw a point/line/polygon first','gm.bufbad':'Enter a valid distance','gm.bufdone':'{n} buffer(s) created'
   },
   zh: {
     'nav.tools':'全部工具', 'nav.blog':'博客',
@@ -168,7 +174,10 @@ window.I18N = {
     'wc.sub':'一览各大城市的当前时间，并换算会议时间。','wc.custom':'自定义时间','wc.refcity':'基准城市','wc.add':'添加','wc.remove':'删除','wc.note':'所有计算均在浏览器中进行。城市列表保存在本浏览器。',
     'cat.개인정보':'隐私',
     'tool.mask.t':'个人信息脱敏','tool.mask.d':'自动识别并脱敏身份证号·电话·邮箱·卡号。',
-    'msk.sub':'自动识别并脱敏文本中的个人信息。仅在浏览器中处理，无需上传。','msk.label':'原文（粘贴）','msk.ph':'粘贴含个人信息的文本…','msk.types':'识别项','msk.t.rrn':'身份证号','msk.t.phone':'电话','msk.t.email':'邮箱','msk.t.card':'卡号','msk.style':'脱敏方式','msk.style.partial':'部分遮盖','msk.style.full':'全部遮盖','msk.style.remove':'替换为[类型]','msk.out':'结果','msk.outph':'脱敏结果显示在此处。','msk.count':'已脱敏 {n} 处','msk.note':'※ 辅助工具 — 请务必核对结果。账号·姓名·地址格式多样，已从自动识别中排除。所有处理仅在浏览器中进行。'
+    'msk.sub':'自动识别并脱敏文本中的个人信息。仅在浏览器中处理，无需上传。','msk.label':'原文（粘贴）','msk.ph':'粘贴含个人信息的文本…','msk.types':'识别项','msk.t.rrn':'身份证号','msk.t.phone':'电话','msk.t.email':'邮箱','msk.t.card':'卡号','msk.style':'脱敏方式','msk.style.partial':'部分遮盖','msk.style.full':'全部遮盖','msk.style.remove':'替换为[类型]','msk.out':'结果','msk.outph':'脱敏结果显示在此处。','msk.count':'已脱敏 {n} 处','msk.note':'※ 辅助工具 — 请务必核对结果。账号·姓名·地址格式多样，已从自动识别中排除。所有处理仅在浏览器中进行。',
+    'cat.GIS':'空间信息',
+    'tool.gmap.t':'GIS 网页地图','tool.gmap.d':'在地图上测距·测面·缓冲·热力·聚类。',
+    'gm.sub':'在底图上进行距离/面积测量、缓冲、热力图和聚类。','gm.base':'底图','gm.base.vbase':'VWorld 街道','gm.base.vsat':'VWorld 卫星','gm.dist':'📏 距离','gm.area':'📐 面积','gm.point':'📍 打点','gm.buffer':'⭕ 缓冲','gm.heat':'🔥 热力图','gm.cluster':'🔵 聚类','gm.clear':'🗑 清除','gm.tip':'开启测量/打点模式后点击地图绘制。也可使用左上角 ＋/－ 和全屏按钮。','gm.note':'© OpenStreetMap 贡献者 · VWorld（韩国国土交通部）。所有处理均在浏览器中进行。','gm.bufferprompt':'请输入缓冲距离（米）','gm.bufneed':'请先绘制点/线/面','gm.bufbad':'请输入有效距离','gm.bufdone':'已生成 {n} 个缓冲'
   },
   ja: {
     'nav.tools':'すべてのツール', 'nav.blog':'ブログ',
@@ -224,7 +233,10 @@ window.I18N = {
     'wc.sub':'世界の主要都市の現在時刻を一覧。会議時刻も変換できます。','wc.custom':'指定時刻','wc.refcity':'基準都市','wc.add':'追加','wc.remove':'削除','wc.note':'すべての計算はブラウザ内で行われます。都市リストはこのブラウザに保存されます。',
     'cat.개인정보':'個人情報',
     'tool.mask.t':'個人情報マスキング','tool.mask.d':'住民番号・電話・メール・カードを自動検出・マスキング。',
-    'msk.sub':'テキスト内の個人情報を自動検出してマスキングします。アップロード不要、ブラウザ内のみで処理。','msk.label':'原文（貼り付け）','msk.ph':'個人情報を含むテキストを貼り付け…','msk.types':'検出項目','msk.t.rrn':'住民登録番号','msk.t.phone':'電話番号','msk.t.email':'メール','msk.t.card':'カード番号','msk.style':'マスキング方式','msk.style.partial':'部分マスク','msk.style.full':'全体マスク','msk.style.remove':'[項目]に置換','msk.out':'結果','msk.outph':'マスキング結果がここに表示されます。','msk.count':'{n} 件マスキング','msk.note':'※ 補助ツールです — 結果を必ず確認してください。口座番号・氏名・住所は形式が多様なため自動検出から除外しています。すべての処理はブラウザ内のみで行われます。'
+    'msk.sub':'テキスト内の個人情報を自動検出してマスキングします。アップロード不要、ブラウザ内のみで処理。','msk.label':'原文（貼り付け）','msk.ph':'個人情報を含むテキストを貼り付け…','msk.types':'検出項目','msk.t.rrn':'住民登録番号','msk.t.phone':'電話番号','msk.t.email':'メール','msk.t.card':'カード番号','msk.style':'マスキング方式','msk.style.partial':'部分マスク','msk.style.full':'全体マスク','msk.style.remove':'[項目]に置換','msk.out':'結果','msk.outph':'マスキング結果がここに表示されます。','msk.count':'{n} 件マスキング','msk.note':'※ 補助ツールです — 結果を必ず確認してください。口座番号・氏名・住所は形式が多様なため自動検出から除外しています。すべての処理はブラウザ内のみで行われます。',
+    'cat.GIS':'空間情報',
+    'tool.gmap.t':'GIS ウェブマップ','tool.gmap.d':'地図上で距離・面積測定・バッファ・ヒートマップ・クラスタ。',
+    'gm.sub':'背景地図上で距離・面積測定、バッファ、ヒートマップ、クラスタを使えます。','gm.base':'背景地図','gm.base.vbase':'VWorld 一般','gm.base.vsat':'VWorld 衛星','gm.dist':'📏 距離','gm.area':'📐 面積','gm.point':'📍 点','gm.buffer':'⭕ バッファ','gm.heat':'🔥 ヒートマップ','gm.cluster':'🔵 クラスタ','gm.clear':'🗑 クリア','gm.tip':'測定・点モードをオンにして地図をクリックして描画。左上の ＋/－・全画面ボタンも使えます。','gm.note':'© OpenStreetMap 貢献者 · VWorld（韓国国土交通部）。すべての処理はブラウザ内で行われます。','gm.bufferprompt':'バッファ距離（メートル）を入力','gm.bufneed':'先に点・線・面を描いてください','gm.bufbad':'正しい距離を入力してください','gm.bufdone':'{n} 個のバッファを作成'
   }
 };
 (function(){
