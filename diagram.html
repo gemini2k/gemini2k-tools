@@ -202,6 +202,24 @@
   }
   function render(){ svg.innerHTML = inner(true); }
   function pt(e){ var r=svg.getBoundingClientRect(); return { x:(e.clientX-r.left)*(VW/r.width), y:(e.clientY-r.top)*(VH/r.height) }; }
+  // 좌표 기반 히트 테스트 (innerHTML SVG 이벤트 위임 대신 — 모든 브라우저에서 안정)
+  function nodeAt(p){
+    for(var i=nodes.length-1;i>=0;i--){ var n=nodes[i], w=nodeW(n), h=nodeH(n);
+      if(p.x>=n.x-w/2 && p.x<=n.x+w/2 && p.y>=n.y-h/2 && p.y<=n.y+h/2) return n; }
+    return null;
+  }
+  function distToSeg(p,a,b){ var dx=b[0]-a[0], dy=b[1]-a[1], L=dx*dx+dy*dy;
+    var t=L?((p.x-a[0])*dx+(p.y-a[1])*dy)/L:0; t=Math.max(0,Math.min(1,t));
+    var cx=a[0]+t*dx, cy=a[1]+t*dy; return Math.sqrt((p.x-cx)*(p.x-cx)+(p.y-cy)*(p.y-cy)); }
+  function edgeAt(p){
+    for(var i=edges.length-1;i>=0;i--){ var ed=edges[i], a=byId(ed.a), b=byId(ed.b); if(!a||!b) continue;
+      var segs;
+      if(ed.route==='ortho'){ segs=orthoGeom(a,b).pts; }
+      else { var s=border(a,b.x,b.y), e=border(b,a.x,a.y); segs=[[s.x,s.y],[e.x,e.y]]; }
+      for(var j=0;j<segs.length-1;j++){ if(distToSeg(p,segs[j],segs[j+1])<9) return ed; }
+    }
+    return null;
+  }
 
   function pushUndo(){ history.push(JSON.stringify({nodes:nodes, edges:edges, seq:seq, eseq:eseq})); if(history.length>60) history.shift(); }
   function undo(){ if(!history.length) return; var s=JSON.parse(history.pop()); nodes=s.nodes; edges=s.edges; seq=s.seq; eseq=s.eseq; sel=null; connectFirst=null; render(); }
@@ -214,18 +232,18 @@
   }
 
   svg.addEventListener('pointerdown', function(e){
-    var g=e.target.closest('[data-id]'), eg=e.target.closest('[data-eid]');
+    e.preventDefault();
+    var p=pt(e), n=nodeAt(p);
     if(connectMode){
-      if(g){ var id=+g.getAttribute('data-id');
-        if(connectFirst===null) connectFirst=id;
-        else if(connectFirst!==id){ pushUndo(); edges.push({id:eseq++, a:connectFirst, b:id, line:newLine, arrow:newArrow, route:newRoute, label:''}); connectFirst=null; }
+      if(n){
+        if(connectFirst===null) connectFirst=n.id;
+        else if(connectFirst!==n.id){ pushUndo(); edges.push({id:eseq++, a:connectFirst, b:n.id, line:newLine, arrow:newArrow, route:newRoute, label:''}); connectFirst=null; }
         else connectFirst=null;
       } else connectFirst=null;
       render(); return;
     }
-    if(g){ sel={t:'node', id:+g.getAttribute('data-id')}; var n=byId(sel.id), p=pt(e); pushUndo(); dragMoved=false; drag={dx:p.x-n.x, dy:p.y-n.y}; try{svg.setPointerCapture(e.pointerId);}catch(_){}; syncControls(); render(); }
-    else if(eg){ sel={t:'edge', id:+eg.getAttribute('data-eid')}; syncControls(); render(); }
-    else { sel=null; render(); }
+    if(n){ sel={t:'node', id:n.id}; pushUndo(); dragMoved=false; drag={dx:p.x-n.x, dy:p.y-n.y}; try{svg.setPointerCapture(e.pointerId);}catch(_){}; syncControls(); render(); }
+    else { var ed=edgeAt(p); if(ed){ sel={t:'edge', id:ed.id}; syncControls(); render(); } else { sel=null; render(); } }
   });
   svg.addEventListener('pointermove', function(e){
     if(!drag || !sel || sel.t!=='node') return;
@@ -236,9 +254,10 @@
   svg.addEventListener('pointerup', endDrag);
   svg.addEventListener('pointercancel', endDrag);
   svg.addEventListener('dblclick', function(e){
-    var g=e.target.closest('[data-id]'), eg=e.target.closest('[data-eid]');
-    if(g){ var n=byId(+g.getAttribute('data-id')), t=prompt(T('dg.editprompt'), n.text); if(t!==null){ pushUndo(); n.text=t; render(); } }
-    else if(eg){ var ed=edgeById(+eg.getAttribute('data-eid')), l=prompt(T('dg.labelprompt'), ed.label||''); if(l!==null){ pushUndo(); ed.label=l.trim(); render(); } }
+    var p=pt(e), n=nodeAt(p);
+    if(n){ var t=prompt(T('dg.editprompt'), n.text); if(t!==null){ pushUndo(); n.text=t; render(); } return; }
+    var ed=edgeAt(p);
+    if(ed){ var l=prompt(T('dg.labelprompt'), ed.label||''); if(l!==null){ pushUndo(); ed.label=l.trim(); render(); } }
   });
   document.addEventListener('keydown', function(e){
     var tag=document.activeElement.tagName;
