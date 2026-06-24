@@ -78,11 +78,16 @@
 
 <script>
   function T(k){ return window.t ? window.t(k) : k; }
-  var DEFAULT=['Asia/Seoul','Asia/Tokyo','Asia/Shanghai','Asia/Singapore','Europe/London','Europe/Paris','America/New_York','America/Los_Angeles'];
-  var zones=[]; try{ var s=localStorage.getItem('wc_zones'); if(s) zones=JSON.parse(s); }catch(e){}
-  if(!Array.isArray(zones)||!zones.length) zones=DEFAULT.slice();
+  var BASE=['Asia/Seoul','Asia/Tokyo','Asia/Shanghai','America/New_York','Europe/London','Europe/Paris','Asia/Singapore','America/Los_Angeles'];
+  function defaultZones(){
+    var l=(window.curLang?window.curLang():'ko');
+    var pri = l==='ja' ? 'Asia/Tokyo' : l==='zh' ? 'Asia/Shanghai' : 'Asia/Seoul';   // 언어별 기준 도시, 그 외 서울
+    return [pri].concat(BASE.filter(function(z){ return z!==pri; }));
+  }
+  var zones=[]; try{ var s=localStorage.getItem('wc_zones2'); if(s) zones=JSON.parse(s); }catch(e){}
+  if(!Array.isArray(zones)||!zones.length) zones=defaultZones();
   var ALL=[]; try{ if(Intl.supportedValuesOf) ALL=Intl.supportedValuesOf('timeZone'); }catch(e){}
-  if(!ALL.length) ALL=DEFAULT.concat(['Asia/Hong_Kong','Asia/Taipei','Asia/Kolkata','Asia/Dubai','Asia/Bangkok','Europe/Berlin','Europe/Moscow','America/Chicago','America/Sao_Paulo','Australia/Sydney','Pacific/Auckland','UTC']);
+  if(!ALL.length) ALL=BASE.concat(['Asia/Hong_Kong','Asia/Taipei','Asia/Kolkata','Asia/Dubai','Asia/Bangkok','Europe/Berlin','Europe/Moscow','America/Chicago','America/Sao_Paulo','Australia/Sydney','Pacific/Auckland','UTC']);
 
   var CITY={
     'Asia/Seoul':{ko:'서울',en:'Seoul',zh:'首尔',ja:'ソウル'},
@@ -132,7 +137,7 @@
     var off=tzOffsetMin(new Date(guess), refzone.value||zones[0]);
     return guess - off*60000;
   }
-  function save(){ try{ localStorage.setItem('wc_zones', JSON.stringify(zones)); }catch(e){} }
+  function save(){ try{ localStorage.setItem('wc_zones2', JSON.stringify(zones)); }catch(e){} }
   function fillSelect(sel, list, selected){
     sel.innerHTML = list.map(function(tz){ return '<option value="'+tz+'"'+(tz===selected?' selected':'')+'>'+cityName(tz)+' — '+tz+'</option>'; }).join('');
   }
