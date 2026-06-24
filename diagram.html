@@ -113,7 +113,7 @@
   function T(k){ return window.t ? window.t(k) : k; }
   var VW=900, VH=520, GRID=20, svg=document.getElementById('svg');
   var COLORS=['#EAF2FF','#E6F7F0','#FFF3E0','#FCE7F3','#EDE9FE','#F1F5F9'];
-  var nodes=[], edges=[], seq=1, eseq=1, sel=null, connectMode=false, connectFirst=null, drag=null, dragMoved=false, snapOn=false, history=[];
+  var nodes=[], edges=[], seq=1, eseq=1, sel=null, connectMode=false, connectFirst=null, drag=null, dragMoved=false, snapOn=false, undoStack=[];
   var newShape='round', newColor=COLORS[0], newLine='solid', newArrow='end', newRoute='straight';
   var shapeSel=document.getElementById('shape'), lineSel=document.getElementById('line'), arrowSel=document.getElementById('arrow'),
       routeSel=document.getElementById('route'), snapChk=document.getElementById('snap');
@@ -221,8 +221,8 @@
     return null;
   }
 
-  function pushUndo(){ history.push(JSON.stringify({nodes:nodes, edges:edges, seq:seq, eseq:eseq})); if(history.length>60) history.shift(); }
-  function undo(){ if(!history.length) return; var s=JSON.parse(history.pop()); nodes=s.nodes; edges=s.edges; seq=s.seq; eseq=s.eseq; sel=null; connectFirst=null; render(); }
+  function pushUndo(){ undoStack.push(JSON.stringify({nodes:nodes, edges:edges, seq:seq, eseq:eseq})); if(undoStack.length>60) undoStack.shift(); }
+  function undo(){ if(!undoStack.length) return; var s=JSON.parse(undoStack.pop()); nodes=s.nodes; edges=s.edges; seq=s.seq; eseq=s.eseq; sel=null; connectFirst=null; render(); }
 
   function syncControls(){
     var pal=document.getElementById('palette');
@@ -250,7 +250,7 @@
     var n=byId(sel.id), p=pt(e); dragMoved=true;
     n.x=clamp(snapV(p.x-drag.dx),45,VW-45); n.y=clamp(snapV(p.y-drag.dy),34,VH-34); render();
   });
-  function endDrag(e){ if(drag && !dragMoved) history.pop(); drag=null; try{svg.releasePointerCapture(e.pointerId);}catch(_){} }
+  function endDrag(e){ if(drag && !dragMoved) undoStack.pop(); drag=null; try{svg.releasePointerCapture(e.pointerId);}catch(_){} }
   svg.addEventListener('pointerup', endDrag);
   svg.addEventListener('pointercancel', endDrag);
   svg.addEventListener('dblclick', function(e){
