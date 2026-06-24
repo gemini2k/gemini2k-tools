@@ -108,8 +108,9 @@
     stroke:new ol.style.Stroke({color:'#0EA46A',width:2}), fill:new ol.style.Fill({color:'rgba(14,164,106,.18)'}) }) });
 
   var ptSrc = new ol.source.Vector();
-  var ptLayer = new ol.layer.Vector({ source:ptSrc, style:new ol.style.Style({
-    image:new ol.style.Circle({radius:5,fill:new ol.style.Fill({color:'#E5484D'}),stroke:new ol.style.Stroke({color:'#fff',width:1.5})}) }) });
+  var ptNormal = new ol.style.Style({ image:new ol.style.Circle({radius:5,fill:new ol.style.Fill({color:'#E5484D'}),stroke:new ol.style.Stroke({color:'#fff',width:1.5})}) });
+  var ptHit = new ol.style.Style({ image:new ol.style.Circle({radius:7,fill:new ol.style.Fill({color:'#0EA46A'}),stroke:new ol.style.Stroke({color:'#fff',width:2})}) });
+  var ptLayer = new ol.layer.Vector({ source:ptSrc, style:function(f){ return f.get('hit') ? ptHit : ptNormal; } });
   var heatLayer = new ol.layer.Heatmap({ source:ptSrc, blur:18, radius:12, visible:false });
   var clusterLayer = new ol.layer.Vector({ visible:false, source:new ol.source.Cluster({distance:42, source:ptSrc}),
     style:function(f){ var n=f.get('features').length; return new ol.style.Style({
@@ -166,21 +167,29 @@
     b.addEventListener('click', function(){ if(b.classList.contains('on-btn')) setMode(null); else setMode(b.dataset.mode, b); });
   });
 
-  // ── 버퍼 (Turf) ──
+  // ── 버퍼 검색: 중심점 반경 내 점 찾기 (Turf) ──
   document.getElementById('buffer').addEventListener('click', function(){
-    var feats = drawSrc.getFeatures().concat(ptSrc.getFeatures());
-    if(!feats.length){ toast(T('gm.bufneed')); return; }
+    if(!ptSrc.getFeatures().length){ toast(T('gm.bufneed')); return; }
     var v = prompt(T('gm.bufferprompt'), '500'); if(v===null) return;
-    var dist = parseFloat(v); if(isNaN(dist)||dist<=0){ toast(T('gm.bufbad')); return; }
-    var fmt = new ol.format.GeoJSON(); var added=0;
-    feats.forEach(function(f){
-      try{
-        var gj = fmt.writeFeatureObject(f, {featureProjection:'EPSG:3857', dataProjection:'EPSG:4326'});
-        var b = turf.buffer(gj, dist/1000, {units:'kilometers'});
-        if(b){ bufSrc.addFeature(fmt.readFeature(b, {dataProjection:'EPSG:4326', featureProjection:'EPSG:3857'})); added++; }
-      }catch(e){}
+    var radius = parseFloat(v); if(isNaN(radius)||radius<=0){ toast(T('gm.bufbad')); return; }
+    setMode(null);
+    clusterLayer.setVisible(false); document.getElementById('cluster').classList.remove('on-btn'); ptLayer.setVisible(true);
+    toast(T('gm.bufclick'));
+    map.once('singleclick', function(evt){
+      var c = ol.proj.toLonLat(evt.coordinate), circle;
+      try{ circle = turf.buffer(turf.point(c), radius/1000, {units:'kilometers'}); }catch(e){ return; }
+      var fmt = new ol.format.GeoJSON();
+      bufSrc.clear();
+      bufSrc.addFeature(fmt.readFeature(circle, {dataProjection:'EPSG:4326', featureProjection:'EPSG:3857'}));
+      var n=0;
+      ptSrc.getFeatures().forEach(function(f){
+        var p = ol.proj.toLonLat(f.getGeometry().getCoordinates());
+        var inside = turf.booleanPointInPolygon(turf.point(p), circle);
+        f.set('hit', inside); if(inside) n++;
+      });
+      ptLayer.changed();
+      toast(T('gm.bufresult').replace('{r}', radius).replace('{n}', n));
     });
-    toast(T('gm.bufdone').replace('{n}', added));
   });
 
   // ── 히트맵 / 클러스터 토글 ──
