@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>PDF 합치기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="여러 PDF 파일을 원하는 순서로 하나로 합치는 무료 도구. 업로드 없이 브라우저에서 바로 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/merge.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="PDF 합치기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="여러 PDF 파일을 원하는 순서로 하나로 합치는 무료 도구. 업로드 없이 브라우저에서 바로 처리되어 안전합니다."/>
+<meta property="og:url" content="https://gemini2k.co.kr/merge.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="PDF 합치기 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="여러 PDF 파일을 원하는 순서로 하나로 합치는 무료 도구. 업로드 없이 브라우저에서 바로 처리되어 안전합니다."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<style>
+  .flist{list-style:none;padding:0;margin:1rem 0 0;display:flex;flex-direction:column;gap:.5rem;}
+  .fitem{display:flex;align-items:center;gap:.6rem;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);}
+  .fitem .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.92rem;}
+  .fitem .sz{color:var(--muted);font-size:.82rem;flex-shrink:0;}
+  .fitem button{border:1px solid var(--border);background:#fff;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:.9rem;flex-shrink:0;}
+  .fitem button:hover{background:#f3f4f6;}
+  .fitem button:disabled{opacity:.35;cursor:default;}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.pmerge.t">PDF 합치기</h1>
+  <p class="sub" data-i18n="pm.sub">여러 PDF를 원하는 순서로 하나로 합칩니다.</p>
+
+  <div class="card">
+    <label for="file" data-i18n="pm.pick">PDF 파일 선택 (여러 개)</label>
+    <input type="file" id="file" accept="application/pdf" multiple/>
+    <ul class="flist" id="list"></ul>
+    <p class="hint" id="empty" data-i18n="pm.empty">선택된 PDF가 없습니다. (2개 이상 선택하세요)</p>
+    <div class="row" style="margin-top:1.1rem;">
+      <button class="btn" id="merge" disabled data-i18n="pm.merge">📎 PDF 합치기</button>
+      <button class="btn btn-ghost" id="clear" data-i18n="btn.clear">지우기</button>
+    </div>
+    <p class="hint" data-i18n="pdf.note">모든 처리는 브라우저에서 이루어지며, 파일은 서버로 전송되지 않습니다.</p>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none;">
+    <p class="hint" id="result" style="margin:0 0 .6rem;"></p>
+    <div class="row"><button class="btn" id="download" data-i18n="im.dl">⬇️ 다운로드</button></div>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1800);}
+  function kb(n){ return n<1024 ? n+' B' : n<1048576 ? (n/1024).toFixed(1)+' KB' : (n/1048576).toFixed(2)+' MB'; }
+  var fileEl=document.getElementById('file'), listEl=document.getElementById('list'), emptyEl=document.getElementById('empty'),
+      mergeBtn=document.getElementById('merge'), resultCard=document.getElementById('resultCard'),
+      result=document.getElementById('result'), dl=document.getElementById('download');
+  var files=[], outBlob=null;
+
+  fileEl.addEventListener('change', function(){
+    Array.prototype.forEach.call(fileEl.files, function(f){
+      if(f.type==='application/pdf' || /\.pdf$/i.test(f.name)) files.push({name:f.name, size:f.size, file:f});
+    });
+    fileEl.value=''; render();
+  });
+  function move(i,d){ var j=i+d; if(j<0||j>=files.length) return; var t=files[i]; files[i]=files[j]; files[j]=t; render(); }
+  function remove(i){ files.splice(i,1); render(); }
+  function render(){
+    listEl.innerHTML = files.map(function(f,i){
+      return '<li class="fitem"><span class="nm">'+(i+1)+'. '+f.name+'</span><span class="sz">'+kb(f.size)+'</span>'
+        + '<button data-a="up" data-i="'+i+'"'+(i===0?' disabled':'')+'>↑</button>'
+        + '<button data-a="down" data-i="'+i+'"'+(i===files.length-1?' disabled':'')+'>↓</button>'
+        + '<button data-a="del" data-i="'+i+'">✕</button></li>';
+    }).join('');
+    emptyEl.style.display = files.length ? 'none' : '';
+    mergeBtn.disabled = files.length < 2;
+    resultCard.style.display='none'; outBlob=null;
+  }
+  listEl.addEventListener('click', function(e){
+    var b=e.target.closest('button'); if(!b) return; var i=+b.dataset.i, a=b.dataset.a;
+    if(a==='up') move(i,-1); else if(a==='down') move(i,1); else remove(i);
+  });
+  document.getElementById('clear').addEventListener('click', function(){ files=[]; render(); });
+
+  mergeBtn.addEventListener('click', async function(){
+    if(files.length<2){ toast(T('pm.empty')); return; }
+    mergeBtn.disabled=true; var label=mergeBtn.textContent; mergeBtn.textContent=T('pdf.processing');
+    try{
+      var out = await PDFLib.PDFDocument.create();
+      for(var k=0;k<files.length;k++){
+        var buf = await files[k].file.arrayBuffer();
+        var src = await PDFLib.PDFDocument.load(buf, {ignoreEncryption:true});
+        var pages = await out.copyPages(src, src.getPageIndices());
+        pages.forEach(function(p){ out.addPage(p); });
+      }
+      var bytes = await out.save();
+      outBlob = new Blob([bytes], {type:'application/pdf'});
+      result.textContent = T('pm.done').replace('{p}', out.getPageCount()).replace('{s}', kb(outBlob.size));
+      resultCard.style.display='';
+    }catch(err){ toast(T('pdf.err')); }
+    mergeBtn.textContent=label; mergeBtn.disabled = files.length<2;
+  });
+  dl.addEventListener('click', function(){
+    if(!outBlob) return;
+    var a=document.createElement('a'); a.href=URL.createObjectURL(outBlob); a.download='merged.pdf';
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+</script>
+</body>
+</html>
