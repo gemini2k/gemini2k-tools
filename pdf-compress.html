@@ -63,7 +63,13 @@
 
   <div class="card" id="resultCard" style="display:none;">
     <p class="hint" id="result" style="margin:0 0 .6rem;"></p>
-    <div class="row"><button class="btn" id="download" data-i18n="im.dl">⬇️ 다운로드</button></div>
+    <div id="dlwrap">
+      <label for="fname" data-i18n="pdf.fname">파일 이름</label>
+      <div class="row" style="gap:.5rem;align-items:center;">
+        <input type="text" id="fname" style="flex:1;min-width:150px;"/><span style="color:var(--muted);">.pdf</span>
+        <button class="btn" id="download" data-i18n="im.dl">⬇️ 다운로드</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -77,6 +83,8 @@
   function T(k){ return window.t ? window.t(k) : k; }
   function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},2000);}
   function kb(n){ return n<1024 ? n+' B' : n<1048576 ? (n/1024).toFixed(1)+' KB' : (n/1048576).toFixed(2)+' MB'; }
+  function stamp(){ var d=new Date(),p=function(n){return(n<10?'0':'')+n;}; return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'_'+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds()); }
+  function fileName(def){ var v=(document.getElementById('fname').value||'').replace(/[\\/:*?"<>|]+/g,'').replace(/\.pdf$/i,'').trim(); return (v||def)+'.pdf'; }
   if(window.pdfjsLib){ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'; }
 
   var fileEl=document.getElementById('file'), orig=document.getElementById('orig'), opts=document.getElementById('opts'),
@@ -128,11 +136,12 @@
         outBlob = new Blob([best], {type:'application/pdf'});
         var pct = Math.round((1 - outBlob.size/origSize)*100);
         result.textContent = T('pc.result').replace('{a}', kb(origSize)).replace('{b}', kb(outBlob.size)) + T('pc.saving').replace('{p}', pct);
-        dl.style.display=''; resultCard.style.display='';
+        document.getElementById('fname').value = 'compressed_' + stamp();
+        document.getElementById('dlwrap').style.display=''; resultCard.style.display='';
       } else {
         outBlob = null;
         result.textContent = T('pc.kept').replace('{a}', kb(origSize));
-        dl.style.display='none'; resultCard.style.display='';
+        document.getElementById('dlwrap').style.display='none'; resultCard.style.display='';
       }
       return;
     }catch(err){ toast(T('pdf.err')); }
@@ -140,7 +149,7 @@
   });
   dl.addEventListener('click', function(){
     if(!outBlob) return;
-    var a=document.createElement('a'); a.href=URL.createObjectURL(outBlob); a.download='compressed.pdf';
+    var a=document.createElement('a'); a.href=URL.createObjectURL(outBlob); a.download=fileName('compressed');
     document.body.appendChild(a); a.click(); a.remove();
   });
   window.onI18n = renderOrig;

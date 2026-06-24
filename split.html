@@ -60,7 +60,11 @@
 
   <div class="card" id="resultCard" style="display:none;">
     <p class="hint" id="result" style="margin:0 0 .6rem;"></p>
-    <div class="row"><button class="btn" id="download" data-i18n="im.dl">⬇️ 다운로드</button></div>
+    <label for="fname" data-i18n="pdf.fname">파일 이름</label>
+    <div class="row" style="gap:.5rem;align-items:center;">
+      <input type="text" id="fname" style="flex:1;min-width:150px;"/><span style="color:var(--muted);">.pdf</span>
+      <button class="btn" id="download" data-i18n="im.dl">⬇️ 다운로드</button>
+    </div>
   </div>
 </div>
 
@@ -74,6 +78,8 @@
   function T(k){ return window.t ? window.t(k) : k; }
   function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1800);}
   function kb(n){ return n<1024 ? n+' B' : n<1048576 ? (n/1024).toFixed(1)+' KB' : (n/1048576).toFixed(2)+' MB'; }
+  function stamp(){ var d=new Date(),p=function(n){return(n<10?'0':'')+n;}; return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'_'+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds()); }
+  function fileName(def){ var v=(document.getElementById('fname').value||'').replace(/[\\/:*?"<>|]+/g,'').replace(/\.pdf$/i,'').trim(); return (v||def)+'.pdf'; }
   var fileEl=document.getElementById('file'), info=document.getElementById('info'), opts=document.getElementById('opts'),
       rangeEl=document.getElementById('range'), resultCard=document.getElementById('resultCard'),
       result=document.getElementById('result'), dl=document.getElementById('download');
@@ -117,12 +123,13 @@
       var bytes = await out.save();
       outBlob = new Blob([bytes], {type:'application/pdf'});
       result.textContent = T('ps.done').replace('{p}', idx.length).replace('{s}', kb(outBlob.size));
+      document.getElementById('fname').value = 'extracted_' + stamp();
       resultCard.style.display='';
     }catch(err){ toast(T('pdf.err')); }
   });
   dl.addEventListener('click', function(){
     if(!outBlob) return;
-    var a=document.createElement('a'); a.href=URL.createObjectURL(outBlob); a.download='extracted.pdf';
+    var a=document.createElement('a'); a.href=URL.createObjectURL(outBlob); a.download=fileName('extracted');
     document.body.appendChild(a); a.click(); a.remove();
   });
   window.onI18n = renderInfo;
