@@ -46,7 +46,10 @@ window.I18N = {
     'tool.json.t':'JSON 포맷터·검증기','tool.json.d':'JSON 정리·압축·오류 검사·키 정렬.','tool.regex.t':'정규식 테스터','tool.regex.d':'패턴·플래그로 실시간 매칭·그룹·치환.','tool.md.t':'마크다운 에디터','tool.md.d':'실시간 미리보기 + HTML·MD 내보내기.',
     'jn.sub':'JSON을 정리·압축하고 오류를 검사합니다.','jn.label':'JSON 입력','jn.ph':'여기에 JSON을 붙여넣으세요…','jn.indent':'들여쓰기','jn.indent2':'공백 2','jn.indent4':'공백 4','jn.indenttab':'탭','jn.sort':'키 정렬(A→Z)','jn.format':'✨ 정리(들여쓰기)','jn.min':'🗜️ 압축(한 줄)','jn.out':'결과','jn.outph':'결과가 여기에 표시됩니다.','jn.valid':'✓ 유효한 JSON','jn.error':'✕ 오류: {m}','jn.empty':'JSON을 입력하세요.',
     'rx.sub':'패턴과 플래그로 실시간 매칭·그룹·치환을 확인합니다.','rx.pattern':'정규식 패턴','rx.patternph':'예: \\d{3}-\\d{4}','rx.flaghint':'g 전역 · i 대소문자 무시 · m 여러 줄 · s 점(.)에 줄바꿈 포함 · u 유니코드 · y 고정 위치','rx.text':'테스트할 문자열','rx.textph':'여기에 검사할 텍스트를 입력하세요…','rx.matches':'{n}개 일치','rx.nomatch':'일치 없음','rx.invalid':'잘못된 정규식: {m}','rx.replace':'치환 (선택)','rx.replaceph':'치환 문자열 (예: $1)','rx.result':'치환 결과',
-    'md.sub':'작성하면 실시간으로 미리보기를 보여줍니다.','md.editor':'마크다운','md.preview':'미리보기','md.copyhtml':'📋 HTML 복사','md.dlmd':'⬇️ .md 저장','md.dlhtml':'⬇️ HTML 저장','md.note':'미리보기는 안전하게 정화(sanitize)되어 표시됩니다. 모든 처리는 브라우저에서만 이루어집니다.'
+    'md.sub':'작성하면 실시간으로 미리보기를 보여줍니다.','md.editor':'마크다운','md.preview':'미리보기','md.copyhtml':'📋 HTML 복사','md.dlmd':'⬇️ .md 저장','md.dlhtml':'⬇️ HTML 저장','md.note':'미리보기는 안전하게 정화(sanitize)되어 표시됩니다. 모든 처리는 브라우저에서만 이루어집니다.',
+    'tool.favicon.t':'파비콘 생성기','tool.favicon.d':'글자·이모지·이미지로 .ico·PNG 즐겨찾기 아이콘.','tool.diagram.t':'SVG 다이어그램 메이커','tool.diagram.d':'상자·화살표로 간단한 도식을 SVG·PNG로.',
+    'fav.sub':'글자·이모지나 이미지로 즐겨찾기 아이콘을 만듭니다.','fav.text':'글자 또는 이모지','fav.textph':'예: G, 📚, 빛','fav.img':'이미지로 만들기 (선택)','fav.bg':'배경색','fav.fg':'글자색','fav.shape':'모양','fav.round':'둥근 사각형','fav.circle':'원형','fav.square':'사각형','fav.dlico':'⬇️ favicon.ico','fav.dl32':'⬇️ PNG 32','fav.dl180':'⬇️ PNG 180 (애플)','fav.dl512':'⬇️ PNG 512','fav.snippet':'HTML 삽입 코드','fav.copysnip':'📋 코드 복사','fav.icodone':'favicon.ico를 저장했습니다',
+    'dg.sub':'상자와 화살표로 간단한 도식을 그려 SVG·PNG로 저장합니다.','dg.add':'＋ 상자 추가','dg.connect':'🔗 연결 모드','dg.del':'🗑 선택 삭제','dg.hint':'상자를 드래그해 이동 · 더블클릭해 글자 수정 · 연결 모드에서 두 상자를 차례로 클릭','dg.dlsvg':'⬇️ SVG 저장','dg.dlpng':'⬇️ PNG 저장','dg.editprompt':'상자 텍스트','dg.box':'상자','dg.start':'시작'
   },
   en: {
     'nav.tools':'All tools', 'nav.blog':'Blog',
@@ -92,7 +95,10 @@ window.I18N = {
     'tool.json.t':'JSON Formatter & Validator','tool.json.d':'Beautify, minify, validate, sort keys.','tool.regex.t':'Regex Tester','tool.regex.d':'Live matches, groups and replace.','tool.md.t':'Markdown Editor','tool.md.d':'Live preview + HTML/MD export.',
     'jn.sub':'Beautify or minify JSON and check for errors.','jn.label':'JSON input','jn.ph':'Paste your JSON here…','jn.indent':'Indent','jn.indent2':'2 spaces','jn.indent4':'4 spaces','jn.indenttab':'Tab','jn.sort':'Sort keys (A→Z)','jn.format':'✨ Beautify','jn.min':'🗜️ Minify','jn.out':'Result','jn.outph':'The result appears here.','jn.valid':'✓ Valid JSON','jn.error':'✕ Error: {m}','jn.empty':'Enter some JSON.',
     'rx.sub':'Test your pattern live — matches, groups and replace.','rx.pattern':'Regex pattern','rx.patternph':'e.g. \\d{3}-\\d{4}','rx.flaghint':'g global · i ignore-case · m multiline · s dotall · u unicode · y sticky','rx.text':'Test string','rx.textph':'Type the text to test here…','rx.matches':'{n} matches','rx.nomatch':'No matches','rx.invalid':'Invalid regex: {m}','rx.replace':'Replace (optional)','rx.replaceph':'Replacement (e.g. $1)','rx.result':'Replace result',
-    'md.sub':'Write on the left, see a live preview on the right.','md.editor':'Markdown','md.preview':'Preview','md.copyhtml':'📋 Copy HTML','md.dlmd':'⬇️ Save .md','md.dlhtml':'⬇️ Save HTML','md.note':'The preview is sanitized for safety. All processing happens in your browser only.'
+    'md.sub':'Write on the left, see a live preview on the right.','md.editor':'Markdown','md.preview':'Preview','md.copyhtml':'📋 Copy HTML','md.dlmd':'⬇️ Save .md','md.dlhtml':'⬇️ Save HTML','md.note':'The preview is sanitized for safety. All processing happens in your browser only.',
+    'tool.favicon.t':'Favicon Generator','tool.favicon.d':'Make .ico/PNG favicons from text, emoji or image.','tool.diagram.t':'SVG Diagram Maker','tool.diagram.d':'Simple boxes & arrows → SVG/PNG.',
+    'fav.sub':'Create a favicon from text, an emoji, or an image.','fav.text':'Letter or emoji','fav.textph':'e.g. G, 📚, ☀','fav.img':'From an image (optional)','fav.bg':'Background','fav.fg':'Text color','fav.shape':'Shape','fav.round':'Rounded square','fav.circle':'Circle','fav.square':'Square','fav.dlico':'⬇️ favicon.ico','fav.dl32':'⬇️ PNG 32','fav.dl180':'⬇️ PNG 180 (Apple)','fav.dl512':'⬇️ PNG 512','fav.snippet':'HTML snippet','fav.copysnip':'📋 Copy code','fav.icodone':'Saved favicon.ico',
+    'dg.sub':'Draw simple boxes & arrows and export as SVG/PNG.','dg.add':'＋ Add box','dg.connect':'🔗 Connect mode','dg.del':'🗑 Delete selected','dg.hint':'Drag to move · double-click to edit text · in connect mode click two boxes in turn','dg.dlsvg':'⬇️ Save SVG','dg.dlpng':'⬇️ Save PNG','dg.editprompt':'Box text','dg.box':'Box','dg.start':'Start'
   },
   zh: {
     'nav.tools':'全部工具', 'nav.blog':'博客',
@@ -138,7 +144,10 @@ window.I18N = {
     'tool.json.t':'JSON 格式化·校验','tool.json.d':'美化·压缩·校验·键排序。','tool.regex.t':'正则测试器','tool.regex.d':'实时匹配、分组与替换。','tool.md.t':'Markdown 编辑器','tool.md.d':'实时预览 + 导出 HTML/MD。',
     'jn.sub':'美化或压缩 JSON 并检查错误。','jn.label':'JSON 输入','jn.ph':'在此粘贴 JSON…','jn.indent':'缩进','jn.indent2':'2 空格','jn.indent4':'4 空格','jn.indenttab':'制表符','jn.sort':'键排序(A→Z)','jn.format':'✨ 美化','jn.min':'🗜️ 压缩','jn.out':'结果','jn.outph':'结果将显示在此处。','jn.valid':'✓ 有效的 JSON','jn.error':'✕ 错误：{m}','jn.empty':'请输入 JSON。',
     'rx.sub':'用模式和标志实时测试匹配、分组与替换。','rx.pattern':'正则模式','rx.patternph':'如：\\d{3}-\\d{4}','rx.flaghint':'g 全局 · i 忽略大小写 · m 多行 · s 点匹配换行 · u Unicode · y 粘附','rx.text':'测试字符串','rx.textph':'在此输入要测试的文本…','rx.matches':'{n} 处匹配','rx.nomatch':'无匹配','rx.invalid':'无效的正则：{m}','rx.replace':'替换（可选）','rx.replaceph':'替换字符串（如 $1）','rx.result':'替换结果',
-    'md.sub':'左侧编写，右侧实时预览。','md.editor':'Markdown','md.preview':'预览','md.copyhtml':'📋 复制 HTML','md.dlmd':'⬇️ 保存 .md','md.dlhtml':'⬇️ 保存 HTML','md.note':'预览经过安全净化(sanitize)。所有处理仅在浏览器中进行。'
+    'md.sub':'左侧编写，右侧实时预览。','md.editor':'Markdown','md.preview':'预览','md.copyhtml':'📋 复制 HTML','md.dlmd':'⬇️ 保存 .md','md.dlhtml':'⬇️ 保存 HTML','md.note':'预览经过安全净化(sanitize)。所有处理仅在浏览器中进行。',
+    'tool.favicon.t':'Favicon 生成器','tool.favicon.d':'用文字·表情·图片生成 .ico/PNG 图标。','tool.diagram.t':'SVG 图示制作器','tool.diagram.d':'方框+箭头，简单图示 → SVG/PNG。',
+    'fav.sub':'用文字、表情或图片生成网站图标。','fav.text':'文字或表情','fav.textph':'如：G, 📚, ☀','fav.img':'用图片生成（可选）','fav.bg':'背景色','fav.fg':'文字颜色','fav.shape':'形状','fav.round':'圆角方形','fav.circle':'圆形','fav.square':'方形','fav.dlico':'⬇️ favicon.ico','fav.dl32':'⬇️ PNG 32','fav.dl180':'⬇️ PNG 180 (Apple)','fav.dl512':'⬇️ PNG 512','fav.snippet':'HTML 代码','fav.copysnip':'📋 复制代码','fav.icodone':'已保存 favicon.ico',
+    'dg.sub':'用方框和箭头绘制简单图示并导出 SVG/PNG。','dg.add':'＋ 添加方框','dg.connect':'🔗 连接模式','dg.del':'🗑 删除所选','dg.hint':'拖动移动 · 双击编辑文字 · 连接模式下依次点击两个方框','dg.dlsvg':'⬇️ 保存 SVG','dg.dlpng':'⬇️ 保存 PNG','dg.editprompt':'方框文字','dg.box':'方框','dg.start':'开始'
   },
   ja: {
     'nav.tools':'すべてのツール', 'nav.blog':'ブログ',
@@ -184,7 +193,10 @@ window.I18N = {
     'tool.json.t':'JSON 整形・検証','tool.json.d':'整形・圧縮・検証・キー並べ替え。','tool.regex.t':'正規表現テスター','tool.regex.d':'リアルタイム一致・グループ・置換。','tool.md.t':'Markdown エディタ','tool.md.d':'ライブプレビュー + HTML/MD 出力。',
     'jn.sub':'JSON を整形・圧縮し、エラーを検証します。','jn.label':'JSON 入力','jn.ph':'ここに JSON を貼り付け…','jn.indent':'インデント','jn.indent2':'スペース2','jn.indent4':'スペース4','jn.indenttab':'タブ','jn.sort':'キー並べ替え(A→Z)','jn.format':'✨ 整形','jn.min':'🗜️ 圧縮','jn.out':'結果','jn.outph':'ここに結果が表示されます。','jn.valid':'✓ 有効な JSON','jn.error':'✕ エラー: {m}','jn.empty':'JSON を入力してください。',
     'rx.sub':'パターンとフラグでリアルタイムに一致・グループ・置換を確認。','rx.pattern':'正規表現パターン','rx.patternph':'例: \\d{3}-\\d{4}','rx.flaghint':'g 全体 · i 大文字小文字無視 · m 複数行 · s ドットが改行に一致 · u Unicode · y スティッキー','rx.text':'テスト文字列','rx.textph':'ここにテストするテキストを入力…','rx.matches':'{n} 件一致','rx.nomatch':'一致なし','rx.invalid':'無効な正規表現: {m}','rx.replace':'置換（任意）','rx.replaceph':'置換文字列（例: $1）','rx.result':'置換結果',
-    'md.sub':'書くと右側にライブプレビューが表示されます。','md.editor':'Markdown','md.preview':'プレビュー','md.copyhtml':'📋 HTML をコピー','md.dlmd':'⬇️ .md 保存','md.dlhtml':'⬇️ HTML 保存','md.note':'プレビューは安全にサニタイズされて表示されます。すべての処理はブラウザ内のみで行われます。'
+    'md.sub':'書くと右側にライブプレビューが表示されます。','md.editor':'Markdown','md.preview':'プレビュー','md.copyhtml':'📋 HTML をコピー','md.dlmd':'⬇️ .md 保存','md.dlhtml':'⬇️ HTML 保存','md.note':'プレビューは安全にサニタイズされて表示されます。すべての処理はブラウザ内のみで行われます。',
+    'tool.favicon.t':'ファビコン生成','tool.favicon.d':'文字・絵文字・画像から .ico/PNG アイコン。','tool.diagram.t':'SVG 図解メーカー','tool.diagram.d':'四角と矢印で簡単な図 → SVG/PNG。',
+    'fav.sub':'文字・絵文字・画像からファビコンを作成します。','fav.text':'文字または絵文字','fav.textph':'例: G, 📚, ☀','fav.img':'画像から作成（任意）','fav.bg':'背景色','fav.fg':'文字色','fav.shape':'形','fav.round':'角丸四角','fav.circle':'円形','fav.square':'四角','fav.dlico':'⬇️ favicon.ico','fav.dl32':'⬇️ PNG 32','fav.dl180':'⬇️ PNG 180 (Apple)','fav.dl512':'⬇️ PNG 512','fav.snippet':'HTML 埋め込みコード','fav.copysnip':'📋 コードをコピー','fav.icodone':'favicon.ico を保存しました',
+    'dg.sub':'四角と矢印で簡単な図を描き、SVG/PNG で保存します。','dg.add':'＋ 四角を追加','dg.connect':'🔗 連結モード','dg.del':'🗑 選択を削除','dg.hint':'ドラッグで移動 · ダブルクリックで文字編集 · 連結モードで2つの四角を順にクリック','dg.dlsvg':'⬇️ SVG 保存','dg.dlpng':'⬇️ PNG 保存','dg.editprompt':'四角のテキスト','dg.box':'四角','dg.start':'開始'
   }
 };
 (function(){

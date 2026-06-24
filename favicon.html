@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>파비콘(Favicon) 생성기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="글자·이모지나 이미지로 즐겨찾기 아이콘(favicon)을 만드는 무료 도구. 멀티 사이즈 .ico와 PNG(32·180·512), HTML 코드까지. 업로드 없이 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/favicon.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="파비콘(Favicon) 생성기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="글자·이모지나 이미지로 즐겨찾기 아이콘(favicon)을 만드는 무료 도구. 멀티 사이즈 .ico와 PNG(32·180·512), HTML 코드까지. 업로드 없이 브라우저에서 바로."/>
+<meta property="og:url" content="https://gemini2k.co.kr/favicon.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="파비콘(Favicon) 생성기 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="글자·이모지나 이미지로 즐겨찾기 아이콘(favicon)을 만드는 무료 도구. 멀티 사이즈 .ico와 PNG(32·180·512), HTML 코드까지. 업로드 없이 브라우저에서 바로."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .fav-prev{ display:flex; gap:1.4rem; align-items:flex-end; flex-wrap:wrap; margin:.4rem 0 1rem; }
+  .fav-prev .b{ text-align:center; }
+  .fav-prev canvas{ border:1px solid var(--border); border-radius:8px; background:
+    linear-gradient(45deg,#eee 25%,transparent 25%),linear-gradient(-45deg,#eee 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#eee 75%),linear-gradient(-45deg,transparent 75%,#eee 75%);
+    background-size:12px 12px; background-position:0 0,0 6px,6px -6px,-6px 0; }
+  .fav-prev .cap{ font-size:.78rem; color:var(--muted); margin-top:.3rem; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media(max-width:560px){ .grid2{ grid-template-columns:1fr; } }
+  .grid2 label{ margin-top:0; }
+  #snippet{ font-family:ui-monospace,monospace; font-size:.82rem; min-height:90px; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.favicon.t">파비콘 생성기</h1>
+  <p class="sub" data-i18n="fav.sub">글자·이모지나 이미지로 즐겨찾기 아이콘을 만듭니다.</p>
+
+  <div class="card">
+    <div class="fav-prev">
+      <div class="b"><canvas id="p64" width="64" height="64" style="width:64px;height:64px;"></canvas><div class="cap">64</div></div>
+      <div class="b"><canvas id="p32" width="32" height="32" style="width:32px;height:32px;"></canvas><div class="cap">32</div></div>
+      <div class="b"><canvas id="p16" width="16" height="16" style="width:16px;height:16px;"></canvas><div class="cap">16</div></div>
+    </div>
+
+    <label for="text" data-i18n="fav.text">글자 또는 이모지</label>
+    <input type="text" id="text" maxlength="3" value="G" data-i18n-ph="fav.textph" placeholder="예: G, 📚, 빛"/>
+    <label for="img" style="margin-top:1rem;" data-i18n="fav.img">이미지로 만들기 (선택)</label>
+    <input type="file" id="img" accept="image/*"/>
+
+    <div class="grid2" style="margin-top:1rem;">
+      <div><label for="bg" data-i18n="fav.bg">배경색</label><input type="color" id="bg" value="#1AA3E0" style="width:100%;height:42px;padding:2px;"/></div>
+      <div><label for="fg" data-i18n="fav.fg">글자색</label><input type="color" id="fg" value="#ffffff" style="width:100%;height:42px;padding:2px;"/></div>
+    </div>
+    <label for="shape" style="margin-top:1rem;" data-i18n="fav.shape">모양</label>
+    <select id="shape">
+      <option value="round" data-i18n="fav.round">둥근 사각형</option>
+      <option value="circle" data-i18n="fav.circle">원형</option>
+      <option value="square" data-i18n="fav.square">사각형</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <div class="row" style="flex-wrap:wrap;">
+      <button class="btn" id="dlico" data-i18n="fav.dlico">⬇️ favicon.ico</button>
+      <button class="btn btn-ghost" id="dl32" data-i18n="fav.dl32">⬇️ PNG 32</button>
+      <button class="btn btn-ghost" id="dl180" data-i18n="fav.dl180">⬇️ PNG 180 (애플)</button>
+      <button class="btn btn-ghost" id="dl512" data-i18n="fav.dl512">⬇️ PNG 512</button>
+    </div>
+    <label for="snippet" style="margin-top:1.2rem;" data-i18n="fav.snippet">HTML 삽입 코드</label>
+    <textarea id="snippet" readonly></textarea>
+    <div class="row" style="margin-top:.7rem;"><button class="btn btn-ghost" id="copysnip" data-i18n="fav.copysnip">📋 코드 복사</button></div>
+    <p class="hint" data-i18n="pdf.note">모든 처리는 브라우저에서 이루어지며, 파일은 서버로 전송되지 않습니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1700);}
+  var textEl=document.getElementById('text'), imgEl=document.getElementById('img'),
+      bgEl=document.getElementById('bg'), fgEl=document.getElementById('fg'), shapeEl=document.getElementById('shape'),
+      snippet=document.getElementById('snippet');
+  var uploaded=null;
+
+  function shapePath(ctx, s, shape){
+    ctx.beginPath();
+    if(shape==='circle'){ ctx.arc(s/2, s/2, s/2, 0, Math.PI*2); }
+    else if(shape==='square'){ ctx.rect(0,0,s,s); }
+    else { var r=s*0.22; ctx.moveTo(r,0); ctx.arcTo(s,0,s,s,r); ctx.arcTo(s,s,0,s,r); ctx.arcTo(0,s,0,0,r); ctx.arcTo(0,0,s,0,r); ctx.closePath(); }
+  }
+  function render(size){
+    var cv=document.createElement('canvas'); cv.width=cv.height=size;
+    var ctx=cv.getContext('2d');
+    if(uploaded){
+      ctx.save(); shapePath(ctx,size,shapeEl.value); ctx.clip();
+      var iw=uploaded.width, ih=uploaded.height, sc=Math.max(size/iw, size/ih), w=iw*sc, h=ih*sc;
+      ctx.drawImage(uploaded, (size-w)/2, (size-h)/2, w, h); ctx.restore();
+    } else {
+      ctx.fillStyle=bgEl.value; shapePath(ctx,size,shapeEl.value); ctx.fill();
+      var t=textEl.value || 'G';
+      ctx.fillStyle=fgEl.value; ctx.textAlign='center'; ctx.textBaseline='middle';
+      var fs = size * (t.length>=3?0.42:t.length===2?0.52:0.62);
+      ctx.font='700 '+fs+"px 'Pretendard Variable',Pretendard,system-ui,'Apple Color Emoji','Segoe UI Emoji',sans-serif";
+      ctx.fillText(t, size/2, size/2 + size*0.04);
+    }
+    return cv;
+  }
+  function drawTo(id, size){ var d=document.getElementById(id), c=d.getContext('2d'); c.clearRect(0,0,size,size); c.drawImage(render(size),0,0); }
+  function refresh(){ drawTo('p64',64); drawTo('p32',32); drawTo('p16',16); }
+
+  function pngBytes(size){ return new Promise(function(res){ render(size).toBlob(function(b){ b.arrayBuffer().then(function(buf){ res(new Uint8Array(buf)); }); }, 'image/png'); }); }
+  function dlBlob(blob, name){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
+  function dlPng(size, name){ render(size).toBlob(function(b){ dlBlob(b, name); }, 'image/png'); }
+
+  async function buildIco(sizes){
+    var imgs=[]; for(var i=0;i<sizes.length;i++){ imgs.push({s:sizes[i], data:await pngBytes(sizes[i])}); }
+    var count=imgs.length, header=6+16*count, total=header;
+    imgs.forEach(function(im){ total+=im.data.length; });
+    var buf=new Uint8Array(total), dv=new DataView(buf.buffer);
+    dv.setUint16(0,0,true); dv.setUint16(2,1,true); dv.setUint16(4,count,true);
+    var off=header;
+    imgs.forEach(function(im,idx){
+      var e=6+idx*16, b=im.s>=256?0:im.s;
+      buf[e]=b; buf[e+1]=b; buf[e+2]=0; buf[e+3]=0;
+      dv.setUint16(e+4,1,true); dv.setUint16(e+6,32,true);
+      dv.setUint32(e+8, im.data.length, true); dv.setUint32(e+12, off, true);
+      buf.set(im.data, off); off+=im.data.length;
+    });
+    return new Blob([buf], {type:'image/x-icon'});
+  }
+
+  imgEl.addEventListener('change', function(){
+    var f=imgEl.files[0]; if(!f){ uploaded=null; refresh(); return; }
+    var im=new Image(); im.onload=function(){ uploaded=im; refresh(); }; im.src=URL.createObjectURL(f);
+  });
+  [bgEl,fgEl,shapeEl].forEach(function(el){ el.addEventListener('input', refresh); });
+  textEl.addEventListener('input', function(){ uploaded=null; imgEl.value=''; refresh(); });
+
+  document.getElementById('dl32').addEventListener('click', function(){ dlPng(32,'favicon-32.png'); });
+  document.getElementById('dl180').addEventListener('click', function(){ dlPng(180,'apple-touch-icon.png'); });
+  document.getElementById('dl512').addEventListener('click', function(){ dlPng(512,'icon-512.png'); });
+  document.getElementById('dlico').addEventListener('click', async function(){ var blob=await buildIco([16,32,48]); dlBlob(blob,'favicon.ico'); toast(T('fav.icodone')); });
+
+  snippet.value = '<link rel="icon" href="/favicon.ico" sizes="any">\n<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">';
+  document.getElementById('copysnip').addEventListener('click', function(){
+    navigator.clipboard.writeText(snippet.value).then(function(){toast(T('toast.copied'));}).catch(function(){toast(T('toast.copied'));});
+  });
+  refresh();
+</script>
+</body>
+</html>

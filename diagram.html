@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>SVG 다이어그램 메이커 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="상자와 화살표로 간단한 순서도·구성도를 그리고 SVG·PNG로 저장하는 무료 도구. 드래그로 이동, 더블클릭으로 글자 수정. 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/diagram.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="SVG 다이어그램 메이커 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="상자와 화살표로 간단한 순서도·구성도를 그리고 SVG·PNG로 저장하는 무료 도구. 드래그로 이동, 더블클릭으로 글자 수정. 브라우저에서 바로."/>
+<meta property="og:url" content="https://gemini2k.co.kr/diagram.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="SVG 다이어그램 메이커 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="상자와 화살표로 간단한 순서도·구성도를 그리고 SVG·PNG로 저장하는 무료 도구. 드래그로 이동, 더블클릭으로 글자 수정. 브라우저에서 바로."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .dgbar{ display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin-bottom:.8rem; }
+  .dgbar .btn{ padding:.5rem .8rem; }
+  #svg{ width:100%; height:auto; border:1px solid var(--border); border-radius:12px; background:#fff; touch-action:none; display:block; }
+  .palette{ display:flex; gap:.35rem; }
+  .sw{ width:26px; height:26px; border-radius:7px; border:2px solid #fff; box-shadow:0 0 0 1px var(--border); cursor:pointer; }
+  .sw.on{ box-shadow:0 0 0 2px #5B5BF5; }
+  .on-btn{ background:#F59E0B !important; border-color:#F59E0B !important; color:#fff !important; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap" style="max-width:1000px;">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.diagram.t">SVG 다이어그램 메이커</h1>
+  <p class="sub" data-i18n="dg.sub">상자와 화살표로 간단한 도식을 그려 SVG·PNG로 저장합니다.</p>
+
+  <div class="card">
+    <div class="dgbar">
+      <button class="btn" id="add" data-i18n="dg.add">＋ 상자 추가</button>
+      <button class="btn btn-ghost" id="connect" data-i18n="dg.connect">🔗 연결 모드</button>
+      <button class="btn btn-ghost" id="del" data-i18n="dg.del">🗑 선택 삭제</button>
+      <span class="palette" id="palette"></span>
+    </div>
+    <p class="hint" id="hint" data-i18n="dg.hint" style="margin-top:0;">상자를 드래그해 이동 · 더블클릭해 글자 수정 · 연결 모드에서 두 상자를 차례로 클릭</p>
+    <svg id="svg" viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="row" style="margin-top:1rem;">
+      <button class="btn" id="dlsvg" data-i18n="dg.dlsvg">⬇️ SVG 저장</button>
+      <button class="btn btn-ghost" id="dlpng" data-i18n="dg.dlpng">⬇️ PNG 저장</button>
+      <button class="btn btn-ghost" id="clear" data-i18n="btn.clear">지우기</button>
+    </div>
+    <p class="hint" data-i18n="pdf.note">모든 처리는 브라우저에서 이루어지며, 파일은 서버로 전송되지 않습니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1700);}
+  var VW=900, VH=520;
+  var svg=document.getElementById('svg');
+  var COLORS=['#EAF2FF','#E6F7F0','#FFF3E0','#FCE7F3','#EDE9FE','#F1F5F9'];
+  var nodes=[], edges=[], seq=1, selected=null, connectMode=false, connectFirst=null, drag=null, newColor=COLORS[0];
+
+  function byId(id){ for(var i=0;i<nodes.length;i++) if(nodes[i].id===id) return nodes[i]; return null; }
+  function esc(s){ return (s||'').replace(/[&<>]/g,function(c){return c==='&'?'&amp;':c==='<'?'&lt;':'&gt;';}); }
+  function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+  function nodeW(n){ return Math.max(78, n.text.length*9+30); }
+  function lum(hex){ var c=hex.replace('#',''); var r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16); return (0.299*r+0.587*g+0.114*b); }
+  function textColor(bg){ return lum(bg) > 150 ? '#1f2937' : '#ffffff'; }
+  function border(n, tx, ty){
+    var w=nodeW(n), h=44, dx=tx-n.x, dy=ty-n.y;
+    if(dx===0 && dy===0) return {x:n.x, y:n.y};
+    var sx=(w/2)/Math.abs(dx||1e-6), sy=(h/2)/Math.abs(dy||1e-6), s=Math.min(sx,sy);
+    return {x:n.x+dx*s, y:n.y+dy*s};
+  }
+  function inner(){
+    var parts=['<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#475569"/></marker></defs>'];
+    edges.forEach(function(ed){ var a=byId(ed.a), b=byId(ed.b); if(!a||!b) return;
+      var p=border(a,b.x,b.y), q=border(b,a.x,a.y);
+      parts.push('<line x1="'+p.x.toFixed(1)+'" y1="'+p.y.toFixed(1)+'" x2="'+q.x.toFixed(1)+'" y2="'+q.y.toFixed(1)+'" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>');
+    });
+    nodes.forEach(function(n){
+      var w=nodeW(n), h=44, x=n.x-w/2, y=n.y-h/2;
+      var stroke=(n.id===connectFirst)?'#F59E0B':(n.id===selected?'#5B5BF5':'rgba(15,23,42,.14)');
+      var sw=(n.id===connectFirst||n.id===selected)?3:1.5;
+      parts.push('<g class="dnode" data-id="'+n.id+'" style="cursor:move"><rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w+'" height="'+h+'" rx="11" fill="'+n.color+'" stroke="'+stroke+'" stroke-width="'+sw+'"/><text x="'+n.x.toFixed(1)+'" y="'+(n.y+1).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" font-family="Pretendard,system-ui,sans-serif" font-size="14" font-weight="600" fill="'+textColor(n.color)+'">'+esc(n.text)+'</text></g>');
+    });
+    return parts.join('');
+  }
+  function render(){ svg.innerHTML = inner(); }
+
+  function pt(e){ var r=svg.getBoundingClientRect(); return { x:(e.clientX-r.left)*(VW/r.width), y:(e.clientY-r.top)*(VH/r.height) }; }
+
+  svg.addEventListener('pointerdown', function(e){
+    var g=e.target.closest('[data-id]');
+    if(connectMode){
+      if(g){ var id=+g.getAttribute('data-id');
+        if(connectFirst===null) connectFirst=id;
+        else if(connectFirst!==id){ edges.push({a:connectFirst,b:id}); connectFirst=null; }
+        else connectFirst=null;
+      } else connectFirst=null;
+      render(); return;
+    }
+    if(g){ selected=+g.getAttribute('data-id'); var n=byId(selected), p=pt(e); drag={dx:p.x-n.x, dy:p.y-n.y}; try{svg.setPointerCapture(e.pointerId);}catch(_){} render(); }
+    else { selected=null; render(); }
+  });
+  svg.addEventListener('pointermove', function(e){
+    if(!drag || selected===null) return;
+    var n=byId(selected), p=pt(e); n.x=clamp(p.x-drag.dx, 45, VW-45); n.y=clamp(p.y-drag.dy, 28, VH-28); render();
+  });
+  function endDrag(e){ drag=null; try{svg.releasePointerCapture(e.pointerId);}catch(_){} }
+  svg.addEventListener('pointerup', endDrag);
+  svg.addEventListener('pointercancel', endDrag);
+  svg.addEventListener('dblclick', function(e){
+    var g=e.target.closest('[data-id]'); if(!g) return;
+    var n=byId(+g.getAttribute('data-id')); var t=prompt(T('dg.editprompt'), n.text);
+    if(t!==null){ n.text=t; render(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if((e.key==='Delete'||e.key==='Backspace') && selected!==null && document.activeElement.tagName!=='INPUT' && document.activeElement.tagName!=='TEXTAREA'){
+      removeSelected(); e.preventDefault();
+    }
+  });
+
+  function addBox(){
+    var i=nodes.length;
+    var n={ id:seq++, x:130+(i%4)*180, y:90+Math.floor(i/4)*100, text:T('dg.box'), color:newColor };
+    n.x=clamp(n.x,45,VW-45); n.y=clamp(n.y,28,VH-28);
+    nodes.push(n); selected=n.id; render();
+  }
+  function removeSelected(){
+    if(selected===null) return;
+    nodes=nodes.filter(function(n){ return n.id!==selected; });
+    edges=edges.filter(function(ed){ return ed.a!==selected && ed.b!==selected; });
+    selected=null; render();
+  }
+  document.getElementById('add').addEventListener('click', addBox);
+  document.getElementById('del').addEventListener('click', removeSelected);
+  document.getElementById('connect').addEventListener('click', function(){
+    connectMode=!connectMode; connectFirst=null;
+    this.classList.toggle('on-btn', connectMode); render();
+  });
+  document.getElementById('clear').addEventListener('click', function(){ nodes=[]; edges=[]; selected=null; connectFirst=null; render(); });
+
+  var pal=document.getElementById('palette');
+  pal.innerHTML = COLORS.map(function(c,i){ return '<span class="sw'+(i===0?' on':'')+'" data-c="'+c+'" style="background:'+c+'"></span>'; }).join('');
+  pal.addEventListener('click', function(e){
+    var s=e.target.closest('.sw'); if(!s) return;
+    newColor=s.dataset.c;
+    pal.querySelectorAll('.sw').forEach(function(x){ x.classList.toggle('on', x===s); });
+    if(selected!==null){ byId(selected).color=newColor; render(); }
+  });
+
+  function exportSVG(){
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+VW+' '+VH+'" width="'+VW+'" height="'+VH+'"><rect width="'+VW+'" height="'+VH+'" fill="#ffffff"/>'+inner()+'</svg>';
+  }
+  function stamp(){ var d=new Date(),p=function(n){return(n<10?'0':'')+n;}; return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'_'+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds()); }
+  function dl(blob, name){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
+  document.getElementById('dlsvg').addEventListener('click', function(){
+    var save=selected; selected=null; connectFirst=null;
+    dl(new Blob([exportSVG()], {type:'image/svg+xml'}), 'diagram_'+stamp()+'.svg'); selected=save; render();
+  });
+  document.getElementById('dlpng').addEventListener('click', function(){
+    var save=selected; selected=null; connectFirst=null;
+    var data=exportSVG(); selected=save; render();
+    var img=new Image();
+    img.onload=function(){
+      var cv=document.createElement('canvas'); cv.width=VW*2; cv.height=VH*2;
+      var ctx=cv.getContext('2d'); ctx.scale(2,2); ctx.drawImage(img,0,0);
+      cv.toBlob(function(b){ dl(b,'diagram_'+stamp()+'.png'); }, 'image/png');
+    };
+    img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data);
+  });
+
+  // 시작 예시
+  nodes=[ {id:seq++,x:160,y:110,text:T('dg.start'),color:COLORS[1]},
+          {id:seq++,x:160,y:260,text:T('dg.box'),color:COLORS[0]},
+          {id:seq++,x:420,y:260,text:T('dg.box'),color:COLORS[0]} ];
+  edges=[ {a:1,b:2},{a:2,b:3} ];
+  render();
+  window.onI18n = function(){ render(); };
+</script>
+</body>
+</html>
