@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="텍스트·로그 속 주민등록번호·사업자번호·카드·전화·이메일·IP를 체크섬(주민/사업자 검증식, 카드 Luhn)으로 검증해 오탐 없이 자동 탐지·마스킹하는 무료 도구. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/pii.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="개인정보 탐지·마스킹기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="텍스트·로그 속 주민등록번호·사업자번호·카드·전화·이메일·IP를 체크섬(주민/사업자 검증식, 카드 Luhn)으로 검증해 오탐 없이 자동 탐지·마스킹하는 무료 도구. 업로드 없이 브라우저에서만 처리됩니다."/>
+<meta property="og:url" content="https://gemini2k.co.kr/pii.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="개인정보 탐지·마스킹기 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="텍스트·로그 속 주민등록번호·사업자번호·카드·전화·이메일·IP를 체크섬(주민/사업자 검증식, 카드 Luhn)으로 검증해 오탐 없이 자동 탐지·마스킹하는 무료 도구. 업로드 없이 브라우저에서만 처리됩니다."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>개인정보 탐지·마스킹기 — 빛의여행(gemini2k) 도구</title>
+<script src="ga.js"></script>
+<style>
+  :root{
+    --bg:#0A0F1C; --panel:#0F1A2E; --panel-2:#13223C; --line:#1E3050;
+    --ink:#E6EDF7; --muted:#8FA3C0; --faint:#5B7196;
+    --teal:#2DD4BF; --orange:#F59E0B; --purple:#A78BFA; --red:#F87171;
+    --sky:#38BDF8; --yellow:#FACC15;
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;
+    background-image:radial-gradient(1200px 600px at 85% -10%,rgba(167,139,250,.10),transparent 60%),
+                     radial-gradient(900px 500px at -10% 5%,rgba(45,212,191,.08),transparent 55%);}
+  .wrap{max-width:1020px;margin:0 auto;padding:28px 20px 80px}
+  h1,h2,h3{line-height:1.2;margin:0}
+  .mono{font-family:var(--mono)}
+  header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--purple)}
+  h1{font-size:clamp(24px,4.5vw,36px);font-weight:800;letter-spacing:-.01em;margin-top:6px}
+  h1 .sub{color:var(--muted);font-weight:500;font-size:.5em;letter-spacing:0;display:block;margin-top:4px}
+  .privacy-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;
+    color:var(--teal);background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.3);padding:8px 12px;border-radius:999px;white-space:nowrap}
+  .privacy-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal)}
+  .lede{color:var(--muted);max-width:64ch;margin:14px 0 26px;font-size:15px}
+
+  .panel{background:linear-gradient(180deg,var(--panel),rgba(15,26,46,.6));border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px}
+  .panel-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .panel-head .num{font-family:var(--mono);font-size:12px;color:var(--bg);background:var(--teal);width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-weight:700;flex:none}
+  .panel-head h2{font-size:17px;font-weight:700}
+  .panel-head .hint{color:var(--faint);font-size:12.5px;margin-left:auto}
+
+  textarea{width:100%;min-height:150px;background:#0A1322;border:1px solid var(--line);border-radius:10px;color:var(--ink);font-family:var(--mono);font-size:13.5px;padding:13px;resize:vertical}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+  button,.btn{font-family:var(--sans);font-size:14px;font-weight:600;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:10px 16px;cursor:pointer;transition:transform .08s,border-color .15s,background .15s}
+  button:hover{border-color:var(--teal)} button:active{transform:translateY(1px)}
+  button.primary{background:var(--teal);color:#04201C;border-color:var(--teal)} button.primary:hover{background:#3ee6d2}
+  button.ghost{background:transparent}
+  button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,label:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+  .hidden{display:none!important}
+
+  .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-top:6px}
+  .opt{display:flex;align-items:center;gap:9px;background:rgba(10,19,34,.5);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:13.5px}
+  .opt input{width:16px;height:16px;accent-color:var(--teal)}
+  .opt .sw{font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .opt .tag{width:9px;height:9px;border-radius:3px;display:inline-block;margin-left:auto}
+  fieldset{border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0 0;min-width:0}
+  legend{font-size:12.5px;color:var(--muted);padding:0 8px}
+  .styleseg{display:flex;flex-wrap:wrap;gap:8px}
+  .styleseg label{font-size:13px;padding:8px 14px;border-radius:9px;border:1px solid var(--line);cursor:pointer;color:var(--muted);background:transparent}
+  .styleseg input{position:absolute;opacity:0;width:0;height:0}
+  .styleseg input:checked+span{}
+  .styleseg label.on{background:rgba(45,212,191,.14);border-color:var(--teal);color:var(--teal)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:6px}
+  .chip{font-family:var(--mono);font-size:12.5px;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;display:inline-flex;align-items:center;gap:7px}
+  .chip i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .chip b{color:var(--ink)}
+  .chip-total{background:rgba(45,212,191,.1);border-color:rgba(45,212,191,.35);color:var(--teal)}
+
+  .preview{background:#0A1322;border:1px solid var(--line);border-radius:10px;padding:14px;font-family:var(--mono);font-size:13px;white-space:pre-wrap;word-break:break-word;max-height:280px;overflow:auto;margin-top:6px}
+  mark.pii{border-radius:4px;padding:1px 3px;color:#06101F;font-weight:700}
+  mark.rrn{background:var(--red)} mark.brn{background:var(--orange)} mark.card{background:var(--purple)}
+  mark.phone{background:var(--teal)} mark.email{background:var(--sky)} mark.ip{background:var(--yellow)} mark.account{background:var(--faint);color:var(--ink)}
+
+  .out{width:100%;min-height:150px;background:#08101D;border:1px solid var(--line);border-radius:10px;color:var(--ink);font-family:var(--mono);font-size:13.5px;padding:13px;resize:vertical}
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-top:6px}
+  table{border-collapse:collapse;width:100%;font-size:13px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);text-transform:uppercase;background:rgba(10,19,34,.5)}
+  td{font-family:var(--mono)} tr:last-child td{border-bottom:none}
+  td .tag{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:7px;vertical-align:middle}
+
+  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .note{font-size:12.5px;color:var(--faint);margin-top:14px;line-height:1.65}
+  .err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.4);color:#FBA5A5;padding:12px 14px;border-radius:10px;font-size:13.5px;margin-top:12px}
+  .empty{color:var(--muted);font-size:14px;text-align:center;padding:18px}
+  footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--faint);font-size:12.5px;line-height:1.7}
+  footer code{font-family:var(--mono);color:var(--muted)}
+  @media (max-width:560px){ .wrap{padding:20px 14px 60px} .panel{padding:16px} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" style="display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);text-decoration:none;font-size:.9rem;margin-bottom:1rem">← 전체 도구</a>
+  <header>
+    <div>
+      <span class="eyebrow">PII Detection &amp; Masking</span>
+      <h1>개인정보 탐지·마스킹기<span class="sub">체크섬으로 검증해 오탐을 줄입니다</span></h1>
+    </div>
+    <span class="privacy-badge"><span class="dot"></span> 텍스트는 이 브라우저를 떠나지 않습니다</span>
+  </header>
+  <p class="lede">문서나 로그를 붙여넣으면 주민등록번호·사업자번호·카드·전화·이메일·IP를 찾아 마스킹합니다. 단순 패턴이 아니라 주민번호·사업자번호 체크섬과 카드 Luhn 검증을 적용해, 형식만 비슷한 숫자의 오탐을 걸러냅니다. 모든 처리는 기기 안에서만 이뤄지고 전송 통신은 없습니다.</p>
+
+  <!-- STEP 1 -->
+  <section class="panel">
+    <div class="panel-head"><span class="num">1</span><h2>텍스트 입력</h2><span class="hint">붙여넣기 또는 텍스트 파일</span></div>
+    <textarea id="input" placeholder="여기에 텍스트를 붙여넣으세요. (.txt, .csv, .log, .json, .md 파일도 끌어다 놓거나 선택할 수 있습니다)"></textarea>
+    <div class="row">
+      <button type="button" class="primary" id="runBtn">탐지·마스킹 실행</button>
+      <button type="button" class="ghost" id="fileBtn">파일 선택</button>
+      <button type="button" class="ghost" id="sampleBtn">샘플 텍스트</button>
+      <button type="button" class="ghost" id="clearBtn">지우기</button>
+      <input type="file" id="file" accept=".txt,.csv,.tsv,.log,.json,.md,.text,text/plain" class="hidden">
+    </div>
+
+    <fieldset>
+      <legend>탐지 항목</legend>
+      <div class="opts" id="opts"></div>
+    </fieldset>
+    <fieldset>
+      <legend>마스킹 방식</legend>
+      <div class="styleseg" id="styleseg">
+        <label class="on"><input type="radio" name="mstyle" value="partial" checked><span>부분 마스킹</span></label>
+        <label><input type="radio" name="mstyle" value="full"><span>전체 마스킹 [유형]</span></label>
+        <label><input type="radio" name="mstyle" value="token"><span>가명 토큰 [유형_1]</span></label>
+      </div>
+    </fieldset>
+    <div id="err"></div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel hidden" id="resultPanel">
+    <div class="panel-head"><span class="num">2</span><h2>결과</h2><span class="hint" id="resHint"></span></div>
+    <div class="chips" id="chips"></div>
+
+    <h3 style="font-size:13px;margin:18px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">탐지 위치 미리보기 (원본 강조)</h3>
+    <div class="preview" id="preview"></div>
+
+    <h3 style="font-size:13px;margin:20px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">마스킹 결과</h3>
+    <textarea class="out" id="output" readonly></textarea>
+    <div class="actions">
+      <button type="button" class="primary" id="copyBtn">마스킹 결과 복사</button>
+      <button type="button" class="ghost" id="downloadBtn">텍스트로 내려받기</button>
+    </div>
+
+    <h3 style="font-size:13px;margin:22px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">탐지 요약</h3>
+    <div class="tbl-scroll"><table id="summary"></table></div>
+    <p class="note" id="resultNote"></p>
+  </section>
+
+  <footer>
+    <strong style="color:var(--muted)">검증 방식 ·</strong>
+    <code>주민등록번호</code>·<code>사업자등록번호</code>는 가중치 합 기반 체크섬, <code>신용카드</code>는 Luhn 알고리즘, <code>IP</code>는 옥텟 범위(0–255)로 형식 일치 여부를 검증합니다. 전화·이메일·계좌(추정)는 패턴 기반이라 오탐·미탐 여지가 있으니 결과를 확인하세요.
+    <br><br>
+    탐지는 알려진 형식에 한정되며 모든 개인정보를 보장하지 않습니다. 비정형 표현(이름·주소 등)이나 변형된 표기는 놓칠 수 있으므로, 중요한 처리에는 사람의 검토를 병행하세요.
+  </footer>
+</div>
+
+<script>
+"use strict";
+/* ===== 검증된 핵심 로직 (Node 단위테스트 통과) ===== */
+function validRRN(s){
+  if(!/^\d{13}$/.test(s)) return false;
+  const mm=+s.slice(2,4), dd=+s.slice(4,6), g=+s[6];
+  if(mm<1||mm>12||dd<1||dd>31) return false;
+  if(g<1||g>8) return false;
+  const w=[2,3,4,5,6,7,8,9,2,3,4,5]; let sum=0;
+  for(let i=0;i<12;i++) sum+=(+s[i])*w[i];
+  return ((11-(sum%11))%10)===(+s[12]);
+}
+function validBRN(s){
+  if(!/^\d{10}$/.test(s)) return false;
+  const w=[1,3,7,1,3,7,1,3,5]; let sum=0;
+  for(let i=0;i<9;i++) sum+=(+s[i])*w[i];
+  sum+=Math.floor((+s[8])*5/10);
+  return ((10-(sum%10))%10)===(+s[9]);
+}
+function validLuhn(s){
+  if(!/^\d{13,19}$/.test(s)) return false;
+  let sum=0, alt=false;
+  for(let i=s.length-1;i>=0;i--){ let n=+s[i]; if(alt){ n*=2; if(n>9)n-=9; } sum+=n; alt=!alt; }
+  return sum%10===0;
+}
+function validIPv4(a,b,c,d){ return [a,b,c,d].every(x=>{const n=+x; return /^\d{1,3}$/.test(x)&&n>=0&&n<=255;}); }
+
+const LABELS={rrn:'주민등록번호',brn:'사업자등록번호',card:'신용카드번호',phone:'전화번호',email:'이메일',ip:'IP주소',account:'계좌번호(추정)'};
+const COLORS={rrn:'var(--red)',brn:'var(--orange)',card:'var(--purple)',phone:'var(--teal)',email:'var(--sky)',ip:'var(--yellow)',account:'var(--faint)'};
+const PRIORITY=['rrn','brn','card','phone','email','ip','account'];
+
+function detect(text, enabled){
+  const m=[];
+  const add=(re,type,validate)=>{
+    if(!enabled[type]) return;
+    re.lastIndex=0; let g;
+    while((g=re.exec(text))!==null){
+      if(validate && !validate(g)) continue;
+      m.push({start:g.index,end:g.index+g[0].length,type,value:g[0]});
+    }
+  };
+  add(/(?<!\d)(\d{6})[- ]?([1-8]\d{6})(?!\d)/g,'rrn',g=>validRRN(g[1]+g[2]));
+  add(/(?<!\d)(\d{3})[- ]?(\d{2})[- ]?(\d{5})(?!\d)/g,'brn',g=>validBRN(g[1]+g[2]+g[3]));
+  add(/(?<!\d)(?:\d[ -]?){13,19}(?!\d)/g,'card',g=>{const d=g[0].replace(/[ -]/g,'');return [13,14,15,16,19].indexOf(d.length)>=0 && validLuhn(d);});
+  add(/(?<!\d)(01[016789])[- ]?(\d{3,4})[- ]?(\d{4})(?!\d)/g,'phone',null);
+  add(/(?<!\d)(0[2-6]\d?)[- ](\d{3,4})[- ](\d{4})(?!\d)/g,'phone',null);
+  add(/[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/g,'email',null);
+  add(/(?<!\d)(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})(?!\d)/g,'ip',g=>validIPv4(g[1],g[2],g[3],g[4]));
+  add(/(?<!\d)\d{2,6}-\d{2,6}-\d{2,7}(?!\d)/g,'account',null);
+
+  m.sort((a,b)=> a.start-b.start || PRIORITY.indexOf(a.type)-PRIORITY.indexOf(b.type) || (b.end-b.start)-(a.end-a.start));
+  const chosen=[];
+  for(const cur of m){
+    if(chosen.length && cur.start < chosen[chosen.length-1].end){
+      const prev=chosen[chosen.length-1];
+      const curBetter = PRIORITY.indexOf(cur.type)<PRIORITY.indexOf(prev.type)
+        || (cur.type===prev.type && (cur.end-cur.start)>(prev.end-prev.start));
+      if(curBetter) chosen[chosen.length-1]=cur;
+    } else chosen.push(cur);
+  }
+  return chosen;
+}
+function digits(s){return s.replace(/\D/g,'');}
+function maskPartial(type,value){
+  const d=digits(value);
+  switch(type){
+    case 'rrn': return d.slice(0,6)+'-'+d[6]+'******';
+    case 'brn': return d.slice(0,3)+'-'+d.slice(3,5)+'-*****';
+    case 'card':{ const last=d.slice(-4); const groups=Math.ceil((d.length-4)/4); return ('****-'.repeat(groups))+last; }
+    case 'phone':{
+      const seps=value.match(/[- ]/g); const groups=value.split(/[- ]/);
+      if(groups.length>=3){ const mk=groups.map((g,i)=>(i===0||i===groups.length-1)?g:'*'.repeat(g.length)); let r=mk[0]; for(let i=1;i<mk.length;i++) r+=((seps&&seps[i-1])||'-')+mk[i]; return r; }
+      if(d.length<7) return '*'.repeat(d.length);
+      return d.slice(0,3)+'-'+'*'.repeat(d.length-7)+'-'+d.slice(-4);
+    }
+    case 'email':{ const at=value.indexOf('@'); const l=value.slice(0,at), dom=value.slice(at+1); return (l[0]||'*')+'***@'+dom; }
+    case 'ip':{ const p=value.split('.'); return p[0]+'.'+p[1]+'.*.*'; }
+    case 'account': return d.length>3?('*'.repeat(d.length-3)+d.slice(-3)):'*'.repeat(d.length);
+    default: return '*'.repeat(value.length);
+  }
+}
+function maskValue(type,value,style,tokenMap,counters){
+  if(style==='full') return '['+LABELS[type]+']';
+  if(style==='token'){
+    const key=type+'|'+value;
+    if(!(key in tokenMap)){ counters[type]=(counters[type]||0)+1; tokenMap[key]='['+LABELS[type]+'_'+counters[type]+']'; }
+    return tokenMap[key];
+  }
+  return maskPartial(type,value);
+}
+
+/* ===== UI ===== */
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function errBox(msg){ $('err').innerHTML = msg?'<div class="err">'+esc(msg)+'</div>':''; }
+
+const DETECTORS=[
+  {type:'rrn',def:true},{type:'brn',def:true},{type:'card',def:true},
+  {type:'phone',def:true},{type:'email',def:true},{type:'ip',def:true},
+  {type:'account',def:false}
+];
+let LASTTEXT='', LASTMATCHES=null;
+
+function buildOpts(){
+  $('opts').innerHTML=DETECTORS.map(d=>
+    '<label class="opt"><input type="checkbox" data-type="'+d.type+'"'+(d.def?' checked':'')+'>'+
+    '<span>'+LABELS[d.type]+'</span><span class="tag" style="background:'+COLORS[d.type]+'"></span></label>'
+  ).join('');
+}
+function enabledMap(){
+  const e={};
+  $('opts').querySelectorAll('input[type=checkbox]').forEach(c=>e[c.getAttribute('data-type')]=c.checked);
+  return e;
+}
+function currentStyle(){ return ($('styleseg').querySelector('input[name=mstyle]:checked')||{}).value||'partial'; }
+
+function run(){
+  errBox('');
+  const text=$('input').value;
+  if(!text.trim()){ errBox('분석할 텍스트가 없습니다. 붙여넣거나 파일을 선택하세요.'); return; }
+  const matches=detect(text, enabledMap());
+  LASTTEXT=text; LASTMATCHES=matches;
+  render();
+}
+function render(){
+  const text=LASTTEXT, matches=LASTMATCHES||[];
+  const style=currentStyle();
+  // counts
+  const counts={}; matches.forEach(m=>counts[m.type]=(counts[m.type]||0)+1);
+  $('resHint').textContent='총 '+matches.length+'건';
+  // chips
+  let chips='<span class="chip chip-total">탐지 합계 <b>'+matches.length+'</b></span>';
+  PRIORITY.forEach(t=>{ if(counts[t]) chips+='<span class="chip"><i style="background:'+COLORS[t]+'"></i>'+LABELS[t]+' <b>'+counts[t]+'</b></span>'; });
+  $('chips').innerHTML=chips;
+
+  // highlighted preview (truncate very long text)
+  const LIMIT=20000;
+  const previewText = text.length>LIMIT ? text.slice(0,LIMIT) : text;
+  let html='', idx=0;
+  for(const m of matches){
+    if(m.start>=previewText.length) break;
+    html+=esc(previewText.slice(idx,m.start));
+    const shown = m.end<=previewText.length ? m.value : previewText.slice(m.start);
+    html+='<mark class="pii '+m.type+'" title="'+esc(LABELS[m.type])+'">'+esc(shown)+'</mark>';
+    idx=Math.min(m.end,previewText.length);
+  }
+  html+=esc(previewText.slice(idx));
+  if(text.length>LIMIT) html+='<span style="color:var(--faint)">… (미리보기는 앞부분 '+LIMIT.toLocaleString()+'자까지만 표시 — 마스킹 결과는 전체에 적용됩니다)</span>';
+  $('preview').innerHTML = matches.length? html : '<div class="empty">탐지된 개인정보가 없습니다. 탐지 항목 설정을 확인해 보세요.</div>';
+
+  // masked output (full text)
+  const tokenMap={}, counters={};
+  const sorted=matches.slice().sort((a,b)=>a.start-b.start);
+  let out='', oi=0;
+  for(const m of sorted){ out+=text.slice(oi,m.start); out+=maskValue(m.type,m.value,style,tokenMap,counters); oi=m.end; }
+  out+=text.slice(oi);
+  $('output').value=out;
+
+  // summary table (masked example per type — never shows raw)
+  const firstByType={}; matches.forEach(m=>{ if(!firstByType[m.type]) firstByType[m.type]=m.value; });
+  const tm2={}, c2={};
+  let rows='<tr><th>유형</th><th>건수</th><th>검증</th><th>마스킹 예시</th></tr>';
+  PRIORITY.forEach(t=>{
+    if(!counts[t]) return;
+    const validated = (t==='rrn'||t==='brn'||t==='card'||t==='ip');
+    rows+='<tr><td><span class="tag" style="background:'+COLORS[t]+'"></span>'+esc(LABELS[t])+'</td>'+
+      '<td>'+counts[t]+'</td>'+
+      '<td style="color:'+(validated?'var(--teal)':'var(--faint)')+'">'+(validated?'체크섬/범위':'패턴')+'</td>'+
+      '<td>'+esc(maskValue(t,firstByType[t],style,tm2,c2))+'</td></tr>';
+  });
+  $('summary').innerHTML=rows;
+
+  $('resultNote').innerHTML = matches.length
+    ? '검증 컬럼이 "체크섬/범위"인 항목은 형식 검증을 통과한 결과라 신뢰도가 높습니다. "패턴" 항목은 형식만 맞으면 잡히므로 오탐이 있을 수 있어요.'
+    : '';
+  $('resultPanel').classList.remove('hidden');
+  $('resultPanel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* sample (유효한 체크섬 값 사용) */
+const SAMPLE=`[상담 메모]
+고객명: 홍길동 (주민등록번호 901010-1234560)
+연락처: 010-1234-5678, 사무실 02-123-4567
+이메일: hong@example.com
+사업자등록번호: 123-45-67891
+결제카드: 4111-1111-1111-1111
+접속 IP: 192.168.0.1 (사내), 외부 203.0.113.45
+주문번호 12345678901234999 는 개인정보가 아님(오탐 방지 확인용).
+참고: 999.1.1.1 은 잘못된 IP라 탐지되지 않아야 함.`;
+
+/* file read */
+function readFile(f){
+  const reader=new FileReader();
+  reader.onload=()=>{ $('input').value=reader.result; run(); };
+  reader.onerror=()=>errBox('파일을 읽지 못했습니다.');
+  reader.readAsText(f);
+}
+function download(name,content){
+  const blob=new Blob([content],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a');
+  a.href=url; a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},100);
+}
+
+/* wiring */
+buildOpts();
+$('runBtn').addEventListener('click',run);
+$('fileBtn').addEventListener('click',()=>$('file').click());
+$('file').addEventListener('change',e=>{ const f=e.target.files[0]; if(f)readFile(f); });
+$('sampleBtn').addEventListener('click',()=>{ $('input').value=SAMPLE; run(); });
+$('clearBtn').addEventListener('click',()=>{ $('input').value=''; LASTMATCHES=null; $('resultPanel').classList.add('hidden'); errBox(''); $('input').focus(); });
+$('opts').addEventListener('change',()=>{ if(LASTMATCHES!==null) run(); });
+$('styleseg').addEventListener('change',e=>{
+  $('styleseg').querySelectorAll('label').forEach(l=>l.classList.remove('on'));
+  e.target.closest('label').classList.add('on');
+  if(LASTMATCHES!==null) render();   // restyle only, no re-detect
+});
+$('copyBtn').addEventListener('click',()=>{
+  const t=$('output').value; if(!t) return;
+  navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>{
+    $('copyBtn').textContent='복사됨'; setTimeout(()=>$('copyBtn').textContent='마스킹 결과 복사',1200);
+  }).catch(()=>{ $('output').select(); document.execCommand&&document.execCommand('copy'); });
+});
+$('downloadBtn').addEventListener('click',()=>{ const t=$('output').value; if(t)download('마스킹_결과.txt',t); });
+</script>
+</body>
+</html>
