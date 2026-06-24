@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>좌표계 변환기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="경위도(WGS84)와 한국 좌표계(UTM-K·중부원점·동부·서부원점)·도분초를 서로 변환하는 무료 도구. 한 번 입력하면 모든 좌표계로 동시 변환. 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/coord.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="좌표계 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="경위도(WGS84)와 한국 좌표계(UTM-K·중부원점·동부·서부원점)·도분초를 서로 변환하는 무료 도구. 한 번 입력하면 모든 좌표계로 동시 변환. 브라우저에서 바로."/>
+<meta property="og:url" content="https://gemini2k.co.kr/coord.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="좌표계 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="경위도(WGS84)와 한국 좌표계(UTM-K·중부원점·동부·서부원점)·도분초를 서로 변환하는 무료 도구. 한 번 입력하면 모든 좌표계로 동시 변환. 브라우저에서 바로."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/proj4@2.15.0/dist/proj4.js"></script>
+<style>
+  .crow{ display:flex; gap:.5rem; flex-wrap:wrap; align-items:flex-end; }
+  .crow .f{ flex:1; min-width:120px; }
+  .crow select{ width:100%; }
+  table.res{ width:100%; border-collapse:collapse; margin-top:.4rem; }
+  table.res td{ border-bottom:1px solid var(--border); padding:.55rem .4rem; vertical-align:top; }
+  table.res .nm{ font-weight:700; white-space:nowrap; }
+  table.res .vl{ font-family:ui-monospace,monospace; font-size:.9rem; cursor:pointer; word-break:break-all; }
+  table.res .vl:hover{ color:var(--accent); }
+  table.res .ep{ color:var(--muted); font-size:.78rem; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.coord.t">좌표계 변환기</h1>
+  <p class="sub" data-i18n="cv.sub">경위도와 한국 좌표계·도분초를 서로 변환합니다. 한 번 입력하면 모든 좌표계로.</p>
+
+  <div class="card">
+    <label for="src" data-i18n="cv.src">입력 좌표계</label>
+    <select id="src"></select>
+    <div class="crow" style="margin-top:1rem;">
+      <div class="f"><label for="x" id="lblx">경도</label><input type="text" id="x" value="126.976900"/></div>
+      <div class="f"><label for="y" id="lbly">위도</label><input type="text" id="y" value="37.575900"/></div>
+    </div>
+    <p class="hint" id="err" style="color:#E5484D;min-height:1.2em;"></p>
+  </div>
+
+  <div class="card">
+    <label data-i18n="cv.result">결과 — 모든 좌표계 (값 클릭 시 복사)</label>
+    <table class="res"><tbody id="out"></tbody></table>
+  </div>
+  <p class="hint" data-i18n="cv.note">한국 측지계(GRS80) 기준. 구 좌표(Bessel)는 근사 변환입니다. 모든 계산은 브라우저에서.</p>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+  function lang(){ return window.curLang ? window.curLang() : 'ko'; }
+
+  var CRS = [
+    { code:'EPSG:4326', geo:true,  name:{ko:'경위도 (WGS84)',en:'Lon/Lat (WGS84)',zh:'经纬度 (WGS84)',ja:'経緯度 (WGS84)'} },
+    { code:'DMS', dmsOnly:true,    name:{ko:'경위도 도분초',en:'Lat/Lon DMS',zh:'度分秒',ja:'度分秒'} },
+    { code:'EPSG:5179', def:'+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs', name:{ko:'UTM-K (GRS80)',en:'UTM-K (GRS80)',zh:'UTM-K (GRS80)',ja:'UTM-K (GRS80)'} },
+    { code:'EPSG:5186', def:'+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:{ko:'중부원점 (GRS80)',en:'Korea Central (GRS80)',zh:'中部原点 (GRS80)',ja:'中部原点 (GRS80)'} },
+    { code:'EPSG:5185', def:'+proj=tmerc +lat_0=38 +lon_0=125 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:{ko:'서부원점 (GRS80)',en:'Korea West (GRS80)',zh:'西部原点 (GRS80)',ja:'西部原点 (GRS80)'} },
+    { code:'EPSG:5187', def:'+proj=tmerc +lat_0=38 +lon_0=129 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:{ko:'동부원점 (GRS80)',en:'Korea East (GRS80)',zh:'东部原点 (GRS80)',ja:'東部原点 (GRS80)'} },
+    { code:'EPSG:5188', def:'+proj=tmerc +lat_0=38 +lon_0=131 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:{ko:'동해(울릉)원점 (GRS80)',en:'Korea East Sea (GRS80)',zh:'东海原点 (GRS80)',ja:'東海原点 (GRS80)'} },
+    { code:'EPSG:2097', def:'+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.8,474.99,674.11,1.16,-2.31,-1.63,6.43', name:{ko:'중부원점 (Bessel, 구)',en:'Central (Bessel, legacy)',zh:'中部原点 (Bessel, 旧)',ja:'中部原点 (Bessel, 旧)'} },
+    { code:'EPSG:3857', def:'EPSG:3857', name:{ko:'웹 메르카토르',en:'Web Mercator',zh:'Web 墨卡托',ja:'Web メルカトル'} }
+  ];
+  CRS.forEach(function(c){ if(c.def && c.def!=='EPSG:3857') proj4.defs(c.code, c.def); });
+  function nm(c){ return c.name[lang()] || c.name.en; }
+
+  var srcSel=document.getElementById('src'), X=document.getElementById('x'), Y=document.getElementById('y'),
+      lblx=document.getElementById('lblx'), lbly=document.getElementById('lbly'), out=document.getElementById('out'), err=document.getElementById('err');
+  var SOURCES = CRS.filter(function(c){ return !c.dmsOnly; });
+
+  function fillSrc(){ var v=srcSel.value; srcSel.innerHTML=SOURCES.map(function(c){ return '<option value="'+c.code+'">'+nm(c)+' · '+c.code+'</option>'; }).join(''); srcSel.value=v||'EPSG:4326'; }
+  function curSrc(){ for(var i=0;i<SOURCES.length;i++) if(SOURCES[i].code===srcSel.value) return SOURCES[i]; return SOURCES[0]; }
+  function syncLabels(){ var g=curSrc().geo; lblx.textContent = g?T('cv.lon'):T('cv.east'); lbly.textContent = g?T('cv.lat'):T('cv.north'); }
+  function dms(v, pos, neg){ var h=v<0?neg:pos; v=Math.abs(v); var d=Math.floor(v), m=Math.floor((v-d)*60), s=((v-d)*60-m)*60; return d+'° '+m+"' "+s.toFixed(2)+'" '+h; }
+
+  function run(){
+    var a=parseFloat(X.value), b=parseFloat(Y.value);
+    if(isNaN(a)||isNaN(b)){ err.textContent=T('cv.invalid'); out.innerHTML=''; return; }
+    var src=curSrc(), lonlat;
+    try{ lonlat = src.geo ? [a,b] : proj4(src.code, 'EPSG:4326', [a,b]); }
+    catch(e){ err.textContent=T('cv.invalid'); out.innerHTML=''; return; }
+    err.textContent='';
+    var rows = CRS.map(function(c){
+      var val;
+      try{
+        if(c.dmsOnly) val = dms(lonlat[1],'N','S') + ', ' + dms(lonlat[0],'E','W');
+        else if(c.geo) val = lonlat[0].toFixed(7) + ', ' + lonlat[1].toFixed(7);
+        else { var xy = proj4('EPSG:4326', c.code, lonlat); val = xy[0].toFixed(3) + ', ' + xy[1].toFixed(3); }
+      }catch(e){ val = '—'; }
+      var ep = c.dmsOnly ? '' : '<span class="ep"> · '+c.code+'</span>';
+      return '<tr><td class="nm">'+nm(c)+ep+'</td><td class="vl" data-v="'+val.replace(/"/g,'&quot;')+'">'+val+'</td></tr>';
+    });
+    out.innerHTML = rows.join('');
+  }
+  out.addEventListener('click', function(e){ var c=e.target.closest('.vl'); if(!c) return;
+    navigator.clipboard.writeText(c.dataset.v).then(function(){toast(T('toast.copied'));}).catch(function(){toast(T('toast.copied'));}); });
+  srcSel.addEventListener('change', function(){ syncLabels(); run(); });
+  [X,Y].forEach(function(el){ el.addEventListener('input', run); });
+  window.onI18n = function(){ fillSrc(); syncLabels(); run(); };
+
+  fillSrc(); syncLabels(); run();
+</script>
+</body>
+</html>
