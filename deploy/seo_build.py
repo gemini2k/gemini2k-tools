@@ -45,6 +45,52 @@ def inject(path):
     open(path, "w", encoding="utf-8").write(html)
     return True
 
+FAV_LINKS = (
+    '\n<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>'
+    '\n<link rel="icon" href="/favicon.ico" sizes="any"/>'
+    '\n<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>'
+)
+
+def inject_favicon(path):
+    html = open(path, encoding="utf-8").read()
+    if 'rel="icon"' in html:
+        return False
+    m = re.search(r'<meta charset="utf-8"\s*/?>', html, re.I)
+    if not m:
+        return False
+    html = html[:m.end()] + FAV_LINKS + html[m.end():]
+    open(path, "w", encoding="utf-8").write(html)
+    return True
+
+def build_favicon():
+    from PIL import Image, ImageDraw, ImageFont
+    bd = "C:/Windows/Fonts/malgunbd.ttf"
+    def font(size):
+        try: return ImageFont.truetype(bd, size)
+        except Exception: return ImageFont.load_default()
+    c1, c2 = (21, 195, 154), (61, 123, 240)   # green → blue
+    def make(sz):
+        grad = Image.new("RGB", (sz, sz))
+        for y in range(sz):
+            for x in range(sz):
+                tt = (x + y) / (2 * sz)
+                grad.putpixel((x, y), tuple(int(c1[i] + (c2[i] - c1[i]) * tt) for i in range(3)))
+        img = Image.new("RGBA", (sz, sz), (0, 0, 0, 0))
+        mask = Image.new("L", (sz, sz), 0)
+        ImageDraw.Draw(mask).rounded_rectangle([0, 0, sz - 1, sz - 1], radius=max(2, int(sz * 0.22)), fill=255)
+        img.paste(grad, (0, 0), mask)
+        d = ImageDraw.Draw(img)
+        f = sz / 32.0
+        if sz >= 32:
+            spark = [(25.5,3.6),(26.5,6.5),(29.4,7.5),(26.5,8.5),(25.5,11.4),(24.5,8.5),(21.6,7.5),(24.5,6.5)]
+            d.polygon([(x*f, y*f) for (x, y) in spark], fill="#FFFFFF")
+        d.text((sz*0.49, sz*0.66), "G2K", font=font(int(sz*0.40)), fill="#FFFFFF", anchor="mm")
+        return img
+    make(32).save(os.path.join(HERE, "favicon-32.png"))
+    make(180).save(os.path.join(HERE, "apple-touch-icon.png"))
+    make(512).save(os.path.join(HERE, "icon-512.png"))
+    make(48).save(os.path.join(HERE, "favicon.ico"), format="ICO", sizes=[(16,16),(32,32),(48,48)])
+
 def build_sitemap():
     locs = [canon(os.path.basename(p)) for p in PAGES]
     body = "\n".join("<url><loc>%s</loc></url>" % u for u in locs)
@@ -91,7 +137,9 @@ def build_og():
 
 if __name__ == "__main__":
     n = sum(1 for p in PAGES if inject(p))
+    nf = sum(1 for p in PAGES if inject_favicon(p))
     build_sitemap()
     build_og()
-    print(f"메타 주입: {n}개 페이지 / sitemap·robots·og.png 생성 완료")
+    build_favicon()
+    print(f"메타 주입: {n}개 / 파비콘 링크: {nf}개 / sitemap·robots·og.png·favicon 생성 완료")
     print("페이지:", [os.path.basename(p) for p in PAGES])
