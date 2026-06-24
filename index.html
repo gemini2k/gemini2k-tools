@@ -6,17 +6,17 @@
 <meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
 <meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
 <title>빛의여행(gemini2k) 도구 — 무료 온라인 도구 모음</title>
-<meta name="description" content="설치 없이 브라우저에서 바로 쓰는 무료 도구 모음. 글자수·날짜·QR·비밀번호·단위·색상·이미지·텍스트·PDF(합치기·쪼개기·압축·이미지변환)·개발자(JSON·정규식·마크다운) 도구. 한국어/English/中文/日本語."/>
+<meta name="description" content="설치 없이 브라우저에서 바로 쓰는 무료 도구 모음. 글자수·날짜·QR·비밀번호·단위·색상·이미지·텍스트·PDF(합치기·쪼개기·압축·이미지변환)·개발자(JSON·정규식·마크다운)·시간(세계시계·양음력) 도구. 한국어/English/中文/日本語."/>
 <link rel="canonical" href="https://gemini2k.co.kr/"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
 <meta property="og:title" content="빛의여행(gemini2k) 도구 — 무료 온라인 도구 모음"/>
-<meta property="og:description" content="설치 없이 브라우저에서 바로 쓰는 무료 도구 모음. 글자수·날짜·QR·비밀번호·단위·색상·이미지·텍스트·PDF(합치기·쪼개기·압축·이미지변환)·개발자(JSON·정규식·마크다운) 도구. 한국어/English/中文/日本語."/>
+<meta property="og:description" content="설치 없이 브라우저에서 바로 쓰는 무료 도구 모음. 글자수·날짜·QR·비밀번호·단위·색상·이미지·텍스트·PDF(합치기·쪼개기·압축·이미지변환)·개발자(JSON·정규식·마크다운)·시간(세계시계·양음력) 도구. 한국어/English/中文/日本語."/>
 <meta property="og:url" content="https://gemini2k.co.kr/"/>
 <meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="빛의여행(gemini2k) 도구 — 무료 온라인 도구 모음"/>
-<meta name="twitter:description" content="설치 없이 브라우저에서 바로 쓰는 무료 도구 모음. 글자수·날짜·QR·비밀번호·단위·색상·이미지·텍스트·PDF(합치기·쪼개기·압축·이미지변환)·개발자(JSON·정규식·마크다운) 도구. 한국어/English/中文/日本語."/>
+<meta name="twitter:description" content="설치 없이 브라우저에서 바로 쓰는 무료 도구 모음. 글자수·날짜·QR·비밀번호·단위·색상·이미지·텍스트·PDF(합치기·쪼개기·압축·이미지변환)·개발자(JSON·정규식·마크다운)·시간(세계시계·양음력) 도구. 한국어/English/中文/日本語."/>
 <meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
 <link rel="preconnect" href="https://cdn.jsdelivr.net"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
@@ -78,7 +78,9 @@
     { key:'regex', h:'regex.html',    ic:'🔎', chip:'c-violet', cat:'개발자', k:'정규식 정규표현식 regex regexp 正则 正規表現 패턴 pattern 테스트' },
     { key:'md',    h:'markdown.html', ic:'📝', chip:'c-blue',   cat:'개발자', k:'마크다운 markdown 에디터 editor preview md 编辑 プレビュー 온라인' },
     { key:'favicon',h:'favicon.html', ic:'⭐', chip:'c-amber',  cat:'이미지', k:'파비콘 favicon 즐겨찾기 아이콘 icon ico 图标 アイコン 생성' },
-    { key:'diagram',h:'diagram.html', ic:'🔷', chip:'c-violet', cat:'이미지', k:'다이어그램 diagram svg 도식 순서도 flowchart 图示 図解 박스 화살표' }
+    { key:'diagram',h:'diagram.html', ic:'🔷', chip:'c-violet', cat:'이미지', k:'다이어그램 diagram svg 도식 순서도 flowchart 图示 図解 박스 화살표' },
+    { key:'lunar',  h:'lunar.html',     ic:'🌙', chip:'c-amber',  cat:'변환기', k:'음력 양력 변환 lunar solar 农历 旧暦 설날 추석 간지 띠 윤달 calendar' },
+    { key:'worldclock',h:'worldclock.html',ic:'🌏', chip:'c-cyan', cat:'시간', k:'세계 시계 시간 timezone world clock 时区 时差 タイムゾーン 회의 utc gmt' }
   ];
   var grid=document.getElementById('grid'), chipsBox=document.getElementById('chips'),
       empty=document.getElementById('empty'), q=document.getElementById('q'), activeCat='전체';

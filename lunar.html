@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>양력↔음력 변환기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="양력과 음력(동아시아 음력·중국 농력)을 서로 변환하고 간지(干支)·띠를 알려주는 무료 도구. 윤달 지원, 1900~2100년. 설치 없이 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/lunar.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="양력↔음력 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="양력과 음력(동아시아 음력·중국 농력)을 서로 변환하고 간지(干支)·띠를 알려주는 무료 도구. 윤달 지원, 1900~2100년. 설치 없이 브라우저에서 바로."/>
+<meta property="og:url" content="https://gemini2k.co.kr/lunar.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="양력↔음력 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="양력과 음력(동아시아 음력·중국 농력)을 서로 변환하고 간지(干支)·띠를 알려주는 무료 도구. 윤달 지원, 1900~2100년. 설치 없이 브라우저에서 바로."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .lrow{ display:flex; gap:.5rem; flex-wrap:wrap; align-items:flex-end; }
+  .lrow .f{ flex:1; min-width:90px; }
+  .out{ margin-top:1rem; font-size:1.15rem; font-weight:800; color:var(--text); }
+  .out .gz{ display:block; font-size:.95rem; font-weight:600; color:var(--muted); margin-top:.3rem; }
+  .chk{ margin-top:.6rem; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.lunar.t">양력↔음력 변환기</h1>
+  <p class="sub" data-i18n="ln.sub">양력과 음력(동아시아 음력)을 서로 변환합니다.</p>
+
+  <div class="card">
+    <label for="solar" data-i18n="ln.s2l">양력 → 음력</label>
+    <input type="date" id="solar"/>
+    <div class="out" id="outA">—</div>
+  </div>
+
+  <div class="card">
+    <label data-i18n="ln.l2s">음력 → 양력</label>
+    <div class="lrow">
+      <div class="f"><label for="ly" style="margin-top:.4rem;" data-i18n="ln.year">년</label><input type="number" id="ly" min="1900" max="2100" value="2026"/></div>
+      <div class="f"><label for="lm" style="margin-top:.4rem;" data-i18n="ln.month">월</label><input type="number" id="lm" min="1" max="12" value="1"/></div>
+      <div class="f"><label for="ld" style="margin-top:.4rem;" data-i18n="ln.day">일</label><input type="number" id="ld" min="1" max="30" value="1"/></div>
+    </div>
+    <label class="chk"><input type="checkbox" id="leap"/> <span data-i18n="ln.leap">윤달</span></label>
+    <div class="out" id="outB">—</div>
+  </div>
+  <p class="hint" data-i18n="ln.range">지원 범위: 1900년 ~ 2100년. 모든 계산은 브라우저에서 이루어집니다.</p>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  var lunarInfo=[0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+  0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+  0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+  0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+  0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+  0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+  0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+  0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,
+  0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+  0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,
+  0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,
+  0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,
+  0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,
+  0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,
+  0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0,
+  0x14b63,0x09370,0x049f8,0x04970,0x064b0,0x168a6,0x0ea50,0x06b20,0x1a6c4,0x0aae0,
+  0x0a2e0,0x0d2e3,0x0c960,0x0d557,0x0d4a0,0x0da50,0x05d55,0x056a0,0x0a6d0,0x055d4,
+  0x052d0,0x0a9b8,0x0a950,0x0b4a0,0x0b6a6,0x0ad50,0x055a0,0x0aba4,0x0a5b0,0x052b0,
+  0x0b273,0x06930,0x07337,0x06aa0,0x0ad50,0x14b55,0x04b60,0x0a570,0x054e4,0x0d160,
+  0x0e968,0x0d520,0x0daa0,0x16aa6,0x056d0,0x04ae0,0x0a9d4,0x0a2d0,0x0d150,0x0f252,0x0d520];
+  function leapMonth(y){ return lunarInfo[y-1900]&0xf; }
+  function leapDays(y){ return leapMonth(y)?((lunarInfo[y-1900]&0x10000)?30:29):0; }
+  function monthDays(y,m){ return (lunarInfo[y-1900]&(0x10000>>m))?30:29; }
+  function lYearDays(y){ var s=348,i; for(i=0x8000;i>0x8;i>>=1) s+=(lunarInfo[y-1900]&i)?1:0; return s+leapDays(y); }
+  function solar2lunar(yy,mm,dd){
+    if(yy<1900||yy>2100) return null;
+    var offset=Math.round((Date.UTC(yy,mm-1,dd)-Date.UTC(1900,0,31))/86400000), i,temp=0,year;
+    for(i=1900;i<2101&&offset>0;i++){ temp=lYearDays(i); offset-=temp; }
+    if(offset<0){ offset+=temp; i--; } year=i;
+    var leap=leapMonth(year), isLeap=false;
+    for(i=1;i<13&&offset>0;i++){
+      if(leap>0&&i===(leap+1)&&isLeap===false){ --i; isLeap=true; temp=leapDays(year); }
+      else { temp=monthDays(year,i); }
+      if(isLeap===true&&i===(leap+1)) isLeap=false;
+      offset-=temp;
+    }
+    if(offset===0&&leap>0&&i===leap+1){ if(isLeap){ isLeap=false; } else { isLeap=true; --i; } }
+    if(offset<0){ offset+=temp; --i; }
+    return { y:year, m:i, d:offset+1, leap:isLeap };
+  }
+  function lunar2solar(y,m,d,wantLeap){
+    if(y<1900||y>2100) return null;
+    var leap=leapMonth(y), offset=0, i;
+    var maxd = (wantLeap&&m===leap)?leapDays(y):monthDays(y,m);
+    if(m<1||m>12||d<1||d>maxd) return null;
+    for(i=1900;i<y;i++) offset+=lYearDays(i);
+    for(i=1;i<m;i++) offset+=monthDays(y,i);
+    if(leap>0){ if(wantLeap&&m===leap){ offset+=monthDays(y,leap); } else if(m>leap){ offset+=leapDays(y); } }
+    offset+=d-1;
+    var dt=new Date(Date.UTC(1900,0,31)+offset*86400000);
+    return { y:dt.getUTCFullYear(), m:dt.getUTCMonth()+1, d:dt.getUTCDate() };
+  }
+
+  var STEMS=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+  var BRANCHES=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  var ZODIAC={ ko:['쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지'],
+    en:['Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Monkey','Rooster','Dog','Pig'],
+    zh:['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'],
+    ja:['ねずみ','うし','とら','うさぎ','たつ','へび','うま','ひつじ','さる','とり','いぬ','いのしし'] };
+  function ganzhi(y){ return STEMS[(y-4)%10] + BRANCHES[(y-4)%12]; }
+  function zodiac(y){ var l=(window.curLang?window.curLang():'ko'); return (ZODIAC[l]||ZODIAC.ko)[(y-4)%12]; }
+  function localeOf(){ var l=(window.curLang?window.curLang():'ko'); return l==='zh'?'zh-CN':l==='ja'?'ja':l==='en'?'en-US':'ko-KR'; }
+  function weekday(y,m,d){ try{ return new Intl.DateTimeFormat(localeOf(),{weekday:'short'}).format(new Date(y,m-1,d)); }catch(e){ return ''; } }
+
+  var solar=document.getElementById('solar'), outA=document.getElementById('outA'),
+      ly=document.getElementById('ly'), lm=document.getElementById('lm'), ld=document.getElementById('ld'), leap=document.getElementById('leap'), outB=document.getElementById('outB');
+
+  function runA(){
+    var v=solar.value; if(!v){ outA.textContent='—'; return; }
+    var p=v.split('-'), r=solar2lunar(+p[0],+p[1],+p[2]);
+    if(!r){ outA.textContent=T('ln.invalid'); return; }
+    var s=T('ln.lunarout').replace('{y}',r.y).replace('{m}',r.m).replace('{d}',r.d);
+    if(r.leap) s+=' '+T('ln.leapsuffix');
+    outA.innerHTML = s + '<span class="gz">'+T('ln.gz').replace('{gz}',ganzhi(r.y)).replace('{z}',zodiac(r.y))+'</span>';
+  }
+  function runB(){
+    var y=+ly.value, m=+lm.value, d=+ld.value, r=lunar2solar(y,m,d,leap.checked);
+    if(!r){ outB.textContent=T('ln.invalid'); return; }
+    outB.textContent = T('ln.solarout').replace('{y}',r.y).replace('{m}',r.m).replace('{d}',r.d).replace('{w}',weekday(r.y,r.m,r.d));
+  }
+  solar.addEventListener('input', runA);
+  [ly,lm,ld].forEach(function(el){ el.addEventListener('input', runB); });
+  leap.addEventListener('change', runB);
+  window.onI18n = function(){ runA(); runB(); };
+
+  (function(){ var t=new Date(); solar.value = t.getFullYear()+'-'+('0'+(t.getMonth()+1)).slice(-2)+'-'+('0'+t.getDate()).slice(-2); runA(); runB(); })();
+</script>
+</body>
+</html>

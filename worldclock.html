@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>세계 시계 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="세계 주요 도시의 현재 시각을 실시간으로 한눈에 보고, 회의 시각을 도시별로 변환하는 무료 세계시계. 도시 추가·삭제, GMT 오프셋 표시. 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/worldclock.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="세계 시계 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="세계 주요 도시의 현재 시각을 실시간으로 한눈에 보고, 회의 시각을 도시별로 변환하는 무료 세계시계. 도시 추가·삭제, GMT 오프셋 표시. 브라우저에서 바로."/>
+<meta property="og:url" content="https://gemini2k.co.kr/worldclock.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="세계 시계 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="세계 주요 도시의 현재 시각을 실시간으로 한눈에 보고, 회의 시각을 도시별로 변환하는 무료 세계시계. 도시 추가·삭제, GMT 오프셋 표시. 브라우저에서 바로."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .wcrow{ display:flex; gap:.55rem; align-items:center; flex-wrap:wrap; margin-bottom:.7rem; }
+  .wcrow select{ width:auto; min-width:200px; max-width:100%; padding:.5rem .6rem; }
+  .wcrow .chk{ margin:0; font-weight:600; }
+  .clocks{ display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:.8rem; }
+  .clock{ border:1px solid var(--border); border-radius:14px; padding:1rem 1.1rem; background:var(--surface); position:relative; }
+  .clock .x{ position:absolute; top:.5rem; right:.6rem; border:none; background:none; cursor:pointer; color:var(--muted); font-size:1rem; line-height:1; }
+  .clock .x:hover{ color:#E5484D; }
+  .clock .city{ font-weight:700; font-size:.98rem; display:flex; align-items:center; gap:.35rem; }
+  .clock .t{ font-size:1.9rem; font-weight:800; letter-spacing:.02em; margin:.25rem 0 .1rem; font-variant-numeric:tabular-nums; }
+  .clock .d{ color:var(--muted); font-size:.85rem; }
+  .clock .gmt{ color:var(--accent); font-size:.78rem; font-weight:700; margin-top:.2rem; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap" style="max-width:1000px;">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.worldclock.t">세계 시계</h1>
+  <p class="sub" data-i18n="wc.sub">세계 주요 도시의 현재 시각을 한눈에. 회의 시각도 변환하세요.</p>
+
+  <div class="card">
+    <div class="wcrow">
+      <label class="chk"><input type="checkbox" id="custom"/> <span data-i18n="wc.custom">사용자 지정 시각</span></label>
+      <input type="date" id="refdate" style="width:auto;"/>
+      <input type="time" id="reftime" style="width:auto;"/>
+      <span class="lbl" data-i18n="wc.refcity" style="font-weight:700;font-size:.86rem;">기준 도시</span>
+      <select id="refzone"></select>
+    </div>
+    <div class="wcrow">
+      <select id="addsel"></select>
+      <button class="btn" id="add" data-i18n="wc.add">추가</button>
+    </div>
+    <div class="clocks" id="clocks"></div>
+    <p class="hint" data-i18n="wc.note">모든 계산은 브라우저에서 이루어집니다. 도시 목록은 이 브라우저에 저장됩니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  var DEFAULT=['Asia/Seoul','Asia/Tokyo','Asia/Shanghai','Asia/Singapore','Europe/London','Europe/Paris','America/New_York','America/Los_Angeles'];
+  var zones=[]; try{ var s=localStorage.getItem('wc_zones'); if(s) zones=JSON.parse(s); }catch(e){}
+  if(!Array.isArray(zones)||!zones.length) zones=DEFAULT.slice();
+  var ALL=[]; try{ if(Intl.supportedValuesOf) ALL=Intl.supportedValuesOf('timeZone'); }catch(e){}
+  if(!ALL.length) ALL=DEFAULT.concat(['Asia/Hong_Kong','Asia/Taipei','Asia/Kolkata','Asia/Dubai','Asia/Bangkok','Europe/Berlin','Europe/Moscow','America/Chicago','America/Sao_Paulo','Australia/Sydney','Pacific/Auckland','UTC']);
+
+  function cityName(tz){ return tz.split('/').pop().replace(/_/g,' '); }
+  function localeOf(){ var l=(window.curLang?window.curLang():'ko'); return l==='zh'?'zh-CN':l==='ja'?'ja':l==='en'?'en-US':'ko-KR'; }
+  function tzOffsetMin(date,tz){ var s=new Date(date.toLocaleString('en-US',{timeZone:tz})), u=new Date(date.toLocaleString('en-US',{timeZone:'UTC'})); return Math.round((s-u)/60000); }
+  function gmt(min){ var sign=min<0?'-':'+', a=Math.abs(min); return 'GMT'+sign+Math.floor(a/60)+(a%60?(':'+('0'+(a%60)).slice(-2)):''); }
+  function hourIn(instant,tz){ return +new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',hour12:false}).format(new Date(instant)).replace(/[^0-9]/g,''); }
+  function fmtTime(instant,tz){ return new Intl.DateTimeFormat(localeOf(),{timeZone:tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date(instant)); }
+  function fmtDate(instant,tz){ return new Intl.DateTimeFormat(localeOf(),{timeZone:tz,weekday:'short',month:'short',day:'numeric'}).format(new Date(instant)); }
+
+  var customEl=document.getElementById('custom'), refdate=document.getElementById('refdate'), reftime=document.getElementById('reftime'),
+      refzone=document.getElementById('refzone'), addsel=document.getElementById('addsel'), clocks=document.getElementById('clocks');
+
+  function instantNow(){
+    if(!customEl.checked) return Date.now();
+    var d=refdate.value, t=reftime.value; if(!d||!t) return Date.now();
+    var p=d.split('-'), q=t.split(':');
+    var guess=Date.UTC(+p[0],+p[1]-1,+p[2],+q[0],+q[1],0);
+    var off=tzOffsetMin(new Date(guess), refzone.value||zones[0]);
+    return guess - off*60000;
+  }
+  function save(){ try{ localStorage.setItem('wc_zones', JSON.stringify(zones)); }catch(e){} }
+  function fillSelect(sel, list, selected){
+    sel.innerHTML = list.map(function(tz){ return '<option value="'+tz+'"'+(tz===selected?' selected':'')+'>'+cityName(tz)+' — '+tz+'</option>'; }).join('');
+  }
+  function render(){
+    var inst=instantNow();
+    clocks.innerHTML = zones.map(function(tz){
+      var h=hourIn(inst,tz), icon=(h>=6&&h<18)?'☀️':'🌙';
+      var off=tzOffsetMin(new Date(inst),tz);
+      return '<div class="clock"><button class="x" data-z="'+tz+'" title="'+T('wc.remove')+'">✕</button>'
+        + '<div class="city">'+icon+' '+cityName(tz)+'</div>'
+        + '<div class="t">'+fmtTime(inst,tz)+'</div>'
+        + '<div class="d">'+fmtDate(inst,tz)+'</div>'
+        + '<div class="gmt">'+gmt(off)+'</div></div>';
+    }).join('');
+  }
+  clocks.addEventListener('click', function(e){ var b=e.target.closest('.x'); if(!b) return; var tz=b.dataset.z; zones=zones.filter(function(z){return z!==tz;}); save(); fillSelect(refzone, zones, refzone.value); render(); });
+  document.getElementById('add').addEventListener('click', function(){ var tz=addsel.value; if(tz && zones.indexOf(tz)<0){ zones.push(tz); save(); fillSelect(refzone, zones, refzone.value); render(); } });
+  customEl.addEventListener('change', render);
+  [refdate,reftime,refzone].forEach(function(el){ el.addEventListener('input', render); });
+  window.onI18n = render;
+
+  fillSelect(addsel, ALL, 'Asia/Seoul');
+  fillSelect(refzone, zones, zones[0]);
+  (function(){ var t=new Date(); refdate.value=t.getFullYear()+'-'+('0'+(t.getMonth()+1)).slice(-2)+'-'+('0'+t.getDate()).slice(-2); reftime.value=('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2); })();
+  render();
+  setInterval(render, 1000);
+</script>
+</body>
+</html>
