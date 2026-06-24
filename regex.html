@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>정규식 테스터 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="정규표현식(Regex)을 패턴·플래그와 함께 실시간으로 테스트하고, 일치 항목과 캡처 그룹을 확인하며 치환 결과를 미리보는 무료 도구. 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/regex.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="정규식 테스터 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="정규표현식(Regex)을 패턴·플래그와 함께 실시간으로 테스트하고, 일치 항목과 캡처 그룹을 확인하며 치환 결과를 미리보는 무료 도구. 브라우저에서 바로."/>
+<meta property="og:url" content="https://gemini2k.co.kr/regex.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="정규식 테스터 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="정규표현식(Regex)을 패턴·플래그와 함께 실시간으로 테스트하고, 일치 항목과 캡처 그룹을 확인하며 치환 결과를 미리보는 무료 도구. 브라우저에서 바로."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .mono{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  #pattern,#repl{ font-family:ui-monospace,monospace; }
+  #text{ font-family:ui-monospace,monospace; min-height:130px; }
+  .flags{ display:flex; gap:.7rem; flex-wrap:wrap; margin-top:.7rem; }
+  .flags label{ margin:0; font-weight:600; color:var(--text); display:flex; align-items:center; gap:.3rem; }
+  .prev{ white-space:pre-wrap; word-break:break-word; font-family:ui-monospace,monospace; font-size:.9rem; line-height:1.6;
+    border:1px solid var(--border); border-radius:10px; padding:.8rem; background:var(--surface); min-height:60px; }
+  .prev mark{ background:#FDE68A; color:#1f2937; border-radius:3px; padding:0 1px; }
+  .cnt{ font-weight:700; margin:.8rem 0 .3rem; }
+  .grow{ font-family:ui-monospace,monospace; font-size:.84rem; padding:.35rem .5rem; border-bottom:1px dashed var(--border); word-break:break-all; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.regex.t">정규식 테스터</h1>
+  <p class="sub" data-i18n="rx.sub">패턴과 플래그로 실시간 매칭·그룹·치환을 확인합니다.</p>
+
+  <div class="card">
+    <label for="pattern" data-i18n="rx.pattern">정규식 패턴</label>
+    <input type="text" id="pattern" data-i18n-ph="rx.patternph" placeholder="예: \d{3}-\d{4}"/>
+    <div class="flags">
+      <label><input type="checkbox" id="f_g" checked/> g</label>
+      <label><input type="checkbox" id="f_i"/> i</label>
+      <label><input type="checkbox" id="f_m"/> m</label>
+      <label><input type="checkbox" id="f_s"/> s</label>
+      <label><input type="checkbox" id="f_u"/> u</label>
+      <label><input type="checkbox" id="f_y"/> y</label>
+    </div>
+    <p class="hint" data-i18n="rx.flaghint" style="margin-top:.5rem;">g 전역 · i 대소문자 무시 · m 여러 줄 · s 점(.)에 줄바꿈 포함 · u 유니코드 · y 고정 위치</p>
+    <p class="stat hint" id="status" style="font-weight:700;"></p>
+  </div>
+
+  <div class="card">
+    <label for="text" data-i18n="rx.text">테스트할 문자열</label>
+    <textarea id="text" data-i18n-ph="rx.textph" placeholder="여기에 검사할 텍스트를 입력하세요…"></textarea>
+    <p class="cnt" id="count"></p>
+    <div class="prev" id="preview"></div>
+    <div id="groups" style="margin-top:.8rem;"></div>
+  </div>
+
+  <div class="card">
+    <label for="repl" data-i18n="rx.replace">치환 (선택)</label>
+    <input type="text" id="repl" data-i18n-ph="rx.replaceph" placeholder="치환 문자열 (예: $1)"/>
+    <label for="replout" style="margin-top:.9rem;" data-i18n="rx.result">치환 결과</label>
+    <textarea id="replout" readonly style="font-family:ui-monospace,monospace;min-height:90px;"></textarea>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function esc(s){ return s.replace(/[&<>]/g, function(c){ return c==='&'?'&amp;':c==='<'?'&lt;':'&gt;'; }); }
+  var pattern=document.getElementById('pattern'), text=document.getElementById('text'),
+      preview=document.getElementById('preview'), count=document.getElementById('count'),
+      groupsBox=document.getElementById('groups'), status=document.getElementById('status'),
+      replIn=document.getElementById('repl'), replOut=document.getElementById('replout');
+  function flags(){ return ['g','i','m','s','u','y'].filter(function(f){ return document.getElementById('f_'+f).checked; }).join(''); }
+  function run(){
+    var pat=pattern.value, fl=flags(), s=text.value;
+    if(!pat){ status.textContent=''; count.textContent=''; groupsBox.innerHTML=''; preview.innerHTML=esc(s)||'&nbsp;'; replOut.value=''; return; }
+    var scan = fl.indexOf('g')<0 ? fl+'g' : fl, re;
+    try{ re=new RegExp(pat, scan); }
+    catch(e){ status.textContent=T('rx.invalid').replace('{m}', e.message); status.style.color='#E5484D'; count.textContent=''; groupsBox.innerHTML=''; preview.innerHTML=esc(s)||'&nbsp;'; replOut.value=''; return; }
+    status.textContent='';
+    var matches=[], m, guard=0;
+    while((m=re.exec(s))!==null){
+      matches.push(m);
+      if(m.index===re.lastIndex) re.lastIndex++;
+      if(++guard>200000) break;
+    }
+    var html='', last=0;
+    matches.forEach(function(mm){ var st=mm.index, en=st+mm[0].length; html+=esc(s.slice(last,st))+'<mark>'+esc(s.slice(st,en))+'</mark>'; last=en; });
+    html+=esc(s.slice(last));
+    preview.innerHTML = html || '&nbsp;';
+    count.textContent = matches.length ? T('rx.matches').replace('{n}', matches.length) : T('rx.nomatch');
+    count.style.color = matches.length ? '#0EA46A' : 'var(--muted)';
+    groupsBox.innerHTML = matches.slice(0,100).map(function(mm,i){
+      var parts=['#'+(i+1)+' "'+esc(mm[0])+'"'];
+      for(var g=1; g<mm.length; g++) parts.push('$'+g+' = '+(mm[g]==null?'∅':'"'+esc(mm[g])+'"'));
+      if(mm.groups) Object.keys(mm.groups).forEach(function(k){ parts.push(k+' = '+(mm.groups[k]==null?'∅':'"'+esc(mm.groups[k])+'"')); });
+      return '<div class="grow">'+parts.join('&nbsp; · &nbsp;')+'</div>';
+    }).join('');
+    if(replIn.value!==''){ try{ replOut.value = s.replace(new RegExp(pat, fl), replIn.value); }catch(e){ replOut.value=''; } }
+    else replOut.value='';
+  }
+  [pattern, text, replIn].forEach(function(el){ el.addEventListener('input', run); });
+  ['g','i','m','s','u','y'].forEach(function(f){ document.getElementById('f_'+f).addEventListener('change', run); });
+  window.onI18n = run;
+  run();
+</script>
+</body>
+</html>
