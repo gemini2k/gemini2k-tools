@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>개인정보 마스킹기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="텍스트 속 주민등록번호·전화번호·이메일·카드번호를 자동 탐지해 마스킹하는 무료 도구. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/masking.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="개인정보 마스킹기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="텍스트 속 주민등록번호·전화번호·이메일·카드번호를 자동 탐지해 마스킹하는 무료 도구. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<meta property="og:url" content="https://gemini2k.co.kr/masking.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="개인정보 마스킹기 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="텍스트 속 주민등록번호·전화번호·이메일·카드번호를 자동 탐지해 마스킹하는 무료 도구. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  #input,#output{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.92rem; min-height:160px; line-height:1.6; }
+  .opts{ display:flex; gap:1rem; align-items:center; flex-wrap:wrap; margin-top:1rem; }
+  .opts .chk{ margin:0; }
+  .stat{ font-weight:700; color:#0a7d52; margin-top:.6rem; min-height:1.3em; }
+  mark{ background:#FDE68A; color:#1f2937; border-radius:3px; padding:0 1px; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.mask.t">개인정보 마스킹기</h1>
+  <p class="sub" data-i18n="msk.sub">텍스트 속 개인정보를 자동 탐지해 마스킹합니다. 업로드 없이 브라우저에서만.</p>
+
+  <div class="card">
+    <label for="input" data-i18n="msk.label">원문 (붙여넣기)</label>
+    <textarea id="input" data-i18n-ph="msk.ph" placeholder="개인정보가 포함된 텍스트를 붙여넣으세요…" autofocus></textarea>
+    <div class="opts">
+      <span style="font-weight:700;" data-i18n="msk.types">탐지 항목</span>
+      <label class="chk"><input type="checkbox" id="t_rrn" checked/> <span data-i18n="msk.t.rrn">주민등록번호</span></label>
+      <label class="chk"><input type="checkbox" id="t_phone" checked/> <span data-i18n="msk.t.phone">전화번호</span></label>
+      <label class="chk"><input type="checkbox" id="t_email" checked/> <span data-i18n="msk.t.email">이메일</span></label>
+      <label class="chk"><input type="checkbox" id="t_card" checked/> <span data-i18n="msk.t.card">카드번호</span></label>
+    </div>
+    <div class="opts">
+      <span style="font-weight:700;" data-i18n="msk.style">마스킹 방식</span>
+      <select id="style">
+        <option value="partial" data-i18n="msk.style.partial">부분 가림</option>
+        <option value="full" data-i18n="msk.style.full">전체 가림</option>
+        <option value="remove" data-i18n="msk.style.remove">[항목]으로 치환</option>
+      </select>
+    </div>
+    <p class="stat" id="stat"></p>
+  </div>
+
+  <div class="card">
+    <label for="output" data-i18n="msk.out">결과</label>
+    <textarea id="output" data-i18n-ph="msk.outph" placeholder="마스킹 결과가 여기에 표시됩니다." readonly></textarea>
+    <div class="row" style="margin-top:.9rem;">
+      <button class="btn" id="copy" data-i18n="b64.copy">📋 결과 복사</button>
+      <button class="btn btn-ghost" id="clear" data-i18n="btn.clear">지우기</button>
+    </div>
+    <p class="hint" data-i18n="msk.note">※ 보조 도구입니다 — 결과를 반드시 확인하세요. 계좌번호·이름·주소는 형식이 다양해 자동 탐지에서 제외됩니다. 모든 처리는 브라우저에서만 이루어집니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1700);}
+  var input=document.getElementById('input'), output=document.getElementById('output'), statEl=document.getElementById('stat'), styleSel=document.getElementById('style');
+  function star(n){ return new Array(Math.max(1,n)+1).join('*'); }
+  function mask(s){
+    var st=styleSel.value, n=0;
+    function rep(label, partialFn){
+      return function(m){ n++; if(st==='remove') return '['+T(label)+']'; if(st==='full') return star(m.length); return partialFn.apply(null, arguments); };
+    }
+    if(document.getElementById('t_email').checked)
+      s=s.replace(/\b([A-Za-z0-9._%+-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,})\b/g,
+        rep('msk.t.email', function(m,a,b){ return a.slice(0,2)+star(a.length-2)+'@'+b; }));
+    if(document.getElementById('t_rrn').checked)
+      s=s.replace(/\b(\d{6})[-\s]?(\d{7})\b/g,
+        rep('msk.t.rrn', function(m,a,b){ return a+'-'+b.charAt(0)+'******'; }));
+    if(document.getElementById('t_card').checked)
+      s=s.replace(/\b(\d{4})[-\s]?(\d{4})[-\s]?(\d{4})[-\s]?(\d{4})\b/g,
+        rep('msk.t.card', function(m,a,b,c,d){ return a+'-****-****-'+d; }));
+    if(document.getElementById('t_phone').checked)
+      s=s.replace(/\b(0\d{1,2})[-\s]?(\d{3,4})[-\s]?(\d{4})\b/g,
+        rep('msk.t.phone', function(m,a,b,c){ return a+'-'+star(b.length)+'-'+c; }));
+    return { text:s, n:n };
+  }
+  function run(){
+    var r = mask(input.value);
+    output.value = r.text;
+    statEl.textContent = input.value ? T('msk.count').replace('{n}', r.n) : '';
+  }
+  input.addEventListener('input', run);
+  styleSel.addEventListener('change', run);
+  ['t_rrn','t_phone','t_email','t_card'].forEach(function(id){ document.getElementById(id).addEventListener('change', run); });
+  document.getElementById('copy').addEventListener('click', function(){
+    if(!output.value){ toast(T('toast.nocopy')); return; }
+    navigator.clipboard.writeText(output.value).then(function(){toast(T('toast.copied'));}).catch(function(){toast(T('toast.copied'));});
+  });
+  document.getElementById('clear').addEventListener('click', function(){ input.value=''; output.value=''; statEl.textContent=''; input.focus(); });
+  window.onI18n = run;
+</script>
+</body>
+</html>
