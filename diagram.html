@@ -6,26 +6,18 @@
 <meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
 <meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
 <title>SVG 다이어그램 메이커 — 빛의여행(gemini2k) 도구</title>
-<meta name="description" content="상자와 화살표로 간단한 순서도·구성도를 그리고 SVG·PNG로 저장하는 무료 도구. 드래그로 이동, 더블클릭으로 글자 수정. 브라우저에서 바로."/>
-<link rel="canonical" href="https://gemini2k.co.kr/diagram.html"/>
-<meta property="og:type" content="website"/>
-<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
-<meta property="og:title" content="SVG 다이어그램 메이커 — 빛의여행(gemini2k) 도구"/>
-<meta property="og:description" content="상자와 화살표로 간단한 순서도·구성도를 그리고 SVG·PNG로 저장하는 무료 도구. 드래그로 이동, 더블클릭으로 글자 수정. 브라우저에서 바로."/>
-<meta property="og:url" content="https://gemini2k.co.kr/diagram.html"/>
-<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="SVG 다이어그램 메이커 — 빛의여행(gemini2k) 도구"/>
-<meta name="twitter:description" content="상자와 화살표로 간단한 순서도·구성도를 그리고 SVG·PNG로 저장하는 무료 도구. 드래그로 이동, 더블클릭으로 글자 수정. 브라우저에서 바로."/>
-<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="description" content="여러 도형(사각·타원·마름모·원통)과 화살표(실선·점선·양방향)로 순서도·구성도를 그리고 SVG·PNG로 저장하는 무료 다이어그램 도구. 브라우저에서 바로."/>
 <link rel="preconnect" href="https://cdn.jsdelivr.net"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
 <link rel="stylesheet" href="style.css"/>
 <script src="ga.js"></script>
 <script src="i18n.js"></script>
 <style>
-  .dgbar{ display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin-bottom:.8rem; }
+  .dgbar{ display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin-bottom:.7rem; }
   .dgbar .btn{ padding:.5rem .8rem; }
+  .dgopts{ display:flex; gap:.55rem; align-items:center; flex-wrap:wrap; margin-bottom:.6rem; }
+  .dgopts .lbl{ font-weight:700; font-size:.86rem; color:var(--text); }
+  .dgopts select{ width:auto; min-width:120px; padding:.4rem .6rem; }
   #svg{ width:100%; height:auto; border:1px solid var(--border); border-radius:12px; background:#fff; touch-action:none; display:block; }
   .palette{ display:flex; gap:.35rem; }
   .sw{ width:26px; height:26px; border-radius:7px; border:2px solid #fff; box-shadow:0 0 0 1px var(--border); cursor:pointer; }
@@ -48,16 +40,40 @@
 <div class="toolwrap" style="max-width:1000px;">
   <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
   <h1 data-i18n="tool.diagram.t">SVG 다이어그램 메이커</h1>
-  <p class="sub" data-i18n="dg.sub">상자와 화살표로 간단한 도식을 그려 SVG·PNG로 저장합니다.</p>
+  <p class="sub" data-i18n="dg.sub">여러 도형과 화살표로 도식을 그려 SVG·PNG로 저장합니다.</p>
 
   <div class="card">
     <div class="dgbar">
       <button class="btn" id="add" data-i18n="dg.add">＋ 상자 추가</button>
       <button class="btn btn-ghost" id="connect" data-i18n="dg.connect">🔗 연결 모드</button>
       <button class="btn btn-ghost" id="del" data-i18n="dg.del">🗑 선택 삭제</button>
+    </div>
+    <div class="dgopts">
+      <span class="lbl" data-i18n="dg.shape">도형</span>
+      <select id="shape">
+        <option value="round" data-i18n="dg.s.round">둥근 사각형</option>
+        <option value="rect" data-i18n="dg.s.rect">사각형</option>
+        <option value="ellipse" data-i18n="dg.s.ellipse">타원</option>
+        <option value="diamond" data-i18n="dg.s.diamond">마름모(판단)</option>
+        <option value="parallelogram" data-i18n="dg.s.parallel">평행사변형</option>
+        <option value="cylinder" data-i18n="dg.s.cylinder">원통(DB)</option>
+      </select>
       <span class="palette" id="palette"></span>
     </div>
-    <p class="hint" id="hint" data-i18n="dg.hint" style="margin-top:0;">상자를 드래그해 이동 · 더블클릭해 글자 수정 · 연결 모드에서 두 상자를 차례로 클릭</p>
+    <div class="dgopts">
+      <span class="lbl" data-i18n="dg.line">선</span>
+      <select id="line">
+        <option value="solid" data-i18n="dg.l.solid">실선</option>
+        <option value="dashed" data-i18n="dg.l.dashed">점선</option>
+      </select>
+      <span class="lbl" data-i18n="dg.arrow">화살표</span>
+      <select id="arrow">
+        <option value="end" data-i18n="dg.a.end">끝 화살표</option>
+        <option value="both" data-i18n="dg.a.both">양방향</option>
+        <option value="none" data-i18n="dg.a.none">없음</option>
+      </select>
+    </div>
+    <p class="hint" id="hint" data-i18n="dg.hint" style="margin-top:.2rem;">상자·화살표를 클릭해 선택 · 드래그로 이동 · 더블클릭으로 글자 수정 · 연결 모드에서 두 상자를 차례로 클릭</p>
     <svg id="svg" viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg"></svg>
     <div class="row" style="margin-top:1rem;">
       <button class="btn" id="dlsvg" data-i18n="dg.dlsvg">⬇️ SVG 저장</button>
@@ -77,57 +93,94 @@
 <script>
   function T(k){ return window.t ? window.t(k) : k; }
   function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1700);}
-  var VW=900, VH=520;
-  var svg=document.getElementById('svg');
+  var VW=900, VH=520, svg=document.getElementById('svg');
   var COLORS=['#EAF2FF','#E6F7F0','#FFF3E0','#FCE7F3','#EDE9FE','#F1F5F9'];
-  var nodes=[], edges=[], seq=1, selected=null, connectMode=false, connectFirst=null, drag=null, newColor=COLORS[0];
+  var nodes=[], edges=[], seq=1, eseq=1, sel=null, connectMode=false, connectFirst=null, drag=null;
+  var newShape='round', newColor=COLORS[0], newLine='solid', newArrow='end';
+  var shapeSel=document.getElementById('shape'), lineSel=document.getElementById('line'), arrowSel=document.getElementById('arrow');
 
   function byId(id){ for(var i=0;i<nodes.length;i++) if(nodes[i].id===id) return nodes[i]; return null; }
+  function edgeById(id){ for(var i=0;i<edges.length;i++) if(edges[i].id===id) return edges[i]; return null; }
   function esc(s){ return (s||'').replace(/[&<>]/g,function(c){return c==='&'?'&amp;':c==='<'?'&lt;':'&gt;';}); }
   function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
-  function nodeW(n){ return Math.max(78, n.text.length*9+30); }
-  function lum(hex){ var c=hex.replace('#',''); var r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16); return (0.299*r+0.587*g+0.114*b); }
-  function textColor(bg){ return lum(bg) > 150 ? '#1f2937' : '#ffffff'; }
+  function lum(hex){ var c=hex.replace('#',''); return 0.299*parseInt(c.substr(0,2),16)+0.587*parseInt(c.substr(2,2),16)+0.114*parseInt(c.substr(4,2),16); }
+  function textColor(bg){ return lum(bg)>150 ? '#1f2937' : '#ffffff'; }
+  function nodeW(n){ var base=Math.max(86,(n.text?n.text.length:1)*9+34);
+    if(n.shape==='diamond') return Math.round(base*1.4);
+    if(n.shape==='ellipse') return base+24;
+    if(n.shape==='parallelogram') return base+28;
+    return base; }
+  function nodeH(n){ return n.shape==='diamond'?64 : n.shape==='ellipse'?56 : n.shape==='cylinder'?60 : 46; }
   function border(n, tx, ty){
-    var w=nodeW(n), h=44, dx=tx-n.x, dy=ty-n.y;
-    if(dx===0 && dy===0) return {x:n.x, y:n.y};
-    var sx=(w/2)/Math.abs(dx||1e-6), sy=(h/2)/Math.abs(dy||1e-6), s=Math.min(sx,sy);
+    var w=nodeW(n), h=nodeH(n), dx=tx-n.x, dy=ty-n.y;
+    if(dx===0&&dy===0) return {x:n.x,y:n.y};
+    var s=Math.min((w/2)/Math.abs(dx||1e-6),(h/2)/Math.abs(dy||1e-6));
     return {x:n.x+dx*s, y:n.y+dy*s};
   }
+  function shapeMarkup(n, stroke, sw){
+    var w=nodeW(n), h=nodeH(n), x=n.x-w/2, y=n.y-h/2, cx=n.x, cy=n.y, f=n.color, a='fill="'+f+'" stroke="'+stroke+'" stroke-width="'+sw+'"';
+    var P=function(v){ return v.toFixed(1); };
+    if(n.shape==='rect') return '<rect x="'+P(x)+'" y="'+P(y)+'" width="'+P(w)+'" height="'+P(h)+'" '+a+'/>';
+    if(n.shape==='ellipse') return '<ellipse cx="'+P(cx)+'" cy="'+P(cy)+'" rx="'+P(w/2)+'" ry="'+P(h/2)+'" '+a+'/>';
+    if(n.shape==='diamond') return '<polygon points="'+P(cx)+','+P(y)+' '+P(x+w)+','+P(cy)+' '+P(cx)+','+P(y+h)+' '+P(x)+','+P(cy)+'" '+a+'/>';
+    if(n.shape==='parallelogram'){ var sk=Math.min(24,w*0.18); return '<polygon points="'+P(x+sk)+','+P(y)+' '+P(x+w)+','+P(y)+' '+P(x+w-sk)+','+P(y+h)+' '+P(x)+','+P(y+h)+'" '+a+'/>'; }
+    if(n.shape==='cylinder'){ var ry=9;
+      return '<path d="M '+P(x)+' '+P(y+ry)+' L '+P(x)+' '+P(y+h-ry)+' A '+P(w/2)+' '+ry+' 0 0 0 '+P(x+w)+' '+P(y+h-ry)+' L '+P(x+w)+' '+P(y+ry)+'" '+a+'/>'
+           + '<ellipse cx="'+P(cx)+'" cy="'+P(y+ry)+'" rx="'+P(w/2)+'" ry="'+ry+'" '+a+'/>'; }
+    return '<rect x="'+P(x)+'" y="'+P(y)+'" width="'+P(w)+'" height="'+P(h)+'" rx="12" '+a+'/>';
+  }
   function inner(){
-    var parts=['<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#475569"/></marker></defs>'];
-    edges.forEach(function(ed){ var a=byId(ed.a), b=byId(ed.b); if(!a||!b) return;
-      var p=border(a,b.x,b.y), q=border(b,a.x,a.y);
-      parts.push('<line x1="'+p.x.toFixed(1)+'" y1="'+p.y.toFixed(1)+'" x2="'+q.x.toFixed(1)+'" y2="'+q.y.toFixed(1)+'" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>');
+    var parts=['<defs>'
+      +'<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#475569"/></marker>'
+      +'<marker id="arrSel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#5B5BF5"/></marker>'
+      +'</defs>'];
+    var selEdgeId = (sel&&sel.t==='edge')?sel.id:null, selNodeId=(sel&&sel.t==='node')?sel.id:null;
+    edges.forEach(function(ed){
+      var a=byId(ed.a), b=byId(ed.b); if(!a||!b) return;
+      var p=border(a,b.x,b.y), q=border(b,a.x,a.y), on=(ed.id===selEdgeId);
+      var col=on?'#5B5BF5':'#475569', sw=on?3:2, mk=on?'arrSel':'arr';
+      var dash=ed.line==='dashed'?' stroke-dasharray="7 5"':'', m='';
+      if(ed.arrow==='end'||ed.arrow==='both') m+=' marker-end="url(#'+mk+')"';
+      if(ed.arrow==='both') m+=' marker-start="url(#'+mk+')"';
+      parts.push('<line data-eid="'+ed.id+'" x1="'+p.x.toFixed(1)+'" y1="'+p.y.toFixed(1)+'" x2="'+q.x.toFixed(1)+'" y2="'+q.y.toFixed(1)+'" stroke="transparent" stroke-width="14" style="cursor:pointer"/>');
+      parts.push('<line x1="'+p.x.toFixed(1)+'" y1="'+p.y.toFixed(1)+'" x2="'+q.x.toFixed(1)+'" y2="'+q.y.toFixed(1)+'" stroke="'+col+'" stroke-width="'+sw+'" stroke-linecap="round"'+dash+m+' style="pointer-events:none"/>');
     });
     nodes.forEach(function(n){
-      var w=nodeW(n), h=44, x=n.x-w/2, y=n.y-h/2;
-      var stroke=(n.id===connectFirst)?'#F59E0B':(n.id===selected?'#5B5BF5':'rgba(15,23,42,.14)');
-      var sw=(n.id===connectFirst||n.id===selected)?3:1.5;
-      parts.push('<g class="dnode" data-id="'+n.id+'" style="cursor:move"><rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w+'" height="'+h+'" rx="11" fill="'+n.color+'" stroke="'+stroke+'" stroke-width="'+sw+'"/><text x="'+n.x.toFixed(1)+'" y="'+(n.y+1).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" font-family="Pretendard,system-ui,sans-serif" font-size="14" font-weight="600" fill="'+textColor(n.color)+'">'+esc(n.text)+'</text></g>');
+      var on=(n.id===selNodeId)||(n.id===connectFirst);
+      var stroke=(n.id===connectFirst)?'#F59E0B':(on?'#5B5BF5':'rgba(15,23,42,.16)');
+      var sw=on?3:1.5;
+      parts.push('<g data-id="'+n.id+'" style="cursor:move">'+shapeMarkup(n,stroke,sw)
+        +'<text x="'+n.x.toFixed(1)+'" y="'+(n.y+1).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" font-family="Pretendard,system-ui,sans-serif" font-size="14" font-weight="600" fill="'+textColor(n.color)+'" style="pointer-events:none">'+esc(n.text)+'</text></g>');
     });
     return parts.join('');
   }
   function render(){ svg.innerHTML = inner(); }
-
   function pt(e){ var r=svg.getBoundingClientRect(); return { x:(e.clientX-r.left)*(VW/r.width), y:(e.clientY-r.top)*(VH/r.height) }; }
 
+  function syncControls(){
+    var pal=document.getElementById('palette');
+    if(sel && sel.t==='node'){ var n=byId(sel.id); if(n){ shapeSel.value=n.shape; newShape=n.shape; newColor=n.color; } }
+    else if(sel && sel.t==='edge'){ var ed=edgeById(sel.id); if(ed){ lineSel.value=ed.line; arrowSel.value=ed.arrow; newLine=ed.line; newArrow=ed.arrow; } }
+    pal.querySelectorAll('.sw').forEach(function(x){ x.classList.toggle('on', x.dataset.c===newColor); });
+  }
+
   svg.addEventListener('pointerdown', function(e){
-    var g=e.target.closest('[data-id]');
+    var g=e.target.closest('[data-id]'), eg=e.target.closest('[data-eid]');
     if(connectMode){
       if(g){ var id=+g.getAttribute('data-id');
         if(connectFirst===null) connectFirst=id;
-        else if(connectFirst!==id){ edges.push({a:connectFirst,b:id}); connectFirst=null; }
+        else if(connectFirst!==id){ edges.push({id:eseq++, a:connectFirst, b:id, line:newLine, arrow:newArrow}); connectFirst=null; }
         else connectFirst=null;
       } else connectFirst=null;
       render(); return;
     }
-    if(g){ selected=+g.getAttribute('data-id'); var n=byId(selected), p=pt(e); drag={dx:p.x-n.x, dy:p.y-n.y}; try{svg.setPointerCapture(e.pointerId);}catch(_){} render(); }
-    else { selected=null; render(); }
+    if(g){ sel={t:'node', id:+g.getAttribute('data-id')}; var n=byId(sel.id), p=pt(e); drag={dx:p.x-n.x, dy:p.y-n.y}; try{svg.setPointerCapture(e.pointerId);}catch(_){}; syncControls(); render(); }
+    else if(eg){ sel={t:'edge', id:+eg.getAttribute('data-eid')}; syncControls(); render(); }
+    else { sel=null; render(); }
   });
   svg.addEventListener('pointermove', function(e){
-    if(!drag || selected===null) return;
-    var n=byId(selected), p=pt(e); n.x=clamp(p.x-drag.dx, 45, VW-45); n.y=clamp(p.y-drag.dy, 28, VH-28); render();
+    if(!drag || !sel || sel.t!=='node') return;
+    var n=byId(sel.id), p=pt(e); n.x=clamp(p.x-drag.dx,45,VW-45); n.y=clamp(p.y-drag.dy,34,VH-34); render();
   });
   function endDrag(e){ drag=null; try{svg.releasePointerCapture(e.pointerId);}catch(_){} }
   svg.addEventListener('pointerup', endDrag);
@@ -138,66 +191,53 @@
     if(t!==null){ n.text=t; render(); }
   });
   document.addEventListener('keydown', function(e){
-    if((e.key==='Delete'||e.key==='Backspace') && selected!==null && document.activeElement.tagName!=='INPUT' && document.activeElement.tagName!=='TEXTAREA'){
-      removeSelected(); e.preventDefault();
-    }
+    if((e.key==='Delete'||e.key==='Backspace') && sel && document.activeElement.tagName!=='INPUT' && document.activeElement.tagName!=='TEXTAREA' && document.activeElement.tagName!=='SELECT'){ removeSel(); e.preventDefault(); }
   });
 
   function addBox(){
-    var i=nodes.length;
-    var n={ id:seq++, x:130+(i%4)*180, y:90+Math.floor(i/4)*100, text:T('dg.box'), color:newColor };
-    n.x=clamp(n.x,45,VW-45); n.y=clamp(n.y,28,VH-28);
-    nodes.push(n); selected=n.id; render();
+    var i=nodes.length, n={ id:seq++, x:clamp(140+(i%4)*180,45,VW-45), y:clamp(95+Math.floor(i/4)*105,34,VH-34), text:T('dg.box'), color:newColor, shape:newShape };
+    nodes.push(n); sel={t:'node',id:n.id}; syncControls(); render();
   }
-  function removeSelected(){
-    if(selected===null) return;
-    nodes=nodes.filter(function(n){ return n.id!==selected; });
-    edges=edges.filter(function(ed){ return ed.a!==selected && ed.b!==selected; });
-    selected=null; render();
+  function removeSel(){
+    if(!sel) return;
+    if(sel.t==='node'){ nodes=nodes.filter(function(n){return n.id!==sel.id;}); edges=edges.filter(function(ed){return ed.a!==sel.id&&ed.b!==sel.id;}); }
+    else { edges=edges.filter(function(ed){return ed.id!==sel.id;}); }
+    sel=null; render();
   }
   document.getElementById('add').addEventListener('click', addBox);
-  document.getElementById('del').addEventListener('click', removeSelected);
-  document.getElementById('connect').addEventListener('click', function(){
-    connectMode=!connectMode; connectFirst=null;
-    this.classList.toggle('on-btn', connectMode); render();
-  });
-  document.getElementById('clear').addEventListener('click', function(){ nodes=[]; edges=[]; selected=null; connectFirst=null; render(); });
+  document.getElementById('del').addEventListener('click', removeSel);
+  document.getElementById('connect').addEventListener('click', function(){ connectMode=!connectMode; connectFirst=null; this.classList.toggle('on-btn', connectMode); render(); });
+  document.getElementById('clear').addEventListener('click', function(){ nodes=[]; edges=[]; sel=null; connectFirst=null; render(); });
+
+  shapeSel.addEventListener('change', function(){ newShape=shapeSel.value; if(sel&&sel.t==='node'){ byId(sel.id).shape=newShape; render(); } });
+  lineSel.addEventListener('change', function(){ newLine=lineSel.value; if(sel&&sel.t==='edge'){ edgeById(sel.id).line=newLine; render(); } });
+  arrowSel.addEventListener('change', function(){ newArrow=arrowSel.value; if(sel&&sel.t==='edge'){ edgeById(sel.id).arrow=newArrow; render(); } });
 
   var pal=document.getElementById('palette');
   pal.innerHTML = COLORS.map(function(c,i){ return '<span class="sw'+(i===0?' on':'')+'" data-c="'+c+'" style="background:'+c+'"></span>'; }).join('');
-  pal.addEventListener('click', function(e){
-    var s=e.target.closest('.sw'); if(!s) return;
-    newColor=s.dataset.c;
-    pal.querySelectorAll('.sw').forEach(function(x){ x.classList.toggle('on', x===s); });
-    if(selected!==null){ byId(selected).color=newColor; render(); }
-  });
+  pal.addEventListener('click', function(e){ var s=e.target.closest('.sw'); if(!s) return; newColor=s.dataset.c;
+    pal.querySelectorAll('.sw').forEach(function(x){x.classList.toggle('on',x===s);});
+    if(sel&&sel.t==='node'){ byId(sel.id).color=newColor; render(); } });
 
-  function exportSVG(){
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+VW+' '+VH+'" width="'+VW+'" height="'+VH+'"><rect width="'+VW+'" height="'+VH+'" fill="#ffffff"/>'+inner()+'</svg>';
-  }
+  function exportSVG(){ return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+VW+' '+VH+'" width="'+VW+'" height="'+VH+'"><rect width="'+VW+'" height="'+VH+'" fill="#ffffff"/>'+inner()+'</svg>'; }
   function stamp(){ var d=new Date(),p=function(n){return(n<10?'0':'')+n;}; return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'_'+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds()); }
-  function dl(blob, name){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
-  document.getElementById('dlsvg').addEventListener('click', function(){
-    var save=selected; selected=null; connectFirst=null;
-    dl(new Blob([exportSVG()], {type:'image/svg+xml'}), 'diagram_'+stamp()+'.svg'); selected=save; render();
-  });
+  function dl(blob,name){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
+  document.getElementById('dlsvg').addEventListener('click', function(){ var s=sel; sel=null; connectFirst=null; var data=exportSVG(); sel=s; render(); dl(new Blob([data],{type:'image/svg+xml'}),'diagram_'+stamp()+'.svg'); });
   document.getElementById('dlpng').addEventListener('click', function(){
-    var save=selected; selected=null; connectFirst=null;
-    var data=exportSVG(); selected=save; render();
+    var s=sel; sel=null; connectFirst=null; var data=exportSVG(); sel=s; render();
     var img=new Image();
-    img.onload=function(){
-      var cv=document.createElement('canvas'); cv.width=VW*2; cv.height=VH*2;
-      var ctx=cv.getContext('2d'); ctx.scale(2,2); ctx.drawImage(img,0,0);
-      cv.toBlob(function(b){ dl(b,'diagram_'+stamp()+'.png'); }, 'image/png');
-    };
+    img.onload=function(){ var cv=document.createElement('canvas'); cv.width=VW*2; cv.height=VH*2; var ctx=cv.getContext('2d'); ctx.scale(2,2); ctx.drawImage(img,0,0); cv.toBlob(function(b){ dl(b,'diagram_'+stamp()+'.png'); },'image/png'); };
     img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data);
   });
 
-  // 시작 예시
-  nodes=[ {id:seq++,x:160,y:110,text:T('dg.start'),color:COLORS[1]},
-          {id:seq++,x:160,y:260,text:T('dg.box'),color:COLORS[0]},
-          {id:seq++,x:420,y:260,text:T('dg.box'),color:COLORS[0]} ];
-  edges=[ {a:1,b:2},{a:2,b:3} ];
+  // 시작 예시 — 도형·점선 화살표 데모
+  nodes=[ {id:seq++,x:170,y:100,text:T('dg.start'),color:COLORS[1],shape:'ellipse'},
+          {id:seq++,x:170,y:250,text:T('dg.process'),color:COLORS[0],shape:'round'},
+          {id:seq++,x:460,y:250,text:T('dg.decision'),color:COLORS[2],shape:'diamond'},
+          {id:seq++,x:460,y:410,text:T('dg.box'),color:COLORS[0],shape:'round'} ];
+  edges=[ {id:eseq++,a:1,b:2,line:'solid',arrow:'end'},
+          {id:eseq++,a:2,b:3,line:'solid',arrow:'end'},
+          {id:eseq++,a:3,b:4,line:'dashed',arrow:'end'} ];
   render();
   window.onI18n = function(){ render(); };
 </script>
