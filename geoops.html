@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>공간 연산기(버퍼·단순화·헐) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="WKT·GeoJSON 도형에 버퍼·컨벡스 헐·단순화(Douglas-Peucker)·중심점·바운딩 박스 연산을 적용하고 결과를 지도·WKT·GeoJSON으로 얻는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/geoops.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="공간 연산기(버퍼·단순화·헐) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="WKT·GeoJSON 도형에 버퍼·컨벡스 헐·단순화(Douglas-Peucker)·중심점·바운딩 박스 연산을 적용하고 결과를 지도·WKT·GeoJSON으로 얻는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<meta property="og:url" content="https://gemini2k.co.kr/geoops.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="공간 연산기(버퍼·단순화·헐) — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="WKT·GeoJSON 도형에 버퍼·컨벡스 헐·단순화(Douglas-Peucker)·중심점·바운딩 박스 연산을 적용하고 결과를 지도·WKT·GeoJSON으로 얻는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="/vendor/ol-7.5.2/ol.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<script src="/vendor/ol-7.5.2/ol.js"></script>
+<script src="/vendor/turf-7.1.0/turf.min.js"></script>
+<style>
+  .op-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media(max-width:820px){ .op-grid{ grid-template-columns:1fr; } }
+  #oin{ width:100%; min-height:140px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.88rem; line-height:1.55; }
+  .methods{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.9rem; }
+  .methods label{ border:1px solid var(--border); border-radius:10px; padding:.55rem .8rem; cursor:pointer; font-size:.88rem; background:#fafbff; }
+  .methods label.on{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent); font-weight:700; }
+  .methods input{ display:none; }
+  .params{ margin-top:.8rem; padding:.7rem 1rem; border:1px dashed var(--border); border-radius:12px; background:#fafbff; min-height:1px; }
+  .params .fld{ display:flex; flex-direction:column; gap:.25rem; }
+  .params label{ font-size:.78rem; font-weight:700; color:var(--muted); }
+  .params input{ width:auto; min-width:120px; padding:.5rem .6rem; }
+  .mdesc{ font-size:.82rem; color:var(--muted); }
+  #omap{ width:100%; height:320px; border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  #omap .ol-viewport, #omap .ol-viewport canvas{ cursor:grab; }
+  #omap .ol-viewport:active, #omap .ol-viewport:active canvas{ cursor:grabbing; }
+  .out-row{ margin-top:.8rem; }
+  .out-row .lbl{ display:flex; align-items:center; gap:.4rem; font-weight:700; font-size:.85rem; margin-bottom:.3rem; }
+  .out-row .lbl button{ margin-left:auto; padding:.25rem .6rem; font-size:.78rem; }
+  .out-row textarea{ width:100%; min-height:60px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.82rem; line-height:1.5; background:#fafbff; }
+  .stats{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.6rem; }
+  .stat{ background:#fafbff; border:1px solid var(--border); border-radius:10px; padding:.5rem .8rem; font-size:.85rem; }
+  .stat b{ color:var(--accent); }
+  .legend{ display:flex; gap:1rem; margin-top:.5rem; font-size:.82rem; color:var(--muted); }
+  .legend i{ display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:.3rem; vertical-align:middle; }
+  .err{ color:#c0392b; font-size:.88rem; margin-top:.5rem; min-height:1.2em; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap" style="max-width:1100px;">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.geoops.t">공간 연산기</h1>
+  <p class="sub" data-i18n="go.sub">WKT·GeoJSON 도형에 버퍼·컨벡스 헐·단순화·중심점·바운딩 박스를 적용하고 결과를 지도·WKT·GeoJSON으로 얻습니다.</p>
+
+  <div class="card">
+    <div class="op-grid">
+      <div>
+        <div class="lbl" style="font-weight:700;font-size:.9rem;margin-bottom:.4rem;" data-i18n="go.input">입력 (WKT 또는 GeoJSON)</div>
+        <textarea id="oin" data-i18n-ph="go.ph" placeholder="WKT 또는 GeoJSON 을 붙여넣으세요…&#10;예) LINESTRING(127.0 37.5, 127.1 37.55, 127.05 37.6)"></textarea>
+        <div class="row" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem;">
+          <button class="btn btn-ghost" id="sampleBtn" data-i18n="go.sample">예시</button>
+          <button class="btn btn-ghost" id="clearBtn" data-i18n="go.clear">지우기</button>
+        </div>
+        <div class="methods" id="methods">
+          <label class="on"><input type="radio" name="op" value="buffer" checked><span data-i18n="go.o.buffer">버퍼</span></label>
+          <label><input type="radio" name="op" value="simplify"><span data-i18n="go.o.simplify">단순화</span></label>
+          <label><input type="radio" name="op" value="convex"><span data-i18n="go.o.convex">컨벡스 헐</span></label>
+          <label><input type="radio" name="op" value="centroid"><span data-i18n="go.o.centroid">중심점</span></label>
+          <label><input type="radio" name="op" value="bbox"><span data-i18n="go.o.bbox">바운딩 박스</span></label>
+        </div>
+        <div class="params" id="params"></div>
+        <div class="row" style="margin-top:.8rem;"><button class="btn" id="runBtn" data-i18n="go.run">연산 실행</button></div>
+        <div class="err" id="err"></div>
+        <div class="stats" id="stats"></div>
+      </div>
+      <div>
+        <div id="omap"></div>
+        <div class="legend">
+          <span><i style="background:#bbb"></i><span data-i18n="go.lg.in">입력</span></span>
+          <span><i style="background:#5B5BF5"></i><span data-i18n="go.lg.out">결과</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div id="outputs" style="margin-top:1rem;display:none;">
+      <div class="out-row">
+        <div class="lbl">GeoJSON <button class="btn btn-ghost" data-copy="ogeo" data-i18n="go.copy">복사</button></div>
+        <textarea id="ogeo" readonly></textarea>
+      </div>
+      <div class="out-row">
+        <div class="lbl">WKT <button class="btn btn-ghost" data-copy="owkt" data-i18n="go.copy">복사</button></div>
+        <textarea id="owkt" readonly style="min-height:44px;"></textarea>
+      </div>
+    </div>
+    <p class="hint" data-i18n="go.note">※ 좌표는 경위도(EPSG:4326)로 간주합니다. 버퍼·단순화 거리는 미터 단위이며 측지 계산(Turf)을 사용합니다. 음수 버퍼는 폴리곤 축소입니다. 모든 처리는 브라우저에서만 이루어집니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function $(id){ return document.getElementById(id); }
+  function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+
+  var LL='EPSG:4326', MAP='EPSG:3857';
+  var fmtWKT=new ol.format.WKT(), fmtGeo=new ol.format.GeoJSON();
+
+  // 입력 파싱 → GeoJSON geometry (4326)
+  function parseInput(text){
+    var s=text.trim(); if(!s) throw new Error(T('go.e.empty'));
+    var geom;
+    if(s[0]==='{'||s[0]==='['){ var o=JSON.parse(s); if(o.type==='FeatureCollection')geom=o.features[0].geometry; else if(o.type==='Feature')geom=o.geometry; else geom=o; return geom; }
+    // WKT
+    var g=fmtWKT.readGeometry(s.replace(/^\s*SRID=\d+\s*;\s*/i,''));
+    return JSON.parse(fmtGeo.writeGeometry(g));
+  }
+  function asFeature(geom){ return {type:'Feature',properties:{},geometry:geom}; }
+
+  // 지도
+  var srcI=new ol.source.Vector(), srcO=new ol.source.Vector();
+  var layI=new ol.layer.Vector({ source:srcI, style:new ol.style.Style({ stroke:new ol.style.Stroke({color:'#9aa',width:2}), fill:new ol.style.Fill({color:'rgba(150,160,170,.12)'}), image:new ol.style.Circle({radius:4,fill:new ol.style.Fill({color:'#9aa'})}) }) });
+  var layO=new ol.layer.Vector({ source:srcO, style:new ol.style.Style({ stroke:new ol.style.Stroke({color:'#5B5BF5',width:2.5}), fill:new ol.style.Fill({color:'rgba(91,91,245,.18)'}), image:new ol.style.Circle({radius:6,fill:new ol.style.Fill({color:'#5B5BF5'}),stroke:new ol.style.Stroke({color:'#fff',width:1.5})}) }) });
+  var omap=new ol.Map({ target:'omap', layers:[ new ol.layer.Tile({source:new ol.source.OSM()}), layI, layO ],
+    view:new ol.View({ center:ol.proj.fromLonLat([127.6,36.3]), zoom:6 }),
+    controls:[ new ol.control.Zoom(), new ol.control.Attribution({collapsible:true}) ] });
+  function showOnMap(inGeom, outGeom){
+    srcI.clear(); srcO.clear();
+    try{ var fi=fmtGeo.readFeature(asFeature(inGeom),{dataProjection:LL,featureProjection:MAP}); srcI.addFeature(fi); }catch(e){}
+    try{ var fo=fmtGeo.readFeature(asFeature(outGeom),{dataProjection:LL,featureProjection:MAP}); srcO.addFeature(fo); }catch(e){}
+    var ext=srcO.getExtent(); if(!isFinite(ext[0])) ext=srcI.getExtent();
+    if(isFinite(ext[0])) omap.getView().fit(ext,{padding:[40,40,40,40],maxZoom:16,duration:300});
+  }
+
+  function curOp(){ return (document.querySelector('input[name=op]:checked')||{}).value||'buffer'; }
+  function renderParams(){
+    var op=curOp(), html='';
+    if(op==='buffer') html='<div class="mdesc" data-i18n="go.d.buffer"></div><div class="fld" style="margin-top:.5rem;"><label data-i18n="go.p.dist">거리(m, 음수=축소)</label><input type="number" id="p_dist" value="100" step="10"></div>';
+    else if(op==='simplify') html='<div class="mdesc" data-i18n="go.d.simplify"></div><div class="fld" style="margin-top:.5rem;"><label data-i18n="go.p.tol">허용오차(m)</label><input type="number" id="p_tol" value="10" min="0" step="1"></div>';
+    else if(op==='convex') html='<div class="mdesc" data-i18n="go.d.convex"></div>';
+    else if(op==='centroid') html='<div class="mdesc" data-i18n="go.d.centroid"></div>';
+    else if(op==='bbox') html='<div class="mdesc" data-i18n="go.d.bbox"></div>';
+    $('params').innerHTML=html;
+    document.querySelectorAll('#params [data-i18n]').forEach(function(el){ el.textContent=T(el.getAttribute('data-i18n')); });
+  }
+
+  function vcount(geom){ try{ return turf.coordAll(asFeature(geom)).length; }catch(e){ return 0; } }
+  function fmtArea(a){ return a>1000000 ? (a/1000000).toFixed(3)+' km²' : Math.round(a).toLocaleString()+' m²'; }
+  function fmtLen(l){ return l>1000 ? (l/1000).toFixed(3)+' km' : Math.round(l).toLocaleString()+' m'; }
+
+  function run(){
+    $('err').textContent=''; $('outputs').style.display='none';
+    var inGeom; try{ inGeom=parseInput($('oin').value); }catch(e){ $('err').textContent=T('go.e.parse')+' '+(e&&e.message||e); return; }
+    var op=curOp(), feat=asFeature(inGeom), out, stats=[];
+    try{
+      if(op==='buffer'){ var d=Number($('p_dist').value)||0; out=turf.buffer(feat, d/1000, {units:'kilometers'}); if(!out||!out.geometry) throw new Error(T('go.e.result')); out=out.geometry; stats.push(['go.s.area', fmtArea(turf.area(asFeature(out)))]); }
+      else if(op==='simplify'){ var tolM=Math.max(0,Number($('p_tol').value)||0); var tol=tolM/111320; var s=turf.simplify(feat,{tolerance:tol,highQuality:true,mutate:false}); out=s.geometry; stats.push(['go.s.vin', vcount(inGeom).toLocaleString()]); stats.push(['go.s.vout', vcount(out).toLocaleString()]); }
+      else if(op==='convex'){ var pts=turf.explode(feat); var c=turf.convex(pts); if(!c) throw new Error(T('go.e.convex')); out=c.geometry; stats.push(['go.s.area', fmtArea(turf.area(asFeature(out)))]); }
+      else if(op==='centroid'){ out=turf.centroid(feat).geometry; stats.push(['go.s.center', out.coordinates[0].toFixed(6)+', '+out.coordinates[1].toFixed(6)]); }
+      else if(op==='bbox'){ var bb=turf.bbox(feat); out=turf.bboxPolygon(bb).geometry; stats.push(['go.s.bbox', bb.map(function(n){return n.toFixed(5);}).join(', ')]); stats.push(['go.s.area', fmtArea(turf.area(asFeature(out)))]); }
+    }catch(e){ $('err').textContent=T('go.e.run')+' '+(e&&e.message||e); return; }
+
+    // 출력
+    var gjStr=JSON.stringify(out,null,2), wktStr='';
+    try{ wktStr=fmtWKT.writeGeometry(fmtGeo.readGeometry(out)); }catch(e){ wktStr='(WKT 변환 불가)'; }
+    $('ogeo').value=gjStr; $('owkt').value=wktStr; $('outputs').style.display='block';
+    // 공통 통계
+    var t=out.type; stats.unshift(['go.s.type', t]);
+    if(/LineString/.test(t)) stats.push(['go.s.len', fmtLen(turf.length(asFeature(out),{units:'kilometers'})*1000)]);
+    $('stats').innerHTML=stats.map(function(s){ return '<span class="stat">'+T(s[0])+' <b>'+s[1]+'</b></span>'; }).join('');
+    showOnMap(inGeom, out);
+  }
+
+  $('methods').addEventListener('change', function(){ document.querySelectorAll('#methods label').forEach(function(l){l.classList.remove('on');}); var c=document.querySelector('input[name=op]:checked'); if(c)c.closest('label').classList.add('on'); renderParams(); });
+  $('runBtn').addEventListener('click', run);
+  $('sampleBtn').addEventListener('click', function(){ $('oin').value='POLYGON((126.97 37.55, 127.02 37.55, 127.04 37.58, 127.0 37.6, 126.96 37.58, 126.97 37.55))'; run(); });
+  $('clearBtn').addEventListener('click', function(){ $('oin').value=''; $('outputs').style.display='none'; $('stats').innerHTML=''; $('err').textContent=''; srcI.clear(); srcO.clear(); $('oin').focus(); });
+  document.querySelectorAll('[data-copy]').forEach(function(b){ b.addEventListener('click', function(){ var v=$(b.getAttribute('data-copy')).value; if(v&&navigator.clipboard) navigator.clipboard.writeText(v).then(function(){toast(T('toast.copied'));}); }); });
+  renderParams();
+</script>
+</body>
+</html>
