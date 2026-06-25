@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>Shapefile·KML·GPX·GeoJSON 변환기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="Shapefile(.zip)·KML·GPX·GeoJSON을 GeoJSON·KML·GPX로 상호 변환하고 지도로 미리보는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/geoconvert.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="Shapefile·KML·GPX·GeoJSON 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="Shapefile(.zip)·KML·GPX·GeoJSON을 GeoJSON·KML·GPX로 상호 변환하고 지도로 미리보는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<meta property="og:url" content="https://gemini2k.co.kr/geoconvert.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Shapefile·KML·GPX·GeoJSON 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="Shapefile(.zip)·KML·GPX·GeoJSON을 GeoJSON·KML·GPX로 상호 변환하고 지도로 미리보는 무료 GIS 도구. 업로드 없이 브라우저에서만 처리."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="/vendor/ol-7.5.2/ol.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<script src="/vendor/ol-7.5.2/ol.js"></script>
+<script src="/vendor/shpjs-6.1.0/shp.min.js"></script>
+<style>
+  .drop{ border:2px dashed var(--border); border-radius:14px; padding:1.6rem; text-align:center; color:var(--muted); cursor:pointer; transition:.15s; background:#fafbff; }
+  .drop.over{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent); }
+  .drop b{ color:var(--text); }
+  #gcmap{ width:100%; height:380px; border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-top:1rem; }
+  #gcmap .ol-viewport, #gcmap .ol-viewport canvas{ cursor:grab; }
+  #gcmap .ol-viewport:active, #gcmap .ol-viewport:active canvas{ cursor:grabbing; }
+  .stats{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
+  .stat{ background:#fafbff; border:1px solid var(--border); border-radius:10px; padding:.5rem .8rem; font-size:.85rem; }
+  .stat b{ color:var(--accent); }
+  .err{ color:#c0392b; font-size:.88rem; margin-top:.5rem; min-height:1.2em; }
+  .dls{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1rem; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap" style="max-width:1100px;">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.geoconv.t">Shapefile·KML·GPX·GeoJSON 변환기</h1>
+  <p class="sub" data-i18n="gc.sub">Shapefile(.zip)·KML·GPX·GeoJSON 파일을 올리면 지도로 미리보고 GeoJSON·KML·GPX로 내보냅니다.</p>
+
+  <div class="card">
+    <div class="drop" id="drop">
+      <p style="margin:.2rem 0;"><b data-i18n="gc.drop">파일을 끌어다 놓거나 클릭해 선택</b></p>
+      <p style="margin:.2rem 0;font-size:.85rem;" data-i18n="gc.formats">Shapefile(.zip), .kml, .gpx, .geojson / .json</p>
+      <input type="file" id="file" accept=".zip,.kml,.gpx,.geojson,.json" style="display:none"/>
+    </div>
+    <div class="err" id="err"></div>
+    <div class="stats" id="stats"></div>
+
+    <div id="gcmap"></div>
+
+    <div class="dls" id="dls" style="display:none;">
+      <span style="font-weight:700;font-size:.85rem;align-self:center;" data-i18n="gc.export">내보내기:</span>
+      <button class="btn" data-dl="geojson">GeoJSON</button>
+      <button class="btn btn-ghost" data-dl="kml">KML</button>
+      <button class="btn btn-ghost" data-dl="gpx">GPX</button>
+    </div>
+    <p class="hint" data-i18n="gc.note">※ Shapefile은 .shp·.dbf·.prj 등을 묶은 .zip 으로 올리세요(.prj 있으면 WGS84로 자동 변환). GPX 내보내기는 점·선 형상에 적합합니다. 모든 처리는 브라우저에서만 이루어집니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function $(id){ return document.getElementById(id); }
+  function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+
+  var LL='EPSG:4326', MAP='EPSG:3857';
+  var fmtGeo=new ol.format.GeoJSON(), fmtKML=new ol.format.KML(), fmtGPX=new ol.format.GPX();
+  var FEATS=[];  // EPSG:4326 features
+
+  var src=new ol.source.Vector();
+  var layer=new ol.layer.Vector({ source:src, style:new ol.style.Style({
+    stroke:new ol.style.Stroke({color:'#5B5BF5',width:2.5}),
+    fill:new ol.style.Fill({color:'rgba(91,91,245,.15)'}),
+    image:new ol.style.Circle({radius:5,fill:new ol.style.Fill({color:'#5B5BF5'}),stroke:new ol.style.Stroke({color:'#fff',width:1.5})}) }) });
+  var gcmap=new ol.Map({ target:'gcmap',
+    layers:[ new ol.layer.Tile({source:new ol.source.OSM()}), layer ],
+    view:new ol.View({ center:ol.proj.fromLonLat([127.6,36.3]), zoom:6 }),
+    controls:[ new ol.control.Zoom(), new ol.control.Attribution({collapsible:true}) ] });
+
+  function extOf(name){ var m=(name||'').toLowerCase().match(/\.([a-z0-9]+)$/); return m?m[1]:''; }
+
+  function setFeatures(feats){
+    FEATS=feats||[];
+    src.clear();
+    if(!FEATS.length){ $('err').textContent=T('gc.e.empty'); $('dls').style.display='none'; $('stats').innerHTML=''; return; }
+    // 지도용 복제 + 투영
+    var disp=FEATS.map(function(f){ var c=f.clone(); c.getGeometry().transform(LL,MAP); return c; });
+    src.addFeatures(disp);
+    var types={};
+    FEATS.forEach(function(f){ var t=f.getGeometry()&&f.getGeometry().getType(); if(t)types[t]=(types[t]||0)+1; });
+    var st=[['gc.s.feats', FEATS.length.toLocaleString()]];
+    Object.keys(types).forEach(function(t){ st.push([null, t+' '+types[t]]); });
+    $('stats').innerHTML=st.map(function(s){ return '<span class="stat">'+(s[0]?T(s[0])+' ':'')+'<b>'+s[1]+'</b></span>'; }).join('');
+    var ext=src.getExtent(); if(isFinite(ext[0])) gcmap.getView().fit(ext,{padding:[40,40,40,40],maxZoom:17,duration:300});
+    $('dls').style.display='flex';
+  }
+
+  function readKMLorGPX(fmt, text){
+    return fmt.readFeatures(text, {dataProjection:LL, featureProjection:LL});
+  }
+  function readGeoJSON(text){
+    var obj=JSON.parse(text);
+    return fmtGeo.readFeatures(obj, {dataProjection:LL, featureProjection:LL});
+  }
+
+  function handleFile(file){
+    $('err').textContent='';
+    var ext=extOf(file.name);
+    if(ext==='zip'){
+      var rd=new FileReader();
+      rd.onload=function(){
+        if(typeof shp!=='function'){ $('err').textContent='shpjs 로드 실패'; return; }
+        shp(rd.result).then(function(gj){
+          // gj: Feature/FeatureCollection 또는 배열(여러 레이어)
+          var collections=Array.isArray(gj)?gj:[gj];
+          var feats=[];
+          collections.forEach(function(fc){ feats=feats.concat(fmtGeo.readFeatures(fc,{dataProjection:LL,featureProjection:LL})); });
+          setFeatures(feats);
+        }).catch(function(e){ $('err').textContent=T('gc.e.shp')+' '+(e&&e.message||e); });
+      };
+      rd.onerror=function(){ $('err').textContent=T('gc.e.read'); };
+      rd.readAsArrayBuffer(file);
+      return;
+    }
+    var reader=new FileReader();
+    reader.onload=function(){
+      try{
+        var text=reader.result, feats;
+        if(ext==='kml') feats=readKMLorGPX(fmtKML, text);
+        else if(ext==='gpx') feats=readKMLorGPX(fmtGPX, text);
+        else if(ext==='geojson'||ext==='json') feats=readGeoJSON(text);
+        else { $('err').textContent=T('gc.e.fmt'); return; }
+        setFeatures(feats);
+      }catch(e){ $('err').textContent=T('gc.e.parse')+' '+(e&&e.message||e); }
+    };
+    reader.onerror=function(){ $('err').textContent=T('gc.e.read'); };
+    reader.readAsText(file);
+  }
+
+  function download(name,content,type){ var b=new Blob([content],{type:type||'text/plain;charset=utf-8'}); var u=URL.createObjectURL(b); var a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(u);a.remove();},100); }
+
+  function exportAs(kind){
+    if(!FEATS.length) return;
+    try{
+      if(kind==='geojson'){ var o=JSON.parse(fmtGeo.writeFeatures(FEATS,{dataProjection:LL,featureProjection:LL})); download('converted.geojson', JSON.stringify(o,null,2), 'application/geo+json'); }
+      else if(kind==='kml'){ download('converted.kml', fmtKML.writeFeatures(FEATS,{dataProjection:LL,featureProjection:LL}), 'application/vnd.google-earth.kml+xml'); }
+      else if(kind==='gpx'){ download('converted.gpx', fmtGPX.writeFeatures(FEATS,{dataProjection:LL,featureProjection:LL}), 'application/gpx+xml'); }
+    }catch(e){ $('err').textContent=T('gc.e.export')+' '+(e&&e.message||e); }
+  }
+
+  // 드래그앤드롭 + 클릭
+  var drop=$('drop');
+  drop.addEventListener('click', function(){ $('file').click(); });
+  $('file').addEventListener('change', function(e){ var f=e.target.files[0]; if(f) handleFile(f); });
+  ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function(e){ var f=e.dataTransfer.files[0]; if(f) handleFile(f); });
+  document.querySelectorAll('[data-dl]').forEach(function(b){ b.addEventListener('click', function(){ exportAs(b.getAttribute('data-dl')); }); });
+</script>
+</body>
+</html>
