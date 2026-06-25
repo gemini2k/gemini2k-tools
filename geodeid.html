@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>위치정보 비식별화 도구 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="위경도 좌표를 격자 스냅·좌표 라운딩·지오마스킹·공간 k-익명성으로 비식별화하고 원본과 지도 비교, 이동거리 통계와 GeoJSON·CSV 내보내기를 제공하는 무료 도구. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/geodeid.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="위치정보 비식별화 도구 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="위경도 좌표를 격자 스냅·좌표 라운딩·지오마스킹·공간 k-익명성으로 비식별화하고 원본과 지도 비교, 이동거리 통계와 GeoJSON·CSV 내보내기를 제공하는 무료 도구. 업로드 없이 브라우저에서만 처리."/>
+<meta property="og:url" content="https://gemini2k.co.kr/geodeid.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="위치정보 비식별화 도구 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="위경도 좌표를 격자 스냅·좌표 라운딩·지오마스킹·공간 k-익명성으로 비식별화하고 원본과 지도 비교, 이동거리 통계와 GeoJSON·CSV 내보내기를 제공하는 무료 도구. 업로드 없이 브라우저에서만 처리."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="/vendor/ol-7.5.2/ol.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<script src="/vendor/proj4-2.15.0/proj4.js"></script>
+<script src="/vendor/ol-7.5.2/ol.js"></script>
+<style>
+  #din{ width:100%; min-height:110px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.85rem; line-height:1.55; }
+  .ctrls{ display:flex; flex-wrap:wrap; gap:.6rem; align-items:flex-end; margin-top:.8rem; }
+  .ctrls .fld{ display:flex; flex-direction:column; gap:.25rem; }
+  .ctrls label{ font-size:.78rem; font-weight:700; color:var(--muted); }
+  .ctrls select, .ctrls input[type=number]{ width:auto; min-width:90px; padding:.5rem .6rem; }
+  .methods{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1rem; }
+  .methods label{ border:1px solid var(--border); border-radius:10px; padding:.55rem .8rem; cursor:pointer; font-size:.88rem; background:#fafbff; }
+  .methods label.on{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent); font-weight:700; }
+  .methods input{ display:none; }
+  .params{ margin-top:.8rem; padding:.8rem 1rem; border:1px dashed var(--border); border-radius:12px; background:#fafbff; }
+  .params .row{ display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end; }
+  .mdesc{ font-size:.82rem; color:var(--muted); margin:.2rem 0 .7rem; }
+  #dmap{ width:100%; height:400px; border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-top:1rem; }
+  #dmap .ol-viewport, #dmap .ol-viewport canvas{ cursor:grab; }
+  #dmap .ol-viewport:active, #dmap .ol-viewport:active canvas{ cursor:grabbing; }
+  .legend{ display:flex; gap:1rem; margin-top:.5rem; font-size:.82rem; color:var(--muted); }
+  .legend i{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:.3rem; vertical-align:middle; }
+  .stats{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
+  .stat{ background:#fafbff; border:1px solid var(--border); border-radius:10px; padding:.5rem .8rem; font-size:.85rem; }
+  .stat b{ color:var(--accent); }
+  .err{ color:#c0392b; font-size:.88rem; margin-top:.5rem; min-height:1.2em; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap" style="max-width:1100px;">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.geodeid.t">위치정보 비식별화</h1>
+  <p class="sub" data-i18n="gd.sub">위경도 좌표를 격자 스냅·라운딩·지오마스킹·공간 k-익명성으로 비식별화하고, 원본과 비교하며 GeoJSON·CSV로 내보냅니다.</p>
+
+  <div class="card">
+    <textarea id="din" data-i18n-ph="gd.ph" placeholder="CSV/TSV 를 붙여넣으세요. 첫 줄은 헤더…&#10;예)&#10;id,lat,lng&#10;1,37.5663,126.9779"></textarea>
+    <div class="row" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem;">
+      <button class="btn btn-ghost" id="fileBtn" data-i18n="gd.file">파일 선택</button>
+      <input type="file" id="file" accept=".csv,.tsv,.txt" style="display:none"/>
+      <button class="btn btn-ghost" id="sampleBtn" data-i18n="gd.sample">예시</button>
+      <button class="btn btn-ghost" id="clearBtn" data-i18n="gd.clear">지우기</button>
+    </div>
+
+    <div class="ctrls">
+      <div class="fld"><label data-i18n="gd.crs">좌표계</label>
+        <select id="crs">
+          <option value="EPSG:4326">WGS84 경위도</option>
+          <option value="EPSG:5179">UTM-K (5179)</option>
+          <option value="EPSG:5186">중부원점 (5186)</option>
+          <option value="EPSG:5187">동부원점 (5187)</option>
+          <option value="EPSG:5185">서부원점 (5185)</option>
+        </select>
+      </div>
+      <div class="fld"><label data-i18n="gd.xcol">X (경도/E)</label><select id="xcol"></select></div>
+      <div class="fld"><label data-i18n="gd.ycol">Y (위도/N)</label><select id="ycol"></select></div>
+    </div>
+
+    <div class="methods" id="methods">
+      <label data-m="grid" class="on"><input type="radio" name="m" value="grid" checked><span data-i18n="gd.m.grid">격자 스냅</span></label>
+      <label data-m="round"><input type="radio" name="m" value="round"><span data-i18n="gd.m.round">좌표 라운딩</span></label>
+      <label data-m="geomask"><input type="radio" name="m" value="geomask"><span data-i18n="gd.m.geomask">지오마스킹</span></label>
+      <label data-m="kanon"><input type="radio" name="m" value="kanon"><span data-i18n="gd.m.kanon">공간 k-익명성</span></label>
+    </div>
+
+    <div class="params" id="params"></div>
+
+    <div class="row" style="margin-top:1rem;">
+      <button class="btn" id="applyBtn" data-i18n="gd.apply">비식별 적용</button>
+    </div>
+    <div class="err" id="err"></div>
+    <div class="stats" id="stats"></div>
+
+    <div id="dmap"></div>
+    <div class="legend">
+      <span><i style="background:#bbb"></i><span data-i18n="gd.lg.orig">원본</span></span>
+      <span><i style="background:#5B5BF5"></i><span data-i18n="gd.lg.deid">비식별</span></span>
+    </div>
+
+    <div class="row" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.9rem;">
+      <button class="btn" id="dlGeo" data-i18n="gd.dl.geojson" disabled>GeoJSON</button>
+      <button class="btn btn-ghost" id="dlCsv" data-i18n="gd.dl.csv" disabled>CSV</button>
+    </div>
+    <p class="hint" data-i18n="gd.note">※ 비식별 결과는 원본 좌표를 대체합니다(원본 좌표는 저장하지 않음). 지오마스킹은 무작위라 실행마다 결과가 달라집니다. 적정 수준은 데이터 민감도·재식별 위험을 함께 검토하세요. 모든 처리는 브라우저에서만 이루어집니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function $(id){ return document.getElementById(id); }
+  function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+
+  proj4.defs('EPSG:5179','+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs');
+  proj4.defs('EPSG:5186','+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs');
+  proj4.defs('EPSG:5187','+proj=tmerc +lat_0=38 +lon_0=129 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs');
+  proj4.defs('EPSG:5185','+proj=tmerc +lat_0=38 +lon_0=125 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs');
+
+  var DATA=null, OUT=null;  // OUT: {features:[{props, lon, lat}], csv:string}
+  var MPDLAT=111320;
+  function mPerDegLng(lat){ return 111320*Math.cos(lat*Math.PI/180); }
+  function distM(lon1,lat1,lon2,lat2){ var R=6371000,toR=Math.PI/180; var dLa=(lat2-lat1)*toR,dLo=(lon2-lon1)*toR; var a=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(lat1*toR)*Math.cos(lat2*toR)*Math.sin(dLo/2)*Math.sin(dLo/2); return 2*R*Math.asin(Math.min(1,Math.sqrt(a))); }
+
+  // ── CSV ──
+  function parseCSV(text, delim){ var rows=[],row=[],field='',i=0,inQ=false,n=text.length; if(text.charCodeAt(0)===0xFEFF)i=1;
+    while(i<n){var c=text[i]; if(inQ){ if(c==='"'){ if(text[i+1]==='"'){field+='"';i+=2;continue;} inQ=false;i++;continue; } field+=c;i++;continue; }
+      if(c==='"'){inQ=true;i++;continue;} if(c===delim){row.push(field);field='';i++;continue;}
+      if(c==='\r'){ if(text[i+1]==='\n')i++; row.push(field);rows.push(row);row=[];field='';i++;continue; }
+      if(c==='\n'){row.push(field);rows.push(row);row=[];field='';i++;continue;} field+=c;i++; }
+    row.push(field);rows.push(row); if(rows.length&&rows[rows.length-1].length===1&&rows[rows.length-1][0]==='')rows.pop(); return rows; }
+  function detectDelim(t){ var l=(t.split(/\r?\n/)[0]||''); return (l.match(/\t/g)||[]).length>(l.match(/,/g)||[]).length?'\t':','; }
+  function csvCell(v){ v=String(v==null?'':v); return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+
+  function loadCSV(text){
+    $('err').textContent='';
+    var grid=parseCSV(text, detectDelim(text));
+    if(grid.length<2){ $('err').textContent=T('gd.e.rows'); return; }
+    var headers=grid[0].map(function(h,i){ h=String(h).trim(); return h||('열'+(i+1)); });
+    var rows=[]; for(var r=1;r<grid.length;r++){ var g=grid[r]; if(g.length===1&&g[0]==='')continue; var o={}; for(var j=0;j<headers.length;j++)o[headers[j]]=g[j]!==undefined?g[j]:''; rows.push(o); }
+    DATA={headers:headers, rows:rows};
+    var opt=headers.map(function(h){return '<option value="'+h.replace(/"/g,'&quot;')+'">'+h+'</option>';}).join('');
+    $('xcol').innerHTML=opt; $('ycol').innerHTML=opt;
+    var lat=headers.find(function(h){return /^(lat|latitude|위도|y)$/i.test(h.trim());});
+    var lng=headers.find(function(h){return /^(lng|lon|long|longitude|경도|x)$/i.test(h.trim());});
+    if(lng)$('xcol').value=lng; if(lat)$('ycol').value=lat;
+  }
+
+  // ── 원본 → 경위도 포인트 ──
+  function toLonLat(){
+    var crs=$('crs').value, xcol=$('xcol').value, ycol=$('ycol').value, pts=[], skipped=0;
+    DATA.rows.forEach(function(row){
+      var xs=String(row[xcol]).trim(), ys=String(row[ycol]).trim(), x=Number(xs), y=Number(ys);
+      if(xs===''||ys===''||isNaN(x)||isNaN(y)){ skipped++; return; }
+      var lon,lat; try{ if(crs==='EPSG:4326'){lon=x;lat=y;} else { var ll=proj4(crs,'EPSG:4326',[x,y]); lon=ll[0];lat=ll[1]; } }catch(e){ skipped++; return; }
+      if(!isFinite(lon)||!isFinite(lat)||Math.abs(lat)>90||Math.abs(lon)>180){ skipped++; return; }
+      pts.push({props:row, lon:lon, lat:lat});
+    });
+    return {pts:pts, skipped:skipped, xcol:xcol, ycol:ycol};
+  }
+
+  // ── 방식별 파라미터 UI ──
+  function curMethod(){ return (document.querySelector('input[name=m]:checked')||{}).value||'grid'; }
+  function renderParams(){
+    var m=curMethod(), html='';
+    if(m==='grid') html='<div class="mdesc" data-i18n="gd.d.grid"></div><div class="row"><div class="fld"><label data-i18n="gd.p.cell">격자 크기(m)</label><input type="number" id="p_cell" value="100" min="1" step="10"></div></div>';
+    else if(m==='round') html='<div class="mdesc" data-i18n="gd.d.round"></div><div class="row"><div class="fld"><label data-i18n="gd.p.dec">소수점 자리</label><input type="number" id="p_dec" value="3" min="0" max="8" step="1"></div></div>';
+    else if(m==='geomask') html='<div class="mdesc" data-i18n="gd.d.geomask"></div><div class="row"><div class="fld"><label data-i18n="gd.p.rmax">최대 반경(m)</label><input type="number" id="p_rmax" value="500" min="1" step="10"></div><div class="fld"><label data-i18n="gd.p.rmin">최소 반경(m)</label><input type="number" id="p_rmin" value="0" min="0" step="10"></div></div>';
+    else if(m==='kanon') html='<div class="mdesc" data-i18n="gd.d.kanon"></div><div class="row"><div class="fld"><label>k</label><input type="number" id="p_k" value="5" min="2" step="1"></div><div class="fld"><label data-i18n="gd.p.cell">격자 크기(m)</label><input type="number" id="p_kcell" value="1000" min="1" step="10"></div></div>';
+    $('params').innerHTML=html;
+    if(window.applyI18n) window.applyI18n(); else if(window.t){ document.querySelectorAll('#params [data-i18n]').forEach(function(el){ el.textContent=T(el.getAttribute('data-i18n')); }); }
+  }
+
+  // ── 비식별 적용 ──
+  function apply(){
+    $('err').textContent='';
+    if(!DATA){ $('err').textContent=T('gd.e.nodata'); return; }
+    var info=toLonLat(); var pts=info.pts;
+    if(!pts.length){ $('err').textContent=T('gd.e.none'); return; }
+    var m=curMethod(), out=[], suppressed=0;
+    var meanLat=pts.reduce(function(s,p){return s+p.lat;},0)/pts.length;
+
+    if(m==='grid'){
+      var G=Math.max(1,+($('p_cell').value)||100); var dLat=G/MPDLAT, dLng=G/mPerDegLng(meanLat);
+      pts.forEach(function(p){ var nlat=(Math.floor(p.lat/dLat)+0.5)*dLat, nlng=(Math.floor(p.lon/dLng)+0.5)*dLng; out.push({props:p.props, lon:nlng, lat:nlat, o:[p.lon,p.lat]}); });
+    } else if(m==='round'){
+      var d=Math.max(0,Math.min(8,Math.round(+($('p_dec').value))));
+      pts.forEach(function(p){ out.push({props:p.props, lon:+p.lon.toFixed(d), lat:+p.lat.toFixed(d), o:[p.lon,p.lat]}); });
+    } else if(m==='geomask'){
+      var R=Math.max(1,+($('p_rmax').value)||500), r0=Math.max(0,+($('p_rmin').value)||0); if(r0>=R)r0=0;
+      pts.forEach(function(p){ var ang=Math.random()*2*Math.PI; var dist=Math.sqrt(Math.random()*(R*R-r0*r0)+r0*r0);
+        var dx=dist*Math.cos(ang), dy=dist*Math.sin(ang); var nlat=p.lat+dy/MPDLAT, nlng=p.lon+dx/mPerDegLng(p.lat);
+        out.push({props:p.props, lon:nlng, lat:nlat, o:[p.lon,p.lat]}); });
+    } else if(m==='kanon'){
+      var k=Math.max(2,Math.round(+($('p_k').value)||5)), GC=Math.max(1,+($('p_kcell').value)||500);
+      var dLatK=GC/MPDLAT, dLngK=GC/mPerDegLng(meanLat); var cells={};
+      pts.forEach(function(p){ var ci=Math.floor(p.lat/dLatK), cj=Math.floor(p.lon/dLngK), key=ci+':'+cj; (cells[key]=cells[key]||{ci:ci,cj:cj,arr:[]}).arr.push(p); });
+      Object.keys(cells).forEach(function(key){ var c=cells[key]; if(c.arr.length<k){ suppressed+=c.arr.length; return; }
+        var clat=(c.ci+0.5)*dLatK, clng=(c.cj+0.5)*dLngK; c.arr.forEach(function(p){ out.push({props:p.props, lon:clng, lat:clat, o:[p.lon,p.lat]}); }); });
+    }
+
+    // 통계
+    var disp=out.map(function(o){ return distM(o.o[0],o.o[1],o.lon,o.lat); });
+    var avg=disp.length?disp.reduce(function(a,b){return a+b;},0)/disp.length:0;
+    var max=disp.length?Math.max.apply(null,disp):0;
+    OUT={info:info, out:out};
+    var st=[['gd.s.in', pts.length.toLocaleString()],['gd.s.out', out.length.toLocaleString()]];
+    if(suppressed) st.push(['gd.s.supp', suppressed.toLocaleString()]);
+    st.push(['gd.s.avg', Math.round(avg).toLocaleString()+' m']); st.push(['gd.s.max', Math.round(max).toLocaleString()+' m']);
+    $('stats').innerHTML=st.map(function(s){return '<span class="stat">'+T(s[0])+' <b>'+s[1]+'</b></span>';}).join('');
+
+    drawMap(pts, out);
+    $('dlGeo').disabled=out.length===0; $('dlCsv').disabled=out.length===0;
+    if(out.length===0) $('err').textContent=T('gd.e.allsupp');
+  }
+
+  // ── 지도 ──
+  var srcO=new ol.source.Vector(), srcD=new ol.source.Vector();
+  var layO=new ol.layer.Vector({ source:srcO, style:new ol.style.Style({ image:new ol.style.Circle({radius:3,fill:new ol.style.Fill({color:'rgba(150,150,150,.7)'})}) }) });
+  var layD=new ol.layer.Vector({ source:srcD, style:new ol.style.Style({ image:new ol.style.Circle({radius:4,fill:new ol.style.Fill({color:'#5B5BF5'}),stroke:new ol.style.Stroke({color:'#fff',width:1})}) }) });
+  var dmap=new ol.Map({ target:'dmap', layers:[ new ol.layer.Tile({source:new ol.source.OSM()}), layO, layD ],
+    view:new ol.View({ center:ol.proj.fromLonLat([127.6,36.3]), zoom:6 }),
+    controls:[ new ol.control.Zoom(), new ol.control.Attribution({collapsible:true}) ] });
+  function drawMap(orig, deid){
+    srcO.clear(); srcD.clear();
+    srcO.addFeatures(orig.map(function(p){ return new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([p.lon,p.lat]))); }));
+    srcD.addFeatures(deid.map(function(p){ return new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([p.lon,p.lat]))); }));
+    var ext=srcO.getExtent(); if(isFinite(ext[0])) dmap.getView().fit(ext,{padding:[40,40,40,40],maxZoom:17,duration:300});
+  }
+
+  function download(name,content,type){ var b=new Blob([content],{type:type||'text/plain;charset=utf-8'}); var u=URL.createObjectURL(b); var a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(u);a.remove();},100); }
+  function exportGeo(){ if(!OUT)return; var fc={type:'FeatureCollection',features:OUT.out.map(function(o){ return {type:'Feature',properties:o.props,geometry:{type:'Point',coordinates:[+o.lon.toFixed(8),+o.lat.toFixed(8)]}}; })}; download('deidentified.geojson', JSON.stringify(fc), 'application/geo+json'); }
+  function exportCsv(){ if(!OUT)return; var hs=DATA.headers, xc=OUT.info.xcol, yc=OUT.info.ycol;
+    var lines=[hs.map(csvCell).join(',')];
+    OUT.out.forEach(function(o){ var row=hs.map(function(h){ if(h===xc)return csvCell(o.lon.toFixed(8)); if(h===yc)return csvCell(o.lat.toFixed(8)); return csvCell(o.props[h]); }); lines.push(row.join(',')); });
+    download('deidentified.csv', '﻿'+lines.join('\r\n'), 'text/csv;charset=utf-8'); }
+
+  // ── wiring ──
+  $('methods').addEventListener('change', function(){ document.querySelectorAll('#methods label').forEach(function(l){l.classList.remove('on');}); var c=document.querySelector('input[name=m]:checked'); if(c)c.closest('label').classList.add('on'); renderParams(); });
+  $('applyBtn').addEventListener('click', apply);
+  $('fileBtn').addEventListener('click', function(){ $('file').click(); });
+  $('file').addEventListener('change', function(e){ var f=e.target.files[0]; if(!f)return; var rd=new FileReader(); rd.onload=function(){ $('din').value=rd.result; loadCSV(rd.result); }; rd.readAsText(f); });
+  $('din').addEventListener('blur', function(){ if($('din').value.trim()) loadCSV($('din').value); });
+  $('sampleBtn').addEventListener('click', function(){
+    var s='id,lat,lng\n'; for(var i=0;i<60;i++){ var la=(37.55+ (Math.random()-0.5)*0.014).toFixed(6), lo=(126.98+(Math.random()-0.5)*0.018).toFixed(6); s+=(i+1)+','+la+','+lo+'\n'; }
+    $('din').value=s; loadCSV(s);
+  });
+  $('clearBtn').addEventListener('click', function(){ $('din').value=''; DATA=null; OUT=null; srcO.clear(); srcD.clear(); $('stats').innerHTML=''; $('err').textContent=''; $('xcol').innerHTML=''; $('ycol').innerHTML=''; $('dlGeo').disabled=true; $('dlCsv').disabled=true; $('din').focus(); });
+  $('dlGeo').addEventListener('click', exportGeo);
+  $('dlCsv').addEventListener('click', exportCsv);
+  renderParams();
+</script>
+</body>
+</html>
