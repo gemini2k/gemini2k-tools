@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>법정동 코드 검색 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="법정동명 ↔ 법정동코드(10자리) 검색. 시도·시군구·읍면동·리 계층 필터, 현행 법정동 2만여 건. 국토교통부 데이터 기반, 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/legaldong.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="법정동 코드 검색 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="법정동명 ↔ 법정동코드(10자리) 검색. 시도·시군구·읍면동·리 계층 필터, 현행 법정동 2만여 건. 국토교통부 데이터 기반, 업로드 없이 브라우저에서만 처리."/>
+<meta property="og:url" content="https://gemini2k.co.kr/legaldong.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="법정동 코드 검색 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="법정동명 ↔ 법정동코드(10자리) 검색. 시도·시군구·읍면동·리 계층 필터, 현행 법정동 2만여 건. 국토교통부 데이터 기반, 업로드 없이 브라우저에서만 처리."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .ld-bar{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:flex-end; margin-bottom:.9rem; }
+  .ld-fld{ display:flex; flex-direction:column; gap:.25rem; }
+  .ld-fld label{ font-size:.78rem; font-weight:700; color:var(--muted); }
+  .ld-fld.grow{ flex:1; min-width:220px; }
+  .ld-fld input, .ld-fld select{ padding:.55rem .65rem; }
+  .ld-fld input{ width:100%; }
+  .ld-meta{ display:flex; justify-content:space-between; align-items:center; font-size:.82rem; color:var(--muted); margin:.2rem 0 .5rem; }
+  .ld-list{ border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .ld-row{ display:flex; align-items:center; gap:.8rem; padding:.55rem .85rem; border-bottom:1px solid var(--border); cursor:pointer; background:#fff; }
+  .ld-row:last-child{ border-bottom:none; }
+  .ld-row:hover{ background:#f4f6ff; }
+  .ld-code{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.92rem; font-weight:700; color:var(--accent); letter-spacing:.02em; flex-shrink:0; min-width:7.5em; }
+  .ld-name{ font-size:.92rem; color:var(--text); }
+  .ld-name .ri{ color:var(--muted); }
+  .ld-cp{ margin-left:auto; font-size:.72rem; color:var(--muted); flex-shrink:0; opacity:0; transition:opacity .12s; }
+  .ld-row:hover .ld-cp{ opacity:1; }
+  .ld-empty{ padding:2rem 1rem; text-align:center; color:var(--muted); font-size:.9rem; }
+  .ld-more{ padding:.7rem 1rem; text-align:center; color:var(--muted); font-size:.82rem; background:#fafbff; }
+  .ld-status{ padding:2rem 1rem; text-align:center; color:var(--muted); }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap" style="max-width:900px;">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.legaldong.t">법정동 코드 검색</h1>
+  <p class="sub" data-i18n="ld.sub">법정동명 또는 10자리 법정동코드로 검색합니다. 시도를 골라 좁힐 수 있고, 결과를 클릭하면 코드가 복사됩니다.</p>
+
+  <div class="card">
+    <div class="ld-bar">
+      <div class="ld-fld grow">
+        <label for="q" data-i18n="ld.q">검색 (동 이름 또는 코드)</label>
+        <input id="q" type="search" autocomplete="off" placeholder="예: 수원 반월동 / 41170 / 종로구">
+      </div>
+      <div class="ld-fld">
+        <label for="sido" data-i18n="ld.sido">시도</label>
+        <select id="sido"><option value="" data-i18n="ld.all">전체</option></select>
+      </div>
+    </div>
+
+    <div class="ld-meta">
+      <span id="cnt"></span>
+      <span id="src" class="hint"></span>
+    </div>
+
+    <div class="ld-list" id="list">
+      <div class="ld-status" id="status" data-i18n="ld.loading">데이터를 불러오는 중…</div>
+    </div>
+
+    <p class="hint" data-i18n="ld.note">※ 현행 법정동만 포함합니다(폐지된 동 제외). 법정동코드 10자리 = 시도(2) 시군구(3) 읍면동(3) 리(2). 출처는 국토교통부 법정동 데이터이며, 모든 검색은 브라우저에서만 이루어집니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function $(id){ return document.getElementById(id); }
+  function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+
+  var DATA=null;          // {updated, rows:[[code,sido,sgg,emd,ri], ...]}
+  var MAX=300;            // DOM 렌더 상한
+  var COL={code:0,sido:1,sgg:2,emd:3,ri:4};
+
+  function fullName(r){
+    var parts=[]; for(var i=1;i<=4;i++){ if(r[i]) parts.push(r[i]); } return parts.join(' ');
+  }
+  function rowHtml(r){
+    var nm=fullName(r);
+    // 리명은 회색으로 구분
+    var disp=nm;
+    if(r[COL.ri]){ disp=[r[COL.sido],r[COL.sgg],r[COL.emd]].filter(Boolean).join(' ')+' <span class="ri">'+r[COL.ri]+'</span>'; }
+    return '<div class="ld-row" data-code="'+r[COL.code]+'"><span class="ld-code">'+r[COL.code]+'</span><span class="ld-name">'+disp+'</span><span class="ld-cp">'+T('ld.copy')+'</span></div>';
+  }
+
+  function render(){
+    if(!DATA){ return; }
+    var q=$('q').value.trim().toLowerCase();
+    var sido=$('sido').value;
+    var digits=/^\d+$/.test(q);
+    var tokens=digits?[]:q.split(/\s+/).filter(Boolean);
+    var out=[], total=0;
+    var rows=DATA.rows;
+    for(var i=0;i<rows.length;i++){
+      var r=rows[i];
+      if(sido && r[COL.sido]!==sido) continue;
+      var ok;
+      if(q===''){ ok=true; }
+      else if(digits){ ok=r[COL.code].indexOf(q)>=0; }
+      else{
+        var hay=(r[COL.sido]+' '+r[COL.sgg]+' '+r[COL.emd]+' '+r[COL.ri]).toLowerCase();
+        ok=true; for(var t=0;t<tokens.length;t++){ if(hay.indexOf(tokens[t])<0){ ok=false; break; } }
+      }
+      if(!ok) continue;
+      total++;
+      if(out.length<MAX) out.push(r);
+    }
+    var list=$('list');
+    if(total===0){
+      list.innerHTML='<div class="ld-empty">'+T('ld.noresult')+'</div>';
+    }else{
+      var html=out.map(rowHtml).join('');
+      if(total>out.length){ html+='<div class="ld-more">'+T('ld.more').replace('{n}',(total-out.length).toLocaleString()).replace('{max}',MAX.toLocaleString())+'</div>'; }
+      list.innerHTML=html;
+    }
+    $('cnt').textContent=T('ld.count').replace('{n}',total.toLocaleString());
+  }
+
+  function copyCode(code){
+    if(navigator.clipboard){ navigator.clipboard.writeText(code).then(function(){ toast(T('toast.copied')); }, function(){ toast(T('toast.nocopy')); }); }
+    else{ toast(T('toast.nocopy')); }
+  }
+
+  // 리스트 클릭 위임
+  $('list').addEventListener('click', function(e){
+    var row=e.target.closest('.ld-row'); if(!row) return; copyCode(row.getAttribute('data-code'));
+  });
+
+  // 디바운스 검색
+  var deb; function onSearch(){ clearTimeout(deb); deb=setTimeout(render,120); }
+  $('q').addEventListener('input', onSearch);
+  $('sido').addEventListener('change', render);
+
+  // 데이터 로드
+  fetch('legaldong.json').then(function(res){
+    if(!res.ok) throw new Error('HTTP '+res.status); return res.json();
+  }).then(function(d){
+    DATA=d;
+    // 시도 드롭다운 채우기 (데이터 등장 순서 유지)
+    var seen={}, opts='';
+    for(var i=0;i<d.rows.length;i++){ var s=d.rows[i][COL.sido]; if(s && !seen[s]){ seen[s]=1; opts+='<option value="'+s+'">'+s+'</option>'; } }
+    $('sido').insertAdjacentHTML('beforeend', opts);
+    // 기준일 표시
+    var u=d.updated||'';
+    if(u.length===8){ u=u.slice(0,4)+'-'+u.slice(4,6)+'-'+u.slice(6,8); }
+    $('src').textContent=T('ld.source').replace('{date}',u).replace('{n}',(d.count||d.rows.length).toLocaleString());
+    render();
+  }).catch(function(err){
+    $('status').innerHTML='<span style="color:#c0392b">'+T('ld.loaderr')+' ('+err.message+')</span>';
+  });
+
+  // 언어 전환 시 재렌더 (동적 카운트/결과 문자열)
+  window.onI18n=function(){
+    if(DATA){ render(); var u=DATA.updated||''; if(u.length===8){u=u.slice(0,4)+'-'+u.slice(4,6)+'-'+u.slice(6,8);} $('src').textContent=T('ld.source').replace('{date}',u).replace('{n}',(DATA.count||DATA.rows.length).toLocaleString()); }
+  };
+</script>
+</body>
+</html>
