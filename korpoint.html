@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>국가지점번호 변환기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="경위도·한국 좌표계 ↔ 국가지점번호(행정안전부 격자) 양방향 변환 + 지도 확인. 산악·해안 등 주소 없는 지점의 위치표시번호. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/korpoint.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="국가지점번호 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="경위도·한국 좌표계 ↔ 국가지점번호(행정안전부 격자) 양방향 변환 + 지도 확인. 산악·해안 등 주소 없는 지점의 위치표시번호. 업로드 없이 브라우저에서만 처리."/>
+<meta property="og:url" content="https://gemini2k.co.kr/korpoint.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="국가지점번호 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta name="twitter:description" content="경위도·한국 좌표계 ↔ 국가지점번호(행정안전부 격자) 양방향 변환 + 지도 확인. 산악·해안 등 주소 없는 지점의 위치표시번호. 업로드 없이 브라우저에서만 처리."/>
+<meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="/vendor/ol-7.5.2/ol.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<script src="/vendor/proj4-2.15.0/proj4.js"></script>
+<script src="/vendor/ol-7.5.2/ol.js"></script>
+<style>
+  .kp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media(max-width:820px){ .kp-grid{ grid-template-columns:1fr; } }
+  .pane{ border:1px solid var(--border); border-radius:12px; padding:1rem 1.1rem; background:#fafbff; }
+  .pane h3{ font-size:.95rem; margin:0 0 .7rem; }
+  .pane .fld{ display:flex; flex-direction:column; gap:.25rem; margin-bottom:.6rem; }
+  .pane label{ font-size:.78rem; font-weight:700; color:var(--muted); }
+  .pane input, .pane select{ width:100%; padding:.55rem .65rem; }
+  .res{ margin-top:.7rem; padding:.6rem .8rem; border:1px solid var(--border); border-radius:10px; background:#fff; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.95rem; word-break:break-all; min-height:1.2em; }
+  .res.big{ font-size:1.15rem; font-weight:700; color:var(--accent); }
+  .res .sub{ display:block; font-size:.8rem; color:var(--muted); font-weight:400; margin-top:.2rem; }
+  .err{ color:#c0392b; font-size:.85rem; margin-top:.4rem; min-height:1.1em; }
+  #kmap{ width:100%; height:300px; border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-top:1rem; }
+  #kmap .ol-viewport, #kmap .ol-viewport canvas{ cursor:grab; }
+  #kmap .ol-viewport:active, #kmap .ol-viewport:active canvas{ cursor:grabbing; }
+  .copy{ margin-left:.4rem; padding:.2rem .55rem; font-size:.75rem; }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap" style="max-width:1100px;">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1 data-i18n="tool.korpoint.t">국가지점번호 변환기</h1>
+  <p class="sub" data-i18n="kp.sub">경위도·한국 좌표계와 국가지점번호(행정안전부 격자)를 양방향으로 변환합니다. 도로명·지번이 없는 산악·해안 등의 위치 표시에 쓰입니다.</p>
+
+  <div class="card">
+    <div class="kp-grid">
+      <div class="pane">
+        <h3 data-i18n="kp.fwd">좌표 → 국가지점번호</h3>
+        <div class="fld"><label data-i18n="kp.crs">좌표계</label>
+          <select id="crs"><option value="EPSG:4326">WGS84 경위도</option><option value="EPSG:5179">UTM-K (5179)</option><option value="EPSG:5186">중부원점 (5186)</option><option value="EPSG:3857">웹 메르카토르 (3857)</option></select>
+        </div>
+        <div class="fld"><label id="lblx" data-i18n="kp.lon">경도(X)</label><input id="ix" type="text" placeholder="126.9779"></div>
+        <div class="fld"><label id="lbly" data-i18n="kp.lat">위도(Y)</label><input id="iy" type="text" placeholder="37.5663"></div>
+        <button class="btn" id="fwdBtn" data-i18n="kp.toCode">국가지점번호 계산</button>
+        <div class="res big" id="outCode">—</div>
+        <div class="err" id="errF"></div>
+      </div>
+
+      <div class="pane">
+        <h3 data-i18n="kp.rev">국가지점번호 → 좌표</h3>
+        <div class="fld"><label data-i18n="kp.code">국가지점번호</label><input id="icode" type="text" placeholder="다사 5381 5262"></div>
+        <button class="btn" id="revBtn" data-i18n="kp.toCoord">좌표 계산</button>
+        <div class="res" id="outCoord">—</div>
+        <div class="err" id="errR"></div>
+        <p class="hint" style="margin:.6rem 0 0;font-size:.8rem;" data-i18n="kp.revhint">예: 다사 5381 5262 (공백 없이 다사53815262 도 됩니다)</p>
+      </div>
+    </div>
+
+    <div id="kmap"></div>
+    <p class="hint" data-i18n="kp.note">※ 국가지점번호 기준점 '가가0000 0000'은 UTM-K 원점에서 서 300km·남 700km 지점입니다. 동서 가~사·남북 가~아, 4자리 숫자는 10m 격자입니다. 좌표→번호는 10m 격자로 절사하며, 번호→좌표는 격자 중심을 돌려줍니다. 모든 처리는 브라우저에서만 이루어집니다.</p>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  function T(k){ return window.t ? window.t(k) : k; }
+  function $(id){ return document.getElementById(id); }
+  function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
+
+  proj4.defs('EPSG:5179','+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs');
+  proj4.defs('EPSG:5186','+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs');
+
+  // 국가지점번호 상수 (행정안전부): 기준점 = UTM-K(5179) 원점에서 서 300km·남 700km
+  var KP_X0=700000, KP_Y0=1300000;            // EPSG:5179 좌표 기준
+  var EAST='가나다라마바사';                    // 동서 0~6 (700km)
+  var NORTH='가나다라마바사아';                  // 남북 0~7 (800km)
+  function pad4(n){ n=String(n); while(n.length<4)n='0'+n; return n; }
+
+  // 좌표(5179 x,y) → 국가지점번호
+  function toKP(x, y){
+    var E=x-KP_X0, N=y-KP_Y0;
+    if(E<0||E>=EAST.length*100000||N<0||N>=NORTH.length*100000) throw new Error(T('kp.e.range'));
+    var ec=Math.floor(E/100000), nc=Math.floor(N/100000);
+    var en=Math.floor((E-ec*100000)/10), nn=Math.floor((N-nc*100000)/10);
+    return EAST[ec]+NORTH[nc]+' '+pad4(en)+' '+pad4(nn);
+  }
+  // 국가지점번호 → 좌표(5179 x,y) (격자 중심 +5m)
+  function fromKP(code){
+    var s=code.replace(/\s+/g,'').trim();
+    var m=s.match(/^(.)(.)(\d{8})$/);
+    if(!m) throw new Error(T('kp.e.fmt'));
+    var ec=EAST.indexOf(m[1]), nc=NORTH.indexOf(m[2]);
+    if(ec<0||nc<0) throw new Error(T('kp.e.letter'));
+    var en=+m[3].slice(0,4), nn=+m[3].slice(4,8);
+    var E=ec*100000+en*10+5, N=nc*100000+nn*10+5;
+    return [E+KP_X0, N+KP_Y0];
+  }
+
+  // 지도
+  var src=new ol.source.Vector();
+  var layer=new ol.layer.Vector({ source:src, style:new ol.style.Style({ image:new ol.style.Circle({radius:7,fill:new ol.style.Fill({color:'#5B5BF5'}),stroke:new ol.style.Stroke({color:'#fff',width:2})}) }) });
+  var kmap=new ol.Map({ target:'kmap', layers:[ new ol.layer.Tile({source:new ol.source.OSM()}), layer ],
+    view:new ol.View({ center:ol.proj.fromLonLat([127.6,36.3]), zoom:6 }),
+    controls:[ new ol.control.Zoom(), new ol.control.Attribution({collapsible:true}) ] });
+  function showPoint(lon,lat){ src.clear(); src.addFeature(new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([lon,lat])))); kmap.getView().animate({center:ol.proj.fromLonLat([lon,lat]), zoom:Math.max(kmap.getView().getZoom(),14), duration:300}); }
+
+  function fwd(){
+    $('errF').textContent=''; $('outCode').textContent='—';
+    var crs=$('crs').value, xs=$('ix').value.trim(), ys=$('iy').value.trim();
+    var x=Number(xs), y=Number(ys);
+    if(xs===''||ys===''||isNaN(x)||isNaN(y)){ $('errF').textContent=T('kp.e.num'); return; }
+    var x79,y79,lon,lat;
+    try{
+      if(crs==='EPSG:4326'){ lon=x; lat=y; var p=proj4('EPSG:4326','EPSG:5179',[x,y]); x79=p[0]; y79=p[1]; }
+      else { var p2=proj4(crs,'EPSG:5179',[x,y]); x79=p2[0]; y79=p2[1]; var ll=proj4(crs,'EPSG:4326',[x,y]); lon=ll[0]; lat=ll[1]; }
+    }catch(e){ $('errF').textContent=T('kp.e.proj')+' '+e.message; return; }
+    var code; try{ code=toKP(x79,y79); }catch(e){ $('errF').textContent=e.message; return; }
+    $('outCode').innerHTML=code+'<button class="btn btn-ghost copy" id="cpCode">'+T('kp.copy')+'</button><span class="sub">UTM-K(5179): '+Math.round(x79).toLocaleString()+', '+Math.round(y79).toLocaleString()+'</span>';
+    $('icode').value=code;
+    showPoint(lon,lat);
+    var cp=$('cpCode'); if(cp) cp.addEventListener('click',function(){ if(navigator.clipboard)navigator.clipboard.writeText(code).then(function(){toast(T('toast.copied'));}); });
+  }
+
+  function rev(){
+    $('errR').textContent=''; $('outCoord').textContent='—';
+    var code=$('icode').value;
+    var xy; try{ xy=fromKP(code); }catch(e){ $('errR').textContent=e.message; return; }
+    var ll; try{ ll=proj4('EPSG:5179','EPSG:4326',xy); }catch(e){ $('errR').textContent=T('kp.e.proj')+' '+e.message; return; }
+    var lon=ll[0], lat=ll[1];
+    $('outCoord').innerHTML='경위도: '+lat.toFixed(6)+', '+lon.toFixed(6)+'<button class="btn btn-ghost copy" id="cpLL">'+T('kp.copy')+'</button><span class="sub">UTM-K(5179): '+Math.round(xy[0]).toLocaleString()+', '+Math.round(xy[1]).toLocaleString()+'</span>';
+    showPoint(lon,lat);
+    var cp=$('cpLL'); if(cp) cp.addEventListener('click',function(){ if(navigator.clipboard)navigator.clipboard.writeText(lat.toFixed(6)+', '+lon.toFixed(6)).then(function(){toast(T('toast.copied'));}); });
+  }
+
+  // CRS 변경 시 라벨
+  $('crs').addEventListener('change', function(){
+    var g=$('crs').value==='EPSG:4326';
+    $('lblx').textContent=T(g?'kp.lon':'kp.east'); $('lbly').textContent=T(g?'kp.lat':'kp.north');
+  });
+  $('fwdBtn').addEventListener('click', fwd);
+  $('revBtn').addEventListener('click', rev);
+  $('iy').addEventListener('keydown',function(e){ if(e.key==='Enter')fwd(); });
+  $('icode').addEventListener('keydown',function(e){ if(e.key==='Enter')rev(); });
+</script>
+</body>
+</html>
