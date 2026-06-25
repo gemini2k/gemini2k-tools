@@ -118,7 +118,7 @@
       if(!blob){ result.textContent=T('im.fail'); return; }
       outBlob=blob;
       var url=URL.createObjectURL(blob);
-      preview.innerHTML='<img src="'+url+'" style="max-width:100%;border-radius:10px;border:1px solid var(--border);"/>';
+      preview.innerHTML='<img src="'+url+'" alt="미리보기" style="max-width:100%;border-radius:10px;border:1px solid var(--border);"/>';
       var pct=origSize? Math.round((1-blob.size/origSize)*100) : 0;
       result.textContent=T('im.result').replace('{w}',tw).replace('{h}',th).replace('{s}',kb(blob.size))+(pct>0?T('im.saving').replace('{p}',pct):'');
       resultCard.style.display='';

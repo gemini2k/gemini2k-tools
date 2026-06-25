@@ -131,7 +131,7 @@ def build_og():
     d.text((gx + sq + 20, 82), SITE, font=f_brand, fill="#16181F")
     d.text((80, 200), "필요한 도구,", font=f_title, fill="#16181F")
     d.text((80, 310), "바로 여기", font=f_title, fill="#1AA3E0")
-    d.text((80, 450), "글자수 · 날짜 · QR · 비밀번호 · 단위 · 색상 · 이미지 · 텍스트", font=f_sub, fill="#6B7280")
+    d.text((80, 450), "글자수 · QR · 단위 · 이미지 · PDF · 개발자 · 개인정보 · GIS", font=f_sub, fill="#6B7280")
     d.text((80, 540), "gemini2k.co.kr", font=f_url, fill="#1AA3E0")
     img.save(os.path.join(HERE, "og.png"))
 

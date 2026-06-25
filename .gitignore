@@ -2,3 +2,6 @@ vworld-key.js
 
 # 법정동 원본 CSV (대용량 원본, legaldong.json 으로 변환됨 — deploy/build_legaldong.py)
 국토교통부_전국 법정동_*.csv
+
+# Python 캐시
+__pycache__/
