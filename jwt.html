@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>JWT 디코더 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="JWT(JSON Web Token)의 헤더와 페이로드를 디코딩해 사람이 읽을 수 있게 보여줍니다. exp·iat 만료/발급 시각을 날짜로 변환. 서명 검증은 하지 않으며, 토큰은 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/jwt.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="JWT 디코더 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="JWT 헤더·페이로드를 디코딩, exp·iat를 날짜로 변환. 검증 없음, 업로드 없이 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/jwt.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<style>
+  textarea{width:100%;min-height:110px;padding:.75rem .85rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9rem;color:var(--text);resize:vertical;word-break:break-all;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:.9rem 0;}
+  .part{margin-top:1.1rem;}
+  .part h3{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:0 0 .45rem;display:flex;align-items:center;gap:.5rem;}
+  pre{margin:0;padding:.85rem .95rem;border:1px solid var(--border);border-radius:11px;background:var(--ground);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88rem;line-height:1.55;color:var(--text);overflow-x:auto;white-space:pre-wrap;word-break:break-all;}
+  .sig{color:var(--muted);}
+  .claims{margin-top:.6rem;font-size:.84rem;color:var(--muted);line-height:1.6;}
+  .claims b{color:var(--text);}
+  .err{color:#b91c1c;font-size:.9rem;margin-top:.6rem;min-height:1.1em;}
+  :root[data-theme="dark"] .err{color:#fca5a5;}
+  .cp{cursor:pointer;color:var(--teal,#1aa3e0);font-size:.72rem;background:none;border:none;font-weight:700;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "JWT 디코더",
+  "description": "JWT(JSON Web Token)의 헤더와 페이로드를 디코딩해 보여줍니다. exp·iat 시각을 날짜로 변환. 서명 검증은 하지 않으며 토큰은 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/jwt.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>JWT 디코더</h1>
+  <p class="sub">JWT(JSON Web Token)의 헤더와 페이로드를 디코딩해 내용을 확인합니다. 토큰은 어디로도 전송되지 않고 이 브라우저에서만 해석됩니다.</p>
+
+  <div class="card">
+    <label for="input">JWT 토큰</label>
+    <textarea id="input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0..."></textarea>
+    <div class="actions">
+      <button class="btn" id="decode" type="button">디코딩</button>
+      <button class="btn btn-ghost" id="sample" type="button">샘플</button>
+      <button class="btn btn-ghost" id="clear" type="button">지우기</button>
+    </div>
+    <div class="err" id="err"></div>
+    <div id="result" style="display:none;">
+      <div class="part"><h3>① 헤더 (Header) <button class="cp" data-t="hOut">복사</button></h3><pre id="hOut"></pre></div>
+      <div class="part"><h3>② 페이로드 (Payload) <button class="cp" data-t="pOut">복사</button></h3><pre id="pOut"></pre>
+        <div class="claims" id="claims"></div></div>
+      <div class="part"><h3>③ 서명 (Signature)</h3><pre class="sig" id="sOut"></pre></div>
+    </div>
+    <div class="note">
+      이 도구는 <strong>디코딩만</strong> 하며 서명을 검증하지 않습니다(비밀키·공개키 미사용). 따라서 토큰의 진위는 확인할 수 없습니다. <code>exp</code>(만료)·<code>iat</code>(발급)·<code>nbf</code> 같은 시각 클레임은 사람이 읽을 수 있는 날짜로 함께 표시합니다. 입력한 토큰은 서버로 전송되지 않습니다.
+    </div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+
+  function b64urlDecode(str){
+    str = str.replace(/-/g,'+').replace(/_/g,'/');
+    while(str.length % 4) str += '=';
+    var bin = atob(str);
+    // UTF-8 디코딩
+    var bytes = new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    return new TextDecoder('utf-8').decode(bytes);
+  }
+  function pretty(jsonStr){ return JSON.stringify(JSON.parse(jsonStr), null, 2); }
+
+  function fmtTime(sec){
+    var d=new Date(sec*1000);
+    if(isNaN(d.getTime())) return '';
+    return d.toLocaleString('ko-KR')+' (' + d.toISOString() + ')';
+  }
+  function claimsInfo(payloadStr){
+    var p; try{ p=JSON.parse(payloadStr); }catch(e){ return ''; }
+    var rows=[], now=Math.floor(Date.now()/1000);
+    if(typeof p.iat==='number') rows.push('<b>iat</b> 발급: '+fmtTime(p.iat));
+    if(typeof p.nbf==='number') rows.push('<b>nbf</b> 유효 시작: '+fmtTime(p.nbf));
+    if(typeof p.exp==='number'){
+      var expired = p.exp < now;
+      rows.push('<b>exp</b> 만료: '+fmtTime(p.exp)+' — '+(expired?'⚠️ 만료됨':'유효'));
+    }
+    return rows.join('<br/>');
+  }
+
+  function decode(){
+    $('err').textContent=''; $('result').style.display='none';
+    var t=$('input').value.trim();
+    if(!t){ $('err').textContent='토큰을 입력하세요.'; return; }
+    var parts=t.split('.');
+    if(parts.length<2){ $('err').textContent='JWT 형식이 아닙니다 (점으로 구분된 3부분이 필요).'; return; }
+    try{
+      var h=pretty(b64urlDecode(parts[0]));
+      var p=pretty(b64urlDecode(parts[1]));
+      $('hOut').textContent=h;
+      $('pOut').textContent=p;
+      $('sOut').textContent=parts[2]||'(서명 없음)';
+      $('claims').innerHTML=claimsInfo(b64urlDecode(parts[1]));
+      $('result').style.display='';
+    }catch(e){
+      $('err').textContent='디코딩 실패: 올바른 JWT(Base64URL/JSON)가 아닙니다.';
+    }
+  }
+  $('decode').addEventListener('click', decode);
+  $('clear').addEventListener('click', function(){ $('input').value=''; $('result').style.display='none'; $('err').textContent=''; $('input').focus(); });
+  $('sample').addEventListener('click', function(){
+    $('input').value='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Iu2Zjeq4uOuPmSIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjoxNzAwMDAzNjAwfQ.abc123signature';
+    decode();
+  });
+  document.getElementById('result').addEventListener('click', function(e){
+    var b=e.target.closest('.cp'); if(!b) return;
+    navigator.clipboard.writeText($(b.dataset.t).textContent).then(function(){ toast('복사됐습니다'); });
+  });
+</script>
+</body>
+</html>

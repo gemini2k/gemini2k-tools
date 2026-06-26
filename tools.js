@@ -48,5 +48,9 @@ window.TOOLS = [
   { key:'timestamp',h:'timestamp.html', ic:'⏱️', chip:'c-cyan', cat:'개발자', k:'timestamp unix epoch 타임스탬프 시간 변환 날짜 시각 epoch time 时间戳 タイムスタンプ 유닉스시간' },
   { key:'numkor', h:'numkor.html',   ic:'🔢', chip:'c-cyan',   cat:'변환기', k:'숫자 한글 금액 변환 한글금액 일금 원정 한자 갖은자 대문자 number to korean amount 金额 数字 영수증 계약서 세금계산서 숫자한글' },
   { key:'bmi',    h:'bmi.html',      ic:'⚖️', chip:'c-green',  cat:'계산기', k:'bmi 체질량지수 비만도 비만 과체중 저체중 표준체중 키 몸무게 신장 체중 다이어트 body mass index 肥満 体重 计算 비엠아이' },
-  { key:'pseudo', h:'pseudo.html',   ic:'🎭', chip:'c-violet', cat:'개인정보', k:'가명처리 가명화 비식별 익명화 해시 솔트 salt sha256 일관 가명 id pseudonymization hashing 가명정보 개인정보 결합키 脱敏 仮名化 익명 데이터결합' }
+  { key:'pseudo', h:'pseudo.html',   ic:'🎭', chip:'c-violet', cat:'개인정보', k:'가명처리 가명화 비식별 익명화 해시 솔트 salt sha256 일관 가명 id pseudonymization hashing 가명정보 개인정보 결합키 脱敏 仮名化 익명 데이터결합' },
+  { key:'vat',     h:'vat.html',       ic:'🧾', chip:'c-green',  cat:'계산기', k:'부가세 vat 부가가치세 세금 공급가 공급가액 합계 세액 역산 10% 세율 사업자 세금계산서 영수증 税 增值税 消費税 부가세계산기' },
+  { key:'urlencode',h:'urlencode.html',ic:'🔗', chip:'c-blue',   cat:'개발자', k:'url 인코딩 디코딩 encode decode percent uri 퍼센트 쿼리 한글 escape unescape 编码 解码 エンコード url인코딩' },
+  { key:'jwt',     h:'jwt.html',       ic:'🪪', chip:'c-violet', cat:'개발자', k:'jwt json web token 디코더 decode header payload 토큰 base64url 클레임 exp iat 解析 デコード 제이슨웹토큰' },
+  { key:'contrast',h:'contrast.html',  ic:'🌗', chip:'c-amber',  cat:'변환기', k:'색 대비 명도대비 contrast ratio wcag 접근성 가독성 aa aaa 색상 전경 배경 명암 对比度 コントラスト 색대비검사' }
 ];

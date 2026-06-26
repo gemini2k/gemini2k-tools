@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>URL 인코딩 / 디코딩 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="URL과 쿼리 문자열을 퍼센트 인코딩(%ED%95%9C)하거나 디코딩합니다. 한글·특수문자·공백 처리, 구성요소(encodeURIComponent)와 전체 URL(encodeURI) 방식 선택. 브라우저에서 즉시."/>
+<link rel="canonical" href="https://gemini2k.co.kr/urlencode.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="URL 인코딩 / 디코딩 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="URL·쿼리 문자열을 퍼센트 인코딩/디코딩. 한글·특수문자 처리, 구성요소·전체 URL 방식 선택."/>
+<meta property="og:url" content="https://gemini2k.co.kr/urlencode.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<style>
+  textarea{width:100%;min-height:120px;padding:.75rem .85rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;color:var(--text);resize:vertical;word-break:break-all;}
+  .opts{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin:.7rem 0;font-size:.9rem;color:var(--text);}
+  .opts label{display:inline-flex;align-items:center;gap:.35rem;margin:0;font-weight:600;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0 .3rem;}
+  .arrow{text-align:center;color:var(--muted);font-size:1.3rem;margin:.4rem 0;}
+  .err{color:#b91c1c;font-size:.85rem;margin-top:.5rem;min-height:1.1em;}
+  :root[data-theme="dark"] .err{color:#fca5a5;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "URL 인코딩 / 디코딩",
+  "description": "URL과 쿼리 문자열을 퍼센트 인코딩하거나 디코딩합니다. 한글·특수문자·공백 처리, 구성요소(encodeURIComponent)와 전체 URL(encodeURI) 방식 선택.",
+  "url": "https://gemini2k.co.kr/urlencode.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>URL 인코딩 / 디코딩</h1>
+  <p class="sub">URL·쿼리 문자열의 한글·특수문자·공백을 퍼센트 인코딩하거나, 인코딩된 주소를 사람이 읽을 수 있게 디코딩합니다.</p>
+
+  <div class="card">
+    <label for="input">입력</label>
+    <textarea id="input" placeholder="예: https://example.com/검색?q=한글 검색어&page=1"></textarea>
+    <div class="opts">
+      <label><input type="radio" name="scope" value="component" checked/> 구성요소 (encodeURIComponent)</label>
+      <label><input type="radio" name="scope" value="uri"/> 전체 URL (encodeURI)</label>
+    </div>
+    <div class="actions">
+      <button class="btn" id="enc" type="button">인코딩 ↓</button>
+      <button class="btn" id="dec" type="button">디코딩 ↓</button>
+      <button class="btn btn-ghost" id="swap" type="button">⇅ 입력↔출력</button>
+      <button class="btn btn-ghost" id="clear" type="button">지우기</button>
+    </div>
+    <div class="arrow">↓</div>
+    <label for="output">결과</label>
+    <textarea id="output" readonly placeholder="결과가 여기에 표시됩니다"></textarea>
+    <div class="err" id="err"></div>
+    <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 결과 복사</button></div>
+    <div class="note">
+      <strong>구성요소</strong>는 쿼리 값·경로 조각처럼 부분 문자열에 쓰며 <code>?&=/:#</code> 등도 모두 인코딩합니다. <strong>전체 URL</strong>은 주소 전체를 인코딩하되 <code>:/?#&=</code> 등 URL 구조 문자는 보존합니다. 입력·결과는 서버로 전송되지 않습니다.
+    </div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function scope(){ return document.querySelector('input[name=scope]:checked').value; }
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+
+  function run(decode){
+    $('err').textContent='';
+    var src=$('input').value;
+    try{
+      var out = scope()==='uri'
+        ? (decode ? decodeURI(src) : encodeURI(src))
+        : (decode ? decodeURIComponent(src) : encodeURIComponent(src));
+      $('output').value = out;
+    }catch(e){
+      $('output').value='';
+      $('err').textContent = '디코딩 실패: 올바른 퍼센트 인코딩 형식이 아닙니다 ('+e.message+')';
+    }
+  }
+  $('enc').addEventListener('click', function(){ run(false); });
+  $('dec').addEventListener('click', function(){ run(true); });
+  $('swap').addEventListener('click', function(){ $('input').value=$('output').value; $('output').value=''; $('err').textContent=''; });
+  $('clear').addEventListener('click', function(){ $('input').value=''; $('output').value=''; $('err').textContent=''; $('input').focus(); });
+  $('copy').addEventListener('click', function(){ if(!$('output').value) return; navigator.clipboard.writeText($('output').value).then(function(){ toast('복사됐습니다'); }); });
+</script>
+</body>
+</html>

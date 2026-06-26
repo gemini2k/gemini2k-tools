@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>부가세(VAT) 계산기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="공급가액 또는 합계(공급대가)에서 부가가치세(기본 10%)를 양방향으로 계산합니다. 세금계산서·영수증의 공급가액·세액·합계를 즉시 산출. 세율 변경 가능, 브라우저에서 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/vat.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="부가세(VAT) 계산기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="공급가액·합계에서 부가세(10%)를 양방향 계산. 공급가액·세액·합계 즉시 산출, 세율 변경 가능."/>
+<meta property="og:url" content="https://gemini2k.co.kr/vat.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .seg{display:flex;gap:.5rem;margin-bottom:1.1rem;flex-wrap:wrap;}
+  .seg button{flex:1;min-width:140px;padding:.6rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);
+    color:var(--muted);font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;}
+  .seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .inrow{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;}
+  .inrow input.amt{flex:1;padding:.75rem .85rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);
+    font-family:inherit;font-size:1.4rem;font-weight:700;text-align:right;color:var(--text);}
+  .inrow .won{color:var(--muted);font-weight:700;}
+  .rate{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;font-size:.9rem;color:var(--muted);}
+  .rate input{width:70px;padding:.4rem .5rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);font-family:inherit;text-align:right;color:var(--text);}
+  .reslist{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:1.1rem;}
+  .rrow{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1rem;border-top:1px solid var(--border);font-size:1.05rem;}
+  .rrow:first-child{border-top:none;}
+  .rrow .k{color:var(--muted);font-size:.92rem;}
+  .rrow .v{font-weight:800;}
+  .rrow.total .v{color:var(--accent);font-size:1.2rem;}
+  .cp{cursor:pointer;color:var(--teal,#1aa3e0);font-size:.74rem;background:none;border:none;margin-left:.5rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "부가세(VAT) 계산기",
+  "description": "공급가액 또는 합계(공급대가)에서 부가가치세(기본 10%)를 양방향으로 계산합니다. 세금계산서·영수증의 공급가액·세액·합계를 즉시 산출.",
+  "url": "https://gemini2k.co.kr/vat.html",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>부가세(VAT) 계산기</h1>
+  <p class="sub">공급가액에서 부가세를 더하거나, 합계에서 부가세를 거꾸로 뽑아냅니다. 세금계산서·영수증 작성에 쓰세요.</p>
+
+  <div class="card">
+    <div class="seg">
+      <button id="mAdd" class="on" type="button">공급가액 → 합계 (부가세 더하기)</button>
+      <button id="mSub" type="button">합계 → 공급가액 (부가세 빼기)</button>
+    </div>
+    <div class="rate"><span>세율</span><input id="rate" type="number" value="10" min="0" max="100" step="0.1"/><span>%</span></div>
+    <div class="inrow"><input id="amt" class="amt" type="text" inputmode="numeric" value="100,000" aria-label="금액"/><span class="won">원</span></div>
+
+    <div class="reslist">
+      <div class="rrow"><span class="k">공급가액</span><span><span class="v" id="oNet"></span><button class="cp" data-t="oNet">복사</button></span></div>
+      <div class="rrow"><span class="k">부가세</span><span><span class="v" id="oVat"></span><button class="cp" data-t="oVat">복사</button></span></div>
+      <div class="rrow total"><span class="k">합계 (공급대가)</span><span><span class="v" id="oGross"></span><button class="cp" data-t="oGross">복사</button></span></div>
+    </div>
+    <div class="note">
+      한국 부가가치세 기본 세율은 10%입니다. ‘합계 → 공급가액’은 공급가액 = 합계 ÷ (1 + 세율), 부가세 = 합계 − 공급가액으로 역산합니다. 원 단위는 반올림해 표시하며, 실제 세금계산서의 절사 방식과 1원 단위에서 차이가 날 수 있습니다. 계산은 모두 브라우저에서 이루어집니다.
+    </div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var mode='add';
+  function num(s){ var v=parseFloat(String(s).replace(/[^0-9.]/g,'')); return isFinite(v)?v:0; }
+  function won(n){ return Math.round(n).toLocaleString('ko-KR'); }
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+
+  function calc(){
+    var amt=num($('amt').value), r=num($('rate').value)/100, net, vat, gross;
+    if(mode==='add'){ net=amt; vat=amt*r; gross=amt+vat; }
+    else { gross=amt; net=amt/(1+r); vat=gross-net; }
+    $('oNet').textContent = won(net);
+    $('oVat').textContent = won(vat);
+    $('oGross').textContent = won(gross);
+  }
+  function setMode(m){
+    mode=m;
+    $('mAdd').classList.toggle('on', m==='add');
+    $('mSub').classList.toggle('on', m==='sub');
+    calc();
+  }
+  $('mAdd').addEventListener('click', function(){ setMode('add'); });
+  $('mSub').addEventListener('click', function(){ setMode('sub'); });
+  $('rate').addEventListener('input', calc);
+  $('amt').addEventListener('input', function(){
+    var caretEnd = this.selectionStart===this.value.length;
+    var n=num(this.value); this.value = n? n.toLocaleString('ko-KR') : '';
+    if(caretEnd){ this.selectionStart=this.selectionEnd=this.value.length; }
+    calc();
+  });
+  document.querySelector('.reslist').addEventListener('click', function(e){
+    var b=e.target.closest('.cp'); if(!b) return;
+    navigator.clipboard.writeText($(b.dataset.t).textContent).then(function(){ toast('복사됐습니다'); });
+  });
+  calc();
+</script>
+</body>
+</html>
