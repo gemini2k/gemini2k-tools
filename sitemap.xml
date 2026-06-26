@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://gemini2k.co.kr/base64.html</loc></url>
+<url><loc>https://gemini2k.co.kr/bmi.html</loc></url>
 <url><loc>https://gemini2k.co.kr/char-counter.html</loc></url>
 <url><loc>https://gemini2k.co.kr/color.html</loc></url>
 <url><loc>https://gemini2k.co.kr/coord.html</loc></url>
@@ -29,11 +30,13 @@
 <url><loc>https://gemini2k.co.kr/map.html</loc></url>
 <url><loc>https://gemini2k.co.kr/markdown.html</loc></url>
 <url><loc>https://gemini2k.co.kr/merge.html</loc></url>
+<url><loc>https://gemini2k.co.kr/numkor.html</loc></url>
 <url><loc>https://gemini2k.co.kr/password.html</loc></url>
 <url><loc>https://gemini2k.co.kr/pdf-compress.html</loc></url>
 <url><loc>https://gemini2k.co.kr/percent.html</loc></url>
 <url><loc>https://gemini2k.co.kr/pii.html</loc></url>
 <url><loc>https://gemini2k.co.kr/privacy.html</loc></url>
+<url><loc>https://gemini2k.co.kr/pseudo.html</loc></url>
 <url><loc>https://gemini2k.co.kr/pyeong.html</loc></url>
 <url><loc>https://gemini2k.co.kr/qr.html</loc></url>
 <url><loc>https://gemini2k.co.kr/regex.html</loc></url>

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>해시 가명처리기 (가명정보 가명화) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="이름·주민번호·사번 등 식별자를 솔트(salt) SHA-256 해시로 일관된 가명 ID로 변환합니다. 같은 솔트면 같은 값은 항상 같은 가명이 되어 데이터 결합이 가능. 업로드 없이 브라우저에서만 처리되는 가명정보 가명처리 도구."/>
+<link rel="canonical" href="https://gemini2k.co.kr/pseudo.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="해시 가명처리기 (가명정보 가명화) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="식별자를 솔트 SHA-256으로 일관된 가명 ID로 변환. 같은 솔트=같은 가명(결합 가능). 업로드 없이 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/pseudo.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .opts{display:flex;flex-wrap:wrap;gap:.9rem;align-items:flex-end;margin:.2rem 0 1rem;}
+  .opts .fld{display:flex;flex-direction:column;gap:.35rem;}
+  .opts label{margin:0;}
+  .opts input{padding:.55rem .65rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);font-family:inherit;font-size:.95rem;color:var(--text);}
+  .opts input[type=number]{width:90px;}
+  #salt{min-width:200px;}
+  textarea{width:100%;min-height:130px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92rem;color:var(--text);resize:vertical;}
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-top:1rem;}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;}
+  th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--border);white-space:nowrap;}
+  th{font-size:.74rem;letter-spacing:.03em;color:var(--muted);text-transform:uppercase;}
+  td{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+  td.orig{color:var(--muted);} td.pid{color:var(--text);font-weight:600;}
+  tr:last-child td{border-bottom:none;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.65;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.85rem .95rem;}
+  .warn{color:#b91c1c;font-weight:700;}
+  :root[data-theme="dark"] .warn{color:#fca5a5;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "해시 가명처리기 (가명정보 가명화)",
+  "description": "식별자를 솔트(salt) SHA-256 해시로 일관된 가명 ID로 변환합니다. 같은 솔트면 같은 값은 항상 같은 가명이 되어 데이터 결합이 가능. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/pseudo.html",
+  "applicationCategory": "SecurityApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>해시 가명처리기</h1>
+  <p class="sub">이름·주민번호·사번 같은 식별자를 솔트 SHA-256으로 일관된 가명 ID로 바꿉니다. 같은 솔트를 쓰면 같은 값은 늘 같은 가명이 되어, 서로 다른 표에서도 안전하게 결합할 수 있습니다.</p>
+
+  <div class="card">
+    <div class="opts">
+      <div class="fld"><label for="salt">솔트(salt) — 비밀키</label><input id="salt" type="text" placeholder="예: 2026-프로젝트-A" autocomplete="off"/></div>
+      <div class="fld"><label for="len">가명 길이</label><input id="len" type="number" value="12" min="6" max="64"/></div>
+      <div class="fld"><label for="prefix">접두어</label><input id="prefix" type="text" value="ID_" autocomplete="off" style="width:90px;"/></div>
+      <button class="btn btn-ghost" id="genSalt" type="button" style="height:2.6rem;">🎲 솔트 생성</button>
+    </div>
+    <label for="input">식별자 입력 (한 줄에 하나)</label>
+    <textarea id="input" placeholder="홍길동&#10;901010-1234567&#10;사번00123"></textarea>
+    <div class="actions">
+      <button class="btn" id="run" type="button">가명 생성</button>
+      <button class="btn btn-ghost" id="copyAll" type="button">📋 가명 전체 복사</button>
+      <button class="btn btn-ghost" id="dl" type="button">⬇️ CSV 내려받기</button>
+      <button class="btn btn-ghost" id="sample" type="button">샘플</button>
+    </div>
+    <div class="tbl-scroll" id="resWrap" style="display:none;"><table id="res"></table></div>
+    <div class="note">
+      <span class="warn">솔트는 안전하게 보관하세요.</span> 솔트를 잃어버리면 같은 가명을 다시 만들 수 없고, 솔트가 유출되면 후보 값을 대입해 원본을 역추적할 수 있습니다(가명처리는 익명화가 아닙니다). 가명은 <code>SHA-256(솔트 + "|" + 값)</code>의 앞 글자를 16진수로 사용합니다. 모든 처리는 브라우저에서만 이루어지며 입력값·솔트는 전송되지 않습니다.
+    </div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var enc = new TextEncoder();
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]);}); }
+
+  function hex(buf){ var b=new Uint8Array(buf), s=''; for(var i=0;i<b.length;i++) s+=b[i].toString(16).padStart(2,'0'); return s; }
+  function pseudo(salt, value, len){
+    return crypto.subtle.digest('SHA-256', enc.encode(salt+'|'+value)).then(function(d){ return hex(d).slice(0, len); });
+  }
+
+  var LAST=[];   // [{orig, pid}]
+  function run(){
+    var salt=$('salt').value, len=Math.max(6, Math.min(64, parseInt($('len').value)||12)), prefix=$('prefix').value;
+    var lines=$('input').value.split(/\r?\n/).map(function(s){return s.trim();}).filter(function(s){return s.length;});
+    if(!lines.length){ toast('식별자를 입력하세요'); return; }
+    Promise.all(lines.map(function(v){ return pseudo(salt, v, len).then(function(h){ return {orig:v, pid:prefix+h}; }); }))
+      .then(function(rows){
+        LAST=rows;
+        var html='<tr><th>원본</th><th>가명 ID</th></tr>';
+        rows.forEach(function(r){ html+='<tr><td class="orig">'+esc(r.orig)+'</td><td class="pid">'+esc(r.pid)+'</td></tr>'; });
+        $('res').innerHTML=html; $('resWrap').style.display='';
+      });
+  }
+  function csvCell(s){ s=String(s); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+
+  $('run').addEventListener('click', run);
+  $('genSalt').addEventListener('click', function(){
+    var b=crypto.getRandomValues(new Uint8Array(12)); $('salt').value=hex(b.buffer); toast('솔트를 생성했습니다 — 꼭 보관하세요');
+  });
+  $('copyAll').addEventListener('click', function(){
+    if(!LAST.length) return;
+    navigator.clipboard.writeText(LAST.map(function(r){return r.pid;}).join('\n')).then(function(){ toast(LAST.length+'개 복사됐습니다'); });
+  });
+  $('dl').addEventListener('click', function(){
+    if(!LAST.length) return;
+    var csv='﻿원본,가명ID\n'+LAST.map(function(r){return csvCell(r.orig)+','+csvCell(r.pid);}).join('\n');
+    var blob=new Blob([csv],{type:'text/csv;charset=utf-8'}), url=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=url; a.download='가명처리_결과.csv'; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); },100);
+  });
+  $('sample').addEventListener('click', function(){
+    if(!$('salt').value) $('salt').value='2026-데모-솔트';
+    $('input').value='홍길동\n901010-1234567\n김철수\n사번00123\n홍길동';   // 마지막 중복 → 같은 가명 확인용
+    run();
+  });
+</script>
+</body>
+</html>

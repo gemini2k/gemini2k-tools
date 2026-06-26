@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>BMI 계산기 (체질량지수) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="키와 몸무게로 체질량지수(BMI)와 비만도 단계를 계산합니다. 대한비만학회 기준(저체중·정상·과체중·비만 1~3단계)과 정상 체중 범위까지. 브라우저에서 즉시 계산."/>
+<link rel="canonical" href="https://gemini2k.co.kr/bmi.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="BMI 계산기 (체질량지수) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="키·몸무게로 BMI와 비만도 단계(대한비만학회 기준)·정상 체중 범위 계산. 브라우저에서 즉시."/>
+<meta property="og:url" content="https://gemini2k.co.kr/bmi.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .frow{display:flex;gap:1rem;flex-wrap:wrap;}
+  .fld{flex:1;min-width:140px;}
+  .fld input{width:100%;padding:.7rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);
+    font-family:inherit;font-size:1.15rem;font-weight:700;text-align:right;color:var(--text);}
+  .bmiout{text-align:center;margin:1.4rem 0 .4rem;}
+  .bmiout .v{font-size:3rem;font-weight:800;letter-spacing:-.03em;line-height:1;}
+  .bmiout .cat{display:inline-block;margin-top:.7rem;padding:.3rem .9rem;border-radius:999px;font-size:.95rem;font-weight:700;}
+  .bar{position:relative;height:12px;border-radius:999px;margin:1.6rem 0 .5rem;
+    background:linear-gradient(90deg,#3b82f6 0%,#22c55e 26%,#eab308 38%,#f97316 52%,#ef4444 100%);}
+  .bar .pin{position:absolute;top:-5px;width:4px;height:22px;border-radius:3px;background:var(--text);box-shadow:0 0 0 2px var(--surface);transition:left .25s ease;}
+  .ticks{display:flex;justify-content:space-between;font-size:.68rem;color:var(--muted);}
+  .range{text-align:center;margin-top:1rem;font-size:.95rem;color:var(--text);}
+  .range b{color:var(--accent);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .c-under{background:#dbeafe;color:#1d4ed8;} .c-normal{background:#dcfce7;color:#15803d;}
+  .c-over{background:#fef9c3;color:#a16207;} .c-ob1{background:#ffedd5;color:#c2410c;}
+  .c-ob2{background:#fee2e2;color:#b91c1c;} .c-ob3{background:#fecaca;color:#991b1b;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "BMI 계산기 (체질량지수)",
+  "description": "키와 몸무게로 체질량지수(BMI)와 비만도 단계를 계산합니다. 대한비만학회 기준과 정상 체중 범위까지 제공.",
+  "url": "https://gemini2k.co.kr/bmi.html",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>BMI 계산기</h1>
+  <p class="sub">키와 몸무게를 넣으면 체질량지수(BMI)와 비만도 단계, 정상 체중 범위를 바로 계산합니다.</p>
+
+  <div class="card">
+    <div class="frow">
+      <div class="fld"><label for="h">키 (cm)</label><input id="h" type="number" value="170" min="50" max="250" step="0.1"/></div>
+      <div class="fld"><label for="w">몸무게 (kg)</label><input id="w" type="number" value="65" min="10" max="400" step="0.1"/></div>
+    </div>
+
+    <div class="bmiout">
+      <div class="v" id="bmiv">22.5</div>
+      <div><span class="cat" id="bmicat">정상</span></div>
+    </div>
+    <div class="bar"><span class="pin" id="pin" style="left:50%;"></span></div>
+    <div class="ticks"><span>저체중</span><span>정상</span><span>과체중</span><span>비만</span><span>고도비만</span></div>
+    <div class="range" id="range"></div>
+
+    <div class="note" id="note">
+      대한비만학회 기준(아시아인): 저체중 18.5 미만, 정상 18.5~22.9, 과체중 23~24.9, 1단계 비만 25~29.9, 2단계 비만 30~34.9, 3단계(고도)비만 35 이상. BMI는 근육량·체형을 반영하지 못하므로 참고용이며, 정확한 판단은 전문가와 상담하세요. 계산은 모두 브라우저에서 이루어집니다.
+    </div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  // [상한 BMI, 라벨, 색클래스] — 마지막은 Infinity
+  var CATS=[
+    [18.5,'저체중','c-under'],
+    [23,  '정상','c-normal'],
+    [25,  '과체중','c-over'],
+    [30,  '1단계 비만','c-ob1'],
+    [35,  '2단계 비만','c-ob2'],
+    [Infinity,'3단계 비만(고도비만)','c-ob3']
+  ];
+  function catOf(b){ for(var i=0;i<CATS.length;i++) if(b<CATS[i][0]) return CATS[i]; return CATS[CATS.length-1]; }
+  function r1(x){ return Math.round(x*10)/10; }
+
+  function calc(){
+    var h=parseFloat($('h').value), w=parseFloat($('w').value);
+    if(!(h>0) || !(w>0)){ $('bmiv').textContent='—'; return; }
+    var m=h/100, bmi=w/(m*m);
+    var c=catOf(bmi);
+    $('bmiv').textContent = r1(bmi);
+    var catEl=$('bmicat'); catEl.textContent=c[1]; catEl.className='cat '+c[2];
+    // 바 핀: BMI 15~40 구간을 0~100%로 매핑
+    var pct=Math.max(0, Math.min(100, (bmi-15)/(40-15)*100));
+    $('pin').style.left=pct+'%';
+    // 정상 체중 범위(18.5~22.9)
+    var lo=18.5*m*m, hi=22.9*m*m;
+    $('range').innerHTML = '키 '+r1(h)+'cm 기준 정상 체중 <b>'+r1(lo)+'~'+r1(hi)+'kg</b>';
+  }
+  ['h','w'].forEach(function(id){ $(id).addEventListener('input', calc); });
+  calc();
+</script>
+</body>
+</html>

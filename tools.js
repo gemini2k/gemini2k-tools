@@ -45,5 +45,8 @@ window.TOOLS = [
   { key:'percent',h:'percent.html',  ic:'％', chip:'c-violet', cat:'계산기', k:'퍼센트 계산기 백분율 비율 할인 인상 증감률 percent percentage 百分比 パーセント 퍼센트계산' },
   { key:'diff',   h:'diff.html',     ic:'🔀', chip:'c-blue',   cat:'개발자', k:'텍스트 비교 차이 diff 비교 변경 두 글 compare difference 文本对比 差分 텍스트비교' },
   { key:'jsoncsv',h:'jsoncsv.html',  ic:'🔄', chip:'c-amber',  cat:'개발자', k:'json csv 변환 convert 표 table 데이터 转换 변환 제이슨 csv변환' },
-  { key:'timestamp',h:'timestamp.html', ic:'⏱️', chip:'c-cyan', cat:'개발자', k:'timestamp unix epoch 타임스탬프 시간 변환 날짜 시각 epoch time 时间戳 タイムスタンプ 유닉스시간' }
+  { key:'timestamp',h:'timestamp.html', ic:'⏱️', chip:'c-cyan', cat:'개발자', k:'timestamp unix epoch 타임스탬프 시간 변환 날짜 시각 epoch time 时间戳 タイムスタンプ 유닉스시간' },
+  { key:'numkor', h:'numkor.html',   ic:'🔢', chip:'c-cyan',   cat:'변환기', k:'숫자 한글 금액 변환 한글금액 일금 원정 한자 갖은자 대문자 number to korean amount 金额 数字 영수증 계약서 세금계산서 숫자한글' },
+  { key:'bmi',    h:'bmi.html',      ic:'⚖️', chip:'c-green',  cat:'계산기', k:'bmi 체질량지수 비만도 비만 과체중 저체중 표준체중 키 몸무게 신장 체중 다이어트 body mass index 肥満 体重 计算 비엠아이' },
+  { key:'pseudo', h:'pseudo.html',   ic:'🎭', chip:'c-violet', cat:'개인정보', k:'가명처리 가명화 비식별 익명화 해시 솔트 salt sha256 일관 가명 id pseudonymization hashing 가명정보 개인정보 결합키 脱敏 仮名化 익명 데이터결합' }
 ];

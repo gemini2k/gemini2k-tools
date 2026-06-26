@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>숫자 → 한글 금액 변환기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="숫자를 한글 금액(일금 ○○원정)과 갖은자 한자(金壹貳參…圓整)로 변환합니다. 계약서·영수증·세금계산서에 쓰는 금액 한글 표기를 즉시 생성. 브라우저에서 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/numkor.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="숫자 → 한글 금액 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="숫자를 한글 금액(일금 ○○원정)과 갖은자 한자로 변환. 계약서·영수증·세금계산서용. 브라우저에서 즉시."/>
+<meta property="og:url" content="https://gemini2k.co.kr/numkor.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .bignum{width:100%;padding:.8rem .9rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);
+    font-family:inherit;font-size:1.5rem;font-weight:700;text-align:right;color:var(--text);letter-spacing:-.01em;}
+  .rrow{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:.85rem .95rem;border-top:1px solid var(--border);}
+  .rrow:first-child{border-top:none;}
+  .rlab{font-size:.78rem;font-weight:700;color:var(--muted);flex-shrink:0;width:6.2rem;padding-top:.15rem;}
+  .rval{flex:1;font-size:1.08rem;line-height:1.55;word-break:break-all;color:var(--text);}
+  .rval.hanja{font-size:1.2rem;letter-spacing:.02em;}
+  .cp{cursor:pointer;color:var(--teal,#1aa3e0);font-size:.78rem;font-family:inherit;flex-shrink:0;background:none;border:none;padding:.15rem .2rem;}
+  .reslist{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:1rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "숫자 → 한글 금액 변환기",
+  "description": "숫자를 한글 금액(일금 ○○원정)과 갖은자 한자(金壹貳參…圓整)로 변환합니다. 계약서·영수증·세금계산서에 쓰는 금액 한글 표기를 즉시 생성.",
+  "url": "https://gemini2k.co.kr/numkor.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>숫자 → 한글 금액 변환기</h1>
+  <p class="sub">숫자를 한글 금액과 갖은자 한자로 바꿉니다. 계약서·영수증·세금계산서의 “일금 ○○원정” 표기에 그대로 쓰세요.</p>
+
+  <div class="card">
+    <label for="num">숫자 입력</label>
+    <input id="num" class="bignum" type="text" inputmode="numeric" value="1234567" autocomplete="off" aria-label="숫자"/>
+    <div class="reslist">
+      <div class="rrow"><span class="rlab">콤마 표기</span><span class="rval" id="oComma"></span><button class="cp" data-t="oComma">복사</button></div>
+      <div class="rrow"><span class="rlab">한글</span><span class="rval" id="oKo"></span><button class="cp" data-t="oKo">복사</button></div>
+      <div class="rrow"><span class="rlab">금액 표기</span><span class="rval" id="oAmt"></span><button class="cp" data-t="oAmt">복사</button></div>
+      <div class="rrow"><span class="rlab">갖은자 한자</span><span class="rval hanja" id="oHanja"></span><button class="cp" data-t="oHanja">복사</button></div>
+    </div>
+    <div class="note">
+      갖은자(壹貳參…)는 위·변조를 막기 위해 계약서·어음에 쓰는 정자 한자입니다. 정수(원 단위)만 변환하며 소수점 이하는 버립니다. 모든 계산은 브라우저에서 이루어지고 입력값은 전송되지 않습니다.
+    </div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var D_KO=['','일','이','삼','사','오','육','칠','팔','구'];
+  var U_KO=['','십','백','천'];
+  var BIG_KO=['','만','억','조','경','해','자','양','구','간','정','재','극'];
+  var D_HJ=['零','壹','貳','參','肆','伍','陸','柒','捌','玖'];
+  var U_HJ=['','拾','佰','仟'];
+  var BIG_HJ=['','萬','億','兆','京','垓','秭','穰','溝','澗','正','載','極'];
+
+  function comma(s){ return s.replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+
+  function group(g, D, U, omitLeadOne){
+    if(g===0) return '';
+    var str=String(g), s='';
+    for(var i=0;i<str.length;i++){
+      var n=+str[i], pos=str.length-1-i;     // 0=일,1=십,2=백,3=천
+      if(n===0) continue;
+      s += ((omitLeadOne && n===1 && pos>0) ? '' : D[n]) + U[pos];
+    }
+    return s;
+  }
+  function convert(digits, D, U, BIG, omitLeadOne, zero){
+    digits = digits.replace(/^0+/,'');
+    if(digits==='') return zero;
+    if(digits.length > BIG.length*4) return null;   // 표현 범위 초과
+    var groups=[];
+    for(var i=digits.length;i>0;i-=4) groups.unshift(digits.slice(Math.max(0,i-4), i));
+    var parts=[];
+    for(var j=0;j<groups.length;j++){
+      var g=+groups[j]; if(g===0) continue;
+      parts.push(group(g, D, U, omitLeadOne) + BIG[groups.length-1-j]);
+    }
+    return parts.join(omitLeadOne ? ' ' : '');   // 한글은 만/억 사이 띄어쓰기, 한자는 붙여쓰기
+  }
+
+  function render(){
+    var raw=$('num').value;
+    var digits=(raw.split('.')[0].match(/\d/g)||[]).join('');   // 정수부 숫자만
+    if(digits==='') digits='0';
+    var ko=convert(digits, D_KO, U_KO, BIG_KO, true, '영');
+    var hj=convert(digits, D_HJ, U_HJ, BIG_HJ, false, '零');
+    if(ko===null){ $('oComma').textContent=comma(digits); $('oKo').textContent='범위를 초과했습니다'; $('oAmt').textContent='—'; $('oHanja').textContent='—'; return; }
+    $('oComma').textContent = comma(digits);
+    $('oKo').textContent = ko;
+    $('oAmt').textContent = '일금 ' + ko + ' 원정';
+    $('oHanja').textContent = '金' + hj + '圓整';
+  }
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+
+  $('num').addEventListener('input', render);
+  document.querySelector('.reslist').addEventListener('click', function(e){
+    var b=e.target.closest('.cp'); if(!b) return;
+    var v=$(b.dataset.t).textContent;
+    navigator.clipboard.writeText(v).then(function(){ toast('복사됐습니다'); });
+  });
+  render();
+</script>
+</body>
+</html>
