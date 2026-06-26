@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="/fonts/pretendard.css"/>
 <link rel="stylesheet" href="style.css"/>
 <script src="ga.js"></script>
+<script src="theme.js"></script>
 <script src="i18n.js"></script>
 <script src="/vendor/marked-12.0.2/marked.min.js"></script>
 <script src="/vendor/dompurify-3.1.6/purify.min.js"></script>
@@ -53,19 +54,8 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
 </head>
 <body>
-<header class="top"><div class="top-in">
-  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
-  <nav>
-    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
-      <option value="ko">한국어</option><option value="en">English</option>
-      <option value="zh">中文</option><option value="ja">日本語</option>
-    </select>
-    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
-  </nav>
-</div></header>
 
 <div class="toolwrap" style="max-width:1040px;">
-  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
   <h1 data-i18n="tool.md.t">마크다운 에디터</h1>
   <p class="sub" data-i18n="md.sub">작성하면 실시간으로 미리보기를 보여줍니다.</p>
 
@@ -98,6 +88,7 @@
   </div>
 </div>
 
+<script src="tool-shell.js"></script>
 <script id="md-sample" type="text/plain"># 안녕하세요 👋
 
 **마크다운 에디터**에 오신 것을 환영합니다.
@@ -117,13 +108,6 @@ console.log("Hello, world!");
 | 코드 | ✅ |
 </script>
 
-<footer class="foot"><div class="foot-in">
-  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
-  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a><a href="privacy.html" data-i18n="foot.policy">· 개인정보처리방침</a>
-  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
-</div></footer>
-
-<div class="toast" id="toast"></div>
 <script>
   function T(k){ return window.t ? window.t(k) : k; }
   function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1700);}
@@ -165,7 +149,30 @@ console.log("Hello, world!");
   }
   document.getElementById('dlmd').addEventListener('click', function(){ save('markdown_'+stamp()+'.md', md.value, 'text/markdown'); });
   document.getElementById('dlhtml').addEventListener('click', function(){
-    var doc='<!doctype html><html><head><meta charset="utf-8"></head><body>'+preview.innerHTML+'</body></html>';
+    var doc='<!doctype html><html><head><meta charset="utf-8"><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "마크다운 에디터",
+  "description": "마크다운을 작성하면 실시간으로 미리보기를 보여주고 HTML·MD로 내보내는 무료 온라인 에디터. 업로드 없이 브라우저에서 바로.",
+  "url": "https://gemini2k.co.kr/markdown.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "빛의여행(gemini2k) 도구",
+    "url": "https://gemini2k.co.kr/"
+  }
+}
+</script>
+</head><body>'+preview.innerHTML+'</body></html>';
     save('markdown_'+stamp()+'.html', doc, 'text/html');
   });
   md.value = (document.getElementById('md-sample').textContent || '').replace(/^\n/, '');

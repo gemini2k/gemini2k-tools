@@ -25,24 +25,37 @@
 <link rel="stylesheet" href="/fonts/pretendard.css"/>
 <link rel="stylesheet" href="style.css"/>
 <script src="ga.js"></script>
+<script src="theme.js"></script>
 <script src="i18n.js"></script>
 <script src="/vendor/qrcode-generator-1.4.4/qrcode.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "QR코드 생성기",
+  "description": "URL이나 텍스트를 입력하면 QR코드를 즉시 만들어 이미지(PNG)로 저장하는 무료 도구. 충분한 여백으로 스캔이 잘 됩니다. 설치 없이 브라우저에서 바로.",
+  "url": "https://gemini2k.co.kr/qr.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "빛의여행(gemini2k) 도구",
+    "url": "https://gemini2k.co.kr/"
+  }
+}
+</script>
 </head>
 <body>
-<header class="top"><div class="top-in">
-  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
-  <nav>
-    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
-      <option value="ko">한국어</option><option value="en">English</option>
-      <option value="zh">中文</option><option value="ja">日本語</option>
-    </select>
-    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
-  </nav>
-</div></header>
 
 <div class="toolwrap">
-  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
   <h1 data-i18n="tool.qr.t">QR코드 생성기</h1>
   <p class="sub" data-i18n="qr.sub">URL이나 텍스트를 입력하면 QR코드가 즉시 만들어집니다.</p>
 
@@ -72,13 +85,7 @@
   </div>
 </div>
 
-<footer class="foot"><div class="foot-in">
-  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
-  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a><a href="privacy.html" data-i18n="foot.policy">· 개인정보처리방침</a>
-  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
-</div></footer>
-
-<div class="toast" id="toast"></div>
+<script src="tool-shell.js"></script>
 <script>
   var text = document.getElementById('text'), size = document.getElementById('size'),
       canvas = document.getElementById('qrcanvas'), ph = document.getElementById('ph'),

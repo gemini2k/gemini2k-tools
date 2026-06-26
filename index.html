@@ -24,18 +24,46 @@
 
 <link rel="stylesheet" href="/fonts/pretendard.css"/>
 <link rel="stylesheet" href="style.css"/>
+<script src="theme.js"></script>
 <script src="ga.js"></script>
 <script src="i18n.js"></script>
+<script src="tools.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "빛의여행(gemini2k) 도구",
+  "alternateName": "gemini2k 도구",
+  "url": "https://gemini2k.co.kr/",
+  "inLanguage": "ko",
+  "description": "무료 온라인 도구 모음 — 계산기, 변환기, PDF, 이미지, 개발자, GIS, 개인정보 도구를 설치 없이 브라우저에서.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "빛의여행(gemini2k) 도구",
+    "url": "https://gemini2k.co.kr/"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://gemini2k.co.kr/?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
 </head>
 <body>
 <header class="top"><div class="top-in">
   <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
   <nav>
+    <button id="themeBtn" class="theme-btn" type="button" aria-label="theme">🌙</button>
     <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
       <option value="ko">한국어</option><option value="en">English</option>
       <option value="zh">中文</option><option value="ja">日本語</option>
     </select>
+    <span class="nav-sep" aria-hidden="true"></span>
     <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
   </nav>
 </div></header>
@@ -45,6 +73,17 @@
   <h1 data-i18n-html="hero.h1">필요한 도구,<br/>바로 여기</h1>
   <p data-i18n-html="hero.p">설치 없이 브라우저에서 바로 쓰는 무료 도구 모음.</p>
   <div class="search"><input id="q" type="text" data-i18n-ph="search.ph" placeholder="도구 검색…" aria-label="search"/></div>
+</section>
+
+<section class="hubsec" id="favsec" style="display:none;">
+  <div class="hubsec-h"><span>⭐</span><span id="favTitle">즐겨찾기</span></div>
+  <div class="grid" id="favgrid"></div>
+</section>
+
+<section class="hubsec" id="recentsec" style="display:none;">
+  <div class="hubsec-h"><span>🕘</span><span id="recentTitle">최근 사용</span>
+    <button id="recentClear" class="hub-clear" type="button" data-i18n="hub.clear">지우기</button></div>
+  <div class="grid" id="recentgrid"></div>
 </section>
 
 <div class="chips" id="chips"></div>
@@ -105,54 +144,51 @@
 </div></footer>
 
 <script>
-  // 도구 정의 (이름·설명은 i18n.js 사전에서 key 로 가져옴). 새 도구 추가 시 한 줄.
-  var TOOLS = [
-    { key:'char',  h:'char-counter.html', ic:'✍️', chip:'c-blue',   cat:'텍스트', k:'글자수 character counter 원고지 단어 word count 자소서 字数 文字数' },
-    { key:'date',  h:'date-calc.html',    ic:'📅', chip:'c-green',  cat:'계산기', k:'만나이 나이 dday 디데이 날짜 date age 年龄 倒数 年齢' },
-    { key:'qr',    h:'qr.html',           ic:'🔳', chip:'c-violet', cat:'생성기', k:'qr 큐알 二维码 url 와이파이' },
-    { key:'pw',    h:'password.html',     ic:'🔑', chip:'c-rose',   cat:'생성기', k:'비밀번호 password 密码 パスワード 랜덤 보안' },
-    { key:'unit',  h:'unit.html',         ic:'📐', chip:'c-amber',  cat:'변환기', k:'단위 변환 unit 单位 単位 길이 무게 온도 평' },
-    { key:'color', h:'color.html',        ic:'🎨', chip:'c-cyan',   cat:'변환기', k:'색상 color 颜色 カラー hex rgb hsl' },
-    { key:'image', h:'image.html',        ic:'🖼️', chip:'c-green',  cat:'이미지', k:'이미지 압축 리사이즈 image 图片 画像 png jpg webp' },
-    { key:'text',  h:'text-tools.html',   ic:'🧹', chip:'c-blue',   cat:'텍스트', k:'텍스트 정리 text 文本 テキスト 대소문자 중복 정렬' },
-    { key:'base64',h:'base64.html',       ic:'🔤', chip:'c-cyan',   cat:'변환기', k:'base64 인코딩 디코딩 encode decode 编解码 エンコード' },
-    { key:'lotto', h:'lotto.html',        ic:'🎲', chip:'c-rose',   cat:'생성기', k:'로또 lotto 번호 추첨 645 乐透 ロト random' },
-    { key:'pmerge',   h:'merge.html',       ic:'📎', chip:'c-rose',   cat:'PDF', k:'pdf 합치기 병합 merge combine 合并 結合 묶기' },
-    { key:'psplit',   h:'split.html',       ic:'✂️', chip:'c-amber',  cat:'PDF', k:'pdf 쪼개기 분할 추출 split extract 拆分 分割 페이지' },
-    { key:'img2pdf',  h:'img2pdf.html',     ic:'🖼️', chip:'c-green',  cat:'PDF', k:'이미지 pdf 변환 image to pdf jpg png 图片 画像' },
-    { key:'pcompress',h:'pdf-compress.html',ic:'📦', chip:'c-blue',   cat:'PDF', k:'pdf 압축 용량 compress 压缩 圧縮 줄이기 reduce' },
-    { key:'json',  h:'json.html',     ic:'🧩', chip:'c-amber',  cat:'개발자', k:'json 포맷 검증 formatter validator beautify minify 格式化 整形 파싱 lint' },
-    { key:'regex', h:'regex.html',    ic:'🔎', chip:'c-violet', cat:'개발자', k:'정규식 정규표현식 regex regexp 正则 正規表現 패턴 pattern 테스트' },
-    { key:'md',    h:'markdown.html', ic:'📝', chip:'c-blue',   cat:'개발자', k:'마크다운 markdown 에디터 editor preview md 编辑 プレビュー 온라인' },
-    { key:'favicon',h:'favicon.html', ic:'⭐', chip:'c-amber',  cat:'이미지', k:'파비콘 favicon 즐겨찾기 아이콘 icon ico 图标 アイコン 생성' },
-    { key:'diagram',h:'diagram.html', ic:'🔷', chip:'c-violet', cat:'이미지', k:'다이어그램 diagram svg 도식 순서도 flowchart 图示 図解 박스 화살표' },
-    { key:'lunar',  h:'lunar.html',     ic:'🌙', chip:'c-amber',  cat:'변환기', k:'음력 양력 변환 lunar solar 农历 旧暦 설날 추석 간지 띠 윤달 calendar' },
-    { key:'worldclock',h:'worldclock.html',ic:'🌏', chip:'c-cyan', cat:'시간', k:'세계 시계 시간 timezone world clock 时区 时差 タイムゾーン 회의 utc gmt' },
-    { key:'mask',  h:'pii.html',        ic:'🛡️', chip:'c-rose',  cat:'개인정보', k:'개인정보 탐지 마스킹 비식별 가명 masking pii privacy 주민번호 사업자번호 전화 이메일 카드 ip 계좌 체크섬 luhn 个人信息 脱敏 個人情報' },
-    { key:'reid',  h:'reid.html',       ic:'🔐', chip:'c-violet', cat:'개인정보', k:'재식별 위험 평가 k익명성 l다양성 t근접성 k-anonymity l-diversity t-closeness 비식별 가명정보 익명처리 re-identification 准标识符 匿名化 匿名加工' },
-    { key:'gmap',  h:'map.html',        ic:'🗺️', chip:'c-green', cat:'GIS', k:'gis 지도 웹맵 map 거리 면적 측정 버퍼 히트맵 클러스터 osm vworld 地图 空间 좌표' },
-    { key:'coord', h:'coord.html',      ic:'🧭', chip:'c-cyan',  cat:'GIS', k:'좌표 변환 좌표계 경위도 위경도 utm-k 중부원점 tm epsg 도분초 dms proj4 coordinate 坐标 座標' },
-    { key:'geom',  h:'geometry.html',   ic:'🔺', chip:'c-violet', cat:'GIS', k:'wkt wkb ewkb geojson 변환 지오메트리 geometry postgis hex 면적 거리 정점 polygon 转换 几何 ジオメトリ' },
-    { key:'csvmap',h:'csvmap.html',     ic:'📍', chip:'c-amber', cat:'GIS', k:'csv 지도 마커 좌표 위경도 위도 경도 geojson 시각화 점 데이터 utm-k 중부원점 proj4 map marker 坐标 地图 マップ' },
-    { key:'geoconv',h:'geoconvert.html', ic:'🔄', chip:'c-blue', cat:'GIS', k:'shapefile shp kml gpx geojson 변환 conversion 지오메트리 좌표 gps 구글어스 google earth prj zip 转换 変換' },
-    { key:'geodeid',h:'geodeid.html',    ic:'🔏', chip:'c-rose', cat:'GIS', k:'위치 비식별 익명화 마스킹 지오마스킹 격자 스냅 라운딩 k익명성 k-anonymity geomasking grid privacy 개인정보 가명 좌표 익명 脱敏 匿名 マスキング' },
-    { key:'geoops', h:'geoops.html',     ic:'🔧', chip:'c-green', cat:'GIS', k:'공간 연산 버퍼 buffer 단순화 simplify 컨벡스 헐 convex hull 중심점 centroid 바운딩 박스 bbox 도형 geometry turf 面积 缓冲 简化 凸包 バッファ' },
-    { key:'korpoint',h:'korpoint.html',  ic:'📌', chip:'c-cyan', cat:'GIS', k:'국가지점번호 격자 위치표시번호 좌표 변환 행정안전부 가나다 utm-k national point number 산악 해안 grid 国家地点编号 座標' },
-    { key:'legaldong',h:'legaldong.html', ic:'📜', chip:'c-amber', cat:'GIS', k:'법정동 코드 법정동코드 행정동 시도 시군구 읍면동 리 주소 코드 검색 국토교통부 legal dong code address 법정 동 行政区划 法定洞 코드검색' },
-    { key:'salary', h:'salary.html',   ic:'💰', chip:'c-green',  cat:'계산기', k:'연봉 실수령액 월급 세후 실수령 급여 4대보험 국민연금 건강보험 소득세 salary net pay take home 月薪 手取り 税後 연봉계산기' },
-    { key:'pyeong', h:'pyeong.html',   ic:'📐', chip:'c-amber',  cat:'계산기', k:'평수 평 제곱미터 면적 변환 평형 아파트 부동산 토지 헥타르 sqm pyeong area 坪 平米 面積 평수계산기' },
-    { key:'exif',   h:'exif.html',     ic:'📷', chip:'c-rose',   cat:'개인정보', k:'exif 위치정보 gps 메타데이터 사진 이미지 제거 privacy metadata 个人信息 메타 데이터 写真 メタデータ 사진위치' },
-    { key:'hash',   h:'hash.html',     ic:'#️⃣', chip:'c-violet', cat:'개발자', k:'md5 sha256 sha1 sha512 해시 hash 체크섬 checksum 무결성 verify 哈希 ハッシュ 해시생성' },
-    { key:'uuid',   h:'uuid.html',     ic:'🆔', chip:'c-cyan',   cat:'개발자', k:'uuid guid 고유 식별자 생성 unique id generator 唯一标识 識別子 유유아이디' },
-    { key:'ladder', h:'ladder.html',   ic:'🪜', chip:'c-rose',   cat:'생성기', k:'사다리타기 사다리 추첨 제비뽑기 뽑기 내기 ladder game 抽签 くじ あみだくじ 사다리게임' },
-    { key:'loan',   h:'loan.html',     ic:'🏦', chip:'c-green',  cat:'계산기', k:'대출 이자 계산기 원리금 원금균등 만기일시 이자 상환 월납입 금리 loan interest 贷款 利息 ローン 대출계산기' },
-    { key:'percent',h:'percent.html',  ic:'％', chip:'c-violet', cat:'계산기', k:'퍼센트 계산기 백분율 비율 할인 인상 증감률 percent percentage 百分比 パーセント 퍼센트계산' },
-    { key:'diff',   h:'diff.html',     ic:'🔀', chip:'c-blue',   cat:'개발자', k:'텍스트 비교 차이 diff 비교 변경 두 글 compare difference 文本对比 差分 텍스트비교' },
-    { key:'jsoncsv',h:'jsoncsv.html',  ic:'🔄', chip:'c-amber',  cat:'개발자', k:'json csv 변환 convert 표 table 데이터 转换 변환 제이슨 csv변환' },
-    { key:'timestamp',h:'timestamp.html', ic:'⏱️', chip:'c-cyan', cat:'개발자', k:'timestamp unix epoch 타임스탬프 시간 변환 날짜 시각 epoch time 时间戳 タイムスタンプ 유닉스시간' }
-  ];
+  // 도구 목록은 tools.js 의 window.TOOLS 가 단일 진실원. 제목·설명은 i18n.js 의 tool.{key}.t/.d.
+  var TOOLS = window.TOOLS || [];
   var grid=document.getElementById('grid'), chipsBox=document.getElementById('chips'),
       empty=document.getElementById('empty'), q=document.getElementById('q'), activeCat='전체';
+  var favsec=document.getElementById('favsec'), favgrid=document.getElementById('favgrid'),
+      recentsec=document.getElementById('recentsec'), recentgrid=document.getElementById('recentgrid');
+  var FAV_KEY='tools:favorites', RECENT_KEY='tools:recent', RECENT_MAX=8;
+
+  function load(key){ try{ return JSON.parse(localStorage.getItem(key))||[]; }catch(e){ return []; } }
+  function save(key,arr){ try{ localStorage.setItem(key, JSON.stringify(arr)); }catch(e){} }
+  function isFav(k){ return load(FAV_KEY).indexOf(k)>=0; }
+  function byKey(k){ for(var i=0;i<TOOLS.length;i++) if(TOOLS[i].key===k) return TOOLS[i]; return null; }
+
+  function toggleFav(k){
+    var f=load(FAV_KEY), i=f.indexOf(k);
+    if(i>=0) f.splice(i,1); else f.unshift(k);
+    save(FAV_KEY,f); renderFav();
+    document.querySelectorAll('.fav[data-k="'+k+'"]').forEach(function(b){ b.classList.toggle('on', isFav(k)); });
+  }
+  function pushRecent(k){
+    var r=load(RECENT_KEY), i=r.indexOf(k); if(i>=0) r.splice(i,1);
+    r.unshift(k); if(r.length>RECENT_MAX) r=r.slice(0,RECENT_MAX); save(RECENT_KEY,r);
+  }
+
+  function cardHtml(x){
+    return '<a class="tool" href="'+x.h+'" data-key="'+x.key+'" data-cat="'+x.cat+'" data-k="'+x.k+'">'
+      +'<span class="ic '+x.chip+'">'+x.ic+'</span>'
+      +'<div><h3>'+t('tool.'+x.key+'.t')+'</h3><p>'+t('tool.'+x.key+'.d')+'</p></div>'
+      +'<span class="fav'+(isFav(x.key)?' on':'')+'" role="button" tabindex="0" data-k="'+x.key+'" aria-label="favorite">★</span>'
+      +'</a>';
+  }
+
+  function renderFav(){
+    favgrid.innerHTML = load(FAV_KEY).map(byKey).filter(Boolean).map(cardHtml).join('');
+    updateSections();
+  }
+  function renderRecent(){
+    recentgrid.innerHTML = load(RECENT_KEY).map(byKey).filter(Boolean).map(cardHtml).join('');
+    updateSections();
+  }
+  function updateSections(){
+    var plain = !q.value.trim() && activeCat==='전체';   // 검색·필터 없을 때만 노출
+    favsec.style.display = (plain && favgrid.children.length) ? '' : 'none';
+    recentsec.style.display = (plain && recentgrid.children.length) ? '' : 'none';
+  }
 
   function applyFilter(){
     var s=q.value.trim().toLowerCase(), shown=0;
@@ -162,17 +198,17 @@
       var hit = okC && okQ; el.style.display=hit?'':'none'; if(hit) shown++;
     });
     empty.style.display = shown ? 'none' : '';
+    updateSections();
   }
   function renderHub(){
     var cats=['전체']; TOOLS.forEach(function(x){ if(cats.indexOf(x.cat)<0) cats.push(x.cat); });
     chipsBox.innerHTML = cats.map(function(c){
       return '<button class="chip'+(c===activeCat?' on':'')+'" data-cat="'+c+'">'+t('cat.'+c)+'</button>';
     }).join('');
-    grid.innerHTML = TOOLS.map(function(x){
-      return '<a class="tool" href="'+x.h+'" data-cat="'+x.cat+'" data-k="'+x.k+'">'
-        +'<span class="ic '+x.chip+'">'+x.ic+'</span>'
-        +'<div><h3>'+t('tool.'+x.key+'.t')+'</h3><p>'+t('tool.'+x.key+'.d')+'</p></div></a>';
-    }).join('');
+    grid.innerHTML = TOOLS.map(cardHtml).join('');
+    document.getElementById('favTitle').textContent = t('hub.fav');
+    document.getElementById('recentTitle').textContent = t('hub.recent');
+    renderFav(); renderRecent();
     applyFilter();
   }
   window.onI18n = renderHub;                 // 언어 전환 시 재렌더
@@ -184,7 +220,27 @@
     chipsBox.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('on', c===b); });
     applyFilter();
   });
-  if(typeof t === 'function') renderHub();   // 초기 렌더(i18n 로드 후)
+  // 별(span) 클릭/키보드 = 즐겨찾기 토글 (카드 이동 차단) / 카드 클릭 = 최근 기록
+  document.addEventListener('click', function(e){
+    var star=e.target.closest('.fav');
+    if(star){ e.preventDefault(); e.stopPropagation(); toggleFav(star.dataset.k); return; }
+    var card=e.target.closest('.tool');
+    if(card && card.dataset.key) pushRecent(card.dataset.key);
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key!=='Enter' && e.key!==' ') return;
+    var star=e.target.closest && e.target.closest('.fav');
+    if(star){ e.preventDefault(); toggleFav(star.dataset.k); }
+  });
+  var recentClear=document.getElementById('recentClear');
+  if(recentClear) recentClear.addEventListener('click', function(){ save(RECENT_KEY, []); renderRecent(); });
+  if(window.initThemeToggle) initThemeToggle(document.getElementById('themeBtn'));
+  // URL ?q= 프리필 (구조화 데이터 SearchAction 대응)
+  try{
+    var qp=new URLSearchParams(location.search).get('q');
+    if(qp){ q.value=qp; }
+  }catch(e){}
+  if(typeof t === 'function') renderHub();    // 초기 렌더(i18n 로드 후)
 </script>
 </body>
 </html>
