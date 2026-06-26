@@ -52,5 +52,9 @@ window.TOOLS = [
   { key:'vat',     h:'vat.html',       ic:'🧾', chip:'c-green',  cat:'계산기', k:'부가세 vat 부가가치세 세금 공급가 공급가액 합계 세액 역산 10% 세율 사업자 세금계산서 영수증 税 增值税 消費税 부가세계산기' },
   { key:'urlencode',h:'urlencode.html',ic:'🔗', chip:'c-blue',   cat:'개발자', k:'url 인코딩 디코딩 encode decode percent uri 퍼센트 쿼리 한글 escape unescape 编码 解码 エンコード url인코딩' },
   { key:'jwt',     h:'jwt.html',       ic:'🪪', chip:'c-violet', cat:'개발자', k:'jwt json web token 디코더 decode header payload 토큰 base64url 클레임 exp iat 解析 デコード 제이슨웹토큰' },
-  { key:'contrast',h:'contrast.html',  ic:'🌗', chip:'c-amber',  cat:'변환기', k:'색 대비 명도대비 contrast ratio wcag 접근성 가독성 aa aaa 색상 전경 배경 명암 对比度 コントラスト 색대비검사' }
+  { key:'contrast',h:'contrast.html',  ic:'🌗', chip:'c-amber',  cat:'변환기', k:'색 대비 명도대비 contrast ratio wcag 접근성 가독성 aa aaa 색상 전경 배경 명암 对比度 コントラスト 색대비검사' },
+  { key:'timer',  h:'timer.html',     ic:'⏲️', chip:'c-rose',   cat:'시간', k:'타이머 스톱워치 카운트다운 알람 시간 측정 랩 뽀모도로 timer stopwatch countdown 计时 タイマー 스톱워치' },
+  { key:'lorem',  h:'lorem.html',     ic:'📄', chip:'c-blue',   cat:'생성기', k:'로렘입숨 더미텍스트 더미 텍스트 lorem ipsum placeholder 채우기 샘플 텍스트 한글 시안 목업 假文 ダミーテキスト 더미텍스트' },
+  { key:'imgcrop',h:'imgcrop.html',   ic:'✂️', chip:'c-green',  cat:'이미지', k:'이미지 자르기 크롭 crop 회전 반전 rotate flip 사진 편집 비율 썸네일 잘라내기 裁剪 トリミング 이미지자르기' },
+  { key:'crypt',  h:'crypt.html',     ic:'🔒', chip:'c-violet', cat:'개인정보', k:'암호화 복호화 텍스트 암호 비밀번호 aes aes256 gcm 보안 메모 encrypt decrypt password 加密 暗号化 텍스트암호화 메모암호' }
 ];

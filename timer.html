@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>타이머 · 스톱워치 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="온라인 카운트다운 타이머와 스톱워치. 분·초를 설정해 알림음과 함께 카운트다운하고, 스톱워치로 랩(구간) 기록을 남깁니다. 설치 없이 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/timer.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="타이머 · 스톱워치 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="카운트다운 타이머와 스톱워치(랩 기록·알림음). 설치 없이 브라우저에서 바로."/>
+<meta property="og:url" content="https://gemini2k.co.kr/timer.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .seg{display:flex;gap:.5rem;margin-bottom:1.3rem;}
+  .seg button{flex:1;padding:.6rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--muted);font-family:inherit;font-size:.98rem;font-weight:700;cursor:pointer;}
+  .seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .disp{text-align:center;font-variant-numeric:tabular-nums;font-weight:800;letter-spacing:-.02em;
+    font-size:clamp(2.6rem,11vw,4.4rem);line-height:1;margin:1.2rem 0;color:var(--text);}
+  .disp .cs{font-size:.5em;color:var(--muted);}
+  .disp.done{color:#ef4444;}
+  .ctl{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;}
+  .ctl .btn{min-width:92px;}
+  .setrow{display:flex;gap:.5rem;justify-content:center;align-items:center;margin-bottom:.4rem;}
+  .setrow input{width:84px;padding:.6rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:inherit;font-size:1.3rem;font-weight:700;text-align:center;color:var(--text);}
+  .setrow span{color:var(--muted);font-weight:700;}
+  .presets{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.8rem;}
+  .presets button{padding:.35rem .8rem;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--muted);font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;}
+  .presets button:hover{border-color:var(--accent);color:var(--accent);}
+  .laps{margin-top:1.2rem;border:1px solid var(--border);border-radius:11px;overflow:hidden;max-height:230px;overflow-y:auto;}
+  .lap{display:flex;justify-content:space-between;padding:.5rem .9rem;border-top:1px solid var(--border);font-variant-numeric:tabular-nums;font-size:.95rem;}
+  .lap:first-child{border-top:none;} .lap .n{color:var(--muted);}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "타이머 · 스톱워치",
+  "description": "온라인 카운트다운 타이머와 스톱워치. 분·초를 설정해 알림음과 함께 카운트다운하고, 스톱워치로 랩 기록을 남깁니다.",
+  "url": "https://gemini2k.co.kr/timer.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>타이머 · 스톱워치</h1>
+  <p class="sub">카운트다운 타이머와 스톱워치를 한곳에서. 타이머는 끝나면 알림음이 울리고, 스톱워치는 랩(구간)을 기록합니다.</p>
+
+  <div class="card">
+    <div class="seg">
+      <button id="tabTimer" class="on" type="button">⏲️ 타이머</button>
+      <button id="tabSw" type="button">⏱️ 스톱워치</button>
+    </div>
+
+    <!-- 타이머 -->
+    <div id="paneTimer">
+      <div class="setrow" id="setrow">
+        <input id="mm" type="number" value="5" min="0" max="999" aria-label="분"/><span>분</span>
+        <input id="ss" type="number" value="0" min="0" max="59" aria-label="초"/><span>초</span>
+      </div>
+      <div class="presets">
+        <button data-sec="60">1분</button><button data-sec="180">3분</button><button data-sec="300">5분</button>
+        <button data-sec="600">10분</button><button data-sec="1500">25분</button>
+      </div>
+      <div class="disp" id="tDisp">05:00</div>
+      <div class="ctl">
+        <button class="btn" id="tStart" type="button">시작</button>
+        <button class="btn btn-ghost hide" id="tPause" type="button">일시정지</button>
+        <button class="btn btn-ghost" id="tReset" type="button">초기화</button>
+      </div>
+    </div>
+
+    <!-- 스톱워치 -->
+    <div id="paneSw" class="hide">
+      <div class="disp" id="swDisp">00:00<span class="cs">.00</span></div>
+      <div class="ctl">
+        <button class="btn" id="swStart" type="button">시작</button>
+        <button class="btn btn-ghost" id="swLap" type="button" disabled>랩</button>
+        <button class="btn btn-ghost" id="swReset" type="button">초기화</button>
+      </div>
+      <div class="laps hide" id="laps"></div>
+    </div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function pad(n){ return (n<10?'0':'')+n; }
+  function beep(){
+    try{
+      var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+      var ctx=new AC();
+      [0,0.25,0.5].forEach(function(t){
+        var o=ctx.createOscillator(), g=ctx.createGain();
+        o.frequency.value=880; o.connect(g); g.connect(ctx.destination);
+        g.gain.setValueAtTime(0.001, ctx.currentTime+t);
+        g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime+t+0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+t+0.18);
+        o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+0.2);
+      });
+      setTimeout(function(){ ctx.close(); }, 1200);
+    }catch(e){}
+  }
+
+  /* 탭 전환 */
+  function tab(timer){
+    $('tabTimer').classList.toggle('on', timer); $('tabSw').classList.toggle('on', !timer);
+    $('paneTimer').classList.toggle('hide', !timer); $('paneSw').classList.toggle('hide', timer);
+  }
+  $('tabTimer').addEventListener('click', function(){ tab(true); });
+  $('tabSw').addEventListener('click', function(){ tab(false); });
+
+  /* ── 타이머 ── */
+  var tTotal=300, tRemain=300, tEnd=0, tRAF=0, tRunning=false;
+  function tShow(sec){
+    sec=Math.max(0, Math.ceil(sec));
+    var h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60;
+    $('tDisp').textContent = (h>0? pad(h)+':' : '') + pad(m)+':'+pad(s);
+  }
+  function tFromInputs(){ tTotal=tRemain=(parseInt($('mm').value)||0)*60 + (parseInt($('ss').value)||0); tShow(tRemain); }
+  function tTick(){
+    var left=(tEnd-performance.now())/1000;
+    if(left<=0){ tShow(0); tStop(true); $('tDisp').classList.add('done'); beep(); return; }
+    tRemain=left; tShow(left); tRAF=requestAnimationFrame(tTick);
+  }
+  function tStart(){
+    if(tRunning) return;
+    if(tRemain<=0) tFromInputs();
+    if(tRemain<=0) return;
+    tRunning=true; tEnd=performance.now()+tRemain*1000;
+    $('tStart').classList.add('hide'); $('tPause').classList.remove('hide');
+    $('tDisp').classList.remove('done'); $('setrow').style.opacity=.5;
+    tRAF=requestAnimationFrame(tTick);
+  }
+  function tStop(finished){
+    tRunning=false; cancelAnimationFrame(tRAF);
+    $('tStart').classList.remove('hide'); $('tPause').classList.add('hide');
+    if(finished){ tRemain=0; $('setrow').style.opacity=1; }
+  }
+  $('tStart').addEventListener('click', tStart);
+  $('tPause').addEventListener('click', function(){ tStop(false); });
+  $('tReset').addEventListener('click', function(){ tStop(false); $('tDisp').classList.remove('done'); tFromInputs(); $('setrow').style.opacity=1; });
+  ['mm','ss'].forEach(function(id){ $(id).addEventListener('input', function(){ if(!tRunning) tFromInputs(); }); });
+  document.querySelector('.presets').addEventListener('click', function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    tStop(false); var sec=+b.dataset.sec; $('mm').value=Math.floor(sec/60); $('ss').value=sec%60; tFromInputs(); $('tDisp').classList.remove('done');
+  });
+  tFromInputs();
+
+  /* ── 스톱워치 ── */
+  var swStartT=0, swAcc=0, swRAF=0, swRunning=false, swLaps=[], swLast=0;
+  function swMs(){ return swAcc + (swRunning ? performance.now()-swStartT : 0); }
+  function fmt(ms){ var t=Math.floor(ms), cs=Math.floor(t%1000/10), s=Math.floor(t/1000)%60, m=Math.floor(t/60000); return pad(m)+':'+pad(s)+'<span class="cs">.'+pad(cs)+'</span>'; }
+  function swTick(){ $('swDisp').innerHTML=fmt(swMs()); swRAF=requestAnimationFrame(swTick); }
+  $('swStart').addEventListener('click', function(){
+    if(swRunning){ swAcc=swMs(); swRunning=false; cancelAnimationFrame(swRAF); $('swStart').textContent='시작'; $('swLap').disabled=true; }
+    else { swStartT=performance.now(); swRunning=true; swRAF=requestAnimationFrame(swTick); $('swStart').textContent='정지'; $('swLap').disabled=false; }
+  });
+  $('swLap').addEventListener('click', function(){
+    if(!swRunning) return;
+    var now=swMs(), split=now-swLast; swLast=now; swLaps.unshift({n:swLaps.length+1, lap:split, total:now});
+    $('laps').classList.remove('hide');
+    $('laps').innerHTML=swLaps.map(function(l){ return '<div class="lap"><span class="n">랩 '+l.n+'</span><span>'+fmt(l.lap)+'</span><span class="n">'+fmt(l.total)+'</span></div>'; }).join('');
+  });
+  $('swReset').addEventListener('click', function(){
+    swRunning=false; cancelAnimationFrame(swRAF); swAcc=0; swLast=0; swLaps=[];
+    $('swDisp').innerHTML='00:00<span class="cs">.00</span>'; $('swStart').textContent='시작'; $('swLap').disabled=true;
+    $('laps').classList.add('hide'); $('laps').innerHTML='';
+  });
+</script>
+</body>
+</html>

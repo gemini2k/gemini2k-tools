@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>텍스트 암호화 / 복호화 (AES-256) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="비밀번호로 텍스트를 AES-256-GCM으로 암호화하고 복호화합니다. 비밀번호는 PBKDF2(15만 회)로 키를 유도하며, 결과에 솔트·IV를 포함해 안전하게 보관·전송할 수 있습니다. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/crypt.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="텍스트 암호화 / 복호화 (AES-256) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="비밀번호로 텍스트를 AES-256-GCM 암호화·복호화. PBKDF2 키 유도, 솔트·IV 포함. 업로드 없이 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/crypt.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .seg{display:flex;gap:.5rem;margin-bottom:1.2rem;}
+  .seg button{flex:1;padding:.6rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--muted);font-family:inherit;font-size:.98rem;font-weight:700;cursor:pointer;}
+  .seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  textarea{width:100%;min-height:120px;padding:.75rem .85rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92rem;color:var(--text);resize:vertical;word-break:break-all;}
+  .pw{display:flex;gap:.5rem;align-items:center;margin:1rem 0;}
+  .pw input{flex:1;padding:.65rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:inherit;font-size:1rem;color:var(--text);}
+  .pw button{padding:.55rem .7rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--muted);font-family:inherit;cursor:pointer;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0;}
+  .arrow{text-align:center;color:var(--muted);font-size:1.3rem;margin:.3rem 0;}
+  .err{color:#b91c1c;font-size:.88rem;margin-top:.5rem;min-height:1.1em;}
+  :root[data-theme="dark"] .err{color:#fca5a5;}
+  .ok{color:var(--ok);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.65;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.85rem .95rem;}
+  .warn{color:#b91c1c;font-weight:700;} :root[data-theme="dark"] .warn{color:#fca5a5;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "텍스트 암호화 / 복호화 (AES-256)",
+  "description": "비밀번호로 텍스트를 AES-256-GCM으로 암호화·복호화합니다. PBKDF2(15만 회) 키 유도, 결과에 솔트·IV 포함. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/crypt.html",
+  "applicationCategory": "SecurityApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>텍스트 암호화 / 복호화</h1>
+  <p class="sub">비밀번호로 메모·메시지를 AES-256으로 잠그고 풉니다. 암호화된 결과만 안전한 곳에 보관하거나 전달하세요. 모든 처리는 이 브라우저 안에서만 이루어집니다.</p>
+
+  <div class="card">
+    <div class="seg">
+      <button id="mEnc" class="on" type="button">🔒 암호화</button>
+      <button id="mDec" type="button">🔓 복호화</button>
+    </div>
+
+    <label for="input" id="inLabel">평문 (암호화할 내용)</label>
+    <textarea id="input" placeholder="여기에 텍스트를 입력하세요"></textarea>
+
+    <div class="pw">
+      <input id="pw" type="password" placeholder="비밀번호" autocomplete="off"/>
+      <button id="togglePw" type="button">👁</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="run" type="button">암호화</button>
+      <button class="btn btn-ghost" id="copy" type="button">📋 결과 복사</button>
+      <button class="btn btn-ghost" id="clear" type="button">지우기</button>
+    </div>
+    <div class="arrow">↓</div>
+    <label for="output" id="outLabel">암호문 (Base64)</label>
+    <textarea id="output" readonly placeholder="결과가 여기에 표시됩니다"></textarea>
+    <div class="err" id="err"></div>
+
+    <div class="note">
+      <span class="warn">비밀번호를 잊으면 복구할 수 없습니다.</span> AES-256-GCM으로 암호화하고, 비밀번호는 PBKDF2-SHA256(15만 회)로 키를 유도합니다. 결과 Base64에는 <code>솔트(16B) + IV(12B) + 암호문</code>이 함께 담겨 있어, 같은 비밀번호만 있으면 어디서든 복호화됩니다. 비밀번호·평문·암호문 모두 서버로 전송되지 않습니다.
+    </div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var enc=new TextEncoder(), dec=new TextDecoder();
+  var mode='enc';
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+
+  function b64enc(bytes){ var s=''; for(var i=0;i<bytes.length;i++) s+=String.fromCharCode(bytes[i]); return btoa(s); }
+  function b64dec(str){ var bin=atob(str.replace(/\s+/g,'')); var b=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) b[i]=bin.charCodeAt(i); return b; }
+
+  function deriveKey(pw, salt, usage){
+    return crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveKey']).then(function(base){
+      return crypto.subtle.deriveKey(
+        {name:'PBKDF2', salt:salt, iterations:150000, hash:'SHA-256'},
+        base, {name:'AES-GCM', length:256}, false, [usage]);
+    });
+  }
+
+  function encrypt(){
+    $('err').textContent='';
+    var txt=$('input').value, pw=$('pw').value;
+    if(!txt){ $('err').textContent='암호화할 텍스트를 입력하세요.'; return; }
+    if(!pw){ $('err').textContent='비밀번호를 입력하세요.'; return; }
+    var salt=crypto.getRandomValues(new Uint8Array(16)), iv=crypto.getRandomValues(new Uint8Array(12));
+    deriveKey(pw, salt, 'encrypt').then(function(key){
+      return crypto.subtle.encrypt({name:'AES-GCM', iv:iv}, key, enc.encode(txt));
+    }).then(function(ct){
+      var c=new Uint8Array(ct), out=new Uint8Array(16+12+c.length);
+      out.set(salt,0); out.set(iv,16); out.set(c,28);
+      $('output').value=b64enc(out);
+    }).catch(function(e){ $('err').textContent='암호화 실패: '+e.message; });
+  }
+  function decrypt(){
+    $('err').textContent='';
+    var data=$('input').value.trim(), pw=$('pw').value;
+    if(!data){ $('err').textContent='복호화할 암호문을 입력하세요.'; return; }
+    if(!pw){ $('err').textContent='비밀번호를 입력하세요.'; return; }
+    var bytes; try{ bytes=b64dec(data); }catch(e){ $('err').textContent='암호문 형식이 올바르지 않습니다(Base64).'; return; }
+    if(bytes.length<29){ $('err').textContent='암호문이 너무 짧습니다.'; return; }
+    var salt=bytes.slice(0,16), iv=bytes.slice(16,28), ct=bytes.slice(28);
+    deriveKey(pw, salt, 'decrypt').then(function(key){
+      return crypto.subtle.decrypt({name:'AES-GCM', iv:iv}, key, ct);
+    }).then(function(pt){
+      $('output').value=dec.decode(pt);
+    }).catch(function(){ $('err').textContent='복호화 실패: 비밀번호가 틀렸거나 손상된 암호문입니다.'; });
+  }
+
+  function setMode(m){
+    mode=m;
+    $('mEnc').classList.toggle('on', m==='enc'); $('mDec').classList.toggle('on', m==='dec');
+    $('run').textContent = m==='enc' ? '암호화' : '복호화';
+    $('inLabel').textContent = m==='enc' ? '평문 (암호화할 내용)' : '암호문 (Base64)';
+    $('outLabel').textContent = m==='enc' ? '암호문 (Base64)' : '평문 (복호화 결과)';
+    $('input').value=''; $('output').value=''; $('err').textContent='';
+  }
+  $('mEnc').addEventListener('click', function(){ setMode('enc'); });
+  $('mDec').addEventListener('click', function(){ setMode('dec'); });
+  $('run').addEventListener('click', function(){ (mode==='enc'?encrypt:decrypt)(); });
+  $('togglePw').addEventListener('click', function(){ $('pw').type = $('pw').type==='password' ? 'text' : 'password'; });
+  $('copy').addEventListener('click', function(){ if(!$('output').value) return; navigator.clipboard.writeText($('output').value).then(function(){ toast('복사됐습니다'); }); });
+  $('clear').addEventListener('click', function(){ $('input').value=''; $('output').value=''; $('err').textContent=''; $('input').focus(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>이미지 자르기 · 회전 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="이미지를 원하는 영역으로 자르고 90도 회전·좌우상하 반전합니다. 1:1·4:3·16:9 등 비율 고정 크롭 지원, PNG·JPEG로 저장. 업로드 없이 브라우저에서만 처리되어 사진이 외부로 나가지 않습니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/imgcrop.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="이미지 자르기 · 회전 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="이미지 영역 자르기 + 90도 회전·반전. 비율 고정 크롭, PNG·JPEG 저장. 업로드 없이 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/imgcrop.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .drop{border:2px dashed var(--border);border-radius:14px;padding:2.6rem 1rem;text-align:center;color:var(--muted);cursor:pointer;transition:.15s;}
+  .drop:hover,.drop.over{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+  .drop .big{font-size:2rem;margin-bottom:.5rem;}
+  .toolbar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1rem;}
+  .toolbar select,.toolbar button{padding:.5rem .7rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;}
+  .toolbar .lab{font-size:.85rem;color:var(--muted);font-weight:600;}
+  .stage{position:relative;display:inline-block;max-width:100%;line-height:0;touch-action:none;user-select:none;margin:0 auto;}
+  .stage canvas{max-width:100%;height:auto;display:block;border-radius:8px;}
+  .crop{position:absolute;border:1px solid #fff;box-shadow:0 0 0 9999px rgba(0,0,0,.45);cursor:move;box-sizing:border-box;}
+  .crop .h{position:absolute;width:14px;height:14px;background:#fff;border:1px solid var(--accent);border-radius:50%;}
+  .crop .tl{left:-7px;top:-7px;cursor:nwse-resize;} .crop .tr{right:-7px;top:-7px;cursor:nesw-resize;}
+  .crop .bl{left:-7px;bottom:-7px;cursor:nesw-resize;} .crop .br{right:-7px;bottom:-7px;cursor:nwse-resize;}
+  .stagewrap{text-align:center;}
+  .out-opts{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:1.2rem;}
+  .out-opts select{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);font-family:inherit;color:var(--text);}
+  .resw{margin-top:1.3rem;border-top:1px solid var(--border);padding-top:1.2rem;text-align:center;}
+  .resw img{max-width:100%;border:1px solid var(--border);border-radius:10px;}
+  .dims{font-size:.85rem;color:var(--muted);margin:.5rem 0 .8rem;}
+  .hide{display:none;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "이미지 자르기 · 회전",
+  "description": "이미지를 원하는 영역으로 자르고 90도 회전·반전합니다. 1:1·4:3·16:9 등 비율 고정 크롭, PNG·JPEG 저장. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/imgcrop.html",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>이미지 자르기 · 회전</h1>
+  <p class="sub">사진을 원하는 영역으로 자르고 회전·반전합니다. 비율을 고정해 정사각형·썸네일도 만드세요. 이미지는 이 브라우저에서만 처리됩니다.</p>
+
+  <div class="card">
+    <div class="drop" id="drop">
+      <div class="big">🖼️</div>
+      <div><strong>이미지를 끌어다 놓거나 클릭</strong>해서 선택하세요</div>
+      <div style="font-size:.82rem;margin-top:.4rem;">JPG · PNG · WebP · GIF</div>
+    </div>
+    <input type="file" id="file" accept="image/*" class="hide"/>
+
+    <div id="editor" class="hide">
+      <div class="toolbar">
+        <span class="lab">비율</span>
+        <select id="aspect">
+          <option value="0">자유</option><option value="1">1:1</option>
+          <option value="1.3333">4:3</option><option value="0.75">3:4</option>
+          <option value="1.7778">16:9</option><option value="0.5625">9:16</option>
+        </select>
+        <button id="rotL" type="button" title="왼쪽 90°">↺</button>
+        <button id="rotR" type="button" title="오른쪽 90°">↻</button>
+        <button id="flipH" type="button" title="좌우 반전">↔</button>
+        <button id="flipV" type="button" title="상하 반전">↕</button>
+        <button id="resetSel" type="button">전체 선택</button>
+      </div>
+      <div class="stagewrap">
+        <div class="stage" id="stage">
+          <canvas id="work"></canvas>
+          <div class="crop" id="crop"><span class="h tl"></span><span class="h tr"></span><span class="h bl"></span><span class="h br"></span></div>
+        </div>
+      </div>
+      <div class="out-opts">
+        <select id="fmt"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option></select>
+        <button class="btn" id="cropBtn" type="button">✂️ 자르기</button>
+        <button class="btn btn-ghost" id="another" type="button">다른 이미지</button>
+      </div>
+      <div class="resw hide" id="resw">
+        <div class="dims" id="dims"></div>
+        <img id="preview" alt="잘라낸 이미지 미리보기"/>
+        <div style="margin-top:.8rem;"><a class="btn" id="dl" download="cropped.png">⬇️ 내려받기</a></div>
+      </div>
+    </div>
+
+    <div class="note">
+      자르기 영역은 모서리 점을 끌어 크기를 바꾸고, 안쪽을 끌어 위치를 옮깁니다. 비율을 고르면 그 비율로 고정됩니다. JPEG는 투명 영역이 흰색으로 채워집니다. 모든 처리는 브라우저에서 이루어지며 이미지는 서버로 전송되지 않습니다.
+    </div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var work=$('work'), wctx=work.getContext('2d'), cropEl=$('crop'), stage=$('stage');
+  var aspect=0;                 // 0 = 자유, 그 외 = w/h
+  var rect={x:.1,y:.1,w:.8,h:.8};   // 이미지 대비 비율(0~1)
+
+  function fileChosen(f){
+    if(!f || !/^image\//.test(f.type)) return;
+    var img=new Image();
+    img.onload=function(){
+      work.width=img.naturalWidth; work.height=img.naturalHeight;
+      wctx.drawImage(img,0,0);
+      $('drop').classList.add('hide'); $('editor').classList.remove('hide');
+      resetSel(); applyAspect();
+    };
+    img.src=URL.createObjectURL(f);
+  }
+
+  function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+  function drawCrop(){
+    // 비율(rect) → stage(=canvas client) 픽셀로 배치
+    var cw=work.clientWidth, ch=work.clientHeight;
+    cropEl.style.left=(rect.x*cw)+'px'; cropEl.style.top=(rect.y*ch)+'px';
+    cropEl.style.width=(rect.w*cw)+'px'; cropEl.style.height=(rect.h*ch)+'px';
+  }
+  function resetSel(){ rect={x:0,y:0,w:1,h:1}; if(aspect) fitAspect(); drawCrop(); }
+
+  // 현재 rect 를 aspect 비율에 맞게 보정(중앙 기준 축소)
+  function fitAspect(){
+    if(!aspect) return;
+    var W=work.width, H=work.height;
+    // 픽셀 비율 aspect = (rect.w*W)/(rect.h*H) 가 되도록
+    var pw=rect.w*W, ph=rect.h*H;
+    if(pw/ph > aspect) pw=ph*aspect; else ph=pw/aspect;
+    var nw=pw/W, nh=ph/H;
+    rect.x=clamp(rect.x+(rect.w-nw)/2,0,1-nw); rect.y=clamp(rect.y+(rect.h-nh)/2,0,1-nh);
+    rect.w=nw; rect.h=nh;
+  }
+  function applyAspect(){ aspect=parseFloat($('aspect').value)||0; if(aspect) fitAspect(); drawCrop(); }
+
+  /* 드래그(이동/리사이즈) */
+  var drag=null;
+  function onDown(e){
+    var t=e.target, cw=work.clientWidth, ch=work.clientHeight;
+    var mode = t.classList.contains('h') ? t.className.split(' ')[1] : 'move';
+    drag={mode:mode, sx:e.clientX, sy:e.clientY, r:Object.assign({},rect), cw:cw, ch:ch};
+    cropEl.setPointerCapture && cropEl.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  }
+  function onMove(e){
+    if(!drag) return;
+    var dx=(e.clientX-drag.sx)/drag.cw, dy=(e.clientY-drag.sy)/drag.ch, r=drag.r, W=work.width, H=work.height;
+    if(drag.mode==='move'){
+      rect.x=clamp(r.x+dx,0,1-r.w); rect.y=clamp(r.y+dy,0,1-r.h);
+    } else {
+      var x1=r.x, y1=r.y, x2=r.x+r.w, y2=r.y+r.h;
+      if(drag.mode==='tl'){ x1=clamp(r.x+dx,0,x2-0.02); y1=clamp(r.y+dy,0,y2-0.02); }
+      if(drag.mode==='tr'){ x2=clamp(r.x+r.w+dx,x1+0.02,1); y1=clamp(r.y+dy,0,y2-0.02); }
+      if(drag.mode==='bl'){ x1=clamp(r.x+dx,0,x2-0.02); y2=clamp(r.y+r.h+dy,y1+0.02,1); }
+      if(drag.mode==='br'){ x2=clamp(r.x+r.w+dx,x1+0.02,1); y2=clamp(r.y+r.h+dy,y1+0.02,1); }
+      rect.x=x1; rect.y=y1; rect.w=x2-x1; rect.h=y2-y1;
+      if(aspect){
+        // 높이를 너비 기준으로 맞춤(픽셀 비율 유지), 핸들 방향 고려해 앵커 보정
+        var ph=(rect.w*W)/aspect/H;
+        if(drag.mode==='tl'||drag.mode==='tr'){ rect.y=clamp((y2)-ph,0,1-ph); }
+        rect.h=clamp(ph,0.02,1-rect.y);
+        rect.w=clamp(rect.h*H*aspect/W,0.02,1-rect.x);
+      }
+    }
+    drawCrop();
+  }
+  function onUp(){ drag=null; }
+  cropEl.addEventListener('pointerdown', onDown);
+  window.addEventListener('pointermove', onMove);
+  window.addEventListener('pointerup', onUp);
+
+  /* 회전/반전: work 캔버스를 변환 후 교체, 선택 초기화 */
+  function transform(kind){
+    var tmp=document.createElement('canvas'), tx;
+    if(kind==='rotL'||kind==='rotR'){ tmp.width=work.height; tmp.height=work.width; }
+    else { tmp.width=work.width; tmp.height=work.height; }
+    tx=tmp.getContext('2d');
+    if(kind==='rotR'){ tx.translate(tmp.width,0); tx.rotate(Math.PI/2); }
+    else if(kind==='rotL'){ tx.translate(0,tmp.height); tx.rotate(-Math.PI/2); }
+    else if(kind==='flipH'){ tx.translate(tmp.width,0); tx.scale(-1,1); }
+    else if(kind==='flipV'){ tx.translate(0,tmp.height); tx.scale(1,-1); }
+    tx.drawImage(work,0,0);
+    work.width=tmp.width; work.height=tmp.height; wctx.drawImage(tmp,0,0);
+    resetSel();
+  }
+
+  function doCrop(){
+    var W=work.width, H=work.height;
+    var sx=Math.round(rect.x*W), sy=Math.round(rect.y*H), sw=Math.max(1,Math.round(rect.w*W)), sh=Math.max(1,Math.round(rect.h*H));
+    var out=document.createElement('canvas'); out.width=sw; out.height=sh;
+    var octx=out.getContext('2d');
+    var fmt=$('fmt').value;
+    if(fmt==='image/jpeg'){ octx.fillStyle='#fff'; octx.fillRect(0,0,sw,sh); }
+    octx.drawImage(work, sx,sy,sw,sh, 0,0,sw,sh);
+    var url=out.toDataURL(fmt, 0.92);
+    $('preview').src=url;
+    var a=$('dl'); a.href=url; a.download = 'cropped.' + (fmt==='image/jpeg'?'jpg':'png');
+    $('dims').textContent = sw+' × '+sh+' px';
+    $('resw').classList.remove('hide');
+  }
+
+  /* 이벤트 */
+  $('drop').addEventListener('click', function(){ $('file').click(); });
+  $('file').addEventListener('change', function(e){ if(e.target.files[0]) fileChosen(e.target.files[0]); });
+  ['dragover','dragenter'].forEach(function(ev){ $('drop').addEventListener(ev, function(e){ e.preventDefault(); $('drop').classList.add('over'); }); });
+  ['dragleave','drop'].forEach(function(ev){ $('drop').addEventListener(ev, function(e){ e.preventDefault(); $('drop').classList.remove('over'); }); });
+  $('drop').addEventListener('drop', function(e){ if(e.dataTransfer.files[0]) fileChosen(e.dataTransfer.files[0]); });
+  $('aspect').addEventListener('change', applyAspect);
+  $('rotL').addEventListener('click', function(){ transform('rotL'); });
+  $('rotR').addEventListener('click', function(){ transform('rotR'); });
+  $('flipH').addEventListener('click', function(){ transform('flipH'); });
+  $('flipV').addEventListener('click', function(){ transform('flipV'); });
+  $('resetSel').addEventListener('click', resetSel);
+  $('cropBtn').addEventListener('click', doCrop);
+  $('another').addEventListener('click', function(){ $('editor').classList.add('hide'); $('drop').classList.remove('hide'); $('resw').classList.add('hide'); $('file').value=''; });
+  window.addEventListener('resize', drawCrop);
+</script>
+</body>
+</html>
