@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>해시 생성기 (MD5·SHA-256) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="텍스트나 파일의 MD5·SHA-1·SHA-256·SHA-512 해시값을 생성합니다. 파일 무결성 검증, 체크섬 확인. 업로드 없이 브라우저에서만 계산."/>
+<link rel="canonical" href="https://gemini2k.co.kr/hash.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="해시 생성기 (MD5·SHA-256) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="텍스트·파일의 MD5/SHA-1/SHA-256/SHA-512 해시 생성. 업로드 없이 브라우저에서만 계산."/>
+<meta property="og:url" content="https://gemini2k.co.kr/hash.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .tabs{display:flex;gap:.5rem;margin-bottom:.9rem;}
+  .tabs button{flex:1;padding:.55rem;border:1px solid var(--border);background:var(--surface);border-radius:9px;
+    cursor:pointer;font-family:inherit;font-size:.9rem;color:var(--muted);}
+  .tabs button.on{background:#eef6ff;border-color:var(--teal,#1aa3e0);color:var(--text);font-weight:700;}
+  textarea{width:100%;min-height:120px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:10px;
+    font-family:inherit;font-size:1rem;resize:vertical;color:var(--text);background:var(--surface);}
+  .drop{border:2px dashed var(--border);border-radius:12px;padding:1.8rem 1rem;text-align:center;cursor:pointer;color:var(--muted);}
+  .drop:hover,.drop.over{border-color:var(--teal,#1aa3e0);background:#f7fcff;}
+  .hres{margin-top:1rem;border:1px solid var(--border);border-radius:11px;overflow:hidden;}
+  .hrow{border-top:1px solid var(--border);padding:.65rem .9rem;}
+  .hrow:first-child{border-top:none;}
+  .hrow .alg{font-size:.78rem;font-weight:700;color:var(--muted);display:flex;justify-content:space-between;align-items:center;}
+  .hrow .alg .cp{cursor:pointer;color:var(--teal,#1aa3e0);font-size:.76rem;}
+  .hrow .val{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;word-break:break-all;margin-top:.25rem;color:var(--text);}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:#fafbff;border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1>해시 생성기</h1>
+  <p class="sub">텍스트나 파일의 MD5 · SHA-1 · SHA-256 · SHA-512 해시값을 만듭니다. 파일이 변조되지 않았는지 체크섬 확인에 쓰세요.</p>
+
+  <div class="card">
+    <div class="tabs">
+      <button id="tab-text" class="on">텍스트</button>
+      <button id="tab-file">파일</button>
+    </div>
+
+    <div id="pane-text">
+      <textarea id="txt" placeholder="해시를 만들 텍스트를 입력하세요…"></textarea>
+    </div>
+    <div id="pane-file" style="display:none;">
+      <div class="drop" id="drop">
+        <div style="font-size:1.6rem;">📄</div>
+        <div>파일을 끌어다 놓거나 클릭해서 선택</div>
+        <div id="fname" style="font-size:.82rem;margin-top:.3rem;"></div>
+        <input id="file" type="file" hidden/>
+      </div>
+    </div>
+
+    <div class="hres" id="hres"></div>
+    <div class="note">
+      파일 무결성·체크섬 확인에 SHA-256을 주로 씁니다. MD5·SHA-1은 충돌 위험이 있어 보안 용도(비밀번호 저장 등)에는 권장하지 않습니다. 모든 해시는 브라우저에서만 계산되며 입력·파일은 서버로 전송되지 않습니다.
+    </div>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a><a href="privacy.html" data-i18n="foot.policy">· 개인정보처리방침</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function toHex(buf){ var v=new Uint8Array(buf),s=''; for(var i=0;i<v.length;i++){ s += v[i].toString(16).padStart(2,'0'); } return s; }
+
+  // ── MD5 (Paul Johnston, public domain) ──
+  function md5(str){
+    function rl(n,c){return(n<<c)|(n>>>(32-c));}
+    function add(x,y){var l=(x&0xFFFF)+(y&0xFFFF),m=(x>>16)+(y>>16)+(l>>16);return(m<<16)|(l&0xFFFF);}
+    function cmn(q,a,b,x,s,t){return add(rl(add(add(a,q),add(x,t)),s),b);}
+    function ff(a,b,c,d,x,s,t){return cmn((b&c)|((~b)&d),a,b,x,s,t);}
+    function gg(a,b,c,d,x,s,t){return cmn((b&d)|(c&(~d)),a,b,x,s,t);}
+    function hh(a,b,c,d,x,s,t){return cmn(b^c^d,a,b,x,s,t);}
+    function ii(a,b,c,d,x,s,t){return cmn(c^(b|(~d)),a,b,x,s,t);}
+    function b2l(s){var b=[],i;for(i=0;i<s.length*8;i+=8)b[i>>5]|=(s.charCodeAt(i/8)&0xFF)<<(i%32);return b;}
+    function l2h(b){var h='0123456789abcdef',o='',i,x;for(i=0;i<b.length*4;i++){x=(b[i>>2]>>((i%4)*8))&0xFF;o+=h.charAt((x>>4)&0xF)+h.charAt(x&0xF);}return o;}
+    var x=b2l(str),len=str.length*8,a=1732584193,b=-271733879,c=-1732584194,d=271733878,i,olda,oldb,oldc,oldd;
+    x[len>>5]|=0x80<<(len%32);x[(((len+64)>>>9)<<4)+14]=len;
+    for(i=0;i<x.length;i+=16){olda=a;oldb=b;oldc=c;oldd=d;
+      a=ff(a,b,c,d,x[i],7,-680876936);d=ff(d,a,b,c,x[i+1],12,-389564586);c=ff(c,d,a,b,x[i+2],17,606105819);b=ff(b,c,d,a,x[i+3],22,-1044525330);
+      a=ff(a,b,c,d,x[i+4],7,-176418897);d=ff(d,a,b,c,x[i+5],12,1200080426);c=ff(c,d,a,b,x[i+6],17,-1473231341);b=ff(b,c,d,a,x[i+7],22,-45705983);
+      a=ff(a,b,c,d,x[i+8],7,1770035416);d=ff(d,a,b,c,x[i+9],12,-1958414417);c=ff(c,d,a,b,x[i+10],17,-42063);b=ff(b,c,d,a,x[i+11],22,-1990404162);
+      a=ff(a,b,c,d,x[i+12],7,1804603682);d=ff(d,a,b,c,x[i+13],12,-40341101);c=ff(c,d,a,b,x[i+14],17,-1502002290);b=ff(b,c,d,a,x[i+15],22,1236535329);
+      a=gg(a,b,c,d,x[i+1],5,-165796510);d=gg(d,a,b,c,x[i+6],9,-1069501632);c=gg(c,d,a,b,x[i+11],14,643717713);b=gg(b,c,d,a,x[i],20,-373897302);
+      a=gg(a,b,c,d,x[i+5],5,-701558691);d=gg(d,a,b,c,x[i+10],9,38016083);c=gg(c,d,a,b,x[i+15],14,-660478335);b=gg(b,c,d,a,x[i+4],20,-405537848);
+      a=gg(a,b,c,d,x[i+9],5,568446438);d=gg(d,a,b,c,x[i+14],9,-1019803690);c=gg(c,d,a,b,x[i+3],14,-187363961);b=gg(b,c,d,a,x[i+8],20,1163531501);
+      a=gg(a,b,c,d,x[i+13],5,-1444681467);d=gg(d,a,b,c,x[i+2],9,-51403784);c=gg(c,d,a,b,x[i+7],14,1735328473);b=gg(b,c,d,a,x[i+12],20,-1926607734);
+      a=hh(a,b,c,d,x[i+5],4,-378558);d=hh(d,a,b,c,x[i+8],11,-2022574463);c=hh(c,d,a,b,x[i+11],16,1839030562);b=hh(b,c,d,a,x[i+14],23,-35309556);
+      a=hh(a,b,c,d,x[i+1],4,-1530992060);d=hh(d,a,b,c,x[i+4],11,1272893353);c=hh(c,d,a,b,x[i+7],16,-155497632);b=hh(b,c,d,a,x[i+10],23,-1094730640);
+      a=hh(a,b,c,d,x[i+13],4,681279174);d=hh(d,a,b,c,x[i],11,-358537222);c=hh(c,d,a,b,x[i+3],16,-722521979);b=hh(b,c,d,a,x[i+6],23,76029189);
+      a=hh(a,b,c,d,x[i+9],4,-640364487);d=hh(d,a,b,c,x[i+12],11,-421815835);c=hh(c,d,a,b,x[i+15],16,530742520);b=hh(b,c,d,a,x[i+2],23,-995338651);
+      a=ii(a,b,c,d,x[i],6,-198630844);d=ii(d,a,b,c,x[i+7],10,1126891415);c=ii(c,d,a,b,x[i+14],15,-1416354905);b=ii(b,c,d,a,x[i+5],21,-57434055);
+      a=ii(a,b,c,d,x[i+12],6,1700485571);d=ii(d,a,b,c,x[i+3],10,-1894986606);c=ii(c,d,a,b,x[i+10],15,-1051523);b=ii(b,c,d,a,x[i+1],21,-2054922799);
+      a=ii(a,b,c,d,x[i+8],6,1873313359);d=ii(d,a,b,c,x[i+15],10,-30611744);c=ii(c,d,a,b,x[i+6],15,-1560198380);b=ii(b,c,d,a,x[i+13],21,1309151649);
+      a=ii(a,b,c,d,x[i+4],6,-145523070);d=ii(d,a,b,c,x[i+11],10,-1120210379);c=ii(c,d,a,b,x[i+2],15,718787259);b=ii(b,c,d,a,x[i+9],21,-343485551);
+      a=add(a,olda);b=add(b,oldb);c=add(c,oldc);d=add(d,oldd);}
+    return l2h([a,b,c,d]);
+  }
+  function utf8bin(s){ return unescape(encodeURIComponent(s)); }
+
+  async function shaHex(algo, bytes){ var h = await crypto.subtle.digest(algo, bytes); return toHex(h); }
+
+  async function hashText(){
+    var s = $('txt').value;
+    var bytes = new TextEncoder().encode(s);
+    var rows = [
+      ['MD5', md5(utf8bin(s))],
+      ['SHA-1', await shaHex('SHA-1', bytes)],
+      ['SHA-256', await shaHex('SHA-256', bytes)],
+      ['SHA-512', await shaHex('SHA-512', bytes)],
+    ];
+    renderRows(rows);
+  }
+  async function hashFile(file){
+    var buf = await file.arrayBuffer();
+    var rows = [
+      ['SHA-1', await shaHex('SHA-1', buf)],
+      ['SHA-256', await shaHex('SHA-256', buf)],
+      ['SHA-512', await shaHex('SHA-512', buf)],
+    ];
+    renderRows(rows);
+  }
+  function renderRows(rows){
+    $('hres').innerHTML = rows.map(function(r){
+      return '<div class="hrow"><div class="alg"><span>'+r[0]+'</span><span class="cp" data-v="'+r[1]+'">복사</span></div><div class="val">'+(r[1]||'')+'</div></div>';
+    }).join('');
+  }
+  function toast(m){ var el=$('toast'); el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+
+  $('txt').addEventListener('input', function(){ if($('txt').value) hashText(); else $('hres').innerHTML=''; });
+  $('hres').addEventListener('click', function(e){ var c=e.target.closest('.cp'); if(!c) return;
+    navigator.clipboard.writeText(c.dataset.v).then(function(){ toast('복사됐습니다'); }); });
+  $('tab-text').addEventListener('click', function(){ $('tab-text').classList.add('on'); $('tab-file').classList.remove('on');
+    $('pane-text').style.display=''; $('pane-file').style.display='none'; $('hres').innerHTML=''; if($('txt').value) hashText(); });
+  $('tab-file').addEventListener('click', function(){ $('tab-file').classList.add('on'); $('tab-text').classList.remove('on');
+    $('pane-file').style.display=''; $('pane-text').style.display='none'; $('hres').innerHTML=''; });
+  $('drop').addEventListener('click', function(){ $('file').click(); });
+  $('file').addEventListener('change', function(e){ var f=e.target.files[0]; if(f){ $('fname').textContent=f.name+' · '+Math.round(f.size/1024).toLocaleString()+' KB'; hashFile(f); } });
+  $('drop').addEventListener('dragover', function(e){ e.preventDefault(); $('drop').classList.add('over'); });
+  $('drop').addEventListener('dragleave', function(){ $('drop').classList.remove('over'); });
+  $('drop').addEventListener('drop', function(e){ e.preventDefault(); $('drop').classList.remove('over'); var f=e.dataTransfer.files[0]; if(f){ $('fname').textContent=f.name+' · '+Math.round(f.size/1024).toLocaleString()+' KB'; hashFile(f); } });
+</script>
+</body>
+</html>

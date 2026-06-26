@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>사다리타기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="이름과 결과를 넣고 사다리타기로 공정하게 정합니다. 모임·내기·역할 정하기. 참가자를 클릭하면 경로를 따라가 결과를 보여줍니다. 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/ladder.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="사다리타기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="이름과 결과를 넣고 사다리타기로 공정하게 정하기. 클릭하면 경로를 따라가 결과 표시. 브라우저에서 바로."/>
+<meta property="og:url" content="https://gemini2k.co.kr/ladder.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .io{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+  .io .fld label{display:block;font-size:.85rem;font-weight:600;margin-bottom:.3rem;}
+  .io textarea{width:100%;min-height:80px;padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;
+    font-family:inherit;font-size:.95rem;resize:vertical;background:var(--surface);color:var(--text);}
+  .io .hintln{font-size:.76rem;color:var(--muted);margin-top:.25rem;}
+  .stage{margin-top:1.2rem;overflow-x:auto;}
+  svg{display:block;width:100%;height:auto;}
+  .lname{cursor:pointer;}
+  .resbox{margin-top:1rem;border:1px solid var(--border);border-radius:11px;overflow:hidden;display:none;}
+  .resrow{display:flex;justify-content:space-between;padding:.55rem .9rem;border-top:1px solid var(--border);font-size:.95rem;}
+  .resrow:first-child{border-top:none;}
+  .resrow .a{font-weight:700;}
+  .resrow .b{color:#1f7a55;font-weight:700;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:#fafbff;border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1>사다리타기</h1>
+  <p class="sub">참가자와 결과를 넣고 사다리를 만든 뒤, 이름을 클릭하면 경로를 따라가 결과를 알려줍니다. 모임·내기·역할 정하기에.</p>
+
+  <div class="card">
+    <div class="io">
+      <div class="fld">
+        <label for="names">참가자</label>
+        <textarea id="names" placeholder="줄바꿈 또는 쉼표로 구분">철수
+영희
+민수
+지영</textarea>
+        <div class="hintln">한 줄에 한 명 (또는 쉼표)</div>
+      </div>
+      <div class="fld">
+        <label for="prizes">결과</label>
+        <textarea id="prizes" placeholder="줄바꿈 또는 쉼표로 구분">당첨
+꽝
+꽝
+커피</textarea>
+        <div class="hintln">참가자 수와 같게 맞춰 주세요</div>
+      </div>
+    </div>
+    <div class="row" style="margin-top:1rem;">
+      <button class="btn" id="build">사다리 만들기</button>
+      <button class="btn btn-ghost" id="reveal">전체 결과 보기</button>
+    </div>
+
+    <div class="stage"><svg id="svg" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet"></svg></div>
+    <div class="resbox" id="resbox"></div>
+
+    <div class="note">
+      사다리는 만들 때마다 무작위로 새로 그려집니다. 위쪽 이름을 클릭하면 경로가 그려지고, ‘전체 결과 보기’로 모두 한 번에 확인할 수 있습니다. 모든 추첨은 브라우저에서만 이루어집니다.
+    </div>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a><a href="privacy.html" data-i18n="foot.policy">· 개인정보처리방침</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var names=[], prizes=[], rungs=[], C=0, L=12;
+  var W=600, H=420, padX=40, topY=46, botY=H-46;
+
+  function parse(v){ return v.split(/[\n,]/).map(function(s){return s.trim();}).filter(Boolean); }
+  function colX(i){ return padX + (W-2*padX) * (C===1?0.5:i/(C-1)); }
+  function levelY(l){ return topY + (botY-topY) * (l+1)/(L+1); }
+
+  function build(){
+    names = parse($('names').value); prizes = parse($('prizes').value);
+    C = Math.max(names.length, prizes.length, 2);
+    while(names.length < C) names.push('');
+    while(prizes.length < C) prizes.push('');
+    L = Math.max(8, C*3);
+    // 무작위 가로줄 (같은 레벨에서 인접 충돌 방지)
+    rungs = [];
+    for(var l=0;l<L;l++){
+      var row = new Array(C-1).fill(false);
+      for(var j=0;j<C-1;j++){
+        if(j>0 && row[j-1]) continue;             // 인접 충돌 방지
+        if(Math.random() < 0.45) row[j] = true;
+      }
+      rungs.push(row);
+    }
+    draw(); $('resbox').style.display='none';
+  }
+
+  function traceCol(s){
+    var col=s, pts=[[colX(col), topY]];
+    for(var l=0;l<L;l++){
+      var y=levelY(l); pts.push([colX(col), y]);
+      if(col<C-1 && rungs[l][col]){ col++; pts.push([colX(col), y]); }
+      else if(col>0 && rungs[l][col-1]){ col--; pts.push([colX(col), y]); }
+    }
+    pts.push([colX(col), botY]);
+    return { end:col, pts:pts };
+  }
+
+  function el(name, attrs){ var e=document.createElementNS(SVGNS,name); for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  function draw(highlight){
+    var svg=$('svg'); svg.setAttribute('viewBox','0 0 '+W+' '+H); svg.innerHTML='';
+    // 세로줄
+    for(var i=0;i<C;i++){ svg.appendChild(el('line',{x1:colX(i),y1:topY,x2:colX(i),y2:botY,stroke:'#d4d9e4','stroke-width':2})); }
+    // 가로줄
+    for(var l=0;l<L;l++){ for(var j=0;j<C-1;j++){ if(rungs[l][j]){ var y=levelY(l);
+      svg.appendChild(el('line',{x1:colX(j),y1:y,x2:colX(j+1),y2:y,stroke:'#d4d9e4','stroke-width':2})); } } }
+    // 강조 경로
+    if(highlight!=null){ var t=traceCol(highlight);
+      var d='M'+t.pts.map(function(p){return p[0]+' '+p[1];}).join(' L');
+      svg.appendChild(el('path',{d:d,fill:'none',stroke:'#1aa3e0','stroke-width':4,'stroke-linejoin':'round','stroke-linecap':'round',opacity:0.95}));
+    }
+    // 위 이름 (클릭)
+    for(var i2=0;i2<C;i2++){ (function(i){
+      var g=el('g',{class:'lname'});
+      g.appendChild(el('rect',{x:colX(i)-30,y:topY-34,width:60,height:26,rx:8,fill:(highlight===i?'#1aa3e0':'#eef2f8')}));
+      var tx=el('text',{x:colX(i),y:topY-16,'text-anchor':'middle','font-size':13,'font-weight':700,fill:(highlight===i?'#fff':'#2b2f3a')}); tx.textContent=names[i]||('#'+(i+1));
+      g.appendChild(tx); g.addEventListener('click', function(){ pick(i); }); svg.appendChild(g);
+    })(i2); }
+    // 아래 결과
+    for(var i3=0;i3<C;i3++){ var endHi = (highlight!=null && traceCol(highlight).end===i3);
+      svg.appendChild(el('rect',{x:colX(i3)-34,y:botY+8,width:68,height:26,rx:8,fill:(endHi?'#1f7a55':'#f3f5f9')}));
+      var t2=el('text',{x:colX(i3),y:botY+26,'text-anchor':'middle','font-size':12.5,'font-weight':700,fill:(endHi?'#fff':'#2b2f3a')}); t2.textContent=prizes[i3]||('?'); svg.appendChild(t2);
+    }
+  }
+  function pick(i){ draw(i); var t=traceCol(i); toast((names[i]||('#'+(i+1)))+' → '+(prizes[t.end]||'?')); }
+  function reveal(){
+    var html=''; for(var i=0;i<C;i++){ var t=traceCol(i); html+='<div class="resrow"><span class="a">'+(names[i]||('#'+(i+1)))+'</span><span class="b">'+(prizes[t.end]||'?')+'</span></div>'; }
+    $('resbox').innerHTML=html; $('resbox').style.display='';
+  }
+  function toast(m){ var el=$('toast'); el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1800); }
+  $('build').addEventListener('click', build);
+  $('reveal').addEventListener('click', reveal);
+  build();
+</script>
+</body>
+</html>
