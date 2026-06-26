@@ -63,11 +63,30 @@ button{font-family:inherit;cursor:pointer;}
 .search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
 
 /* 카테고리 칩 */
-.chips{max-width:var(--maxw);margin:0 auto;padding:.5rem 1.4rem 0;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;}
+/* 카테고리 레일 — 헤더 아래에 고정(sticky)되어 500개 규모에서도 항상 접근 가능 */
+.chips{position:sticky;top:57px;z-index:20;background:var(--ground);
+  padding:.7rem 1.4rem .7rem;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;
+  border-bottom:1px solid var(--border);}
 .chip{padding:.45rem .95rem;border:1px solid var(--border);border-radius:999px;background:var(--surface);
   color:var(--muted);font-size:.9rem;font-weight:600;cursor:pointer;transition:.15s;}
 .chip:hover{border-color:var(--accent);color:var(--accent);}
 .chip.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+@media(max-width:560px){ .chips{top:53px;} }
+
+/* 카테고리 섹션(허브 둘러보기) */
+.catsec{margin-top:2rem;}
+.catsec:first-child{margin-top:.6rem;}
+.catsec-h{width:100%;display:flex;align-items:center;gap:.6rem;background:none;border:none;
+  padding:.3rem 0 .85rem;color:var(--text);font-family:inherit;text-align:left;
+  border-bottom:1px solid var(--border);margin-bottom:1.2rem;}
+.catsec-t{font-size:1.14rem;font-weight:800;letter-spacing:-.02em;}
+.catsec-n{font-size:.78rem;font-weight:700;color:var(--muted);background:var(--ground);
+  border:1px solid var(--border);border-radius:999px;padding:.08rem .55rem;line-height:1.5;}
+.catsec-x{margin-left:auto;color:var(--muted);font-size:.85rem;transition:transform .18s ease;}
+.catsec.collapsed .catsec-x{transform:rotate(-90deg);}
+.catsec.collapsed .catsec-g{display:none;}
+.catsec-h:hover .catsec-t{color:var(--accent);}
+.catsec-h:hover .catsec-x{color:var(--accent);}
 
 /* ── 도구 그리드 ── */
 .wrap{max-width:var(--maxw);margin:0 auto;padding:1rem 1.4rem 5rem;}

@@ -89,7 +89,13 @@
 <div class="chips" id="chips"></div>
 
 <div class="wrap">
-  <div class="grid" id="grid"></div>
+  <!-- 검색 모드: 카테고리 구분 없이 평면 결과 -->
+  <section id="searchsec" style="display:none;">
+    <div class="hubsec-h" style="margin-bottom:.9rem;"><span>🔎</span><span id="searchTitle">검색 결과</span></div>
+    <div class="grid" id="searchgrid"></div>
+  </section>
+  <!-- 둘러보기 모드: 카테고리별 섹션(레지스트리에서 자동 생성, 접기/펼치기·지연 렌더) -->
+  <div id="sections"></div>
   <p class="hint" id="empty" data-i18n="empty" style="display:none;text-align:center;">검색 결과가 없습니다.</p>
 </div>
 
@@ -145,23 +151,40 @@
 
 <script>
   // 도구 목록은 tools.js 의 window.TOOLS 가 단일 진실원. 제목·설명은 i18n.js 의 tool.{key}.t/.d.
+  // 허브 = 카테고리별 섹션(둘러보기) + 레지스트리 기반 검색(평면). 500개 확장 대비:
+  // ① 섹션 카드 지연 렌더(접힌 섹션은 펼칠 때 생성) ② 검색은 DOM이 아닌 TOOLS 배열에서 직접.
   var TOOLS = window.TOOLS || [];
-  var grid=document.getElementById('grid'), chipsBox=document.getElementById('chips'),
-      empty=document.getElementById('empty'), q=document.getElementById('q'), activeCat='전체';
+  var chipsBox=document.getElementById('chips'),
+      sectionsBox=document.getElementById('sections'),
+      searchsec=document.getElementById('searchsec'),
+      searchgrid=document.getElementById('searchgrid'),
+      searchTitle=document.getElementById('searchTitle'),
+      empty=document.getElementById('empty'),
+      q=document.getElementById('q'), activeCat='전체';
   var favsec=document.getElementById('favsec'), favgrid=document.getElementById('favgrid'),
       recentsec=document.getElementById('recentsec'), recentgrid=document.getElementById('recentgrid');
-  var FAV_KEY='tools:favorites', RECENT_KEY='tools:recent', RECENT_MAX=8;
+  var FAV_KEY='tools:favorites', RECENT_KEY='tools:recent', COLLAPSE_KEY='tools:collapsed', RECENT_MAX=8;
 
   function load(key){ try{ return JSON.parse(localStorage.getItem(key))||[]; }catch(e){ return []; } }
   function save(key,arr){ try{ localStorage.setItem(key, JSON.stringify(arr)); }catch(e){} }
   function isFav(k){ return load(FAV_KEY).indexOf(k)>=0; }
   function byKey(k){ for(var i=0;i<TOOLS.length;i++) if(TOOLS[i].key===k) return TOOLS[i]; return null; }
+  function esc(s){ return String(s).replace(/"/g,'&quot;'); }
+
+  // 레지스트리 순서를 보존한 카테고리 목록 / 카테고리별 도구
+  function catList(){ var cs=[]; TOOLS.forEach(function(x){ if(cs.indexOf(x.cat)<0) cs.push(x.cat); }); return cs; }
+  function toolsIn(cat){ return TOOLS.filter(function(x){ return x.cat===cat; }); }
+  function isCollapsed(cat){ return load(COLLAPSE_KEY).indexOf(cat)>=0; }
+  function setCollapsed(cat,on){ var c=load(COLLAPSE_KEY), i=c.indexOf(cat);
+    if(on && i<0) c.push(cat); if(!on && i>=0) c.splice(i,1); save(COLLAPSE_KEY,c); }
 
   function toggleFav(k){
     var f=load(FAV_KEY), i=f.indexOf(k);
     if(i>=0) f.splice(i,1); else f.unshift(k);
     save(FAV_KEY,f); renderFav();
     document.querySelectorAll('.fav[data-k="'+k+'"]').forEach(function(b){ b.classList.toggle('on', isFav(k)); });
+    var plain = !q.value.trim() && activeCat==='전체';
+    favsec.style.display = (plain && favgrid.children.length) ? '' : 'none';
   }
   function pushRecent(k){
     var r=load(RECENT_KEY), i=r.indexOf(k); if(i>=0) r.splice(i,1);
@@ -169,56 +192,109 @@
   }
 
   function cardHtml(x){
-    return '<a class="tool" href="'+x.h+'" data-key="'+x.key+'" data-cat="'+x.cat+'" data-k="'+x.k+'">'
+    return '<a class="tool" href="'+x.h+'" data-key="'+x.key+'" data-cat="'+x.cat+'">'
       +'<span class="ic '+x.chip+'">'+x.ic+'</span>'
       +'<div><h3>'+t('tool.'+x.key+'.t')+'</h3><p>'+t('tool.'+x.key+'.d')+'</p></div>'
       +'<span class="fav'+(isFav(x.key)?' on':'')+'" role="button" tabindex="0" data-k="'+x.key+'" aria-label="favorite">★</span>'
       +'</a>';
   }
+  function renderFav(){ favgrid.innerHTML = load(FAV_KEY).map(byKey).filter(Boolean).map(cardHtml).join(''); }
+  function renderRecent(){ recentgrid.innerHTML = load(RECENT_KEY).map(byKey).filter(Boolean).map(cardHtml).join(''); }
 
-  function renderFav(){
-    favgrid.innerHTML = load(FAV_KEY).map(byKey).filter(Boolean).map(cardHtml).join('');
-    updateSections();
+  // 섹션 카드 지연 렌더(멱등) — 펼쳐져 보이는 섹션만 생성
+  function renderSectionCards(sec){
+    if(sec.dataset.rendered) return;
+    sec.querySelector('.catsec-g').innerHTML = toolsIn(sec.dataset.cat).map(cardHtml).join('');
+    sec.dataset.rendered='1';
   }
-  function renderRecent(){
-    recentgrid.innerHTML = load(RECENT_KEY).map(byKey).filter(Boolean).map(cardHtml).join('');
-    updateSections();
+  function buildSections(){
+    sectionsBox.innerHTML = catList().map(function(c){
+      var col=isCollapsed(c);
+      return '<section class="catsec'+(col?' collapsed':'')+'" data-cat="'+esc(c)+'">'
+        +'<button class="catsec-h" type="button" aria-expanded="'+(!col)+'">'
+        +'<span class="catsec-t">'+t('cat.'+c)+'</span>'
+        +'<span class="catsec-n">'+toolsIn(c).length+'</span>'
+        +'<span class="catsec-x" aria-hidden="true">▾</span>'
+        +'</button><div class="grid catsec-g"></div></section>';
+    }).join('');
   }
-  function updateSections(){
-    var plain = !q.value.trim() && activeCat==='전체';   // 검색·필터 없을 때만 노출
+
+  function renderChips(){
+    var cats=['전체'].concat(catList());
+    chipsBox.innerHTML = cats.map(function(c){
+      return '<button class="chip'+(c===activeCat?' on':'')+'" data-cat="'+esc(c)+'">'+t('cat.'+c)+'</button>';
+    }).join('');
+  }
+
+  // 레지스트리에서 직접 검색(DOM 무관 → 500개에서도 빠름)
+  function runSearch(){
+    var s=q.value.trim().toLowerCase();
+    var list=TOOLS.filter(function(x){
+      if(activeCat!=='전체' && x.cat!==activeCat) return false;
+      if(!s) return true;
+      var hay=(x.k+' '+t('tool.'+x.key+'.t')+' '+t('tool.'+x.key+'.d')+' '+x.key).toLowerCase();
+      return hay.indexOf(s)!==-1;
+    });
+    searchgrid.innerHTML = list.map(cardHtml).join('');
+    searchTitle.textContent = t('search.results')+' ('+list.length+')';
+    empty.style.display = list.length ? 'none' : '';
+  }
+
+  function syncURL(){
+    try{
+      var p=new URLSearchParams();
+      if(q.value.trim()) p.set('q', q.value.trim());
+      if(activeCat!=='전체') p.set('cat', activeCat);
+      var qs=p.toString();
+      history.replaceState(null, '', qs ? ('?'+qs) : location.pathname);
+    }catch(e){}
+  }
+
+  function update(){
+    var searching = !!q.value.trim();
+    searchsec.style.display = searching ? '' : 'none';
+    sectionsBox.style.display = searching ? 'none' : '';
+    if(searching){ runSearch(); }
+    else{
+      sectionsBox.querySelectorAll('.catsec').forEach(function(sec){
+        var show = activeCat==='전체' || sec.dataset.cat===activeCat;
+        sec.style.display = show ? '' : 'none';
+        if(show && !sec.classList.contains('collapsed')) renderSectionCards(sec);
+      });
+      empty.style.display='none';
+    }
+    var plain = !searching && activeCat==='전체';
     favsec.style.display = (plain && favgrid.children.length) ? '' : 'none';
     recentsec.style.display = (plain && recentgrid.children.length) ? '' : 'none';
+    syncURL();
   }
 
-  function applyFilter(){
-    var s=q.value.trim().toLowerCase(), shown=0;
-    grid.querySelectorAll('.tool').forEach(function(el){
-      var okC = activeCat==='전체' || el.dataset.cat===activeCat;
-      var okQ = !s || (el.dataset.k+' '+el.textContent).toLowerCase().indexOf(s)!==-1;
-      var hit = okC && okQ; el.style.display=hit?'':'none'; if(hit) shown++;
-    });
-    empty.style.display = shown ? 'none' : '';
-    updateSections();
-  }
   function renderHub(){
-    var cats=['전체']; TOOLS.forEach(function(x){ if(cats.indexOf(x.cat)<0) cats.push(x.cat); });
-    chipsBox.innerHTML = cats.map(function(c){
-      return '<button class="chip'+(c===activeCat?' on':'')+'" data-cat="'+c+'">'+t('cat.'+c)+'</button>';
-    }).join('');
-    grid.innerHTML = TOOLS.map(cardHtml).join('');
+    renderChips();
+    buildSections();
     document.getElementById('favTitle').textContent = t('hub.fav');
     document.getElementById('recentTitle').textContent = t('hub.recent');
     renderFav(); renderRecent();
-    applyFilter();
+    update();
   }
-  window.onI18n = renderHub;                 // 언어 전환 시 재렌더
+  window.onI18n = renderHub;                 // 언어 전환 시 재렌더(activeCat·검색어·접힘 상태 보존)
   document.getElementById('langsel').addEventListener('change', function(e){ setLang(e.target.value); });
-  q.addEventListener('input', applyFilter);
+  q.addEventListener('input', update);
   chipsBox.addEventListener('click', function(e){
     var b=e.target.closest('.chip'); if(!b) return;
     activeCat=b.dataset.cat;
     chipsBox.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('on', c===b); });
-    applyFilter();
+    update();
+    chipsBox.scrollIntoView({block:'start'});   // 선택 결과가 레일 바로 아래 보이도록
+  });
+  // 섹션 헤더 클릭 = 접기/펼치기(상태 저장, 펼칠 때 지연 렌더)
+  sectionsBox.addEventListener('click', function(e){
+    var h=e.target.closest('.catsec-h'); if(!h) return;
+    var sec=h.closest('.catsec'), nowCol=!sec.classList.contains('collapsed');
+    sec.classList.toggle('collapsed', nowCol);
+    h.setAttribute('aria-expanded', String(!nowCol));
+    setCollapsed(sec.dataset.cat, nowCol);
+    if(!nowCol) renderSectionCards(sec);
   });
   // 별(span) 클릭/키보드 = 즐겨찾기 토글 (카드 이동 차단) / 카드 클릭 = 최근 기록
   document.addEventListener('click', function(e){
@@ -233,12 +309,13 @@
     if(star){ e.preventDefault(); toggleFav(star.dataset.k); }
   });
   var recentClear=document.getElementById('recentClear');
-  if(recentClear) recentClear.addEventListener('click', function(){ save(RECENT_KEY, []); renderRecent(); });
+  if(recentClear) recentClear.addEventListener('click', function(){ save(RECENT_KEY, []); renderRecent(); update(); });
   if(window.initThemeToggle) initThemeToggle(document.getElementById('themeBtn'));
-  // URL ?q= 프리필 (구조화 데이터 SearchAction 대응)
+  // URL ?q= / ?cat= 프리필 (SearchAction·공유 링크 대응)
   try{
-    var qp=new URLSearchParams(location.search).get('q');
-    if(qp){ q.value=qp; }
+    var sp=new URLSearchParams(location.search);
+    var qp=sp.get('q'); if(qp){ q.value=qp; }
+    var cp=sp.get('cat'); if(cp && catList().indexOf(cp)>=0){ activeCat=cp; }
   }catch(e){}
   if(typeof t === 'function') renderHub();    // 초기 렌더(i18n 로드 후)
 </script>
