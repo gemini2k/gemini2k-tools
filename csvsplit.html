@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>CSV 분할·샘플링 (행 나누기·무작위 추출) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="CSV를 비율로 나누거나(예: 학습 80% / 검증 20%) 무작위로 N행을 추출합니다. 데이터 분석·테스트셋 만들기에. 헤더 유지, 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/csvsplit.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="CSV 분할·샘플링 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="CSV를 비율로 분할하거나 무작위 N행 추출. 학습/검증셋·샘플 만들기. 헤더 유지, 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/csvsplit.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="csvutil.js"></script>
+<style>
+  textarea{width:100%;min-height:100px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84rem;color:var(--text);resize:vertical;}
+  .seg{display:flex;gap:.5rem;margin:1rem 0;} .seg button{flex:1;padding:.55rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--muted);font-family:inherit;font-weight:700;cursor:pointer;} .seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .ctl{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-bottom:1rem;}
+  .ctl input[type=number]{width:90px;padding:.5rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .ctl label{display:inline-flex;gap:.4rem;align-items:center;margin:0;font-weight:600;font-size:.9rem;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;} @media(max-width:620px){.two{grid-template-columns:1fr;}}
+  .part h3{font-size:.85rem;margin:0 0 .4rem;display:flex;justify-content:space-between;align-items:center;}
+  .part .out{width:100%;min-height:120px;border:1px solid var(--border);border-radius:10px;background:var(--ground);padding:.7rem .8rem;font-family:ui-monospace,monospace;font-size:.82rem;color:var(--text);resize:vertical;}
+  .cp{cursor:pointer;color:var(--teal,#1aa3e0);font-size:.74rem;background:none;border:none;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CSV 분할·샘플링",
+  "description": "CSV를 비율로 나누거나 무작위로 N행을 추출합니다. 학습/검증셋·샘플 만들기. 헤더 유지, 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/csvsplit.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:880px;">
+  <h1>CSV 분할·샘플링</h1>
+  <p class="sub">CSV를 비율로 두 덩어리로 나누거나, 무작위로 원하는 만큼 행을 뽑습니다. 학습/검증셋이나 샘플 만들 때 쓰세요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>CSV를 붙여 넣습니다(첫 행은 머리글, 모든 결과에 포함)</li>
+    <li>‘비율 분할’ 또는 ‘무작위 추출’을 고르고 값을 정합니다</li>
+    <li>‘실행’ 후 결과를 복사하거나 내려받습니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <label for="input" style="font-weight:700;font-size:.85rem;">CSV 입력</label>
+    <textarea id="input" placeholder="id,name&#10;1,A&#10;2,B&#10;3,C"></textarea>
+    <div class="seg"><button id="mRatio" class="on" type="button">비율 분할</button><button id="mSample" type="button">무작위 추출</button></div>
+    <div class="ctl" id="ctlRatio"><label>앞쪽 비율 <input id="ratio" type="number" value="80" min="1" max="99"/> %</label><label><input type="checkbox" id="shuf"/> 섞은 뒤 분할</label></div>
+    <div class="ctl hide" id="ctlSample"><label>추출 행 수 <input id="n" type="number" value="10" min="1"/></label></div>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;"><button class="btn" id="run" type="button">실행</button><button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
+    <div class="two" id="result"></div>
+    <div class="note">헤더는 모든 결과에 포함됩니다. ‘섞은 뒤 분할’과 ‘무작위 추출’은 매번 다른 결과가 나옵니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  var mode='ratio';
+  function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; } return a; }
+  function partHtml(title, matrix, id){
+    return '<div class="part"><h3>'+title+' ('+(matrix.length-1)+'행) <button class="cp" data-id="'+id+'">복사</button></h3>'
+      +'<textarea class="out" id="'+id+'" readonly>'+CSV.toText(matrix,{delimiter:','})+'</textarea></div>';
+  }
+  function run(){
+    var t=$('input').value.trim(); if(!t){ toast('CSV를 입력하세요'); return; }
+    var p=CSV.parse(t,{header:true,delimiter:'auto'}); var rows=p.rows;
+    if(mode==='ratio'){
+      var src=$('shuf').checked?shuffle(rows):rows;
+      var k=Math.round(src.length*(Math.max(1,Math.min(99,+$('ratio').value))/100));
+      var A=[p.header].concat(src.slice(0,k)), B=[p.header].concat(src.slice(k));
+      $('result').innerHTML=partHtml('A (앞)',A,'outA')+partHtml('B (뒤)',B,'outB');
+    } else {
+      var n=Math.max(1,Math.min(rows.length,parseInt($('n').value)||1));
+      var pick=shuffle(rows).slice(0,n);
+      var S=[p.header].concat(pick);
+      $('result').innerHTML=partHtml('무작위 추출',S,'outA');
+    }
+  }
+  $('mRatio').addEventListener('click',function(){mode='ratio';this.classList.add('on');$('mSample').classList.remove('on');$('ctlRatio').classList.remove('hide');$('ctlSample').classList.add('hide');});
+  $('mSample').addEventListener('click',function(){mode='sample';this.classList.add('on');$('mRatio').classList.remove('on');$('ctlSample').classList.remove('hide');$('ctlRatio').classList.add('hide');});
+  $('run').addEventListener('click', run);
+  $('result').addEventListener('click', function(e){ var b=e.target.closest('.cp'); if(b){ var ta=$(b.dataset.id); navigator.clipboard.writeText(ta.value).then(function(){toast('복사됐습니다');}); } });
+  $('sample').addEventListener('click', function(){ var r=['id,name']; for(var i=1;i<=20;i++) r.push(i+',항목'+i); $('input').value=r.join('\n'); run(); });
+</script>
+</body>
+</html>

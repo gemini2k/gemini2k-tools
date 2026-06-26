@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>벽돌깨기 게임 (Breakout) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="브라우저에서 바로 즐기는 클래식 벽돌깨기(Breakout) 게임. 마우스나 손가락으로 막대를 움직여 공을 튕겨 벽돌을 모두 깨세요. 설치 없이 PC·모바일 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/breakout.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="벽돌깨기 게임 (Breakout) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="마우스·터치로 막대를 움직여 공을 튕겨 벽돌을 깨는 클래식 게임. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/breakout.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:72px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;}
+  .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);}
+  .stage{position:relative;width:100%;max-width:480px;margin:0 auto;}
+  canvas{width:100%;height:auto;display:block;border-radius:12px;background:#0f1226;touch-action:none;cursor:pointer;}
+  .overlay{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;
+    background:rgba(8,10,24,.55);border-radius:12px;cursor:pointer;}
+  .overlay.hide{display:none;}
+  .overlay .big{font-size:1.4rem;font-weight:800;margin-bottom:.4rem;}
+  .overlay .sm{font-size:.92rem;opacity:.85;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "벽돌깨기 (Breakout)",
+  "description": "마우스·터치로 막대를 움직여 공을 튕겨 벽돌을 깨는 클래식 게임. 브라우저에서 무료.",
+  "url": "https://gemini2k.co.kr/breakout.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Action",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:540px;">
+  <h1>벽돌깨기</h1>
+  <p class="sub">막대를 움직여 공을 튕기고, 위쪽 벽돌을 모두 깨세요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li>마우스를 좌우로 움직이거나(모바일은 손가락으로 화면을 좌우로) 막대를 조종합니다</li>
+    <li>화면을 클릭·터치하면 게임이 시작됩니다</li>
+    <li>공을 놓치면 생명이 줄고, 벽돌을 다 깨면 승리합니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <button class="btn" id="restart" type="button">다시 시작</button>
+      <div class="scores">
+        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l">생명</div><div class="v" id="lives">3</div></div>
+      </div>
+    </div>
+    <div class="stage">
+      <canvas id="cv" width="480" height="600" aria-label="벽돌깨기"></canvas>
+      <div class="overlay" id="ov"><div><div class="big" id="ovBig">벽돌깨기</div><div class="sm" id="ovSm">클릭하면 시작합니다</div></div></div>
+    </div>
+    <div class="note">모든 처리는 브라우저에서만 이루어지며 데이터는 전송되지 않습니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var cv=$('cv'), x=cv.getContext('2d'), W=480, H=600;
+  var COLS=8, ROWS=5, BW=W/COLS, BH=26, TOP=56;
+  var paddle, ball, bricks, score, lives, state; // ready|play|over|win
+  var BCOL=['#f87171','#fb923c','#fbbf24','#34d399','#38bdf8'];
+
+  function reset(full){
+    paddle={w:84,h:14,x:W/2-42,y:H-34};
+    ball={x:W/2,y:H-50,r:8,vx:0,vy:0,sp:5};
+    if(full){ score=0; lives=3; bricks=[];
+      for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++) bricks.push({c:c,r:r,alive:true});
+    }
+    state='ready'; $('score').textContent=score; $('lives').textContent=lives;
+    showOverlay('벽돌깨기','클릭하면 시작합니다');
+  }
+  function launch(){ if(state!=='ready') return; var ang=(-60+Math.random()*120)*Math.PI/180; ball.vx=ball.sp*Math.sin(ang); ball.vy=-ball.sp*Math.cos(ang); state='play'; hideOverlay(); }
+  function showOverlay(b,s){ $('ovBig').textContent=b; $('ovSm').textContent=s; $('ov').classList.remove('hide'); }
+  function hideOverlay(){ $('ov').classList.add('hide'); }
+
+  function step(){
+    if(state==='play'){
+      ball.x+=ball.vx; ball.y+=ball.vy;
+      if(ball.x<ball.r){ ball.x=ball.r; ball.vx*=-1; } if(ball.x>W-ball.r){ ball.x=W-ball.r; ball.vx*=-1; }
+      if(ball.y<ball.r){ ball.y=ball.r; ball.vy*=-1; }
+      // 패들
+      if(ball.y+ball.r>=paddle.y && ball.y+ball.r<=paddle.y+paddle.h+10 && ball.x>=paddle.x && ball.x<=paddle.x+paddle.w && ball.vy>0){
+        var hit=(ball.x-(paddle.x+paddle.w/2))/(paddle.w/2); var ang=hit*Math.PI/3;
+        ball.vx=ball.sp*Math.sin(ang); ball.vy=-ball.sp*Math.abs(Math.cos(ang));
+      }
+      // 벽돌
+      for(var i=0;i<bricks.length;i++){ var b=bricks[i]; if(!b.alive) continue;
+        var bx=b.c*BW+3, by=TOP+b.r*BH+3, bw=BW-6, bh=BH-6;
+        if(ball.x>bx-ball.r && ball.x<bx+bw+ball.r && ball.y>by-ball.r && ball.y<by+bh+ball.r){
+          b.alive=false; score+=10; $('score').textContent=score; ball.vy*=-1;
+          if(bricks.every(function(z){return !z.alive;})){ state='win'; showOverlay('🎉 클리어!','클릭하면 다시 시작'); }
+          break;
+        }
+      }
+      // 바닥
+      if(ball.y-ball.r>H){ lives--; $('lives').textContent=lives;
+        if(lives<=0){ state='over'; showOverlay('게임 오버','클릭하면 다시 시작'); }
+        else { ball.x=W/2; ball.y=H-50; ball.vx=0; ball.vy=0; state='ready'; showOverlay('생명 '+lives+'개 남음','클릭하면 계속'); }
+      }
+    }
+    draw(); requestAnimationFrame(step);
+  }
+  function draw(){
+    x.clearRect(0,0,W,H); x.fillStyle='#0f1226'; x.fillRect(0,0,W,H);
+    // 벽돌
+    for(var i=0;i<bricks.length;i++){ var b=bricks[i]; if(!b.alive) continue;
+      var bx=b.c*BW+3, by=TOP+b.r*BH+3, bw=BW-6, bh=BH-6;
+      var g=x.createLinearGradient(bx,by,bx,by+bh); g.addColorStop(0,BCOL[b.r]); g.addColorStop(1,shade(BCOL[b.r]));
+      x.fillStyle=g; roundRect(bx,by,bw,bh,5); x.fill();
+    }
+    // 패들
+    var pg=x.createLinearGradient(paddle.x,0,paddle.x+paddle.w,0); pg.addColorStop(0,'#a78bfa'); pg.addColorStop(1,'#38bdf8');
+    x.fillStyle=pg; roundRect(paddle.x,paddle.y,paddle.w,paddle.h,7); x.fill();
+    // 공(글로우)
+    x.save(); x.shadowColor='#fff'; x.shadowBlur=14; x.fillStyle='#fff'; x.beginPath(); x.arc(ball.x,ball.y,ball.r,0,7); x.fill(); x.restore();
+  }
+  function roundRect(rx,ry,rw,rh,rad){ x.beginPath(); x.moveTo(rx+rad,ry); x.arcTo(rx+rw,ry,rx+rw,ry+rh,rad); x.arcTo(rx+rw,ry+rh,rx,ry+rh,rad); x.arcTo(rx,ry+rh,rx,ry,rad); x.arcTo(rx,ry,rx+rw,ry,rad); x.closePath(); }
+  function shade(h){ var n=parseInt(h.slice(1),16); var r=Math.max(0,(n>>16)-40),g=Math.max(0,((n>>8)&255)-40),b=Math.max(0,(n&255)-40); return 'rgb('+r+','+g+','+b+')'; }
+
+  function movePaddle(clientX){ var rect=cv.getBoundingClientRect(); var px=(clientX-rect.left)/rect.width*W; paddle.x=Math.max(0,Math.min(W-paddle.w, px-paddle.w/2)); if(state==='ready'){ ball.x=paddle.x+paddle.w/2; } }
+  cv.addEventListener('mousemove', function(e){ movePaddle(e.clientX); });
+  cv.addEventListener('touchmove', function(e){ e.preventDefault(); movePaddle(e.touches[0].clientX); }, {passive:false});
+  function tap(){ if(state==='play') return; if(state==='over'||state==='win') reset(true); else launch(); }
+  cv.addEventListener('click', tap);
+  $('ov').addEventListener('click', tap);
+  cv.addEventListener('touchstart', function(e){ e.preventDefault(); tap(); }, {passive:false});
+  $('restart').addEventListener('click', function(){ reset(true); });
+  reset(true); requestAnimationFrame(step);
+</script>
+</body>
+</html>

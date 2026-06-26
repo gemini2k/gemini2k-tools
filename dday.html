@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>D-Day·기념일 트래커 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="여러 기념일·시험·기일을 등록해 D-Day를 한눈에 봅니다. 100일·1주년 같은 다가오는 기념일도 자동 계산. 이 기기에 저장되어 다시 와도 유지됩니다. 업로드 없이 브라우저에서만."/>
+<link rel="canonical" href="https://gemini2k.co.kr/dday.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="D-Day·기념일 트래커 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="여러 기념일·시험 D-Day를 한눈에. 100일·1주년 자동 계산, 기기에 저장. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/dday.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .addrow{display:flex;flex-wrap:wrap;gap:.6rem;align-items:flex-end;margin-bottom:1.2rem;}
+  .addrow .fld{display:flex;flex-direction:column;gap:.3rem;} .addrow .fld.name{flex:1;min-width:140px;}
+  .addrow label{margin:0;font-size:.78rem;font-weight:700;color:var(--muted);}
+  .addrow input{padding:.55rem .65rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .addrow .name input{width:100%;}
+  .list{display:flex;flex-direction:column;gap:.7rem;}
+  .ev{display:flex;align-items:center;justify-content:space-between;gap:1rem;border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;}
+  .ev .info .nm{font-weight:700;font-size:1.02rem;} .ev .info .dt{color:var(--muted);font-size:.82rem;margin-top:.15rem;}
+  .ev .dday{font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums;}
+  .ev .dday.soon{color:#ef4444;} .ev .dday.past{color:var(--muted);}
+  .ev .del{border:none;background:none;color:var(--muted);cursor:pointer;font-size:1.1rem;}
+  .empty{text-align:center;color:var(--muted);padding:1.5rem;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "D-Day·기념일 트래커",
+  "description": "여러 기념일·시험·기일을 등록해 D-Day를 한눈에 봅니다. 100일·1주년 등 다가오는 기념일 자동 계산, 기기에 저장.",
+  "url": "https://gemini2k.co.kr/dday.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:680px;">
+  <h1>D-Day·기념일 트래커</h1>
+  <p class="sub">시험·여행·기념일을 등록해 D-Day를 한눈에 봅니다. 100일·1주년 같은 다가오는 기념일도 자동으로 알려 줍니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>이름과 날짜를 넣고 ‘추가’를 누릅니다</li>
+    <li>각 항목의 남은(또는 지난) 일수가 자동 표시됩니다</li>
+    <li>목록은 이 기기에 저장돼 다시 와도 유지됩니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="addrow">
+      <div class="fld name"><label for="nm">이름</label><input id="nm" type="text" placeholder="예: 자격증 시험"/></div>
+      <div class="fld"><label for="dt">날짜</label><input id="dt" type="date"/></div>
+      <div class="fld"><label for="anv">유형</label>
+        <select id="anv" style="padding:.55rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;">
+          <option value="0">단일 D-Day</option><option value="1">기념일(100일·주년)</option></select></div>
+      <button class="btn" id="add" type="button">추가</button>
+    </div>
+    <div class="list" id="list"></div>
+    <div class="note">D-Day는 오늘 기준 날짜까지 남은 일수입니다(오늘=D-DAY). ‘기념일’ 유형은 그날부터 다가오는 100일·200일 단위와 다음 주년을 함께 계산해 가장 가까운 것을 보여 줍니다. 목록은 이 브라우저에만 저장되며 서버로 전송되지 않습니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var KEY='tools:dday';
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||[]; }catch(e){ return []; } }
+  function save(a){ try{ localStorage.setItem(KEY, JSON.stringify(a)); }catch(e){} }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]);}); }
+  function today(){ var d=new Date(); d.setHours(0,0,0,0); return d; }
+  function parse(s){ var p=s.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); }
+  function diffDays(target){ return Math.round((target-today())/86400000); }
+
+  function anvInfo(base){
+    // 다가오는 100일 단위 / 다음 주년 중 가장 가까운 미래(또는 오늘)
+    var t=today(), cands=[];
+    var days100=[100,200,300,365,500,1000,2000,3000];
+    days100.forEach(function(n){ var d=new Date(base); d.setDate(d.getDate()+n); if(diffDays(d)>=0) cands.push({d:d,label:(n%365===0?'':n+'일'), n:n}); });
+    for(var y=1;y<=100;y++){ var d=new Date(base); d.setFullYear(d.getFullYear()+y); if(diffDays(d)>=0){ cands.push({d:d,label:y+'주년',n:99999}); break; } }
+    cands.sort(function(a,b){ return a.d-b.d; });
+    return cands[0];
+  }
+  function render(){
+    var arr=load();
+    if(!arr.length){ $('list').innerHTML='<div class="empty">아직 등록된 항목이 없습니다. 위에서 추가해 보세요.</div>'; return; }
+    arr.sort(function(a,b){ return parse(a.dt)-parse(b.dt); });
+    $('list').innerHTML=arr.map(function(e,i){
+      var dd=diffDays(parse(e.dt));
+      var main = dd===0?'D-DAY' : dd>0?'D-'+dd : 'D+'+(-dd);
+      var cls = dd===0||(dd>0&&dd<=7)?'soon':(dd<0?'past':'');
+      var extra='';
+      if(e.anv){ var a=anvInfo(parse(e.dt)); if(a){ var ad=diffDays(a.d); extra=' · '+(a.label||'')+' '+(ad===0?'오늘':'D-'+ad)+' ('+a.d.getFullYear()+'.'+(a.d.getMonth()+1)+'.'+a.d.getDate()+')'; } }
+      return '<div class="ev"><div class="info"><div class="nm">'+esc(e.nm)+'</div><div class="dt">'+e.dt+(extra?'<span style="color:var(--accent)">'+extra+'</span>':'')+'</div></div>'
+        +'<div style="display:flex;align-items:center;gap:.8rem;"><span class="dday '+cls+'">'+main+'</span><button class="del" data-i="'+i+'" title="삭제">✕</button></div></div>';
+    }).join('');
+  }
+  $('add').addEventListener('click', function(){
+    var nm=$('nm').value.trim(), dt=$('dt').value;
+    if(!nm||!dt){ return; }
+    var arr=load(); arr.push({nm:nm, dt:dt, anv:$('anv').value==='1'}); save(arr);
+    $('nm').value=''; render();
+  });
+  $('list').addEventListener('click', function(e){ var b=e.target.closest('.del'); if(b){ var arr=load();
+    // 정렬 후 인덱스 매칭 위해 다시 정렬 동일 적용
+    arr.sort(function(a,b){ return parse(a.dt)-parse(b.dt); }); arr.splice(+b.dataset.i,1); save(arr); render(); } });
+  (function(){ var d=new Date(); $('dt').value=d.toISOString().slice(0,10); })();
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>하루 물 섭취량 계산기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="몸무게와 활동량으로 하루 권장 수분 섭취량을 계산합니다. 컵(200ml) 수로도 보여 줘 실천하기 쉽습니다. 건강 관리·다이어트에. 참고용, 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/water.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="하루 물 섭취량 계산기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="몸무게·활동량으로 하루 권장 수분량 계산, 컵 수로 표시. 건강관리·다이어트. 참고용."/>
+<meta property="og:url" content="https://gemini2k.co.kr/water.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .frow{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;}
+  .fld{flex:1;min-width:150px;} .fld input,.fld select{width:100%;padding:.65rem .75rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:inherit;font-size:1.05rem;color:var(--text);}
+  .big{text-align:center;margin:1.4rem 0;} .big .v{font-size:2.8rem;font-weight:800;color:var(--accent);} .big .u{color:var(--muted);font-weight:700;}
+  .cups{text-align:center;font-size:1.6rem;line-height:1.8;word-break:break-word;} .cups .lab{display:block;font-size:.85rem;color:var(--muted);margin-top:.3rem;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "하루 물 섭취량 계산기",
+  "description": "몸무게와 활동량으로 하루 권장 수분 섭취량을 계산하고 컵 수로 보여 줍니다. 참고용.",
+  "url": "https://gemini2k.co.kr/water.html",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>하루 물 섭취량 계산기</h1>
+  <p class="sub">몸무게와 활동량으로 하루에 마시면 좋은 물의 양을 계산합니다.</p>
+
+  <div class="card">
+    <div class="frow">
+      <div class="fld"><label for="w">몸무게 (kg)</label><input id="w" type="number" value="65" min="20" max="300"/></div>
+      <div class="fld"><label for="act">활동량</label><select id="act"><option value="0">보통</option><option value="350">가벼운 운동(+)</option><option value="700">활발한 운동(++)</option></select></div>
+    </div>
+    <div class="big"><span class="v" id="ml">2,145</span> <span class="u">ml / 일</span></div>
+    <div class="cups" id="cups"></div>
+    <div class="note">⚠️ 참고용입니다 — 의료 조언이 아닙니다. 몸무게 1kg당 약 33ml를 기준으로 하고 운동 시 추가량을 더했습니다. 음식으로 섭취하는 수분도 있으니 모두 물로 마실 필요는 없습니다. 신장·심장 질환 등이 있으면 의사와 상담하세요. 컵은 200ml 기준입니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function calc(){
+    var w=parseFloat($('w').value), add=+$('act').value;
+    if(!(w>0)){ $('ml').textContent='—'; $('cups').textContent=''; return; }
+    var ml=Math.round(w*33+add);
+    $('ml').textContent=ml.toLocaleString('ko-KR');
+    var cups=Math.round(ml/200);
+    $('cups').innerHTML='💧'.repeat(Math.min(cups,12))+'<span class="lab">약 '+cups+'컵 (200ml 기준)</span>';
+  }
+  ['w','act'].forEach(function(id){ $(id).addEventListener('input',calc); });
+  calc();
+</script>
+</body>
+</html>

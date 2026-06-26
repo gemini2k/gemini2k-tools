@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>로마 숫자 변환기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="아라비아 숫자와 로마 숫자를 서로 변환합니다(1~3999). 한 칸에 입력하면 반대쪽이 즉시 바뀝니다. 시계·목차·연도 표기에. 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/roman.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="로마 숫자 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="아라비아↔로마 숫자 변환(1~3999). 한 칸 입력 시 즉시 변환. 시계·목차·연도 표기용."/>
+<meta property="og:url" content="https://gemini2k.co.kr/roman.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .rrow{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;}
+  .rrow label{width:5.5rem;flex-shrink:0;margin:0;font-weight:700;color:var(--text);}
+  .rrow input{flex:1;padding:.7rem .85rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.3rem;font-weight:700;color:var(--text);}
+  .rrow input.bad{border-color:#ef4444;}
+  .rrow input#roman{text-transform:uppercase;letter-spacing:.05em;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "로마 숫자 변환기",
+  "description": "아라비아 숫자와 로마 숫자를 서로 변환합니다(1~3999). 한 칸 입력 시 즉시 변환.",
+  "url": "https://gemini2k.co.kr/roman.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>로마 숫자 변환기</h1>
+  <p class="sub">아라비아 숫자와 로마 숫자를 서로 바꿉니다(1~3999). 아무 칸에나 입력하면 반대쪽이 즉시 바뀝니다.</p>
+
+  <div class="card">
+    <div class="rrow"><label for="arabic">숫자</label><input id="arabic" inputmode="numeric" value="2026" autocomplete="off"/></div>
+    <div class="rrow"><label for="roman">로마 숫자</label><input id="roman" autocomplete="off"/></div>
+    <div class="note">표준 로마 숫자 규칙(I·V·X·L·C·D·M, 뺄셈 표기 IV·IX 등)을 사용하며 1~3999 범위를 지원합니다. 로마 숫자 입력은 대소문자를 가리지 않습니다. 모든 변환은 브라우저에서 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var MAP=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];
+  function toRoman(n){ if(!(n>=1&&n<=3999))return null; var r=''; MAP.forEach(function(p){ while(n>=p[0]){ r+=p[1]; n-=p[0]; } }); return r; }
+  function fromRoman(s){ s=s.toUpperCase(); if(!/^[IVXLCDM]+$/.test(s)) return null;
+    var val={I:1,V:5,X:10,L:50,C:100,D:500,M:1000}, total=0;
+    for(var i=0;i<s.length;i++){ var c=val[s[i]], nx=val[s[i+1]]||0; total += c<nx ? -c : c; }
+    if(total<1||total>3999 || toRoman(total)!==s) return null;   // 정규형 검증
+    return total;
+  }
+  var lock=false;
+  $('arabic').addEventListener('input', function(){ if(lock)return; lock=true; this.classList.remove('bad');
+    var n=parseInt(this.value,10); if(this.value===''){ $('roman').value=''; } else { var r=toRoman(n); if(r==null){ this.classList.add('bad'); $('roman').value=''; } else $('roman').value=r; } lock=false; });
+  $('roman').addEventListener('input', function(){ if(lock)return; lock=true; this.classList.remove('bad');
+    if(this.value===''){ $('arabic').value=''; } else { var n=fromRoman(this.value); if(n==null){ this.classList.add('bad'); $('arabic').value=''; } else $('arabic').value=n; } lock=false; });
+  $('roman').value=toRoman(2026);
+</script>
+</body>
+</html>

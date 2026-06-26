@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>CSV 비교기 (추가·삭제·변경 행) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="두 CSV를 키 열 기준으로 비교해 추가·삭제·변경된 행과 셀을 찾아 줍니다. 데이터 감사·검수, 버전 비교에. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/csvdiff.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="CSV 비교기 (추가·삭제·변경 행) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="두 CSV를 키 기준으로 비교해 추가·삭제·변경 행/셀을 표시. 데이터 감사·검수용. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/csvdiff.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="csvutil.js"></script>
+<style>
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  @media(max-width:620px){.two{grid-template-columns:1fr;}}
+  textarea{width:100%;min-height:120px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84rem;color:var(--text);resize:vertical;}
+  label.lab{font-weight:700;font-size:.85rem;color:var(--text);margin-bottom:.3rem;}
+  .ctl{display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end;margin:1rem 0;}
+  .fld{display:flex;flex-direction:column;gap:.3rem;} .fld label{margin:0;font-size:.8rem;font-weight:700;color:var(--muted);}
+  .fld select{padding:.5rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .pills{margin:1rem 0;} .pill{border-radius:999px;padding:.35rem .8rem;font-size:.85rem;font-weight:700;margin:0 .4rem .4rem 0;display:inline-block;}
+  .p-add{background:#dcfce7;color:#15803d;} .p-del{background:#fee2e2;color:#b91c1c;} .p-chg{background:#fef9c3;color:#a16207;} .p-eq{background:var(--accent-soft);color:var(--text);}
+  :root[data-theme="dark"] .p-add{background:#14331f;color:#86efac;} :root[data-theme="dark"] .p-del{background:#3a1620;color:#fca5a5;} :root[data-theme="dark"] .p-chg{background:#3a2f0f;color:#fde68a;}
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-top:.8rem;}
+  table{border-collapse:collapse;width:100%;font-size:.84rem;} th,td{border-bottom:1px solid var(--border);padding:.45rem .7rem;text-align:left;white-space:nowrap;}
+  th{background:var(--ground);font-size:.72rem;text-transform:uppercase;color:var(--muted);}
+  td.tag{font-weight:700;} .t-add{color:#15803d;} .t-del{color:#b91c1c;} .t-chg{color:#a16207;}
+  .cellchg{background:#fef9c3;} :root[data-theme="dark"] .cellchg{background:#3a2f0f;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CSV 비교기",
+  "description": "두 CSV를 키 열 기준으로 비교해 추가·삭제·변경된 행과 셀을 찾아 줍니다. 데이터 감사·검수, 버전 비교용. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/csvdiff.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:900px;">
+  <h1>CSV 비교기</h1>
+  <p class="sub">두 CSV를 키 열 기준으로 비교해 추가·삭제·변경된 행과 어떤 셀이 바뀌었는지 보여 줍니다. 데이터 검수·버전 비교에 좋습니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>이전 버전과 이후 버전 CSV를 각각 붙여 넣습니다</li>
+    <li>행을 식별할 키 열(예: ID)을 고릅니다</li>
+    <li>‘비교’를 누르면 추가·삭제·변경 행과 바뀐 셀이 표시됩니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="two">
+      <div><label class="lab" for="a">이전 (CSV)</label><textarea id="a" placeholder="id,이름,점수&#10;1,홍길동,90&#10;2,김영희,80"></textarea></div>
+      <div><label class="lab" for="b">이후 (CSV)</label><textarea id="b" placeholder="id,이름,점수&#10;1,홍길동,95&#10;3,이철수,70"></textarea></div>
+    </div>
+    <div class="ctl">
+      <div class="fld"><label>키 열</label><select id="key"></select></div>
+      <div style="display:flex;gap:.6rem;"><button class="btn" id="run" type="button">비교</button><button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
+    </div>
+    <div id="result" class="hide">
+      <div class="pills" id="pills"></div>
+      <div class="tbl-scroll"><table id="tbl"></table></div>
+    </div>
+    <div class="note">키 값이 한쪽에만 있으면 추가/삭제, 양쪽에 있고 다른 셀이 있으면 변경으로 분류합니다. 변경된 셀은 노란색으로 강조됩니다(이전→이후). 키 열은 두 표에서 같은 이름이어야 합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  function esc(s){ return String(s).replace(/[&<>]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]);}); }
+
+  function fillKey(){
+    var ta=$('a').value.trim(); if(!ta){ $('key').innerHTML=''; return; }
+    var p=CSV.parse(ta,{header:true,delimiter:'auto'}); var prev=$('key').value;
+    $('key').innerHTML=p.header.map(function(h,i){return '<option value="'+i+'">'+esc(h)+'</option>';}).join('');
+    if(prev && $('key').querySelector('option[value="'+prev+'"]')) $('key').value=prev;
+  }
+  function toObj(p, ki){ var m={}; p.rows.forEach(function(r){ m[r[ki]]=r; }); return m; }
+
+  function run(){
+    var ta=$('a').value.trim(), tb=$('b').value.trim();
+    if(!ta||!tb){ toast('이전·이후 CSV를 모두 입력하세요'); return; }
+    var A=CSV.parse(ta,{header:true,delimiter:'auto'}), B=CSV.parse(tb,{header:true,delimiter:'auto'});
+    var ki=+$('key').value; var keyName=A.header[ki];
+    var biKey=B.header.indexOf(keyName); if(biKey<0) biKey=ki;
+    var am=toObj(A,ki), bm=toObj(B,biKey);
+    var header=A.header.slice(); for(var i=0;i<B.header.length;i++) if(header.indexOf(B.header[i])<0) header.push(B.header[i]);
+    var add=0,del=0,chg=0,eq=0, rowsHtml='';
+    var keys={}; Object.keys(am).forEach(function(k){keys[k]=1;}); Object.keys(bm).forEach(function(k){keys[k]=1;});
+    Object.keys(keys).forEach(function(k){
+      var a=am[k], b=bm[k];
+      if(a&&!b){ del++; rowsHtml+=rowLine('삭제','t-del', k, a, null, A.header); }
+      else if(!a&&b){ add++; rowsHtml+=rowLine('추가','t-add', k, null, b, B.header); }
+      else {
+        // 변경 판정: 공통 열 값 비교
+        var changed=false, cells={};
+        header.forEach(function(h){ var ai=A.header.indexOf(h), bi=B.header.indexOf(h);
+          var av=ai>=0?a[ai]:'', bv=bi>=0?b[bi]:''; if(ai>=0&&bi>=0 && av!==bv){ changed=true; cells[h]=[av,bv]; } });
+        if(changed){ chg++; rowsHtml+=changeLine(k, header, a, b, A.header, B.header, cells); } else eq++;
+      }
+    });
+    $('pills').innerHTML='<span class="pill p-add">추가 '+add+'</span><span class="pill p-del">삭제 '+del+'</span><span class="pill p-chg">변경 '+chg+'</span><span class="pill p-eq">동일 '+eq+'</span>';
+    $('tbl').innerHTML='<tr><th>구분</th><th>'+esc(keyName)+'(키)</th>'+header.filter(function(h){return h!==keyName;}).map(function(h){return '<th>'+esc(h)+'</th>';}).join('')+'</tr>'+rowsHtml;
+    $('result').classList.remove('hide');
+
+    function cellOf(row, hdr, h){ var i=hdr.indexOf(h); return i>=0?(row[i]||''):''; }
+    function rowLine(tag,cls,k,a,b,hdr){ var row=a||b; var src=a?A.header:B.header;
+      return '<tr><td class="tag '+cls+'">'+tag+'</td><td>'+esc(k)+'</td>'+header.filter(function(h){return h!==keyName;}).map(function(h){return '<td>'+esc(cellOf(row,src,h))+'</td>';}).join('')+'</tr>'; }
+    function changeLine(k,header,a,b,ah,bh,cells){
+      return '<tr><td class="tag t-chg">변경</td><td>'+esc(k)+'</td>'+header.filter(function(h){return h!==keyName;}).map(function(h){
+        var av=cellOf(a,ah,h), bv=cellOf(b,bh,h);
+        if(cells[h]) return '<td class="cellchg">'+esc(av)+' → '+esc(bv)+'</td>';
+        return '<td>'+esc(bv||av)+'</td>';
+      }).join('')+'</tr>'; }
+  }
+  $('a').addEventListener('input', fillKey);
+  $('run').addEventListener('click', run);
+  $('sample').addEventListener('click', function(){ $('a').value='id,이름,점수\n1,홍길동,90\n2,김영희,80\n4,박민수,60'; $('b').value='id,이름,점수\n1,홍길동,95\n2,김영희,80\n3,이철수,70'; fillKey(); run(); });
+  fillKey();
+</script>
+</body>
+</html>

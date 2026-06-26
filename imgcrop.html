@@ -22,6 +22,7 @@
 <script src="ga.js"></script>
 <script src="theme.js"></script>
 <script src="i18n.js"></script>
+<script src="tools.js"></script>
 <style>
   .drop{border:2px dashed var(--border);border-radius:14px;padding:2.6rem 1rem;text-align:center;color:var(--muted);cursor:pointer;transition:.15s;}
   .drop:hover,.drop.over{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
@@ -65,6 +66,8 @@
 <div class="toolwrap">
   <h1>이미지 자르기 · 회전</h1>
   <p class="sub">사진을 원하는 영역으로 자르고 회전·반전합니다. 비율을 고정해 정사각형·썸네일도 만드세요. 이미지는 이 브라우저에서만 처리됩니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol><li>이미지를 끌어다 놓거나 클릭해 올립니다</li><li>모서리 점을 끌어 자를 영역을 정합니다 (비율 고정·회전·반전 버튼 활용)</li><li>‘자르기’ 후 미리보기를 확인하고 내려받습니다</li></ol></div></div>
 
   <div class="card">
     <div class="drop" id="drop">

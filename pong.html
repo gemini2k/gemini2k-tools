@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>핑퐁 게임 (Pong·2인/AI) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="브라우저에서 즐기는 클래식 핑퐁(Pong) 게임. 컴퓨터(쉬움·보통·어려움)와 1인으로, 또는 친구와 2인으로 대결하세요. 마우스·터치로 막대를 움직이는 간단 조작. PC·모바일 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/pong.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="핑퐁 게임 (Pong·2인/AI) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="컴퓨터(난이도 3단계)와 1인 또는 친구와 2인으로 즐기는 핑퐁. 마우스·터치 조작, PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/pong.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .opts{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.8rem;}
+  .opts select{padding:.5rem .7rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;font-weight:600;}
+  .stage{position:relative;width:100%;max-width:600px;margin:0 auto;}
+  canvas{width:100%;height:auto;display:block;border-radius:12px;background:#0f1226;touch-action:none;cursor:pointer;}
+  .overlay{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;background:rgba(8,10,24,.55);border-radius:12px;cursor:pointer;}
+  .overlay.hide{display:none;} .overlay .big{font-size:1.3rem;font-weight:800;margin-bottom:.3rem;} .overlay .sm{font-size:.9rem;opacity:.85;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "핑퐁 게임 (Pong)",
+  "description": "컴퓨터(난이도 3단계)와 1인 또는 친구와 2인으로 즐기는 클래식 핑퐁. 마우스·터치 조작.",
+  "url": "https://gemini2k.co.kr/pong.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Action",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:660px;">
+  <h1>핑퐁 (Pong)</h1>
+  <p class="sub">막대로 공을 받아쳐 상대를 뚫으세요. 11점 먼저 내면 승리! 컴퓨터와 1인, 또는 친구와 2인으로.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li>1인(vs 컴퓨터): 마우스나 손가락을 위아래로 움직여 <b>왼쪽</b> 막대를 조종합니다</li>
+    <li>2인: 왼쪽 막대는 왼쪽 절반, 오른쪽 막대는 오른쪽 절반을 터치/드래그로 조종합니다</li>
+    <li>화면을 클릭·터치하면 시작합니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="opts">
+      <select id="mode"><option value="ai">vs 컴퓨터</option><option value="2p">2인 대전</option></select>
+      <select id="diff"><option value="easy">쉬움</option><option value="normal" selected>보통</option><option value="hard">어려움</option></select>
+      <button class="btn" id="restart" type="button">다시 시작</button>
+    </div>
+    <div class="stage">
+      <canvas id="cv" width="600" height="400" aria-label="핑퐁"></canvas>
+      <div class="overlay" id="ov"><div><div class="big">핑퐁</div><div class="sm">클릭하면 시작합니다</div></div></div>
+    </div>
+    <div class="note">컴퓨터는 외부 서버 없이 브라우저에서 동작하는 규칙 기반 AI(공 추적+난이도별 속도·반응)입니다. 데이터는 전송되지 않습니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var cv=$('cv'), x=cv.getContext('2d'), W=600, H=400, PW=12, PH=78, WIN=11;
+  var lp, rp, ball, sl, sr, state='ready', raf=null;
+  var DIFF={easy:{sp:4.5,react:0.06},normal:{sp:6,react:0.10},hard:{sp:8,react:0.16}};
+
+  function reset(full){ lp=H/2-PH/2; rp=H/2-PH/2; if(full){ sl=0; sr=0; } serve(Math.random()<0.5?-1:1); state='ready'; showOv('핑퐁','클릭하면 시작합니다'); draw(); }
+  function serve(dir){ ball={x:W/2,y:H/2,vx:dir*5,vy:(Math.random()*4-2),sp:5}; }
+  function showOv(b,s){ $('ov').querySelector('.big').textContent=b; $('ov').querySelector('.sm').textContent=s; $('ov').classList.remove('hide'); }
+  function start(){ if(state==='play') return; if(state==='over'){ reset(true); } state='play'; $('ov').classList.add('hide'); if(!raf) loop(); }
+
+  function loop(){
+    if(state==='play'){
+      ball.x+=ball.vx; ball.y+=ball.vy;
+      if(ball.y<8){ball.y=8;ball.vy*=-1;} if(ball.y>H-8){ball.y=H-8;ball.vy*=-1;}
+      // 왼쪽 패들
+      if(ball.x<20+PW && ball.x>20 && ball.y>lp && ball.y<lp+PH && ball.vx<0){ bounce(lp); }
+      // 오른쪽 패들
+      if(ball.x>W-20-PW && ball.x<W-20 && ball.y>rp && ball.y<rp+PH && ball.vx>0){ bounce(rp); ball.vx=-Math.abs(ball.vx); }
+      // 득점
+      if(ball.x<0){ sr++; point(); } else if(ball.x>W){ sl++; point(); }
+      // AI 또는 2P 오른쪽 패들
+      if($('mode').value==='ai'){ var d=DIFF[$('diff').value]; var target=ball.y-PH/2; rp += (target-rp)*d.react; rp=Math.max(0,Math.min(H-PH,rp)); }
+    }
+    draw(); raf=requestAnimationFrame(loop);
+  }
+  function bounce(p){ var hit=(ball.y-(p+PH/2))/(PH/2); ball.vx=Math.abs(ball.vx); var sp=Math.min(11, Math.hypot(ball.vx,ball.vy)+0.4); var ang=hit*Math.PI/3.2; ball.vx=(ball.vx>0?1:1)*sp*Math.cos(ang); ball.vy=sp*Math.sin(ang); }
+  function point(){ if(sl>=WIN||sr>=WIN){ state='over'; var who=sl>WIN-1; var aiMode=$('mode').value==='ai'; showOv(aiMode?(who?'🎉 승리!':'컴퓨터 승'):(who?'왼쪽 승!':'오른쪽 승!'), '클릭하면 다시 시작'); } else { serve(ball.x<0?1:-1); state='ready'; showOv(sl+' : '+sr, '클릭하면 계속'); } }
+
+  function draw(){
+    x.fillStyle='#0f1226'; x.fillRect(0,0,W,H);
+    x.strokeStyle='rgba(255,255,255,.18)'; x.lineWidth=3; x.setLineDash([10,12]); x.beginPath(); x.moveTo(W/2,0); x.lineTo(W/2,H); x.stroke(); x.setLineDash([]);
+    x.fillStyle='#fff'; x.font='bold 40px system-ui'; x.textAlign='center'; x.fillText(sl, W/2-50, 52); x.fillText(sr, W/2+50, 52);
+    var lg=x.createLinearGradient(0,lp,0,lp+PH); lg.addColorStop(0,'#a78bfa'); lg.addColorStop(1,'#7c3aed'); x.fillStyle=lg; rr(20,lp,PW,PH);
+    var rg=x.createLinearGradient(0,rp,0,rp+PH); rg.addColorStop(0,'#38bdf8'); rg.addColorStop(1,'#0ea5e9'); x.fillStyle=rg; rr(W-20-PW,rp,PW,PH);
+    x.save(); x.shadowColor='#fff'; x.shadowBlur=12; x.fillStyle='#fff'; x.beginPath(); x.arc(ball.x,ball.y,8,0,7); x.fill(); x.restore();
+  }
+  function rr(px,py,w,h){ x.beginPath(); x.roundRect?x.roundRect(px,py,w,h,6):x.rect(px,py,w,h); x.fill(); }
+
+  function moveY(clientX, clientY){
+    var rect=cv.getBoundingClientRect(); var y=(clientY-rect.top)/rect.height*H - PH/2; var px=(clientX-rect.left)/rect.width*W;
+    if($('mode').value==='ai'){ lp=clamp(y); }
+    else { if(px<W/2) lp=clamp(y); else rp=clamp(y); }
+  }
+  function clamp(y){ return Math.max(0,Math.min(H-PH,y)); }
+  cv.addEventListener('mousemove', function(e){ moveY(e.clientX,e.clientY); });
+  cv.addEventListener('touchmove', function(e){ e.preventDefault(); for(var i=0;i<e.touches.length;i++) moveY(e.touches[i].clientX, e.touches[i].clientY); }, {passive:false});
+  function tap(){ if(state!=='play') start(); }
+  cv.addEventListener('click', tap); $('ov').addEventListener('click', tap);
+  cv.addEventListener('touchstart', function(e){ e.preventDefault(); tap(); }, {passive:false});
+  $('restart').addEventListener('click', function(){ reset(true); });
+  $('mode').addEventListener('change', function(){ reset(true); }); $('diff').addEventListener('change', function(){});
+  reset(true); loop();
+</script>
+</body>
+</html>

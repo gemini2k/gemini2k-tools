@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>틱택토 게임 (3목·vs 컴퓨터) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="브라우저에서 바로 즐기는 틱택토(3목·오목 미니) 게임. 2인 대전 또는 컴퓨터(쉬움·보통·어려움)와 대결하세요. 어려움은 절대 지지 않는 완벽 AI. 클릭만으로 간단, PC·모바일 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/tictactoe.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="틱택토 게임 (3목·vs 컴퓨터) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="2인 대전 또는 컴퓨터(쉬움·보통·어려움)와 틱택토 대결. 클릭만으로 간단, PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/tictactoe.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .opts{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1rem;}
+  .opts select,.opts button{padding:.5rem .7rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;font-weight:600;cursor:pointer;}
+  .turn{text-align:center;font-weight:700;color:var(--muted);margin-bottom:.8rem;min-height:1.4em;}
+  .ttt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:330px;margin:0 auto;}
+  .sq{aspect-ratio:1/1;border:1px solid var(--border);border-radius:14px;background:var(--ground);font-size:3rem;font-weight:800;
+    display:grid;place-items:center;cursor:pointer;transition:.12s;line-height:1;}
+  .sq:hover{background:var(--accent-soft);}
+  .sq.x{color:var(--accent);} .sq.o{color:var(--teal,#14b8a6);}
+  .sq.win{background:var(--accent);color:#fff!important;}
+  .sq[disabled]{cursor:default;}
+  .score{display:flex;justify-content:center;gap:.6rem;margin-top:1.2rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.4rem .9rem;text-align:center;min-width:70px;}
+  .sbox .l{font-size:.66rem;font-weight:700;color:var(--muted);} .sbox .v{font-size:1.3rem;font-weight:800;color:var(--text);}
+  .msg{text-align:center;margin-top:1rem;font-weight:800;font-size:1.15rem;min-height:1.4em;color:var(--accent);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "틱택토 게임",
+  "description": "2인 대전 또는 컴퓨터(쉬움·보통·어려움)와 즐기는 틱택토. 어려움은 완벽 AI(미니맥스).",
+  "url": "https://gemini2k.co.kr/tictactoe.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Strategy",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:460px;">
+  <h1>틱택토</h1>
+  <p class="sub">가로·세로·대각선으로 같은 표시 3개를 먼저 만들면 승리! 친구와 2인으로, 또는 컴퓨터와 대결하세요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li>‘2인 대전’ 또는 ‘vs 컴퓨터’와 난이도를 고릅니다</li>
+    <li>빈 칸을 클릭(터치)해 표시합니다 (먼저 두는 쪽이 ✕)</li>
+    <li>3개를 한 줄로 만들면 승리, 칸이 다 차면 무승부입니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="opts">
+      <select id="mode"><option value="ai">vs 컴퓨터</option><option value="2p">2인 대전</option></select>
+      <select id="diff"><option value="easy">쉬움</option><option value="normal">보통</option><option value="hard" selected>어려움</option></select>
+      <button id="reset" type="button">다시 시작</button>
+    </div>
+    <div class="turn" id="turn"></div>
+    <div class="ttt" id="ttt"></div>
+    <div class="msg" id="msg"></div>
+    <div class="score">
+      <div class="sbox"><div class="l">✕ 승</div><div class="v" id="sx">0</div></div>
+      <div class="sbox"><div class="l">무</div><div class="v" id="sd">0</div></div>
+      <div class="sbox"><div class="l">◯ 승</div><div class="v" id="so">0</div></div>
+    </div>
+    <div class="note">컴퓨터는 외부 서버 없이 브라우저에서 계산하는 규칙 기반 AI입니다(어려움=미니맥스 완벽 수). 데이터는 전송되지 않습니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var b, cur, over, sx=0,so=0,sd=0;
+  var LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  var tttEl=$('ttt');
+
+  function winnerOf(bd){ for(var i=0;i<LINES.length;i++){ var l=LINES[i]; if(bd[l[0]]&&bd[l[0]]===bd[l[1]]&&bd[l[1]]===bd[l[2]]) return {who:bd[l[0]],line:l}; } if(bd.every(function(v){return v;})) return {who:'draw'}; return null; }
+
+  function render(){
+    tttEl.innerHTML='';
+    for(var i=0;i<9;i++){ var s=document.createElement('button'); s.className='sq'+(b[i]==='X'?' x':b[i]==='O'?' o':''); s.textContent=b[i]==='X'?'✕':b[i]==='O'?'◯':''; s.dataset.i=i; if(b[i]||over) s.disabled=true; tttEl.appendChild(s); }
+    var aiMode=$('mode').value==='ai';
+    $('turn').textContent = over ? '' : (aiMode ? (cur==='X'?'내 차례 (✕)':'컴퓨터 생각 중…') : ('차례: '+(cur==='X'?'✕':'◯')));
+  }
+  function reset(){ b=['','','','','','','','','']; cur='X'; over=false; $('msg').textContent=''; render(); }
+
+  function finish(res){
+    over=true;
+    if(res.who==='draw'){ sd++; $('sd').textContent=sd; $('msg').textContent='무승부'; }
+    else { if(res.who==='X'){ sx++; $('sx').textContent=sx; } else { so++; $('so').textContent=so; }
+      var aiMode=$('mode').value==='ai';
+      $('msg').textContent = aiMode ? (res.who==='X'?'🎉 승리!':'아쉽네요, 컴퓨터 승') : (res.who==='X'?'✕ 승리!':'◯ 승리!'); }
+    render();
+    if(res.line){ res.line.forEach(function(i){ var el=tttEl.children[i]; if(el) el.classList.add('win'); }); }
+  }
+  function move(i){
+    if(over||b[i]) return;
+    b[i]=cur; var w=winnerOf(b); if(w){ finish(w); return; }
+    cur = cur==='X'?'O':'X'; render();
+    if($('mode').value==='ai' && cur==='O' && !over){ setTimeout(aiMove, 320); }
+  }
+
+  // 미니맥스 (O = 컴퓨터 최대화)
+  function minimax(bd, player){
+    var w=winnerOf(bd);
+    if(w){ if(w.who==='O') return {score:10}; if(w.who==='X') return {score:-10}; return {score:0}; }
+    var best = player==='O' ? {score:-99} : {score:99}, mv=-1;
+    for(var i=0;i<9;i++){ if(bd[i]) continue; bd[i]=player; var r=minimax(bd, player==='O'?'X':'O'); bd[i]='';
+      if(player==='O'){ if(r.score>best.score){ best.score=r.score; mv=i; } }
+      else { if(r.score<best.score){ best.score=r.score; mv=i; } } }
+    best.move=mv; return best;
+  }
+  function emptyCells(){ var e=[]; for(var i=0;i<9;i++) if(!b[i]) e.push(i); return e; }
+  function aiMove(){
+    if(over) return; var e=emptyCells(); if(!e.length) return;
+    var diff=$('diff').value, pick;
+    var rnd=function(){ return e[Math.floor(Math.random()*e.length)]; };
+    if(diff==='easy') pick = Math.random()<0.75 ? rnd() : minimax(b.slice(),'O').move;
+    else if(diff==='normal') pick = Math.random()<0.5 ? rnd() : minimax(b.slice(),'O').move;
+    else pick = minimax(b.slice(),'O').move;
+    if(pick==null||pick<0) pick=rnd();
+    move(pick);
+  }
+
+  tttEl.addEventListener('click', function(ev){ var s=ev.target.closest('.sq'); if(!s||s.disabled) return;
+    if($('mode').value==='ai' && cur!=='X') return; move(+s.dataset.i); });
+  $('reset').addEventListener('click', reset);
+  $('mode').addEventListener('change', function(){ $('diff').classList.toggle('hide', $('mode').value!=='ai'); reset(); });
+  $('diff').addEventListener('change', reset);
+  reset();
+</script>
+</body>
+</html>

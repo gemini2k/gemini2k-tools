@@ -27,6 +27,7 @@
 <script src="ga.js"></script>
 <script src="theme.js"></script>
 <script src="i18n.js"></script>
+<script src="tools.js"></script>
 <script src="/vendor/marked-12.0.2/marked.min.js"></script>
 <script src="/vendor/dompurify-3.1.6/purify.min.js"></script>
 <style>
@@ -52,6 +53,29 @@
   .md-prev a{ color:#1AA3E0; }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "마크다운 에디터",
+  "description": "마크다운을 작성하면 실시간으로 미리보기를 보여주고 HTML·MD로 내보내는 무료 온라인 에디터. 업로드 없이 브라우저에서 바로.",
+  "url": "https://gemini2k.co.kr/markdown.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "빛의여행(gemini2k) 도구",
+    "url": "https://gemini2k.co.kr/"
+  }
+}
+</script>
 </head>
 <body>
 
@@ -149,30 +173,7 @@ console.log("Hello, world!");
   }
   document.getElementById('dlmd').addEventListener('click', function(){ save('markdown_'+stamp()+'.md', md.value, 'text/markdown'); });
   document.getElementById('dlhtml').addEventListener('click', function(){
-    var doc='<!doctype html><html><head><meta charset="utf-8"><script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "마크다운 에디터",
-  "description": "마크다운을 작성하면 실시간으로 미리보기를 보여주고 HTML·MD로 내보내는 무료 온라인 에디터. 업로드 없이 브라우저에서 바로.",
-  "url": "https://gemini2k.co.kr/markdown.html",
-  "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "Web",
-  "inLanguage": "ko",
-  "isAccessibleForFree": true,
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "KRW"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "빛의여행(gemini2k) 도구",
-    "url": "https://gemini2k.co.kr/"
-  }
-}
-</script>
-</head><body>'+preview.innerHTML+'</body></html>';
+    var doc='<!doctype html><html><head><meta charset="utf-8"></head><body>'+preview.innerHTML+'</body></html>';
     save('markdown_'+stamp()+'.html', doc, 'text/html');
   });
   md.value = (document.getElementById('md-sample').textContent || '').replace(/^\n/, '');

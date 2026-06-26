@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>메모리 카드 맞추기 게임 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="같은 그림 카드 두 장을 찾아 맞추는 기억력 카드 게임. 난이도 3단계, 뒤집기 횟수·시간 기록. 마우스·터치로 간단하게. 설치 없이 PC·모바일 무료, 두뇌 트레이닝에 좋습니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/memory.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="메모리 카드 맞추기 게임 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="같은 그림 카드를 찾는 기억력 게임. 난이도 3단계, 시간·횟수 기록. 마우스·터치, PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/memory.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap;}
+  .gbar .left{display:flex;gap:.5rem;align-items:center;}
+  .gbar select{padding:.45rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:64px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;}
+  .sbox .v{font-size:1.15rem;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;}
+  .grid{display:grid;gap:.6rem;max-width:480px;margin:0 auto;}
+  .mcard{aspect-ratio:1/1;position:relative;cursor:pointer;perspective:600px;}
+  .inner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .35s;border-radius:12px;}
+  .mcard.flip .inner,.mcard.matched .inner{transform:rotateY(180deg);}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;display:grid;place-items:center;border:1px solid var(--border);}
+  .back{background:linear-gradient(135deg,#7c3aed,#2dd4bf);color:#fff;font-size:1.5rem;}
+  .front{background:var(--surface);transform:rotateY(180deg);font-size:2rem;}
+  .mcard.matched .front{outline:2px solid var(--ok);outline-offset:-2px;opacity:.7;}
+  .msg{text-align:center;margin-top:1rem;font-weight:800;font-size:1.1rem;min-height:1.4em;color:var(--accent);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "메모리 카드 맞추기",
+  "description": "같은 그림 카드 두 장을 찾아 맞추는 기억력 카드 게임. 난이도 3단계, 시간·횟수 기록.",
+  "url": "https://gemini2k.co.kr/memory.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Puzzle",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:540px;">
+  <h1>메모리 카드 맞추기</h1>
+  <p class="sub">카드를 뒤집어 같은 그림 두 장을 찾으세요. 적은 횟수로 모두 맞추면 됩니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li>카드를 클릭(터치)해 뒤집습니다</li>
+    <li>두 장이 같으면 그대로 남고, 다르면 다시 뒤집힙니다</li>
+    <li>난이도를 바꾸거나 ‘새 게임’으로 다시 시작할 수 있습니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="left">
+        <button class="btn" id="newgame" type="button">새 게임</button>
+        <select id="level"><option value="6">쉬움 (6쌍)</option><option value="8" selected>보통 (8쌍)</option><option value="10">어려움 (10쌍)</option></select>
+      </div>
+      <div class="scores">
+        <div class="sbox"><div class="l">횟수</div><div class="v" id="moves">0</div></div>
+        <div class="sbox"><div class="l">시간</div><div class="v" id="time">0:00</div></div>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="msg" id="msg"></div>
+    <div class="note">모든 진행은 브라우저에서만 이루어집니다. 데이터는 전송되지 않습니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var POOL=['🐶','🐱','🦊','🐼','🐵','🦁','🐯','🐸','🐰','🐮','🐷','🦄','🐙','🦋','🌸','🍀','🍎','🍕','⚽','🚀','🎈','🎵','⭐','🌈'];
+  var grid=$('grid'), first=null, lock=false, moves, matched, total, timer=null, sec=0;
+
+  function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; } return a; }
+  function fmt(s){ return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+  function startTimer(){ stopTimer(); sec=0; $('time').textContent='0:00'; timer=setInterval(function(){ sec++; $('time').textContent=fmt(sec); },1000); }
+  function stopTimer(){ if(timer){ clearInterval(timer); timer=null; } }
+
+  function build(){
+    var pairs=+$('level').value; total=pairs; matched=0; moves=0; first=null; lock=false;
+    $('moves').textContent='0'; $('msg').textContent='';
+    var cols = pairs<=6?3:4; grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
+    var deck=shuffle(POOL.slice()).slice(0,pairs); deck=shuffle(deck.concat(deck.slice()));
+    grid.innerHTML=deck.map(function(e,i){
+      return '<div class="mcard" data-e="'+e+'" data-i="'+i+'"><div class="inner">'
+        +'<div class="face back">❓</div><div class="face front">'+e+'</div></div></div>';
+    }).join('');
+    startTimer();
+  }
+  grid.addEventListener('click', function(ev){
+    var c=ev.target.closest('.mcard'); if(!c||lock) return;
+    if(c.classList.contains('flip')||c.classList.contains('matched')) return;
+    c.classList.add('flip');
+    if(!first){ first=c; return; }
+    moves++; $('moves').textContent=moves;
+    if(first.dataset.e===c.dataset.e && first.dataset.i!==c.dataset.i){
+      first.classList.add('matched'); c.classList.add('matched'); first=null; matched++;
+      if(matched===total){ stopTimer(); $('msg').textContent='🎉 완료! '+moves+'회 · '+fmt(sec); }
+    } else {
+      lock=true; var a=first, b=c; first=null;
+      setTimeout(function(){ a.classList.remove('flip'); b.classList.remove('flip'); lock=false; }, 700);
+    }
+  });
+  $('newgame').addEventListener('click', build);
+  $('level').addEventListener('change', build);
+  build();
+</script>
+</body>
+</html>

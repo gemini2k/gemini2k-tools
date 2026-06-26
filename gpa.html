@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>학점(GPA) 계산기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="과목별 학점수와 성적으로 평점(GPA)을 계산합니다. 4.5·4.3·4.0 만점 기준 지원, 과목 추가·삭제. 대학 성적 관리·장학금 확인에. 브라우저에서 실시간."/>
+<link rel="canonical" href="https://gemini2k.co.kr/gpa.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="학점(GPA) 계산기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="과목별 학점수·성적으로 평점(GPA) 계산. 4.5·4.3·4.0 만점 지원. 대학 성적 관리용. 실시간."/>
+<meta property="og:url" content="https://gemini2k.co.kr/gpa.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .scaleRow{display:flex;gap:1rem;align-items:center;margin-bottom:1rem;}
+  .scaleRow select{padding:.5rem .7rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .grow{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem;}
+  .grow input.nm{flex:1;min-width:0;padding:.5rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .grow input.cr{width:64px;padding:.5rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;text-align:center;}
+  .grow select{padding:.5rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .grow .del{border:none;background:none;color:var(--muted);cursor:pointer;font-size:1.1rem;}
+  .res{text-align:center;margin:1.4rem 0 .3rem;} .res .v{font-size:2.8rem;font-weight:800;color:var(--accent);} .res .u{color:var(--muted);font-weight:700;}
+  .sub2{text-align:center;color:var(--muted);font-size:.9rem;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "학점(GPA) 계산기",
+  "description": "과목별 학점수와 성적으로 평점(GPA)을 계산합니다. 4.5·4.3·4.0 만점 기준 지원, 과목 추가·삭제.",
+  "url": "https://gemini2k.co.kr/gpa.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>학점(GPA) 계산기</h1>
+  <p class="sub">과목별 학점수와 성적을 넣으면 평점평균(GPA)을 계산합니다. 만점 기준을 고를 수 있습니다.</p>
+
+  <div class="card">
+    <div class="scaleRow"><label style="margin:0;font-weight:700;">만점 기준</label>
+      <select id="scale"><option value="4.5">4.5 만점 (국내 일반)</option><option value="4.3">4.3 만점</option><option value="4.0">4.0 만점</option></select>
+    </div>
+    <div id="rows"></div>
+    <button class="btn btn-ghost" id="add" type="button">＋ 과목 추가</button>
+    <div class="res"><span class="v" id="gpa">0.00</span> <span class="u" id="max">/ 4.5</span></div>
+    <div class="sub2" id="sum"></div>
+    <div class="note">평점 = Σ(과목 평점 × 학점수) ÷ Σ(학점수). 성적 등급의 평점은 만점 기준에 따라 자동 적용됩니다(F=0). P/NP(패스) 과목은 ‘제외’로 두면 계산에서 빠집니다. 학교마다 환산표가 다를 수 있으니 참고용으로 쓰세요. 모든 계산은 브라우저에서 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var GP={
+    '4.5':{'A+':4.5,'A':4.0,'B+':3.5,'B':3.0,'C+':2.5,'C':2.0,'D+':1.5,'D':1.0,'F':0},
+    '4.3':{'A+':4.3,'A':4.0,'B+':3.3,'B':3.0,'C+':2.3,'C':2.0,'D+':1.3,'D':1.0,'F':0},
+    '4.0':{'A+':4.0,'A':4.0,'B+':3.3,'B':3.0,'C+':2.3,'C':2.0,'D+':1.3,'D':1.0,'F':0}
+  };
+  function gradeOpts(){ return ['A+','A','B+','B','C+','C','D+','D','F'].map(function(g){return '<option>'+g+'</option>';}).join('')+'<option value="EX">제외(P/NP)</option>'; }
+  function addRow(nm,cr,gr){
+    var d=document.createElement('div'); d.className='grow';
+    d.innerHTML='<input class="nm" type="text" placeholder="과목명" value="'+(nm||'')+'"/><input class="cr" type="number" min="0" max="9" step="0.5" value="'+(cr||3)+'"/><select class="gr">'+gradeOpts()+'</select><button class="del" type="button" title="삭제">✕</button>';
+    $('rows').appendChild(d); if(gr) d.querySelector('.gr').value=gr; calc();
+  }
+  function calc(){
+    var sc=$('scale').value, table=GP[sc]; $('max').textContent='/ '+sc;
+    var tp=0, tc=0;
+    $('rows').querySelectorAll('.grow').forEach(function(r){ var gr=r.querySelector('.gr').value; if(gr==='EX') return;
+      var cr=parseFloat(r.querySelector('.cr').value)||0; tc+=cr; tp+=(table[gr]||0)*cr; });
+    $('gpa').textContent = tc? (Math.round(tp/tc*100)/100).toFixed(2) : '0.00';
+    $('sum').textContent = '총 '+tc+'학점 · 평점합 '+(Math.round(tp*100)/100);
+  }
+  $('rows').addEventListener('input', calc);
+  $('rows').addEventListener('change', calc);
+  $('rows').addEventListener('click', function(e){ if(e.target.closest('.del')){ e.target.closest('.grow').remove(); calc(); } });
+  $('scale').addEventListener('change', calc);
+  $('add').addEventListener('click', function(){ addRow(); });
+  addRow('과목1',3,'A+'); addRow('과목2',3,'B+'); addRow('과목3',2,'A');
+</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>HTML 엔티티 인코딩/디코딩 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="HTML 특수문자를 엔티티로 인코딩하거나(&lt; &amp; 등) 엔티티를 원래 문자로 디코딩합니다. 코드 게시·블로그 작성 시 태그가 깨지지 않게. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/htmlentity.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="HTML 엔티티 인코딩/디코딩 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="HTML 특수문자↔엔티티 인코딩/디코딩(&lt; &amp; 등). 코드 게시·블로그용. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/htmlentity.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  textarea{width:100%;min-height:120px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92rem;color:var(--text);resize:vertical;}
+  .opts{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin:.8rem 0;font-size:.9rem;}
+  .opts label{display:inline-flex;gap:.4rem;align-items:center;margin:0;font-weight:600;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:.5rem 0;}
+  .arrow{text-align:center;color:var(--muted);font-size:1.3rem;margin:.3rem 0;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "HTML 엔티티 인코딩/디코딩",
+  "description": "HTML 특수문자를 엔티티로 인코딩하거나 엔티티를 원래 문자로 디코딩합니다. 코드 게시·블로그 작성용. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/htmlentity.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>HTML 엔티티 인코딩/디코딩</h1>
+  <p class="sub">HTML 특수문자를 안전한 엔티티로 바꾸거나 되돌립니다. 코드를 글에 그대로 보여줄 때 태그가 깨지지 않게 해 줍니다.</p>
+
+  <div class="card">
+    <label for="input" style="font-weight:700;font-size:.85rem;">입력</label>
+    <textarea id="input">&lt;div class="box"&gt;안녕 &amp; 환영&lt;/div&gt;</textarea>
+    <div class="opts"><label><input type="checkbox" id="all"/> 모든 비ASCII 문자도 인코딩(숫자 엔티티)</label></div>
+    <div class="actions">
+      <button class="btn" id="enc" type="button">인코딩 ↓</button>
+      <button class="btn" id="dec" type="button">디코딩 ↓</button>
+      <button class="btn btn-ghost" id="swap" type="button">⇅ 입력↔출력</button>
+      <button class="btn btn-ghost" id="copy" type="button">📋 복사</button>
+    </div>
+    <div class="arrow">↓</div>
+    <label for="out" style="font-weight:700;font-size:.85rem;">결과</label>
+    <textarea id="out" readonly></textarea>
+    <div class="note">기본 인코딩은 <code>&amp; &lt; &gt; " '</code>를 엔티티로 바꿉니다. 옵션을 켜면 한글 등 비ASCII 문자도 숫자 엔티티(&amp;#xxxx;)로 변환합니다. 디코딩은 명명·숫자 엔티티를 모두 원래 문자로 되돌립니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  function encode(s, all){
+    s=s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    if(all) s=s.replace(/[^\x00-\x7F]/g, function(c){ return '&#'+c.codePointAt(0)+';'; });
+    return s;
+  }
+  function decode(s){ var ta=document.createElement('textarea'); ta.innerHTML=s; return ta.value; }
+  $('enc').addEventListener('click', function(){ $('out').value=encode($('input').value, $('all').checked); });
+  $('dec').addEventListener('click', function(){ $('out').value=decode($('input').value); });
+  $('swap').addEventListener('click', function(){ $('input').value=$('out').value; $('out').value=''; });
+  $('copy').addEventListener('click', function(){ if($('out').value) navigator.clipboard.writeText($('out').value).then(function(){toast('복사됐습니다');}); });
+  $('dec').click();
+</script>
+</body>
+</html>

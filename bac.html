@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>음주 혈중알코올농도(BAC) 추정기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="성별·체중·음주량·경과 시간으로 혈중알코올농도(BAC)를 위드마크 공식으로 추정합니다. 음주운전 단속 기준과 비교용 참고 도구. 절대 음주운전 판단에 쓰지 마세요. 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/bac.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="음주 혈중알코올농도(BAC) 추정기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="성별·체중·음주량·시간으로 BAC를 위드마크 공식으로 추정. 참고용 — 음주운전 판단 금지."/>
+<meta property="og:url" content="https://gemini2k.co.kr/bac.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .seg{display:flex;gap:.5rem;margin-bottom:1rem;} .seg button{flex:1;padding:.55rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--muted);font-family:inherit;font-weight:700;cursor:pointer;} .seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .frow{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;} .fld{flex:1;min-width:130px;} .fld input,.fld select{width:100%;padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:inherit;font-size:1.05rem;color:var(--text);}
+  .res{text-align:center;margin:1.4rem 0 .4rem;} .res .v{font-size:2.6rem;font-weight:800;} .res .cat{display:inline-block;margin-top:.6rem;padding:.4rem 1rem;border-radius:999px;font-weight:800;}
+  .warnbox{background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;border-radius:11px;padding:.85rem 1rem;font-weight:700;font-size:.9rem;margin-top:1rem;text-align:center;}
+  :root[data-theme="dark"] .warnbox{background:#3a1620;color:#fca5a5;border-color:#7f1d1d;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "음주 혈중알코올농도(BAC) 추정기",
+  "description": "성별·체중·음주량·경과 시간으로 혈중알코올농도(BAC)를 위드마크 공식으로 추정합니다. 참고용 — 음주운전 판단에 사용 금지.",
+  "url": "https://gemini2k.co.kr/bac.html",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>혈중알코올농도(BAC) 추정기</h1>
+  <p class="sub">마신 술과 시간으로 혈중알코올농도를 대략 추정합니다. 위드마크 공식을 사용합니다.</p>
+
+  <div class="warnbox">🚫 절대 음주운전 가능 여부 판단에 사용하지 마세요. 추정값은 실제와 크게 다를 수 있습니다.</div>
+
+  <div class="card">
+    <label>성별</label>
+    <div class="seg" style="margin-bottom:1rem;"><button id="male" class="on" type="button">남성</button><button id="female" type="button">여성</button></div>
+    <div class="frow">
+      <div class="fld"><label for="w">체중 (kg)</label><input id="w" type="number" value="70" min="30" max="200"/></div>
+      <div class="fld"><label for="hours">경과 시간 (시간)</label><input id="hours" type="number" value="2" min="0" max="24" step="0.5"/></div>
+    </div>
+    <div class="frow">
+      <div class="fld"><label for="amount">음주량 (ml)</label><input id="amount" type="number" value="500" min="0" max="5000" step="10"/></div>
+      <div class="fld"><label for="abv">도수 (%)</label><input id="abv" type="number" value="4.5" min="0" max="100" step="0.5"/></div>
+    </div>
+    <div class="frow"><div class="fld" style="flex:none;width:100%;"><label for="preset">빠른 선택</label>
+      <select id="preset"><option value="">직접 입력</option><option value="500,4.5">맥주 500ml (4.5%)</option><option value="360,17">소주 1병 360ml (17%)</option><option value="150,12">와인 1잔 150ml (12%)</option><option value="45,40">양주 1잔 45ml (40%)</option></select></div>
+    </div>
+    <div class="res"><div class="v" id="bac">0.000%</div><div><span class="cat" id="cat"></span></div></div>
+    <div class="note">⚠️ 참고용입니다 — 의학·법적 판단 근거가 될 수 없습니다. 위드마크 공식(알코올 g = 양×도수×0.789, 분포계수 남 0.68·여 0.55, 시간당 0.015% 분해)으로 계산하며 체질·공복·약물 등으로 실제값은 크게 달라집니다. 한국 면허 정지 0.03%·취소 0.08% 기준은 단순 비교용 표시일 뿐입니다. 음주 후에는 절대 운전하지 마세요.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var sex='male';
+  function calc(){
+    var w=parseFloat($('w').value), h=parseFloat($('hours').value)||0, ml=parseFloat($('amount').value), abv=parseFloat($('abv').value);
+    if(!(w>0)||!(ml>=0)||!(abv>=0)){ return; }
+    var grams=ml*(abv/100)*0.789;
+    var r=sex==='male'?0.68:0.55;
+    var bac=(grams/(w*1000*r))*100 - 0.015*h;
+    if(bac<0) bac=0;
+    $('bac').textContent=bac.toFixed(3)+'%';
+    var cat=$('cat'), c,txt;
+    if(bac<0.03){ c='#22c55e'; txt='정지 기준 미만(0.03% 미만)'; }
+    else if(bac<0.08){ c='#f97316'; txt='면허 정지 수준(0.03~0.08%)'; }
+    else { c='#ef4444'; txt='면허 취소 수준(0.08% 이상)'; }
+    cat.textContent=txt; cat.style.background=c+'22'; cat.style.color=c;
+    $('bac').style.color=c;
+  }
+  $('male').addEventListener('click',function(){sex='male';this.classList.add('on');$('female').classList.remove('on');calc();});
+  $('female').addEventListener('click',function(){sex='female';this.classList.add('on');$('male').classList.remove('on');calc();});
+  $('preset').addEventListener('change',function(){ if(!this.value)return; var p=this.value.split(','); $('amount').value=p[0]; $('abv').value=p[1]; calc(); });
+  ['w','hours','amount','abv'].forEach(function(id){ $(id).addEventListener('input',calc); });
+  calc();
+</script>
+</body>
+</html>

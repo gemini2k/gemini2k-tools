@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>수면 시간 계산기 (수면 주기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="90분 수면 주기를 기준으로 언제 자고 일어나면 개운할지 추천합니다. 취침 시각을 넣으면 추천 기상 시각을, 기상 시각을 넣으면 추천 취침 시각을 알려줍니다. 잠드는 시간 15분 반영. 참고용."/>
+<link rel="canonical" href="https://gemini2k.co.kr/sleep.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="수면 시간 계산기 (수면 주기) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="90분 수면 주기 기반 추천 취침·기상 시각. 잠드는 시간 15분 반영. 참고용."/>
+<meta property="og:url" content="https://gemini2k.co.kr/sleep.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .seg{display:flex;gap:.5rem;margin-bottom:1.2rem;}
+  .seg button{flex:1;padding:.6rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--muted);font-family:inherit;font-size:.92rem;font-weight:700;cursor:pointer;}
+  .seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .tin{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin-bottom:.4rem;}
+  .tin input[type=time]{padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:inherit;font-size:1.3rem;color:var(--text);}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.7rem;margin-top:1.2rem;}
+  .sc{border:1px solid var(--border);border-radius:12px;padding:.9rem;text-align:center;}
+  .sc.best{border-color:var(--accent);background:var(--accent-soft);}
+  .sc .t{font-size:1.5rem;font-weight:800;color:var(--text);letter-spacing:-.02em;}
+  .sc .m{font-size:.78rem;color:var(--muted);margin-top:.25rem;}
+  .sc.best .m{color:var(--accent-d);font-weight:700;}
+  .lead{font-size:.92rem;color:var(--muted);margin-bottom:.3rem;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "수면 시간 계산기 (수면 주기)",
+  "description": "90분 수면 주기를 기준으로 추천 취침·기상 시각을 알려줍니다. 잠드는 시간 15분 반영.",
+  "url": "https://gemini2k.co.kr/sleep.html",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>수면 시간 계산기</h1>
+  <p class="sub">90분 수면 주기에 맞춰 일어나면 더 개운합니다. 취침 시각을 넣으면 추천 기상 시각을, 기상 시각을 넣으면 추천 취침 시각을 알려줍니다.</p>
+
+  <div class="card">
+    <div class="seg">
+      <button id="mBed" class="on" type="button">잘 시각 → 기상 추천</button>
+      <button id="mWake" type="button">일어날 시각 → 취침 추천</button>
+    </div>
+    <div class="tin">
+      <input id="time" type="time" value="23:00"/>
+      <button class="btn btn-ghost" id="now" type="button">지금 잠들면?</button>
+    </div>
+    <p class="lead" id="lead"></p>
+    <div class="cards" id="cards"></div>
+    <div class="note">⚠️ 참고용입니다. 한 수면 주기는 약 90분, 잠드는 데 약 15분이 걸린다고 가정합니다. 주기가 끝날 때 일어나면 얕은 잠 단계라 덜 피곤합니다. 보통 성인은 5–6주기(7.5–9시간)를 권장하며, 별표가 그 구간입니다. 개인차가 있습니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var CYCLE=90, FALL=15, mode='bed';
+  function fmt(min){ min=((min%1440)+1440)%1440; var h=Math.floor(min/60), m=min%60; var ap=h<12?'오전':'오후'; var h12=h%12; if(h12===0)h12=12; return ap+' '+h12+':'+String(m).padStart(2,'0'); }
+  function parseT(v){ var p=v.split(':'); return (+p[0])*60+(+p[1]); }
+
+  function render(){
+    var base=parseT($('time').value);
+    var cards=[], lead;
+    for(var n=6;n>=3;n--){
+      var dur=n*CYCLE;
+      var t = mode==='bed' ? base+FALL+dur : base-FALL-dur;
+      var hrs=(dur/60);
+      var best = (n===5||n===6);
+      cards.push({t:t, n:n, hrs:hrs, best:best});
+    }
+    lead = mode==='bed' ? '이 시각에 잠들면, 아래 시각에 일어나는 게 좋아요:' : '이 시각에 일어나려면, 아래 시각에 잠드는 게 좋아요:';
+    $('lead').textContent=lead;
+    $('cards').innerHTML=cards.map(function(c){
+      return '<div class="sc'+(c.best?' best':'')+'"><div class="t">'+fmt(c.t)+'</div><div class="m">'+c.n+'주기 · '+c.hrs+'시간'+(c.best?' ★':'')+'</div></div>';
+    }).join('');
+  }
+  function setMode(m){ mode=m; $('mBed').classList.toggle('on',m==='bed'); $('mWake').classList.toggle('on',m==='wake'); render(); }
+  $('mBed').addEventListener('click',function(){setMode('bed');});
+  $('mWake').addEventListener('click',function(){setMode('wake');});
+  $('time').addEventListener('input', render);
+  $('now').addEventListener('click', function(){
+    var d=new Date(); $('time').value=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+    setMode('bed'); render();
+  });
+  render();
+</script>
+</body>
+</html>

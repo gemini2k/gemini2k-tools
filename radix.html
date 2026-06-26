@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>진법 변환기 (2·8·10·16진수) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="2진수·8진수·10진수·16진수를 서로 변환합니다. 한 칸에 입력하면 나머지가 즉시 바뀌고, 2~36진수 임의 진법 변환도 지원합니다. 개발·학습용. 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/radix.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="진법 변환기 (2·8·10·16진수) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="2·8·10·16진수 상호 변환 + 2~36진수 임의 진법. 한 칸 입력하면 즉시 변환. 개발·학습용."/>
+<meta property="og:url" content="https://gemini2k.co.kr/radix.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .rrow{display:flex;align-items:center;gap:.8rem;margin-bottom:.9rem;}
+  .rrow label{width:5.5rem;flex-shrink:0;margin:0;font-weight:700;color:var(--text);font-size:.92rem;}
+  .rrow input{flex:1;padding:.65rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.1rem;color:var(--text);}
+  .rrow input.bad{border-color:#ef4444;}
+  .custom{border-top:1px solid var(--border);margin-top:1.2rem;padding-top:1.2rem;display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;}
+  .custom input[type=number]{width:80px;padding:.55rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .custom input[type=text]{flex:1;min-width:160px;padding:.6rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:ui-monospace,monospace;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "진법 변환기",
+  "description": "2진수·8진수·10진수·16진수를 서로 변환하고, 2~36진수 임의 진법 변환도 지원합니다. 개발·학습용.",
+  "url": "https://gemini2k.co.kr/radix.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>진법 변환기</h1>
+  <p class="sub">2·8·10·16진수를 서로 변환합니다. 아무 칸에나 입력하면 나머지가 즉시 바뀝니다.</p>
+
+  <div class="card">
+    <div class="rrow"><label for="b10">10진수</label><input id="b10" data-base="10" inputmode="numeric" value="255" autocomplete="off"/></div>
+    <div class="rrow"><label for="b2">2진수</label><input id="b2" data-base="2" autocomplete="off"/></div>
+    <div class="rrow"><label for="b8">8진수</label><input id="b8" data-base="8" autocomplete="off"/></div>
+    <div class="rrow"><label for="b16">16진수</label><input id="b16" data-base="16" autocomplete="off" style="text-transform:uppercase;"/></div>
+    <div class="custom">
+      <label style="margin:0;font-weight:700;">임의 진법</label>
+      <input id="cbase" type="number" min="2" max="36" value="36" aria-label="진법(2~36)"/>
+      <span style="color:var(--muted);">진수 =</span>
+      <input id="cval" type="text" readonly aria-label="결과"/>
+    </div>
+    <div class="note">정수만 변환하며 음수는 앞에 −를 붙입니다. 16진수는 0–9·A–F를, 임의 진법(2~36)은 0–9·A–Z를 사용합니다. 매우 큰 수는 자릿수 한계로 정밀도가 떨어질 수 있습니다. 모든 계산은 브라우저에서 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var ids=['b2','b8','b10','b16'];
+  function update(fromId){
+    var el=$(fromId), base=+el.dataset.base, s=el.value.trim();
+    el.classList.remove('bad');
+    if(s===''){ ids.forEach(function(id){ if(id!==fromId)$(id).value=''; }); $('cval').value=''; return; }
+    var neg=/^-/.test(s); var body=s.replace(/^-/,'');
+    var re = base===2?/^[01]+$/ : base===8?/^[0-7]+$/ : base===10?/^\d+$/ : /^[0-9a-fA-F]+$/;
+    if(!re.test(body)){ el.classList.add('bad'); return; }
+    var val=parseInt(body, base); if(!isFinite(val)){ el.classList.add('bad'); return; }
+    if(neg) val=-val;
+    ids.forEach(function(id){ if(id===fromId) return; var b=+$(id).dataset.base; $(id).value=(val<0?'-':'')+Math.abs(val).toString(b).toUpperCase(); });
+    custom(val);
+  }
+  function custom(val){ var cb=Math.max(2,Math.min(36,parseInt($('cbase').value)||36)); $('cval').value=(val<0?'-':'')+Math.abs(val).toString(cb).toUpperCase(); }
+  ids.forEach(function(id){ $(id).addEventListener('input', function(){ update(id); }); });
+  $('cbase').addEventListener('input', function(){ var v=parseInt($('b10').value); if(isFinite(v)) custom(v); });
+  update('b10');
+</script>
+</body>
+</html>

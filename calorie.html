@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>칼로리 계산기 (기초대사량·권장 섭취) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="성별·나이·키·몸무게·활동량으로 기초대사량(BMR)과 하루 권장 섭취 칼로리(TDEE), 감량·유지·증량 목표 칼로리를 계산합니다. Mifflin-St Jeor 공식. 참고용, 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/calorie.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="칼로리 계산기 (기초대사량·권장 섭취) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="기초대사량(BMR)·하루 권장 섭취(TDEE)·감량/유지/증량 칼로리 계산. Mifflin-St Jeor. 참고용."/>
+<meta property="og:url" content="https://gemini2k.co.kr/calorie.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .frow{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;}
+  .fld{flex:1;min-width:130px;}
+  .fld input,.fld select{width:100%;padding:.65rem .75rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:inherit;font-size:1.05rem;color:var(--text);}
+  .seg{display:flex;gap:.5rem;}
+  .seg button{flex:1;padding:.55rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--muted);font-family:inherit;font-weight:700;cursor:pointer;}
+  .seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .reslist{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:1.2rem;}
+  .rrow{display:flex;justify-content:space-between;align-items:center;padding:.8rem 1rem;border-top:1px solid var(--border);}
+  .rrow:first-child{border-top:none;} .rrow .k{color:var(--muted);font-size:.92rem;} .rrow .v{font-weight:800;font-size:1.05rem;}
+  .rrow.main{background:var(--accent-soft);} .rrow.main .v{color:var(--accent);font-size:1.25rem;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "칼로리 계산기 (기초대사량·권장 섭취)",
+  "description": "성별·나이·키·몸무게·활동량으로 기초대사량(BMR)과 하루 권장 섭취 칼로리(TDEE), 감량·유지·증량 목표 칼로리를 계산합니다. Mifflin-St Jeor 공식.",
+  "url": "https://gemini2k.co.kr/calorie.html",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>칼로리 계산기</h1>
+  <p class="sub">기초대사량(BMR)과 하루 권장 섭취 칼로리(TDEE), 그리고 감량·유지·증량 목표 칼로리를 계산합니다.</p>
+
+  <div class="card">
+    <label>성별</label>
+    <div class="seg" style="margin-bottom:1rem;">
+      <button id="male" class="on" type="button">남성</button>
+      <button id="female" type="button">여성</button>
+    </div>
+    <div class="frow">
+      <div class="fld"><label for="age">나이</label><input id="age" type="number" value="40" min="1" max="120"/></div>
+      <div class="fld"><label for="h">키 (cm)</label><input id="h" type="number" value="170" min="80" max="250"/></div>
+      <div class="fld"><label for="w">몸무게 (kg)</label><input id="w" type="number" value="68" min="20" max="400"/></div>
+    </div>
+    <div class="fld" style="margin-bottom:.5rem;"><label for="act">활동량</label>
+      <select id="act">
+        <option value="1.2">거의 안 함 (좌식 생활)</option>
+        <option value="1.375">가벼운 운동 (주 1–3회)</option>
+        <option value="1.55" selected>보통 운동 (주 3–5회)</option>
+        <option value="1.725">활발한 운동 (주 6–7회)</option>
+        <option value="1.9">매우 활발 (육체노동·운동선수)</option>
+      </select>
+    </div>
+
+    <div class="reslist" id="result"></div>
+    <div class="note">⚠️ 참고용입니다 — 의료·영양 조언이 아닙니다. 기초대사량은 Mifflin-St Jeor 공식, 권장 섭취량은 BMR×활동계수(TDEE)로 추정하며 개인차가 있습니다. 감량은 약 −500kcal/일(주 약 0.5kg), 증량은 +400kcal/일 기준입니다. 체중 관리는 전문가와 상담하세요.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var sex='male';
+  function r0(x){ return Math.round(x).toLocaleString('ko-KR'); }
+  function calc(){
+    var age=+$('age').value, h=+$('h').value, w=+$('w').value, act=+$('act').value;
+    if(!(age>0&&h>0&&w>0)){ $('result').innerHTML=''; return; }
+    var bmr = 10*w + 6.25*h - 5*age + (sex==='male'?5:-161);
+    var tdee = bmr*act;
+    $('result').innerHTML =
+      '<div class="rrow"><span class="k">기초대사량 (BMR)</span><span class="v">'+r0(bmr)+' kcal</span></div>'+
+      '<div class="rrow main"><span class="k">하루 권장 섭취 (TDEE)</span><span class="v">'+r0(tdee)+' kcal</span></div>'+
+      '<div class="rrow"><span class="k">체중 감량</span><span class="v">'+r0(tdee-500)+' kcal</span></div>'+
+      '<div class="rrow"><span class="k">체중 유지</span><span class="v">'+r0(tdee)+' kcal</span></div>'+
+      '<div class="rrow"><span class="k">체중 증량</span><span class="v">'+r0(tdee+400)+' kcal</span></div>';
+  }
+  $('male').addEventListener('click',function(){ sex='male'; $('male').classList.add('on'); $('female').classList.remove('on'); calc(); });
+  $('female').addEventListener('click',function(){ sex='female'; $('female').classList.add('on'); $('male').classList.remove('on'); calc(); });
+  ['age','h','w','act'].forEach(function(id){ $(id).addEventListener('input',calc); });
+  calc();
+</script>
+</body>
+</html>

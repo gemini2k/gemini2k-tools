@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>데이터 용량 변환기 (KB·MB·GB·TB) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="바이트·KB·MB·GB·TB·PB를 서로 변환합니다. 1KB=1000인 SI 단위와 1KiB=1024인 이진(IEC) 단위를 함께 보여 줍니다. 파일 크기·저장 용량 계산에. 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/datasize.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="데이터 용량 변환기 (KB·MB·GB·TB) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="바이트·KB·MB·GB·TB 변환. 1000(SI)과 1024(이진) 단위 동시 표시. 파일·저장 용량 계산."/>
+<meta property="og:url" content="https://gemini2k.co.kr/datasize.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .inrow{display:flex;gap:.6rem;align-items:center;margin-bottom:1.2rem;flex-wrap:wrap;}
+  .inrow input{flex:1;min-width:140px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:inherit;font-size:1.3rem;font-weight:700;text-align:right;color:var(--text);}
+  .inrow select{padding:.7rem .6rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1rem;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  @media(max-width:560px){.grid2{grid-template-columns:1fr;}}
+  .col h3{font-size:.85rem;color:var(--muted);margin:0 0 .5rem;text-transform:uppercase;letter-spacing:.03em;}
+  .reslist{border:1px solid var(--border);border-radius:11px;overflow:hidden;}
+  .rrow{display:flex;justify-content:space-between;align-items:center;padding:.55rem .85rem;border-top:1px solid var(--border);}
+  .rrow:first-child{border-top:none;} .rrow .k{color:var(--muted);font-size:.88rem;} .rrow .v{font-weight:700;font-variant-numeric:tabular-nums;}
+  .cp{cursor:pointer;color:var(--teal,#1aa3e0);font-size:.72rem;background:none;border:none;margin-left:.4rem;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "데이터 용량 변환기",
+  "description": "바이트·KB·MB·GB·TB·PB를 변환합니다. 1KB=1000(SI)과 1KiB=1024(이진) 단위를 함께 표시. 파일 크기·저장 용량 계산용.",
+  "url": "https://gemini2k.co.kr/datasize.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>데이터 용량 변환기</h1>
+  <p class="sub">바이트·KB·MB·GB·TB를 변환합니다. 1KB=1000인 SI 단위와 1KiB=1024인 이진 단위를 함께 보여 줍니다.</p>
+
+  <div class="card">
+    <div class="inrow">
+      <input id="val" type="number" value="1" min="0" step="any" aria-label="값"/>
+      <select id="unit">
+        <option value="B">Byte (B)</option><option value="KB">킬로 (KB/KiB)</option>
+        <option value="MB" selected>메가 (MB/MiB)</option><option value="GB">기가 (GB/GiB)</option>
+        <option value="TB">테라 (TB/TiB)</option><option value="PB">페타 (PB/PiB)</option>
+      </select>
+    </div>
+    <div class="grid2">
+      <div class="col"><h3>SI 십진 (1000)</h3><div class="reslist" id="si"></div></div>
+      <div class="col"><h3>이진 IEC (1024)</h3><div class="reslist" id="iec"></div></div>
+    </div>
+    <div class="note">저장장치 제조사는 보통 1GB=1,000,000,000B(SI)로 표기하고, 운영체제는 1GiB=1,073,741,824B(이진)로 계산해 차이가 납니다. 입력 단위는 선택한 체계 기준으로 해석합니다(예: MB는 SI, 이진 환산도 함께 표시). 모든 계산은 브라우저에서 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  var SI=['B','KB','MB','GB','TB','PB'], IEC=['B','KiB','MiB','GiB','TiB','PiB'];
+  function fmt(n){ if(n===0) return '0'; if(n<0.000001||n>=1e15) return n.toExponential(4); var s=(Math.round(n*1e6)/1e6).toString(); return (+s).toLocaleString('ko-KR',{maximumFractionDigits:6}); }
+  function calc(){
+    var v=parseFloat($('val').value); if(!isFinite(v)){ $('si').innerHTML=''; $('iec').innerHTML=''; return; }
+    var u=$('unit').value; var idx=SI.indexOf(u==='B'?'B':u); // 입력 단위 인덱스(SI 기준)
+    var bytes = v * Math.pow(1000, idx);
+    function rows(units, base){ return units.map(function(name,i){ var val=bytes/Math.pow(base,i);
+      return '<div class="rrow"><span class="k">'+name+'</span><span><span class="v">'+fmt(val)+'</span><button class="cp" data-v="'+fmt(val)+'">복사</button></span></div>'; }).join(''); }
+    $('si').innerHTML=rows(SI,1000); $('iec').innerHTML=rows(IEC,1024);
+  }
+  $('val').addEventListener('input', calc); $('unit').addEventListener('change', calc);
+  document.querySelector('.grid2').addEventListener('click', function(e){ var b=e.target.closest('.cp'); if(b) navigator.clipboard.writeText(b.dataset.v.replace(/,/g,'')).then(function(){toast('복사됐습니다');}); });
+  calc();
+</script>
+</body>
+</html>

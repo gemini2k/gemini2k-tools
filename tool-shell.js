@@ -37,6 +37,29 @@
 
   var TOAST = '<div class="toast" id="toast"></div>';
 
+  // 관련 도구 섹션 — 레지스트리(window.TOOLS) 기반. related(선별) → 같은 카테고리 자동 보완.
+  function relatedHtml(){
+    var T = window.TOOLS; if (!T || !T.length) return '';
+    var file = location.pathname.split('/').pop() || 'index.html';
+    var cur = null; for (var i=0;i<T.length;i++){ if (T[i].h===file){ cur=T[i]; break; } }
+    if (!cur) return '';
+    var byKey = function(k){ for (var j=0;j<T.length;j++) if (T[j].key===k) return T[j]; return null; };
+    var keys = [], add = function(k){ if (k && k!==cur.key && keys.indexOf(k)<0 && byKey(k)) keys.push(k); };
+    var next = {}; (cur.related||[]).forEach(function(k){ next[k]=1; add(k); });
+    for (var c=0;c<T.length;c++){ if (T[c].cat===cur.cat) add(T[c].key); }
+    keys = keys.slice(0,6);
+    if (!keys.length) return '';
+    var cards = keys.map(function(k){ var t=byKey(k);
+      return '<a class="relcard" href="'+t.h+'">'
+        + '<span class="relic '+t.chip+'">'+t.ic+'</span>'
+        + '<span class="reltxt"><b data-i18n="tool.'+t.key+'.t"></b><i data-i18n="tool.'+t.key+'.d"></i></span>'
+        + (next[k] ? '<span class="relnext" data-i18n="rel.next">다음 단계</span>' : '')
+        + '</a>';
+    }).join('');
+    return '<section class="relsec"><div class="relsec-h"><span aria-hidden="true">🔗</span>'
+      + '<span data-i18n="rel.title">관련 도구</span></div><div class="relgrid">'+cards+'</div></section>';
+  }
+
   function build(){
     var body = document.body; if (!body) return;
     if (!document.querySelector('header.top'))
@@ -44,6 +67,8 @@
     var tw = document.querySelector('.toolwrap');
     if (tw && !tw.querySelector('.back'))
       tw.insertAdjacentHTML('afterbegin', BACK);
+    if (tw && !tw.querySelector('.relsec'))
+      tw.insertAdjacentHTML('beforeend', relatedHtml());
     if (!document.querySelector('footer.foot'))
       body.insertAdjacentHTML('beforeend', FOOTER);
     if (!document.getElementById('toast'))

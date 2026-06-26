@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>혈압 분류기 (정상·고혈압 단계) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="수축기·이완기 혈압을 입력하면 대한고혈압학회 기준으로 정상·주의·고혈압 전단계·1기·2기를 분류합니다. 고령화 시대 건강 관리에. 참고용, 업로드 없이 브라우저에서만."/>
+<link rel="canonical" href="https://gemini2k.co.kr/bloodpressure.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="혈압 분류기 (정상·고혈압 단계) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="수축기·이완기 혈압으로 정상·주의·고혈압 단계 분류(대한고혈압학회 기준). 참고용."/>
+<meta property="og:url" content="https://gemini2k.co.kr/bloodpressure.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .frow{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;}
+  .fld{flex:1;min-width:150px;} .fld input{width:100%;padding:.65rem .75rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:inherit;font-size:1.2rem;font-weight:700;text-align:center;color:var(--text);}
+  .res{text-align:center;margin:1.4rem 0 .4rem;} .res .cat{display:inline-block;padding:.5rem 1.2rem;border-radius:999px;font-size:1.2rem;font-weight:800;}
+  .res .bp{font-size:1.1rem;color:var(--muted);font-weight:700;margin-top:.6rem;}
+  .scale{border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-top:1rem;}
+  .lvl{display:flex;justify-content:space-between;padding:.55rem .9rem;border-top:1px solid var(--border);font-size:.9rem;} .lvl:first-child{border-top:none;}
+  .lvl.on{font-weight:800;} .dot{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:.5rem;vertical-align:middle;}
+  .c0{background:#22c55e}.c1{background:#84cc16}.c2{background:#eab308}.c3{background:#f97316}.c4{background:#ef4444}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "혈압 분류기",
+  "description": "수축기·이완기 혈압을 대한고혈압학회 기준으로 정상·주의·고혈압 단계로 분류합니다. 참고용.",
+  "url": "https://gemini2k.co.kr/bloodpressure.html",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>혈압 분류기</h1>
+  <p class="sub">수축기(높은 값)·이완기(낮은 값) 혈압을 넣으면 대한고혈압학회 기준 단계를 알려 줍니다.</p>
+
+  <div class="card">
+    <div class="frow">
+      <div class="fld"><label for="sys">수축기 (mmHg)</label><input id="sys" type="number" value="118" min="60" max="260"/></div>
+      <div class="fld"><label for="dia">이완기 (mmHg)</label><input id="dia" type="number" value="76" min="40" max="160"/></div>
+    </div>
+    <div class="res"><span class="cat" id="cat">정상</span><div class="bp" id="bp"></div></div>
+    <div class="scale" id="scale"></div>
+    <div class="note">⚠️ 참고용입니다 — 진단이 아닙니다. 대한고혈압학회 기준: 정상 &lt;120/80, 주의혈압 120–129/&lt;80, 고혈압 전단계 130–139 또는 80–89, 1기 140–159 또는 90–99, 2기 ≥160 또는 ≥100. 수축기·이완기 중 더 높은 단계로 분류합니다. 혈압은 여러 번·안정 상태에서 측정해야 하며, 정확한 진단은 의료진과 상담하세요.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var LV=[['정상','c0'],['주의혈압','c1'],['고혈압 전단계','c2'],['고혈압 1기','c3'],['고혈압 2기','c4']];
+  function level(s,d){
+    if(s>=160||d>=100) return 4;
+    if(s>=140||d>=90) return 3;
+    if((s>=130&&s<=139)||(d>=80&&d<=89)) return 2;
+    if(s>=120&&s<=129&&d<80) return 1;
+    if(s<120&&d<80) return 0;
+    // 경계 외 조합은 더 높은 쪽 기준
+    if(s>=130||d>=80) return 2; return 0;
+  }
+  function calc(){
+    var s=parseInt($('sys').value), d=parseInt($('dia').value);
+    if(!(s>0&&d>0)){ return; }
+    var lv=level(s,d), info=LV[lv];
+    var colors={c0:'#22c55e',c1:'#84cc16',c2:'#eab308',c3:'#f97316',c4:'#ef4444'};
+    var cat=$('cat'); cat.textContent=info[0]; cat.style.background=colors[info[1]]+'22'; cat.style.color=colors[info[1]];
+    $('bp').textContent=s+' / '+d+' mmHg';
+    $('scale').innerHTML=LV.map(function(l,i){ var ranges=['<120 / <80','120–129 / <80','130–139 / 80–89','140–159 / 90–99','≥160 / ≥100'];
+      return '<div class="lvl'+(i===lv?' on':'')+'"><span><span class="dot '+l[1]+'"></span>'+l[0]+(i===lv?' ◀':'')+'</span><span style="color:var(--muted)">'+ranges[i]+'</span></div>'; }).join('');
+  }
+  ['sys','dia'].forEach(function(id){ $(id).addEventListener('input',calc); });
+  calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>좌표 일괄 변환기 (CSV·여러 좌표) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="여러 좌표를 한 번에 좌표계 변환합니다. 경위도(WGS84)·UTM-K(5179)·중부원점(5186) 등 한국 좌표계를 지원하고, CSV로 붙여넣어 표·CSV로 결과를 받습니다. proj4 기반, 업로드 없이 브라우저에서만."/>
+<link rel="canonical" href="https://gemini2k.co.kr/coordbatch.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="좌표 일괄 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="여러 좌표를 한 번에 좌표계 변환(경위도·UTM-K·중부원점 등). CSV 입력→표·CSV 출력. proj4 기반."/>
+<meta property="og:url" content="https://gemini2k.co.kr/coordbatch.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="csvutil.js"></script>
+<script src="/vendor/proj4-2.15.0/proj4.js"></script>
+<style>
+  textarea{width:100%;min-height:120px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;color:var(--text);resize:vertical;}
+  .ctl{display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end;margin:1rem 0;}
+  .fld{display:flex;flex-direction:column;gap:.3rem;} .fld label{margin:0;font-size:.8rem;font-weight:700;color:var(--muted);}
+  .fld select{padding:.5rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-top:.8rem;}
+  table{border-collapse:collapse;width:100%;font-size:.85rem;} th,td{border-bottom:1px solid var(--border);padding:.45rem .7rem;text-align:left;white-space:nowrap;}
+  th{background:var(--ground);font-size:.72rem;text-transform:uppercase;color:var(--muted);} td.bad{color:#b91c1c;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "좌표 일괄 변환기",
+  "description": "여러 좌표를 한 번에 좌표계 변환합니다. 경위도(WGS84)·UTM-K(5179)·중부원점(5186) 등 한국 좌표계 지원, CSV 입력→표·CSV 출력. proj4 기반, 업로드 없이 브라우저에서만.",
+  "url": "https://gemini2k.co.kr/coordbatch.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:840px;">
+  <h1>좌표 일괄 변환기</h1>
+  <p class="sub">여러 좌표를 한 번에 다른 좌표계로 변환합니다. 한 줄에 좌표 하나씩(또는 CSV) 붙여 넣으세요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>좌표를 한 줄에 하나씩 입력합니다(쉼표 구분). 경위도는 기본 ‘위도,경도’ 순서입니다</li>
+    <li>입력 좌표계와 출력 좌표계를 고릅니다</li>
+    <li>‘변환’을 누르면 표로 나오고 CSV로 내려받을 수 있습니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <label for="input" style="font-weight:700;font-size:.85rem;">좌표 입력 (한 줄에 하나)</label>
+    <textarea id="input" placeholder="37.5665,126.9780&#10;35.1796,129.0756"></textarea>
+    <div class="ctl">
+      <div class="fld"><label>입력 좌표계</label><select id="src"></select></div>
+      <div class="fld"><label>출력 좌표계</label><select id="dst"></select></div>
+      <div class="fld"><label>경위도 순서</label><select id="order"><option value="latlon">위도,경도</option><option value="lonlat">경도,위도</option></select></div>
+      <div class="actions"><button class="btn" id="run" type="button">변환</button><button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
+    </div>
+    <div id="result" class="hide">
+      <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 복사</button><button class="btn btn-ghost" id="dl" type="button">⬇️ CSV</button></div>
+      <div class="tbl-scroll"><table id="tbl"></table></div>
+    </div>
+    <div class="note">경위도(WGS84)는 ‘위도,경도’ 순서가 기본이며 필요하면 바꿀 수 있습니다. 투영 좌표계는 X(동),Y(북) 순서입니다. proj4 기반(GRS80)으로 계산하며, 정밀 측량 용도는 결과를 검증해 사용하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  var CRS=[
+    {code:'EPSG:4326', geo:true, name:'경위도 (WGS84)'},
+    {code:'EPSG:5179', def:'+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs', name:'UTM-K (5179)'},
+    {code:'EPSG:5186', def:'+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:'중부원점 (5186)'},
+    {code:'EPSG:5185', def:'+proj=tmerc +lat_0=38 +lon_0=125 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:'서부원점 (5185)'},
+    {code:'EPSG:5187', def:'+proj=tmerc +lat_0=38 +lon_0=129 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:'동부원점 (5187)'},
+    {code:'EPSG:3857', def:'EPSG:3857', name:'웹 메르카토르 (3857)'}
+  ];
+  CRS.forEach(function(c){ if(c.def && c.def!=='EPSG:3857') proj4.defs(c.code, c.def); });
+  function fill(sel,defv){ $(sel).innerHTML=CRS.map(function(c){return '<option value="'+c.code+'">'+c.name+'</option>';}).join(''); $(sel).value=defv; }
+  fill('src','EPSG:4326'); fill('dst','EPSG:5179');
+  function isGeo(code){ return CRS.filter(function(c){return c.code===code;})[0].geo; }
+  var lastMatrix=null;
+
+  function run(){
+    var lines=$('input').value.split(/\r?\n/).map(function(s){return s.trim();}).filter(Boolean);
+    if(!lines.length){ toast('좌표를 입력하세요'); return; }
+    var src=$('src').value, dst=$('dst').value, order=$('order').value;
+    var srcGeo=isGeo(src), dstGeo=isGeo(dst);
+    var rows=[]; var ok=0;
+    lines.forEach(function(ln){
+      var parts=ln.split(/[\s,]+/).map(parseFloat);
+      if(parts.length<2 || !isFinite(parts[0]) || !isFinite(parts[1])){ rows.push([ln,'(형식 오류)',true]); return; }
+      var a=parts[0], b=parts[1];
+      var xy = srcGeo ? (order==='latlon'?[b,a]:[a,b]) : [a,b];   // proj4 [lon,lat] or [x,y]
+      try{ var out = proj4(src, dst, xy); ok++;
+        var os = dstGeo ? (out[1].toFixed(6)+', '+out[0].toFixed(6)) : (out[0].toFixed(3)+', '+out[1].toFixed(3));
+        rows.push([ln, os, false]);
+      }catch(e){ rows.push([ln,'(변환 실패)',true]); }
+    });
+    lastMatrix=[['입력','출력('+dst+(dstGeo?', 위도,경도':', X,Y')+')']].concat(rows.map(function(r){return [r[0],r[1]];}));
+    $('tbl').innerHTML='<tr><th>입력 ('+src+')</th><th>출력 ('+dst+')</th></tr>'+
+      rows.map(function(r){return '<tr><td>'+r[0]+'</td><td'+(r[2]?' class="bad"':'')+'>'+r[1]+'</td></tr>';}).join('');
+    $('result').classList.remove('hide');
+  }
+  $('run').addEventListener('click', run);
+  $('copy').addEventListener('click', function(){ if(lastMatrix) navigator.clipboard.writeText(CSV.toText(lastMatrix,{delimiter:','})).then(function(){toast('복사됐습니다');}); });
+  $('dl').addEventListener('click', function(){ if(!lastMatrix)return; var blob=new Blob(['﻿'+CSV.toText(lastMatrix,{delimiter:','})],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='coords.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove();},100); });
+  $('sample').addEventListener('click', function(){ $('input').value='37.5665,126.9780\n35.1796,129.0756\n33.4996,126.5312'; run(); });
+</script>
+</body>
+</html>

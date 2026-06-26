@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>텍스트 통계·읽기 시간 분석기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="글의 문장 수·단어 수·문단 수와 평균 문장 길이, 예상 읽기 시간(낭독·묵독)을 분석합니다. 블로그·발표 원고 분량 가늠에. 업로드 없이 브라우저에서 실시간."/>
+<link rel="canonical" href="https://gemini2k.co.kr/textstats.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="텍스트 통계·읽기 시간 분석기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="문장·단어·문단 수, 평균 문장 길이, 예상 읽기 시간 분석. 블로그·발표 원고 분량 가늠. 실시간."/>
+<meta property="og:url" content="https://gemini2k.co.kr/textstats.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  textarea{width:100%;min-height:160px;padding:.8rem .9rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:inherit;font-size:1rem;line-height:1.7;color:var(--text);resize:vertical;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.7rem;margin-top:1.2rem;}
+  .stat{background:var(--ground);border:1px solid var(--border);border-radius:11px;padding:.8rem;text-align:center;}
+  .stat .v{font-size:1.7rem;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;}
+  .stat .l{font-size:.76rem;color:var(--muted);font-weight:600;margin-top:.2rem;}
+  .read{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1rem;}
+  .read .pill{background:var(--accent-soft);border:1px solid var(--border);border-radius:999px;padding:.4rem .9rem;font-size:.9rem;font-weight:700;color:var(--text);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "텍스트 통계·읽기 시간 분석기",
+  "description": "글의 문장·단어·문단 수와 평균 문장 길이, 예상 읽기 시간(낭독·묵독)을 분석합니다. 업로드 없이 브라우저에서 실시간.",
+  "url": "https://gemini2k.co.kr/textstats.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>텍스트 통계·읽기 시간</h1>
+  <p class="sub">문장·단어·문단 수와 평균 문장 길이, 예상 읽기 시간을 실시간으로 보여 줍니다. 글자 수 세기와 달리 ‘읽는 데 걸리는 시간’에 초점을 둡니다.</p>
+
+  <div class="card">
+    <textarea id="t" placeholder="여기에 글을 붙여 넣으면 자동으로 분석됩니다."></textarea>
+    <div class="grid" id="grid"></div>
+    <div class="read" id="read"></div>
+    <div class="note">문장은 마침표·물음표·느낌표(. ? ! 。)로, 문단은 빈 줄로 나눕니다. 읽기 시간은 낭독 약 300자/분, 묵독 약 500자/분(한국어 기준)으로 추정하며 글에 따라 달라집니다. 모든 분석은 브라우저에서 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function calc(){
+    var t=$('t').value;
+    var chars=t.length, noSpace=t.replace(/\s/g,'').length;
+    var words=(t.trim().match(/\S+/g)||[]).length;
+    var sentences=(t.match(/[^.!?。\n]+[.!?。]+|\S[^.!?。\n]*$/g)||[]).filter(function(s){return s.trim();}).length;
+    var paras=t.split(/\n\s*\n/).filter(function(p){return p.trim();}).length;
+    var avg = sentences? Math.round(words/sentences*10)/10 : 0;
+    $('grid').innerHTML=[['단어',words],['문장',sentences],['문단',paras],['글자',chars],['공백 제외',noSpace],['문장당 단어',avg]]
+      .map(function(s){return '<div class="stat"><div class="v">'+s[1].toLocaleString('ko-KR')+'</div><div class="l">'+s[0]+'</div></div>';}).join('');
+    function tm(cpm){ var sec=Math.round(noSpace/cpm*60); if(sec<60) return sec+'초'; var m=Math.floor(sec/60); return m+'분 '+(sec%60)+'초'; }
+    $('read').innerHTML='<span class="pill">🗣️ 낭독 약 '+tm(300)+'</span><span class="pill">👀 묵독 약 '+tm(500)+'</span>';
+  }
+  $('t').addEventListener('input', calc);
+  calc();
+</script>
+</body>
+</html>

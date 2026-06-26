@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>CSV 열 편집기 (선택·순서·이름변경) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="CSV에서 필요한 열만 고르고 순서를 바꾸고 이름을 바꿔 새 CSV를 만듭니다. 데이터 정리·재구성에. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/csvcols.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="CSV 열 편집기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="CSV 열 선택·순서변경·이름변경으로 새 CSV 생성. 데이터 재구성. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/csvcols.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="csvutil.js"></script>
+<style>
+  textarea{width:100%;min-height:100px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84rem;color:var(--text);resize:vertical;}
+  .collist{border:1px solid var(--border);border-radius:11px;overflow:hidden;margin:1rem 0;}
+  .crow{display:flex;align-items:center;gap:.6rem;padding:.5rem .8rem;border-top:1px solid var(--border);}
+  .crow:first-child{border-top:none;} .crow .inc{flex-shrink:0;}
+  .crow input[type=text]{flex:1;padding:.4rem .55rem;border:1px solid var(--border);border-radius:7px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .crow .ord button{border:1px solid var(--border);background:var(--surface);border-radius:6px;color:var(--text);cursor:pointer;width:28px;height:28px;}
+  .crow .orig{color:var(--muted);font-size:.78rem;min-width:5rem;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;}
+  .out{width:100%;min-height:100px;border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem .9rem;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84rem;color:var(--text);resize:vertical;margin-top:.8rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CSV 열 편집기",
+  "description": "CSV에서 필요한 열만 고르고 순서를 바꾸고 이름을 변경해 새 CSV를 만듭니다. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/csvcols.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1>CSV 열 편집기</h1>
+  <p class="sub">필요한 열만 고르고, 순서를 바꾸고, 이름을 바꿔 새 CSV를 만듭니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>CSV를 붙여 넣으면 열 목록이 나옵니다</li>
+    <li>체크로 포함할 열을 고르고, ▲▼로 순서를, 입력칸으로 이름을 바꿉니다</li>
+    <li>‘적용’ 후 결과를 복사하거나 내려받습니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <label for="input" style="font-weight:700;font-size:.85rem;">CSV 입력</label>
+    <textarea id="input" placeholder="id,name,age,city"></textarea>
+    <div class="collist hide" id="collist"></div>
+    <div class="actions"><button class="btn" id="run" type="button">적용</button><button class="btn btn-ghost" id="sample" type="button">샘플</button><button class="btn btn-ghost" id="copy" type="button">📋 복사</button><button class="btn btn-ghost" id="dl" type="button">⬇️ CSV</button></div>
+    <textarea id="out" class="out" readonly></textarea>
+    <div class="note">체크 해제한 열은 빠지고, 표시된 순서대로 출력됩니다. 이름을 비워 두면 원래 이름을 사용합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  function esc(s){ return String(s).replace(/"/g,'&quot;'); }
+  var parsed=null, order=[];
+
+  function build(){
+    var t=$('input').value.trim(); if(!t){ $('collist').classList.add('hide'); return; }
+    parsed=CSV.parse(t,{header:true,delimiter:'auto'}); order=parsed.header.map(function(_,i){return i;});
+    render();
+  }
+  function render(){
+    $('collist').classList.remove('hide');
+    $('collist').innerHTML=order.map(function(ci,pos){ var h=parsed.header[ci];
+      return '<div class="crow" data-pos="'+pos+'"><input type="checkbox" class="inc" checked data-ci="'+ci+'"/>'
+        +'<span class="orig">'+esc(h)+'</span>'
+        +'<input type="text" class="nm" data-ci="'+ci+'" placeholder="'+esc(h)+'"/>'
+        +'<span class="ord"><button class="up" type="button">▲</button> <button class="dn" type="button">▼</button></span></div>';
+    }).join('');
+  }
+  function curNames(){ var m={}; $('collist').querySelectorAll('.nm').forEach(function(el){ m[el.dataset.ci]=el.value; }); return m; }
+  function curInc(){ var m={}; $('collist').querySelectorAll('.inc').forEach(function(el){ m[el.dataset.ci]=el.checked; }); return m; }
+  var lastMatrix=null;
+  function run(){
+    if(!parsed) build(); if(!parsed) return;
+    var names=curNames(), inc=curInc();
+    var cols=order.filter(function(ci){ return inc[ci]!==false; });
+    var header=cols.map(function(ci){ return names[ci]||parsed.header[ci]; });
+    var rows=parsed.rows.map(function(r){ return cols.map(function(ci){ return r[ci]==null?'':r[ci]; }); });
+    lastMatrix=[header].concat(rows);
+    $('out').value=CSV.toText(lastMatrix,{delimiter:','});
+  }
+  $('collist').addEventListener('click', function(e){
+    var b=e.target.closest('button'); if(!b) return; var row=b.closest('.crow'); var pos=+row.dataset.pos;
+    if(b.classList.contains('up')&&pos>0){ var t=order[pos];order[pos]=order[pos-1];order[pos-1]=t; render(); }
+    if(b.classList.contains('dn')&&pos<order.length-1){ var t2=order[pos];order[pos]=order[pos+1];order[pos+1]=t2; render(); }
+  });
+  $('input').addEventListener('input', build);
+  $('run').addEventListener('click', run);
+  $('copy').addEventListener('click', function(){ if($('out').value) navigator.clipboard.writeText($('out').value).then(function(){toast('복사됐습니다');}); });
+  $('dl').addEventListener('click', function(){ if(!$('out').value)return; var blob=new Blob(['﻿'+$('out').value],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='columns.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove();},100); });
+  $('sample').addEventListener('click', function(){ $('input').value='id,name,age,city\n1,홍길동,32,서울\n2,김영희,28,부산'; build(); run(); });
+  build();
+</script>
+</body>
+</html>

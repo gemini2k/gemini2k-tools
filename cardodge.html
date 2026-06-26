@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>자동차 회피 게임 (Car Dodge·레이싱) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="브라우저에서 바로 즐기는 자동차 회피 레이싱 게임. 좌우로 차선을 옮겨 마주 오는 차를 피하세요. 갈수록 빨라지는 속도에서 얼마나 멀리 갈 수 있을까요? 버튼·방향키·터치로 간단 조작. 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/cardodge.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="자동차 회피 게임 (Car Dodge) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="좌우로 차선을 옮겨 마주 오는 차를 피하는 레이싱 게임. 버튼·방향키·터치 조작. 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/cardodge.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:72px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);}
+  .stage{position:relative;width:100%;max-width:360px;margin:0 auto;}
+  canvas{width:100%;height:auto;display:block;border-radius:12px;background:#26303a;touch-action:none;cursor:pointer;}
+  .overlay{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;background:rgba(8,12,18,.6);border-radius:12px;cursor:pointer;}
+  .overlay.hide{display:none;} .overlay .big{font-size:1.3rem;font-weight:800;margin-bottom:.3rem;} .overlay .sm{font-size:.9rem;opacity:.85;}
+  .dpad{display:flex;gap:1rem;justify-content:center;margin-top:1.1rem;}
+  .dpad button{width:84px;height:56px;border:1px solid var(--border);background:var(--surface);border-radius:14px;font-size:1.5rem;color:var(--text);cursor:pointer;}
+  .dpad button:active{background:var(--accent-soft);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "자동차 회피 게임",
+  "description": "좌우로 차선을 옮겨 마주 오는 차를 피하는 레이싱 게임. 버튼·방향키·터치 조작.",
+  "url": "https://gemini2k.co.kr/cardodge.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Racing",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:420px;">
+  <h1>자동차 회피</h1>
+  <p class="sub">좌우로 차선을 옮겨 마주 오는 차를 피하세요. 갈수록 빨라집니다!</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li>아래 ◀ ▶ 버튼 또는 방향키(←→)로 차를 옮깁니다</li>
+    <li>모바일은 화면 좌/우를 탭하거나 좌우로 스와이프합니다</li>
+    <li>화면을 클릭·터치하면 시작합니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <button class="btn" id="restart" type="button">다시 시작</button>
+      <div class="scores">
+        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div>
+      </div>
+    </div>
+    <div class="stage">
+      <canvas id="cv" width="360" height="540" aria-label="자동차 회피"></canvas>
+      <div class="overlay" id="ov"><div><div class="big">자동차 회피</div><div class="sm">클릭하면 시작합니다</div></div></div>
+    </div>
+    <div class="dpad">
+      <button id="left" aria-label="왼쪽">◀</button>
+      <button id="right" aria-label="오른쪽">▶</button>
+    </div>
+    <div class="note">모든 진행은 브라우저에서만 이루어지며 최고 점수만 이 기기에 저장됩니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var cv=$('cv'), x=cv.getContext('2d'), W=360, H=540, LANES=3, LW=W/LANES, CARW=46, CARH=78;
+  var lane, cars, score, best=+(localStorage.getItem('cardodge:best')||0), state='ready', last=0, spawnT=0, speed, dash=0, raf=null;
+  $('best').textContent=best;
+  function laneX(l){ return l*LW + LW/2; }
+  function reset(){ lane=1; cars=[]; score=0; speed=0.22; spawnT=0; dash=0; $('score').textContent=0; state='ready'; showOv('자동차 회피','클릭하면 시작합니다'); draw(); }
+  function showOv(b,s){ $('ov').querySelector('.big').textContent=b; $('ov').querySelector('.sm').textContent=s; $('ov').classList.remove('hide'); }
+  function start(){ if(state==='play') return; if(state==='over') reset(); state='play'; $('ov').classList.add('hide'); last=performance.now(); if(!raf) raf=requestAnimationFrame(loop); }
+  function move(d){ if(state!=='play'){ start(); return; } lane=Math.max(0,Math.min(LANES-1,lane+d)); }
+
+  function loop(t){ var dt=Math.min(40,t-last); last=t;
+    if(state==='play'){
+      dash=(dash+speed*dt)%40; score+=dt*0.02; $('score').textContent=Math.floor(score);
+      speed+=dt*0.00002;
+      spawnT+=dt; if(spawnT> Math.max(620, 1100-score*1.2)){ spawnT=0; var l=Math.floor(Math.random()*LANES); cars.push({l:l,y:-CARH,col:['#f87171','#fbbf24','#34d399','#a78bfa'][Math.floor(Math.random()*4)]}); }
+      cars.forEach(function(c){ c.y+=speed*dt; });
+      cars=cars.filter(function(c){return c.y<H+CARH;});
+      // 충돌
+      var py=H-CARH-14;
+      for(var i=0;i<cars.length;i++){ var c=cars[i]; if(c.l===lane && c.y+CARH>py && c.y<py+CARH){ state='over';
+        if(Math.floor(score)>best){ best=Math.floor(score); localStorage.setItem('cardodge:best',best); $('best').textContent=best; }
+        showOv('💥 충돌!','점수 '+Math.floor(score)+' · 클릭하면 다시'); break; } }
+    }
+    draw(); raf=requestAnimationFrame(loop);
+  }
+  function carShape(cx,cy,col){ x.fillStyle=col; rr(cx-CARW/2,cy,CARW,CARH,9);
+    x.fillStyle='rgba(0,0,0,.35)'; rr(cx-CARW/2+7,cy+10,CARW-14,20,5); rr(cx-CARW/2+7,cy+CARH-30,CARW-14,18,5); }
+  function rr(px,py,w,h,rad){ x.beginPath(); x.roundRect?x.roundRect(px,py,w,h,rad):x.rect(px,py,w,h); x.fill(); }
+  function draw(){
+    x.fillStyle='#26303a'; x.fillRect(0,0,W,H);
+    // 차선 점선
+    x.strokeStyle='rgba(255,255,255,.5)'; x.lineWidth=4; x.setLineDash([22,18]); x.lineDashOffset=-dash;
+    for(var l=1;l<LANES;l++){ x.beginPath(); x.moveTo(l*LW,0); x.lineTo(l*LW,H); x.stroke(); } x.setLineDash([]);
+    // 상대 차
+    cars.forEach(function(c){ carShape(laneX(c.l), c.y, c.col); });
+    // 내 차
+    carShape(laneX(lane), H-CARH-14, '#38bdf8');
+  }
+  $('left').addEventListener('click', function(){ move(-1); });
+  $('right').addEventListener('click', function(){ move(1); });
+  document.addEventListener('keydown', function(e){ if(e.key==='ArrowLeft'){e.preventDefault();move(-1);} if(e.key==='ArrowRight'){e.preventDefault();move(1);} });
+  function tap(){ if(state!=='play') start(); }
+  $('ov').addEventListener('click', tap);
+  cv.addEventListener('click', function(e){ if(state!=='play'){ start(); return; } var rect=cv.getBoundingClientRect(); move((e.clientX-rect.left)/rect.width<0.5?-1:1); });
+  var sx;
+  cv.addEventListener('touchstart',function(e){ sx=e.touches[0].clientX; },{passive:true});
+  cv.addEventListener('touchend',function(e){ if(sx==null)return; var dx=e.changedTouches[0].clientX-sx; if(state!=='play'){ start(); sx=null; return; } if(Math.abs(dx)>20) move(dx>0?1:-1); else { var rect=cv.getBoundingClientRect(); move((e.changedTouches[0].clientX-rect.left)/rect.width<0.5?-1:1); } sx=null; },{passive:true});
+  $('restart').addEventListener('click', function(){ reset(); });
+  reset(); raf=requestAnimationFrame(loop);
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>두더지 잡기 게임 (Whack-a-Mole) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="브라우저에서 바로 즐기는 두더지 잡기 게임. 30초 동안 튀어나오는 두더지를 빠르게 터치·클릭해 점수를 올리세요. 반응 속도 테스트에 좋은 간단 게임. PC·모바일 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/whack.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="두더지 잡기 게임 (Whack-a-Mole) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="30초 동안 튀어나오는 두더지를 클릭·터치해 점수를 올리는 반응속도 게임. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/whack.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:64px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;}
+  .holes{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;max-width:420px;margin:0 auto;}
+  .hole{aspect-ratio:1/1;border-radius:50%;background:radial-gradient(ellipse at 50% 35%, #6b4a2b, #3f2a17);
+    position:relative;overflow:hidden;cursor:pointer;box-shadow:inset 0 -8px 14px rgba(0,0,0,.4);}
+  .mole{position:absolute;left:0;right:0;bottom:-100%;height:100%;display:grid;place-items:center;font-size:2.6rem;
+    transition:bottom .12s ease;}
+  .hole.up .mole{bottom:0;}
+  .hole.bonk .mole{transform:scale(.7) rotate(-12deg);}
+  .msg{text-align:center;margin-top:1rem;font-weight:800;font-size:1.1rem;min-height:1.4em;color:var(--accent);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "두더지 잡기 (Whack-a-Mole)",
+  "description": "30초 동안 튀어나오는 두더지를 클릭·터치해 점수를 올리는 반응속도 게임.",
+  "url": "https://gemini2k.co.kr/whack.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Action",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:480px;">
+  <h1>두더지 잡기</h1>
+  <p class="sub">30초 동안 튀어나오는 두더지를 빠르게 잡으세요!</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li>‘시작’을 누르면 두더지가 무작위로 튀어나옵니다</li>
+    <li>두더지를 클릭(터치)하면 점수가 오릅니다</li>
+    <li>30초 안에 최대한 많이 잡으세요</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <button class="btn" id="start" type="button">시작</button>
+      <div class="scores">
+        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l">남은 시간</div><div class="v" id="time">30</div></div>
+        <div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div>
+      </div>
+    </div>
+    <div class="holes" id="holes"></div>
+    <div class="msg" id="msg"></div>
+    <div class="note">모든 진행은 브라우저에서만 이루어지며 최고 점수만 이 기기에 저장됩니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var holes=$('holes'), score, time, best=+(localStorage.getItem('whack:best')||0), playing=false, spawnT=null, tickT=null, hideTimers=[];
+  $('best').textContent=best;
+  var MOLES=['🦫','🐹','🐰','🦔'];
+  for(var i=0;i<9;i++){ var h=document.createElement('div'); h.className='hole'; h.dataset.i=i; h.innerHTML='<div class="mole">🦫</div>'; holes.appendChild(h); }
+  var cells=[].slice.call(holes.children);
+
+  function clearAll(){ cells.forEach(function(c){ c.classList.remove('up','bonk'); }); hideTimers.forEach(clearTimeout); hideTimers=[]; }
+  function start(){
+    if(playing) return; playing=true; score=0; time=30; $('score').textContent=0; $('time').textContent=30; $('msg').textContent=''; clearAll();
+    tickT=setInterval(function(){ time--; $('time').textContent=time; if(time<=0) end(); },1000);
+    spawn();
+  }
+  function spawn(){
+    if(!playing) return;
+    var free=cells.filter(function(c){return !c.classList.contains('up');});
+    if(free.length){ var c=free[Math.floor(Math.random()*free.length)];
+      c.querySelector('.mole').textContent=MOLES[Math.floor(Math.random()*MOLES.length)];
+      c.classList.add('up','live');
+      var t=setTimeout(function(){ c.classList.remove('up','live'); }, 700+Math.random()*600);
+      hideTimers.push(t);
+    }
+    spawnT=setTimeout(spawn, 500+Math.random()*450);
+  }
+  function end(){ playing=false; clearInterval(tickT); clearTimeout(spawnT); clearAll();
+    if(score>best){ best=score; localStorage.setItem('whack:best',best); $('best').textContent=best; }
+    $('msg').textContent='⏰ 종료! 점수 '+score; }
+
+  holes.addEventListener('click', function(e){ var c=e.target.closest('.hole'); if(!c||!playing) return;
+    if(c.classList.contains('up')){ score++; $('score').textContent=score; c.classList.add('bonk'); var cc=c;
+      setTimeout(function(){ cc.classList.remove('up','bonk','live'); },90); }
+  });
+  $('start').addEventListener('click', start);
+</script>
+</body>
+</html>

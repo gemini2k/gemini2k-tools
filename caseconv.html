@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>표기(케이스) 변환기 — camelCase·snake_case — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="문장이나 식별자를 camelCase·PascalCase·snake_case·kebab-case·CONSTANT_CASE·Title Case 등으로 한 번에 변환합니다. 변수명·DB 컬럼·URL 슬러그 작업에. 브라우저에서 즉시, 각 결과 복사."/>
+<link rel="canonical" href="https://gemini2k.co.kr/caseconv.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="표기(케이스) 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="camelCase·snake_case·kebab-case·PascalCase·CONSTANT 등으로 한 번에 변환. 변수명·컬럼·슬러그용."/>
+<meta property="og:url" content="https://gemini2k.co.kr/caseconv.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  input.src{width:100%;padding:.75rem .85rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:inherit;font-size:1.1rem;color:var(--text);margin-bottom:1rem;}
+  .reslist{border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  .rrow{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem .9rem;border-top:1px solid var(--border);}
+  .rrow:first-child{border-top:none;}
+  .rrow .k{color:var(--muted);font-size:.8rem;font-weight:700;width:8rem;flex-shrink:0;}
+  .rrow .v{flex:1;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.98rem;color:var(--text);word-break:break-all;}
+  .rrow .cp{cursor:pointer;color:var(--teal,#1aa3e0);font-size:.74rem;background:none;border:none;flex-shrink:0;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "표기(케이스) 변환기",
+  "description": "문장·식별자를 camelCase·PascalCase·snake_case·kebab-case·CONSTANT_CASE·Title Case 등으로 변환합니다. 변수명·DB 컬럼·URL 슬러그 작업용.",
+  "url": "https://gemini2k.co.kr/caseconv.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>표기(케이스) 변환기</h1>
+  <p class="sub">문장이나 식별자를 입력하면 camelCase·snake_case·kebab-case 등 모든 표기로 한 번에 바꿔 줍니다. 변수명·DB 컬럼·URL 슬러그 만들 때 쓰세요.</p>
+
+  <div class="card">
+    <input id="src" class="src" type="text" value="빛의여행 gemini2k tool name" autocomplete="off" aria-label="입력"/>
+    <div class="reslist" id="out"></div>
+    <div class="note">단어는 공백·하이픈·밑줄, 그리고 대소문자 경계(camelCase)로 구분해 인식합니다. 한글 등 대소문자가 없는 문자는 그대로 이어 붙입니다. 모든 변환은 브라우저에서 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+
+  function tokens(s){
+    // camelCase 경계 분리 + 구분자 분리
+    s=s.replace(/([a-z0-9])([A-Z])/g,'$1 $2').replace(/([A-Z]+)([A-Z][a-z])/g,'$1 $2');
+    return s.split(/[\s_\-./]+/).filter(Boolean);
+  }
+  function up(w){ return w.charAt(0).toUpperCase()+w.slice(1); }
+  var FORMS=[
+    ['camelCase', function(t){ return t.map(function(w,i){ return i===0? w.toLowerCase() : up(w.toLowerCase()); }).join(''); }],
+    ['PascalCase', function(t){ return t.map(function(w){ return up(w.toLowerCase()); }).join(''); }],
+    ['snake_case', function(t){ return t.map(function(w){return w.toLowerCase();}).join('_'); }],
+    ['kebab-case', function(t){ return t.map(function(w){return w.toLowerCase();}).join('-'); }],
+    ['CONSTANT_CASE', function(t){ return t.map(function(w){return w.toUpperCase();}).join('_'); }],
+    ['Title Case', function(t){ return t.map(function(w){ return up(w.toLowerCase()); }).join(' '); }],
+    ['Sentence case', function(t){ var j=t.map(function(w){return w.toLowerCase();}).join(' '); return j? up(j):''; }],
+    ['lowercase', function(t){ return t.join(' ').toLowerCase(); }],
+    ['UPPERCASE', function(t){ return t.join(' ').toUpperCase(); }],
+    ['dot.case', function(t){ return t.map(function(w){return w.toLowerCase();}).join('.'); }],
+    ['path/case', function(t){ return t.map(function(w){return w.toLowerCase();}).join('/'); }]
+  ];
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]);}); }
+
+  function render(){
+    var t=tokens($('src').value);
+    $('out').innerHTML = FORMS.map(function(f){ var v=f[1](t);
+      return '<div class="rrow"><span class="k">'+f[0]+'</span><span class="v">'+(esc(v)||'—')+'</span><button class="cp" data-v="'+esc(v)+'">복사</button></div>';
+    }).join('');
+  }
+  $('src').addEventListener('input', render);
+  $('out').addEventListener('click', function(e){ var b=e.target.closest('.cp'); if(!b) return;
+    navigator.clipboard.writeText(b.dataset.v).then(function(){ toast('복사됐습니다'); }); });
+  render();
+</script>
+</body>
+</html>

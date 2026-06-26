@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>CSV 정제기 (정리·중복 제거) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="지저분한 CSV를 깔끔하게 정리합니다. 셀 앞뒤 공백 제거, 중복 행·빈 행 제거, 헤더 이름 정규화, 빈 값 채우기, 구분자(쉼표·세미콜론·탭) 변환을 한 번에. 구분자 자동 감지, 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/csvclean.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="CSV 정제기 (정리·중복 제거) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="공백·중복행·빈행 제거, 헤더 정규화, 빈값 채우기, 구분자 변환을 한 번에. 자동 감지, 업로드 없이 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/csvclean.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="csvutil.js"></script>
+<style>
+  .drop{border:2px dashed var(--border);border-radius:13px;padding:1.5rem 1rem;text-align:center;color:var(--muted);cursor:pointer;transition:.15s;margin-bottom:1rem;}
+  .drop:hover,.drop.over{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+  textarea{width:100%;min-height:120px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;color:var(--text);resize:vertical;}
+  .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.6rem;margin:1rem 0;}
+  .opt{display:flex;align-items:center;gap:.5rem;background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.55rem .7rem;font-size:.9rem;font-weight:600;color:var(--text);}
+  .row2{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-bottom:1rem;font-size:.9rem;color:var(--text);}
+  .row2 label{display:inline-flex;align-items:center;gap:.4rem;margin:0;font-weight:600;}
+  .row2 input[type=text]{width:120px;padding:.4rem .55rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .row2 select{padding:.4rem .55rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:.4rem;}
+  .stat{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0;}
+  .pill{background:var(--accent-soft);border:1px solid var(--border);border-radius:999px;padding:.35rem .8rem;font-size:.85rem;font-weight:700;color:var(--text);}
+  .arrow{text-align:center;color:var(--muted);font-size:1.2rem;margin:.3rem 0;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CSV 정제기 (정리·중복 제거)",
+  "description": "지저분한 CSV를 정리합니다. 셀 공백 제거, 중복·빈 행 제거, 헤더 정규화, 빈 값 채우기, 구분자 변환을 한 번에. 구분자 자동 감지, 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/csvclean.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:900px;">
+  <h1>CSV 정제기</h1>
+  <p class="sub">지저분한 CSV를 깔끔하게. 공백·중복 행·빈 행을 정리하고 헤더 이름을 정규화하며 구분자까지 바꿉니다. 구분자는 자동으로 감지합니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol><li>CSV를 붙여넣거나 파일을 올립니다</li><li>적용할 정리 옵션(공백·중복·빈행·헤더)을 고릅니다</li><li>‘정제’를 누르고 결과를 복사하거나 CSV로 내려받습니다</li></ol></div></div>
+
+  <div class="card">
+    <div class="drop" id="drop">📄 <strong>CSV 파일을 끌어다 놓거나 클릭</strong> (또는 아래에 붙여넣기)</div>
+    <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain" class="hide"/>
+    <textarea id="input" placeholder=" 이름 , 나이 ,도시&#10;홍길동,32,서울&#10;홍길동,32,서울&#10;,,"></textarea>
+
+    <div class="opts">
+      <label class="opt"><input type="checkbox" id="trim" checked/> 셀 앞뒤 공백 제거</label>
+      <label class="opt"><input type="checkbox" id="dedup" checked/> 중복 행 제거</label>
+      <label class="opt"><input type="checkbox" id="dropEmpty" checked/> 빈 행 제거</label>
+      <label class="opt"><input type="checkbox" id="normHeader"/> 헤더 정규화(소문자·_)</label>
+    </div>
+    <div class="row2">
+      <label><input type="checkbox" id="hasHeader" checked/> 첫 행을 헤더로</label>
+      <label><input type="checkbox" id="fillOn"/> 빈 값 채우기: <input type="text" id="fillVal" placeholder="예: N/A" disabled/></label>
+      <label>출력 구분자 <select id="outDelim"><option value=",">쉼표 ,</option><option value=";">세미콜론 ;</option><option value="\t">탭</option></select></label>
+    </div>
+    <div class="actions">
+      <button class="btn" id="run" type="button">정제</button>
+      <button class="btn btn-ghost" id="sample" type="button">샘플</button>
+      <button class="btn btn-ghost" id="copy" type="button" disabled>📋 복사</button>
+      <button class="btn btn-ghost" id="dl" type="button" disabled>⬇️ CSV 내려받기</button>
+    </div>
+
+    <div id="result" class="hide">
+      <div class="stat" id="stat"></div>
+      <div class="arrow">↓</div>
+      <textarea id="output" readonly></textarea>
+    </div>
+    <div class="note">
+      중복 행은 모든 열 값이 같은 행을 처음 1건만 남기고 제거합니다. 헤더 정규화는 공백을 <code>_</code>로 바꾸고 소문자화하며 중복 이름에 번호를 붙입니다(<code>name</code>, <code>name_2</code>). 빈 값 채우기는 비어 있는 셀을 지정 값으로 대체합니다. 모든 처리는 브라우저에서만 이루어집니다.
+    </div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+
+  function normHeaderNames(header){
+    var seen={}, out=[];
+    header.forEach(function(h){
+      var k=String(h).trim().toLowerCase().replace(/\s+/g,'_').replace(/[^0-9a-z_가-힣]/g,'');
+      if(!k) k='col';
+      if(seen[k]){ seen[k]++; k=k+'_'+seen[k]; } else seen[k]=1;
+      out.push(k);
+    });
+    return out;
+  }
+
+  function clean(){
+    var text=$('input').value;
+    if(!text.trim()){ toast('CSV 데이터를 입력하세요'); return; }
+    var hasHeader=$('hasHeader').checked;
+    var parsed=CSV.parse(text, {header:hasHeader, delimiter:'auto'});
+    var header=parsed.header.slice(), rows=parsed.rows.map(function(r){return r.slice();});
+    var n0=rows.length, removedEmpty=0, removedDup=0;
+
+    var doTrim=$('trim').checked, doFill=$('fillOn').checked, fillVal=$('fillVal').value;
+    if(doTrim){
+      header=header.map(function(c){return String(c).trim();});
+      rows=rows.map(function(r){return r.map(function(c){return String(c).trim();});});
+    }
+    if($('dropEmpty').checked){
+      rows=rows.filter(function(r){ var empty=r.every(function(c){return String(c).trim()==='';}); if(empty) removedEmpty++; return !empty; });
+    }
+    if(doFill){
+      rows=rows.map(function(r){return r.map(function(c){return String(c).trim()===''?fillVal:c;});});
+    }
+    if($('dedup').checked){
+      var seen={}, kept=[];
+      rows.forEach(function(r){ var key=JSON.stringify(r); if(seen[key]){removedDup++;} else {seen[key]=1;kept.push(r);} });
+      rows=kept;
+    }
+    if(hasHeader && $('normHeader').checked) header=normHeaderNames(header);
+
+    var matrix = hasHeader ? [header].concat(rows) : rows;
+    var outDelim=$('outDelim').value==='\\t' ? '\t' : $('outDelim').value;
+    var out=CSV.toText(matrix, {delimiter:outDelim});
+    $('output').value=out;
+    $('stat').innerHTML =
+      '<span class="pill">원본 행 '+n0+'</span>' +
+      '<span class="pill">결과 행 '+rows.length+'</span>' +
+      '<span class="pill">중복 제거 '+removedDup+'</span>' +
+      '<span class="pill">빈 행 제거 '+removedEmpty+'</span>';
+    $('result').classList.remove('hide'); $('copy').disabled=false; $('dl').disabled=false;
+  }
+  function readFile(f){ var rd=new FileReader(); rd.onload=function(){ $('input').value=rd.result; clean(); }; rd.readAsText(f); }
+
+  $('fillOn').addEventListener('change', function(){ $('fillVal').disabled=!this.checked; });
+  $('run').addEventListener('click', clean);
+  $('file').addEventListener('change', function(e){ if(e.target.files[0]) readFile(e.target.files[0]); });
+  $('drop').addEventListener('click', function(){ $('file').click(); });
+  ['dragover','dragenter'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.add('over');}); });
+  ['dragleave','drop'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.remove('over');}); });
+  $('drop').addEventListener('drop', function(e){ if(e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]); });
+  $('sample').addEventListener('click', function(){
+    $('input').value=' 이름 , 나이 , 도시 \n 홍길동 ,32, 서울 \n홍길동,32,서울\n김영희,,부산\n,,\n이철수,45,대구';
+    clean();
+  });
+  $('copy').addEventListener('click', function(){ if(!$('output').value) return; navigator.clipboard.writeText($('output').value).then(function(){ toast('복사됐습니다'); }); });
+  $('dl').addEventListener('click', function(){
+    if(!$('output').value) return;
+    var blob=new Blob(['﻿'+$('output').value],{type:'text/csv;charset=utf-8'}), url=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=url; a.download='cleaned.csv'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(url);a.remove();},100);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>Cron 표현식 해석기 (다음 실행 시각) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="crontab 표현식을 사람이 읽을 수 있는 설명으로 풀이하고, 앞으로 실행될 시각을 미리 보여 줍니다. 5필드(분 시 일 월 요일) 지원, */단계·범위·목록 인식. 서버 작업 스케줄 확인에. 브라우저에서만."/>
+<link rel="canonical" href="https://gemini2k.co.kr/cron.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="Cron 표현식 해석기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="crontab 표현식을 설명으로 풀이 + 다음 실행 시각 미리보기. 5필드·단계·범위·목록 지원."/>
+<meta property="og:url" content="https://gemini2k.co.kr/cron.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .cronin{width:100%;padding:.8rem .9rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.4rem;font-weight:700;text-align:center;color:var(--text);letter-spacing:.05em;}
+  .cronin.bad{border-color:#ef4444;}
+  .desc{text-align:center;font-size:1.15rem;font-weight:700;color:var(--accent);margin:1.1rem 0;min-height:1.5em;}
+  .presets{display:flex;flex-wrap:wrap;gap:.45rem;justify-content:center;margin-bottom:.4rem;}
+  .presets button{padding:.3rem .7rem;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--muted);font-family:ui-monospace,monospace;font-size:.8rem;cursor:pointer;}
+  .next{border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-top:1rem;}
+  .nrow{padding:.55rem .9rem;border-top:1px solid var(--border);font-variant-numeric:tabular-nums;} .nrow:first-child{border-top:none;}
+  .err{color:#b91c1c;font-size:.85rem;text-align:center;min-height:1.1em;} :root[data-theme="dark"] .err{color:#fca5a5;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Cron 표현식 해석기",
+  "description": "crontab 표현식을 사람이 읽을 수 있는 설명으로 풀이하고 다음 실행 시각을 보여 줍니다. 5필드·단계·범위·목록 지원.",
+  "url": "https://gemini2k.co.kr/cron.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>Cron 표현식 해석기</h1>
+  <p class="sub">crontab 표현식이 무슨 뜻인지 풀어 주고, 앞으로 언제 실행될지 미리 보여 줍니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>cron 표현식을 입력합니다(분 시 일 월 요일, 5칸)</li>
+    <li>아래에 한국어 설명과 다음 실행 시각이 표시됩니다</li>
+    <li>예시 버튼을 눌러 빠르게 확인할 수도 있습니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <input id="cron" class="cronin" value="0 9 * * 1-5" autocomplete="off" spellcheck="false"/>
+    <div class="presets">
+      <button data-c="* * * * *">매분</button><button data-c="0 * * * *">매시 정각</button>
+      <button data-c="0 9 * * *">매일 9시</button><button data-c="0 9 * * 1-5">평일 9시</button>
+      <button data-c="*/15 * * * *">15분마다</button><button data-c="0 0 1 * *">매월 1일</button>
+    </div>
+    <div class="err" id="err"></div>
+    <div class="desc" id="desc"></div>
+    <div style="font-size:.82rem;color:var(--muted);font-weight:700;">다음 실행 시각</div>
+    <div class="next" id="next"></div>
+    <div class="note">5필드(분 시 일 월 요일)를 지원합니다. <code>*</code>(전체), <code>*/n</code>(n단계), <code>a-b</code>(범위), <code>a,b</code>(목록)를 인식합니다. 요일은 0=일요일입니다. 다음 실행 시각은 이 기기의 현지 시간 기준으로 계산합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var WD=['일','월','화','수','목','금','토'], MON=['','1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  function parseField(f, min, max){
+    var out={};
+    f.split(',').forEach(function(part){
+      var step=1, range=part;
+      var sl=part.split('/'); if(sl.length===2){ step=parseInt(sl[1]); range=sl[0]; }
+      var lo,hi;
+      if(range==='*'){ lo=min; hi=max; }
+      else if(range.indexOf('-')>=0){ var r=range.split('-'); lo=parseInt(r[0]); hi=parseInt(r[1]); }
+      else { lo=hi=parseInt(range); }
+      if(isNaN(lo)||isNaN(hi)||isNaN(step)||step<1||lo<min||hi>max||lo>hi) throw new Error('범위 오류');
+      for(var v=lo;v<=hi;v+=step) out[v]=1;
+    });
+    return Object.keys(out).map(Number).sort(function(a,b){return a-b;});
+  }
+  function parseCron(s){
+    var f=s.trim().split(/\s+/); if(f.length!==5) throw new Error('5칸(분 시 일 월 요일)이 필요합니다');
+    return { min:parseField(f[0],0,59), hour:parseField(f[1],0,23), dom:parseField(f[2],1,31), mon:parseField(f[3],1,12), dow:parseField(f[4],0,6),
+             domStar:f[2]==='*', dowStar:f[4]==='*' };
+  }
+  function listDesc(arr,total,fmt){ if(arr.length===total) return null; return arr.map(fmt).join(', '); }
+  function describe(c, raw){
+    var f=raw.trim().split(/\s+/);
+    var parts=[];
+    // 월
+    var md=listDesc(c.mon,12,function(m){return MON[m];}); if(md) parts.push(md);
+    // 일/요일
+    var dd=c.domStar?null:c.dom.join(', ')+'일';
+    var wd=c.dowStar?null:c.dow.map(function(d){return WD[d]+'요일';}).join(', ');
+    if(dd&&wd) parts.push(dd+' 또는 '+wd); else if(dd) parts.push(dd); else if(wd) parts.push(wd);
+    else parts.push('매일');
+    // 시:분
+    var hourStar=f[1]==='*', minStar=f[0]==='*';
+    if(minStar && hourStar) parts.push('매분');
+    else if(hourStar){ parts.push('매시 '+c.min.join(',')+'분'); }
+    else if(minStar){ parts.push(c.hour.join(',')+'시 매분'); }
+    else { var times=[]; c.hour.forEach(function(h){ c.min.forEach(function(m){ times.push(h+':'+String(m).padStart(2,'0')); }); }); parts.push(times.slice(0,8).join(', ')+(times.length>8?' 등':'')); }
+    return parts.join(' · ');
+  }
+  function nextRuns(c, n){
+    var res=[], d=new Date(); d.setSeconds(0,0); d.setMinutes(d.getMinutes()+1);
+    for(var i=0;i<535680 && res.length<n;i++){   // 최대 약 1년
+      var mo=d.getMonth()+1;
+      var domOk=c.dom.indexOf(d.getDate())>=0, dowOk=c.dow.indexOf(d.getDay())>=0;
+      var dayOk = (c.domStar && c.dowStar) ? true : (c.domStar ? dowOk : (c.dowStar ? domOk : (domOk||dowOk)));
+      if(c.min.indexOf(d.getMinutes())>=0 && c.hour.indexOf(d.getHours())>=0 && c.mon.indexOf(mo)>=0 && dayOk) res.push(new Date(d));
+      d.setMinutes(d.getMinutes()+1);
+    }
+    return res;
+  }
+  function fmtD(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' ('+WD[d.getDay()]+') '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+  function run(){
+    $('err').textContent=''; var el=$('cron'); el.classList.remove('bad');
+    try{ var c=parseCron(el.value);
+      $('desc').textContent=describe(c, el.value);
+      var runs=nextRuns(c,5);
+      $('next').innerHTML = runs.length? runs.map(function(d){return '<div class="nrow">'+fmtD(d)+'</div>';}).join('') : '<div class="nrow">향후 1년 내 실행 없음</div>';
+    }catch(e){ el.classList.add('bad'); $('err').textContent=e.message; $('desc').textContent=''; $('next').innerHTML=''; }
+  }
+  $('cron').addEventListener('input', run);
+  document.querySelector('.presets').addEventListener('click', function(e){ var b=e.target.closest('button'); if(b){ $('cron').value=b.dataset.c; run(); } });
+  run();
+</script>
+</body>
+</html>

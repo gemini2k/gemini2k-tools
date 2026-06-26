@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>CSV 뷰어·필터 (대용량 표 보기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="큰 CSV를 표로 보기 좋게 보여 주고, 검색 필터와 열 선택, 페이지 단위 보기를 제공합니다. 브라우저가 버거워하는 데이터도 가볍게 탐색. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/csvviewer.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="CSV 뷰어·필터 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="큰 CSV를 표로 보기·검색 필터·열 선택·페이지 단위 탐색. 업로드 없이 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/csvviewer.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="csvutil.js"></script>
+<style>
+  .drop{border:2px dashed var(--border);border-radius:13px;padding:1.3rem 1rem;text-align:center;color:var(--muted);cursor:pointer;margin-bottom:1rem;}
+  .drop:hover,.drop.over{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+  textarea{width:100%;min-height:90px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84rem;color:var(--text);resize:vertical;}
+  .bar{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin:1rem 0;}
+  .bar input[type=text]{flex:1;min-width:160px;padding:.55rem .7rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .cols{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem;}
+  .cols label{font-size:.8rem;font-weight:600;display:inline-flex;gap:.3rem;align-items:center;background:var(--ground);border:1px solid var(--border);border-radius:8px;padding:.25rem .55rem;margin:0;}
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:12px;}
+  table{border-collapse:collapse;width:100%;font-size:.84rem;} th,td{border-bottom:1px solid var(--border);padding:.4rem .65rem;text-align:left;white-space:nowrap;} th{background:var(--ground);position:sticky;top:0;font-size:.72rem;text-transform:uppercase;color:var(--muted);}
+  .pager{display:flex;gap:.6rem;align-items:center;justify-content:center;margin-top:.9rem;color:var(--muted);font-size:.9rem;}
+  .pager button{padding:.4rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer;}
+  .pager button:disabled{opacity:.4;cursor:default;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CSV 뷰어·필터",
+  "description": "큰 CSV를 표로 보기 좋게 보여 주고 검색 필터·열 선택·페이지 단위 보기를 제공합니다. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/csvviewer.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:920px;">
+  <h1>CSV 뷰어·필터</h1>
+  <p class="sub">큰 CSV를 표로 깔끔하게 보고, 검색으로 거르고, 보고 싶은 열만 골라 페이지 단위로 탐색하세요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>CSV 파일을 올리거나 붙여 넣고 ‘열기’를 누릅니다</li>
+    <li>위 검색창에 단어를 넣어 행을 거르고, 체크로 열을 켜고 끕니다</li>
+    <li>아래 페이지 버튼으로 넘겨 봅니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="drop" id="drop">📄 <strong>CSV 파일을 끌어다 놓거나 클릭</strong> (또는 아래에 붙여넣기)</div>
+    <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain" class="hide"/>
+    <textarea id="input" placeholder="이름,나이,도시&#10;홍길동,32,서울"></textarea>
+    <div style="margin-top:.6rem;"><button class="btn" id="open" type="button">열기</button> <button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
+    <div id="view" class="hide">
+      <div class="bar"><input id="q" type="text" placeholder="🔎 검색(행 거르기)"/><span id="cnt" style="color:var(--muted);font-size:.85rem;"></span></div>
+      <div class="cols" id="cols"></div>
+      <div class="tbl-scroll"><table id="tbl"></table></div>
+      <div class="pager"><button id="prev" type="button">‹ 이전</button><span id="pinfo"></span><button id="next" type="button">다음 ›</button></div>
+    </div>
+    <div class="note">행 100개 단위로 나눠 보여 줍니다. 검색은 모든 열에서 입력어를 포함하는 행만 남깁니다. 매우 큰 파일은 브라우저 메모리에 따라 느려질 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s).replace(/[&<>]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]);}); }
+  var data=null, shown=[], page=0, PER=100, visCols=[];
+
+  function open(){
+    var t=$('input').value.trim(); if(!t) return;
+    data=CSV.parse(t,{header:true,delimiter:'auto'});
+    visCols=data.header.map(function(){return true;});
+    $('cols').innerHTML=data.header.map(function(h,i){return '<label><input type="checkbox" checked data-i="'+i+'"/> '+esc(h)+'</label>';}).join('');
+    $('view').classList.remove('hide'); page=0; filter();
+  }
+  function filter(){
+    var s=$('q').value.trim().toLowerCase();
+    shown = !s ? data.rows : data.rows.filter(function(r){ return r.join('\t').toLowerCase().indexOf(s)>=0; });
+    page=0; render();
+  }
+  function render(){
+    var pages=Math.max(1,Math.ceil(shown.length/PER));
+    if(page>=pages)page=pages-1;
+    var slice=shown.slice(page*PER,(page+1)*PER);
+    var hi=data.header.map(function(h,i){return visCols[i]?'<th>'+esc(h)+'</th>':'';}).join('');
+    var body=slice.map(function(r){ return '<tr>'+data.header.map(function(_,i){return visCols[i]?'<td>'+esc(r[i]==null?'':r[i])+'</td>':'';}).join('')+'</tr>'; }).join('');
+    $('tbl').innerHTML='<tr>'+hi+'</tr>'+body;
+    $('cnt').textContent=shown.length.toLocaleString('ko-KR')+'행';
+    $('pinfo').textContent=(page+1)+' / '+pages;
+    $('prev').disabled=page<=0; $('next').disabled=page>=pages-1;
+  }
+  $('open').addEventListener('click', open);
+  $('q').addEventListener('input', filter);
+  $('cols').addEventListener('change', function(e){ var c=e.target.closest('input'); if(c){ visCols[+c.dataset.i]=c.checked; render(); } });
+  $('prev').addEventListener('click', function(){ if(page>0){page--;render();} });
+  $('next').addEventListener('click', function(){ page++; render(); });
+  function readFile(f){ var rd=new FileReader(); rd.onload=function(){ $('input').value=rd.result; open(); }; rd.readAsText(f); }
+  $('file').addEventListener('change', function(e){ if(e.target.files[0]) readFile(e.target.files[0]); });
+  $('drop').addEventListener('click', function(){ $('file').click(); });
+  ['dragover','dragenter'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.add('over');}); });
+  ['dragleave','drop'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.remove('over');}); });
+  $('drop').addEventListener('drop', function(e){ if(e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]); });
+  $('sample').addEventListener('click', function(){ var rows=['이름,나이,도시,등급']; for(var i=1;i<=250;i++) rows.push('사용자'+i+','+(20+i%50)+','+['서울','부산','대구','인천'][i%4]+','+['A','B','C'][i%3]); $('input').value=rows.join('\n'); open(); });
+</script>
+</body>
+</html>

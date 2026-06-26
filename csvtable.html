@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>CSV → 표 변환기 (Markdown·HTML) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="CSV를 마크다운 표와 HTML 표로 변환합니다. 깃허브·블로그·문서에 붙여 넣을 수 있는 표를 즉시 생성하고 미리보기로 확인. 구분자 자동 감지, 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/csvtable.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="CSV → 표 변환기 (Markdown·HTML) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="CSV를 마크다운·HTML 표로 변환. 블로그·문서용 표 즉시 생성+미리보기. 구분자 자동 감지."/>
+<meta property="og:url" content="https://gemini2k.co.kr/csvtable.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="csvutil.js"></script>
+<style>
+  textarea{width:100%;min-height:110px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;color:var(--text);resize:vertical;}
+  .opts{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin:.9rem 0;font-size:.9rem;color:var(--text);}
+  .opts label{display:inline-flex;align-items:center;gap:.4rem;margin:0;font-weight:600;}
+  .seg{display:flex;gap:.5rem;margin:1.1rem 0 .8rem;}
+  .seg button{padding:.5rem .9rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--muted);font-family:inherit;font-weight:700;font-size:.9rem;cursor:pointer;}
+  .seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:.4rem;}
+  .out{width:100%;min-height:120px;border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem .9rem;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;color:var(--text);resize:vertical;}
+  .pv{margin-top:1rem;overflow-x:auto;border:1px solid var(--border);border-radius:11px;padding:.4rem;}
+  .pv table{border-collapse:collapse;width:100%;font-size:.88rem;}
+  .pv th,.pv td{border:1px solid var(--border);padding:.45rem .7rem;text-align:left;}
+  .pv th{background:var(--ground);font-weight:700;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CSV → 표 변환기 (Markdown·HTML)",
+  "description": "CSV를 마크다운 표와 HTML 표로 변환합니다. 블로그·문서용 표를 즉시 생성하고 미리보기로 확인. 구분자 자동 감지, 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/csvtable.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:860px;">
+  <h1>CSV → 표 변환기</h1>
+  <p class="sub">CSV를 깃허브·블로그·문서에 바로 붙여 넣을 수 있는 마크다운 표와 HTML 표로 바꿉니다. 미리보기로 결과를 확인하세요.</p>
+
+  <div class="card">
+    <label for="input">CSV 입력</label>
+    <textarea id="input" placeholder="이름,점수,비고&#10;홍길동,95,우수&#10;김영희,88,"></textarea>
+    <div class="opts">
+      <label><input type="checkbox" id="hasHeader" checked/> 첫 행을 머리글로</label>
+    </div>
+    <div class="seg">
+      <button id="tMd" class="on" type="button">Markdown</button>
+      <button id="tHtml" type="button">HTML</button>
+    </div>
+    <textarea id="out" class="out" readonly></textarea>
+    <div class="actions" style="margin-top:.8rem;">
+      <button class="btn" id="copy" type="button">📋 복사</button>
+      <button class="btn btn-ghost" id="sample" type="button">샘플</button>
+    </div>
+    <div class="pv" id="preview"></div>
+    <div class="note">구분자(쉼표·세미콜론·탭)는 자동 감지합니다. 마크다운 표는 GitHub·노션 등에서, HTML 표는 웹페이지에 바로 쓸 수 있습니다. 모든 변환은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  function esc(s){ return String(s).replace(/[&<>]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]);}); }
+  var fmt='md';
+
+  function build(){
+    var text=$('input').value;
+    if(!text.trim()){ $('out').value=''; $('preview').innerHTML=''; return; }
+    var parsed=CSV.parse(text, {header:false, delimiter:'auto'});
+    var matrix=parsed.rows; if(!matrix.length){ $('out').value=''; $('preview').innerHTML=''; return; }
+    var hasH=$('hasHeader').checked;
+    var header = hasH ? matrix[0] : matrix[0].map(function(_,i){return '열'+(i+1);});
+    var body = hasH ? matrix.slice(1) : matrix;
+    var cols=header.length;
+    body=body.map(function(r){ var x=r.slice(); while(x.length<cols)x.push(''); return x.slice(0,cols); });
+
+    if(fmt==='md'){
+      var mdCell=function(s){ return String(s).replace(/\|/g,'\\|').replace(/\n/g,' '); };
+      var out='| '+header.map(mdCell).join(' | ')+' |\n';
+      out+='| '+header.map(function(){return '---';}).join(' | ')+' |\n';
+      out+=body.map(function(r){ return '| '+r.map(mdCell).join(' | ')+' |'; }).join('\n');
+      $('out').value=out;
+    } else {
+      var h='<table>\n  <thead>\n    <tr>'+header.map(function(c){return '<th>'+esc(c)+'</th>';}).join('')+'</tr>\n  </thead>\n  <tbody>\n';
+      h+=body.map(function(r){ return '    <tr>'+r.map(function(c){return '<td>'+esc(c)+'</td>';}).join('')+'</tr>'; }).join('\n');
+      h+='\n  </tbody>\n</table>';
+      $('out').value=h;
+    }
+    // 미리보기(항상 실제 표)
+    var pv='<table><thead><tr>'+header.map(function(c){return '<th>'+esc(c)+'</th>';}).join('')+'</tr></thead><tbody>';
+    pv+=body.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+esc(c)+'</td>';}).join('')+'</tr>';}).join('');
+    pv+='</tbody></table>';
+    $('preview').innerHTML=pv;
+  }
+  function setFmt(f){ fmt=f; $('tMd').classList.toggle('on',f==='md'); $('tHtml').classList.toggle('on',f==='html'); build(); }
+  $('tMd').addEventListener('click',function(){setFmt('md');});
+  $('tHtml').addEventListener('click',function(){setFmt('html');});
+  $('input').addEventListener('input', build);
+  $('hasHeader').addEventListener('change', build);
+  $('copy').addEventListener('click',function(){ if(!$('out').value) return; navigator.clipboard.writeText($('out').value).then(function(){ toast('복사됐습니다'); }); });
+  $('sample').addEventListener('click',function(){ $('input').value='이름,점수,비고\n홍길동,95,우수\n김영희,88,\n이철수,72,재시험'; build(); });
+  build();
+</script>
+</body>
+</html>

@@ -27,6 +27,7 @@
 <script src="ga.js"></script>
 <script src="theme.js"></script>
 <script src="i18n.js"></script>
+<script src="tools.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
 <script type="application/ld+json">
 {
@@ -81,7 +82,7 @@
 
 <script src="tool-shell.js"></script>
 <script>
-  var t=document.getElementById('t'), info=document.getElementById('info');
+  var ta=document.getElementById('t'), info=document.getElementById('info');
   function T(k){ return window.t ? window.t(k) : k; }
   function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
   function lines(s){ return s.split(/\r?\n/); }
@@ -95,18 +96,18 @@
     sort:function(s){var lc=window.curLang?window.curLang():'ko';return lines(s).sort(function(a,b){return a.localeCompare(b,lc);}).join('\n');},
     nl2sp:function(s){return s.replace(/\r?\n/g,' ').replace(/\s+/g,' ').trim();}
   };
-  function update(){ var n=t.value?lines(t.value).length:0; info.textContent=T('tt.info').replace('{c}',t.value.length).replace('{l}',n); }
+  function update(){ var n=ta.value?lines(ta.value).length:0; info.textContent=T('tt.info').replace('{c}',ta.value.length).replace('{l}',n); }
   document.querySelectorAll('[data-act]').forEach(function(btn){
     btn.addEventListener('click', function(){
       var a=btn.dataset.act;
-      if(a==='copy'){ if(!t.value){toast(T('toast.nocopy'));return;}
-        navigator.clipboard.writeText(t.value).then(function(){toast(T('toast.copied'));}).catch(function(){toast(T('toast.copied'));}); return; }
-      if(a==='clear'){ t.value=''; update(); t.focus(); return; }
-      if(ACT[a]){ t.value=ACT[a](t.value); update(); toast(T('tt.done')); }
+      if(a==='copy'){ if(!ta.value){toast(T('toast.nocopy'));return;}
+        navigator.clipboard.writeText(ta.value).then(function(){toast(T('toast.copied'));}).catch(function(){toast(T('toast.copied'));}); return; }
+      if(a==='clear'){ ta.value=''; update(); ta.focus(); return; }
+      if(ACT[a]){ ta.value=ACT[a](ta.value); update(); toast(T('tt.done')); }
     });
   });
   window.onI18n = update;
-  t.addEventListener('input', update); update();
+  ta.addEventListener('input', update); update();
 </script>
 </body>
 </html>

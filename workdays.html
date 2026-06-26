@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>영업일(근무일수) 계산기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="두 날짜 사이의 영업일(평일) 수를 계산하거나, 특정 날짜에서 영업일을 더하고 빼 날짜를 구합니다. 주말 제외, 공휴일 직접 추가 가능. 납기·근무일·정산일 계산에. 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/workdays.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="영업일(근무일수) 계산기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="두 날짜 사이 영업일 수 계산 / 영업일 더하기·빼기. 주말 제외, 공휴일 추가 가능. 납기·근무일 계산."/>
+<meta property="og:url" content="https://gemini2k.co.kr/workdays.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .seg{display:flex;gap:.5rem;margin-bottom:1.2rem;}
+  .seg button{flex:1;padding:.6rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--muted);font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;}
+  .seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .fld{margin-bottom:1rem;}
+  .fld input[type=date],.fld input[type=number]{width:100%;padding:.65rem .75rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:inherit;font-size:1.05rem;color:var(--text);}
+  .frow{display:flex;gap:1rem;flex-wrap:wrap;} .frow .fld{flex:1;min-width:150px;}
+  .chk{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;font-size:.9rem;color:var(--text);}
+  .chk label{display:inline-flex;align-items:center;gap:.4rem;margin:0;font-weight:600;}
+  .holi{width:100%;min-height:64px;padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+  .reslist{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:1.1rem;}
+  .rrow{display:flex;justify-content:space-between;padding:.8rem 1rem;border-top:1px solid var(--border);font-size:1.02rem;}
+  .rrow:first-child{border-top:none;} .rrow .k{color:var(--muted);font-size:.92rem;} .rrow .v{font-weight:800;}
+  .rrow.main .v{color:var(--accent);font-size:1.2rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "영업일(근무일수) 계산기",
+  "description": "두 날짜 사이의 영업일(평일) 수를 계산하거나, 특정 날짜에서 영업일을 더하고 빼 날짜를 구합니다. 주말 제외, 공휴일 추가 가능.",
+  "url": "https://gemini2k.co.kr/workdays.html",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap">
+  <h1>영업일(근무일수) 계산기</h1>
+  <p class="sub">두 날짜 사이의 영업일을 세거나, 기준일에서 영업일만큼 앞뒤로 이동한 날짜를 구합니다. 주말은 제외하고, 공휴일을 직접 추가할 수 있습니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>‘기간 계산’(두 날짜 사이) 또는 ‘영업일 더하기/빼기’ 탭을 고릅니다</li>
+    <li>날짜와 값을 입력합니다 (주말은 자동 제외)</li>
+    <li>공휴일이 있으면 아래 칸에 한 줄에 하나씩(YYYY-MM-DD) 넣으면 함께 제외됩니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="seg">
+      <button id="mRange" class="on" type="button">기간 계산</button>
+      <button id="mAdd" type="button">영업일 더하기/빼기</button>
+    </div>
+
+    <div id="paneRange">
+      <div class="frow">
+        <div class="fld"><label for="d1">시작일</label><input id="d1" type="date"/></div>
+        <div class="fld"><label for="d2">종료일</label><input id="d2" type="date"/></div>
+      </div>
+    </div>
+    <div id="paneAdd" class="hide">
+      <div class="frow">
+        <div class="fld"><label for="base">기준일</label><input id="base" type="date"/></div>
+        <div class="fld"><label for="n">영업일 (음수=이전)</label><input id="n" type="number" value="10"/></div>
+      </div>
+    </div>
+
+    <div class="chk">
+      <label><input type="checkbox" id="incStart" checked/> 시작일 포함</label>
+    </div>
+    <label for="holi">공휴일 제외 (한 줄에 하나, YYYY-MM-DD)</label>
+    <textarea id="holi" class="holi" placeholder="2026-01-01&#10;2026-03-01"></textarea>
+
+    <div class="reslist" id="result"></div>
+    <div class="note">주말(토·일)은 항상 제외합니다. 공휴일은 입력한 날짜만 제외하며 자동 반영되지 않으니 필요한 날짜를 직접 넣으세요. ‘기간 계산’은 시작일·종료일 사이의 영업일을, ‘더하기/빼기’는 기준일에서 영업일만큼 이동한 날짜를 구합니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var mode='range';
+  function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function parse(s){ if(!s) return null; var p=s.split('-'); var d=new Date(+p[0],+p[1]-1,+p[2]); return isNaN(d)?null:d; }
+  function holiSet(){ var set={}; $('holi').value.split(/\r?\n/).forEach(function(l){ l=l.trim(); if(/^\d{4}-\d{1,2}-\d{1,2}$/.test(l)){ var p=l.split('-'); set[(+p[0])+'-'+(+p[1])+'-'+(+p[2])]=1; } }); return set; }
+  function isWork(d, holi){ var w=d.getDay(); if(w===0||w===6) return false; if(holi[d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()]) return false; return true; }
+  var WD=['일','월','화','수','목','금','토'];
+
+  function calc(){
+    var holi=holiSet();
+    if(mode==='range'){
+      var a=parse($('d1').value), b=parse($('d2').value);
+      if(!a||!b){ $('result').innerHTML=''; return; }
+      if(a>b){ var t=a;a=b;b=t; }
+      var cur=new Date(a), total=0, work=0, wknd=0, hol=0;
+      var startInc=$('incStart').checked;
+      while(cur<=b){
+        var isFirst = cur.getTime()===a.getTime();
+        if(!(isFirst && !startInc)){
+          total++; var w=cur.getDay();
+          if(w===0||w===6) wknd++;
+          else if(holi[cur.getFullYear()+'-'+(cur.getMonth()+1)+'-'+cur.getDate()]) hol++;
+          else work++;
+        }
+        cur.setDate(cur.getDate()+1);
+      }
+      $('result').innerHTML =
+        '<div class="rrow main"><span class="k">영업일(평일−공휴일)</span><span class="v">'+work+'일</span></div>'+
+        '<div class="rrow"><span class="k">전체 일수</span><span class="v">'+total+'일</span></div>'+
+        '<div class="rrow"><span class="k">주말</span><span class="v">'+wknd+'일</span></div>'+
+        '<div class="rrow"><span class="k">공휴일 제외</span><span class="v">'+hol+'일</span></div>';
+    } else {
+      var base=parse($('base').value), n=parseInt($('n').value)||0;
+      if(!base){ $('result').innerHTML=''; return; }
+      var step=n>=0?1:-1, remain=Math.abs(n), d=new Date(base);
+      while(remain>0){ d.setDate(d.getDate()+step); if(isWork(d,holi)) remain--; }
+      $('result').innerHTML =
+        '<div class="rrow main"><span class="k">결과 날짜</span><span class="v">'+ymd(d)+' ('+WD[d.getDay()]+')</span></div>'+
+        '<div class="rrow"><span class="k">기준일</span><span class="v">'+ymd(base)+'</span></div>'+
+        '<div class="rrow"><span class="k">이동</span><span class="v">영업일 '+(n>=0?'+':'')+n+'</span></div>';
+    }
+  }
+  function setMode(m){ mode=m; $('mRange').classList.toggle('on',m==='range'); $('mAdd').classList.toggle('on',m==='add');
+    $('paneRange').classList.toggle('hide',m!=='range'); $('paneAdd').classList.toggle('hide',m!=='add'); calc(); }
+  $('mRange').addEventListener('click',function(){setMode('range');});
+  $('mAdd').addEventListener('click',function(){setMode('add');});
+  ['d1','d2','base','n','holi','incStart'].forEach(function(id){ $(id).addEventListener('input',calc); });
+
+  // 기본값: 오늘 / +30일
+  (function(){ var now=new Date(); var t=now.toISOString().slice(0,10); $('d1').value=t; $('base').value=t;
+    var d2=new Date(now); d2.setDate(d2.getDate()+30); $('d2').value=d2.toISOString().slice(0,10); calc(); })();
+</script>
+</body>
+</html>

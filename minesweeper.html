@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>지뢰찾기 게임 (Minesweeper) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="브라우저에서 바로 즐기는 클래식 지뢰찾기(Minesweeper) 게임. 난이도 3단계, 첫 클릭은 안전. 숫자를 보고 지뢰 위치를 추리해 깃발을 꽂으세요. PC는 우클릭, 모바일은 깃발 모드로. 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/minesweeper.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="지뢰찾기 게임 (Minesweeper) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="난이도 3단계 클래식 지뢰찾기. 첫 클릭 안전, PC 우클릭·모바일 깃발 모드. 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/minesweeper.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;}
+  .gbar .left{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;}
+  .gbar select{padding:.45rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .flagbtn{padding:.45rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-family:inherit;font-weight:700;cursor:pointer;}
+  .flagbtn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .scores{display:flex;gap:.5rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.3rem .7rem;text-align:center;min-width:56px;}
+  .sbox .l{font-size:.62rem;font-weight:700;color:var(--muted);} .sbox .v{font-size:1.1rem;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;}
+  .ms{display:grid;gap:2px;margin:0 auto;max-width:100%;width:max-content;max-width:100%;background:var(--border);border:2px solid var(--border);border-radius:8px;overflow:hidden;touch-action:manipulation;}
+  .ms-c{width:30px;height:30px;display:grid;place-items:center;background:var(--surface);font-weight:800;font-size:.95rem;cursor:pointer;user-select:none;border:none;}
+  .ms-c.rev{background:var(--ground);cursor:default;}
+  .ms-c.mine{background:#fecaca;} :root[data-theme="dark"] .ms-c.mine{background:#3a1620;}
+  .ms-c.n1{color:#2563eb}.ms-c.n2{color:#16a34a}.ms-c.n3{color:#dc2626}.ms-c.n4{color:#7c3aed}.ms-c.n5{color:#b45309}.ms-c.n6{color:#0891b2}.ms-c.n7{color:#475569}.ms-c.n8{color:#9ca3af}
+  .wrap-ms{overflow-x:auto;}
+  .msg{text-align:center;margin-top:1rem;font-weight:800;font-size:1.1rem;min-height:1.4em;color:var(--accent);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "지뢰찾기 (Minesweeper)",
+  "description": "난이도 3단계 클래식 지뢰찾기. 첫 클릭 안전, 숫자로 지뢰 위치 추리.",
+  "url": "https://gemini2k.co.kr/minesweeper.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Puzzle",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:560px;">
+  <h1>지뢰찾기</h1>
+  <p class="sub">숫자는 주변 8칸의 지뢰 개수입니다. 추리해서 지뢰가 아닌 칸을 모두 여세요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li>칸을 클릭(터치)하면 열립니다. 첫 클릭은 항상 안전합니다</li>
+    <li>지뢰가 의심되면 깃발: PC는 <b>우클릭</b>, 모바일은 <b>🚩 깃발 모드</b>를 켜고 탭</li>
+    <li>지뢰를 누르면 끝, 지뢰 아닌 칸을 모두 열면 승리!</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="left">
+        <select id="level"><option value="9,9,10">쉬움 9×9 (10)</option><option value="12,12,24" selected>보통 12×12 (24)</option><option value="14,14,45">어려움 14×14 (45)</option></select>
+        <button class="flagbtn" id="flagmode" type="button">🚩 깃발 모드</button>
+      </div>
+      <div class="scores">
+        <div class="sbox"><div class="l">지뢰</div><div class="v" id="mines">0</div></div>
+        <div class="sbox"><div class="l">시간</div><div class="v" id="time">0</div></div>
+      </div>
+    </div>
+    <div class="wrap-ms"><div class="ms" id="ms"></div></div>
+    <div class="msg" id="msg"></div>
+    <div class="note">모든 진행은 브라우저에서만 이루어집니다. 데이터는 전송되지 않습니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var R,C,M, cells, started, over, won, revealed, flags, timer=null, sec=0, flagMode=false;
+  var msEl=$('ms');
+
+  function startTimer(){ stopTimer(); sec=0; $('time').textContent='0'; timer=setInterval(function(){sec++;$('time').textContent=sec;},1000); }
+  function stopTimer(){ if(timer){clearInterval(timer);timer=null;} }
+
+  function build(){
+    var p=$('level').value.split(',').map(Number); R=p[0]; C=p[1]; M=p[2];
+    cells=[]; started=false; over=false; won=false; revealed=0; flags=0;
+    $('msg').textContent=''; $('mines').textContent=M; stopTimer(); $('time').textContent='0';
+    msEl.style.gridTemplateColumns='repeat('+C+',30px)';
+    msEl.innerHTML='';
+    for(var r=0;r<R;r++)for(var c=0;c<C;c++){
+      var b=document.createElement('button'); b.className='ms-c'; b.dataset.r=r; b.dataset.c=c;
+      cells.push({mine:false,rev:false,flag:false,n:0,el:b}); msEl.appendChild(b);
+    }
+  }
+  function idx(r,c){ return r*C+c; }
+  function neighbors(r,c){ var a=[]; for(var dr=-1;dr<=1;dr++)for(var dc=-1;dc<=1;dc++){ if(!dr&&!dc)continue; var nr=r+dr,nc=c+dc; if(nr>=0&&nr<R&&nc>=0&&nc<C) a.push(idx(nr,nc)); } return a; }
+  function place(safe){
+    var pool=[]; for(var i=0;i<cells.length;i++){ if(i!==safe) pool.push(i); }
+    for(var k=0;k<M;k++){ var j=Math.floor(Math.random()*pool.length); cells[pool[j]].mine=true; pool.splice(j,1); }
+    for(var r=0;r<R;r++)for(var c=0;c<C;c++){ var cell=cells[idx(r,c)]; if(cell.mine) continue; cell.n=neighbors(r,c).filter(function(n){return cells[n].mine;}).length; }
+  }
+  function reveal(i){
+    var cell=cells[i]; if(cell.rev||cell.flag||over) return;
+    cell.rev=true; revealed++; cell.el.classList.add('rev');
+    if(cell.mine){ cell.el.classList.add('mine'); cell.el.textContent='💣'; lose(); return; }
+    if(cell.n){ cell.el.textContent=cell.n; cell.el.classList.add('n'+cell.n); }
+    else { var r=+cell.el.dataset.r,c=+cell.el.dataset.c; neighbors(r,c).forEach(function(n){ if(!cells[n].rev) reveal(n); }); }
+    if(revealed===cells.length-M && !over){ win(); }
+  }
+  function toggleFlag(i){ var cell=cells[i]; if(cell.rev||over) return; cell.flag=!cell.flag; cell.el.textContent=cell.flag?'🚩':''; flags+=cell.flag?1:-1; $('mines').textContent=M-flags; }
+  function lose(){ over=true; stopTimer(); cells.forEach(function(c){ if(c.mine&&!c.rev){ c.el.textContent='💣'; c.el.classList.add('rev'); } }); $('msg').textContent='💥 지뢰! 다시 시도하세요'; }
+  function win(){ over=true; won=true; stopTimer(); cells.forEach(function(c){ if(c.mine&&!c.flag){ c.el.textContent='🚩'; } }); $('msg').textContent='🎉 클리어! '+sec+'초'; }
+
+  msEl.addEventListener('click', function(e){ var b=e.target.closest('.ms-c'); if(!b) return; var i=idx(+b.dataset.r,+b.dataset.c);
+    if(!started){ started=true; place(i); startTimer(); }
+    if(flagMode){ toggleFlag(i); } else reveal(i);
+  });
+  msEl.addEventListener('contextmenu', function(e){ var b=e.target.closest('.ms-c'); if(!b) return; e.preventDefault(); var i=idx(+b.dataset.r,+b.dataset.c); if(started&&!over) toggleFlag(i); });
+  $('flagmode').addEventListener('click', function(){ flagMode=!flagMode; this.classList.toggle('on',flagMode); });
+  $('level').addEventListener('change', build);
+  build();
+</script>
+</body>
+</html>

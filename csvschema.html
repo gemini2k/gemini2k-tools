@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>CSV 스키마 검증기 (열 규칙 검사) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="CSV 각 열에 필수·자료형·정규식·고유 규칙을 정해 위반한 행을 찾아 리포트합니다. 데이터 품질 검수·업로드 전 검증에. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/csvschema.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="CSV 스키마 검증기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="CSV 열별 필수·자료형·정규식·고유 규칙으로 위반 행 검사. 데이터 검수·업로드 전 검증. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/csvschema.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="csvutil.js"></script>
+<style>
+  textarea{width:100%;min-height:110px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84rem;color:var(--text);resize:vertical;}
+  .rules{border:1px solid var(--border);border-radius:11px;overflow:hidden;margin:1rem 0;}
+  .rrow{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;padding:.55rem .8rem;border-top:1px solid var(--border);}
+  .rrow:first-child{border-top:none;} .rrow .cn{font-weight:700;min-width:6rem;}
+  .rrow select,.rrow input[type=text]{padding:.35rem .5rem;border:1px solid var(--border);border-radius:7px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.85rem;}
+  .rrow input[type=text]{width:130px;font-family:ui-monospace,monospace;} .rrow label{margin:0;display:inline-flex;gap:.3rem;align-items:center;font-size:.82rem;font-weight:600;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;}
+  .pill{border-radius:999px;padding:.35rem .8rem;font-size:.85rem;font-weight:700;margin:1rem .4rem 0 0;display:inline-block;}
+  .ok{background:#dcfce7;color:#15803d;} .ng{background:#fee2e2;color:#b91c1c;}
+  :root[data-theme="dark"] .ok{background:#14331f;color:#86efac;} :root[data-theme="dark"] .ng{background:#3a1620;color:#fca5a5;}
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-top:.6rem;}
+  table{border-collapse:collapse;width:100%;font-size:.84rem;} th,td{border-bottom:1px solid var(--border);padding:.45rem .7rem;text-align:left;white-space:nowrap;} th{background:var(--ground);font-size:.72rem;text-transform:uppercase;color:var(--muted);}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CSV 스키마 검증기",
+  "description": "CSV 각 열에 필수·자료형·정규식·고유 규칙을 정해 위반 행을 리포트합니다. 데이터 품질 검수·업로드 전 검증. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/csvschema.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:880px;">
+  <h1>CSV 스키마 검증기</h1>
+  <p class="sub">열마다 규칙(필수·자료형·정규식·고유)을 정해 두고, 그 규칙을 어긴 행을 찾아 줍니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>CSV를 붙여 넣으면 열 목록이 자동으로 나옵니다</li>
+    <li>각 열에 필수·자료형·정규식·고유 규칙을 설정합니다</li>
+    <li>‘검증’을 누르면 규칙을 어긴 행과 이유가 표로 나옵니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <label for="input" style="font-weight:700;font-size:.85rem;">CSV 입력</label>
+    <textarea id="input" placeholder="email,age,id&#10;a@x.com,30,1&#10;bad,200,1"></textarea>
+    <div class="rules hide" id="rules"></div>
+    <div class="actions"><button class="btn" id="run" type="button">검증</button><button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
+    <div id="result"></div>
+    <div class="note">자료형: 정수·숫자·날짜(YYYY-MM-DD)·이메일. 정규식은 비워 두면 검사하지 않습니다(예: <code>^010-\d{4}-\d{4}$</code>). 고유는 열 안에서 값 중복을 검사합니다. 모든 검증은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]);}); }
+  var parsed=null;
+  var INT=/^-?\d+$/, NUM=/^-?\d+(\.\d+)?$/, DATE=/^\d{4}-\d{1,2}-\d{1,2}$/, EMAIL=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function buildRules(){
+    var t=$('input').value.trim(); if(!t){ $('rules').classList.add('hide'); return; }
+    parsed=CSV.parse(t,{header:true,delimiter:'auto'});
+    $('rules').classList.remove('hide');
+    $('rules').innerHTML=parsed.header.map(function(h,i){
+      return '<div class="rrow" data-i="'+i+'"><span class="cn">'+esc(h)+'</span>'
+        +'<label><input type="checkbox" class="req"/> 필수</label>'
+        +'<select class="ty"><option value="">자료형 무관</option><option value="int">정수</option><option value="num">숫자</option><option value="date">날짜</option><option value="email">이메일</option></select>'
+        +'<input type="text" class="re" placeholder="정규식(선택)"/>'
+        +'<label><input type="checkbox" class="uniq"/> 고유</label></div>';
+    }).join('');
+  }
+  function run(){
+    if(!parsed){ buildRules(); if(!parsed) return; }
+    var rules=[].map.call($('rules').children, function(row){ return {
+      req:row.querySelector('.req').checked, ty:row.querySelector('.ty').value,
+      re:row.querySelector('.re').value, uniq:row.querySelector('.uniq').checked }; });
+    var viol=[], seen=rules.map(function(){return {};});
+    parsed.rows.forEach(function(r,ri){
+      rules.forEach(function(rule,ci){
+        var v=(r[ci]==null?'':String(r[ci])).trim(), col=parsed.header[ci];
+        if(v===''){ if(rule.req) viol.push([ri+2,col,'(빈값)','필수 누락']); return; }
+        if(rule.ty==='int'&&!INT.test(v)) viol.push([ri+2,col,v,'정수 아님']);
+        else if(rule.ty==='num'&&!NUM.test(v)) viol.push([ri+2,col,v,'숫자 아님']);
+        else if(rule.ty==='date'&&!DATE.test(v)) viol.push([ri+2,col,v,'날짜 형식 아님']);
+        else if(rule.ty==='email'&&!EMAIL.test(v)) viol.push([ri+2,col,v,'이메일 아님']);
+        if(rule.re){ try{ if(!(new RegExp(rule.re)).test(v)) viol.push([ri+2,col,v,'정규식 불일치']); }catch(e){} }
+        if(rule.uniq){ if(seen[ci][v]) viol.push([ri+2,col,v,'중복(고유 위반)']); else seen[ci][v]=1; }
+      });
+    });
+    if(!viol.length){ $('result').innerHTML='<span class="pill ok">✓ 위반 없음 — 모든 규칙 통과 ('+parsed.rows.length+'행)</span>'; return; }
+    $('result').innerHTML='<span class="pill ng">위반 '+viol.length+'건 / '+parsed.rows.length+'행</span>'
+      +'<div class="tbl-scroll"><table><tr><th>행</th><th>열</th><th>값</th><th>이유</th></tr>'
+      +viol.slice(0,200).map(function(v){return '<tr><td>'+v[0]+'</td><td>'+esc(v[1])+'</td><td>'+esc(v[2])+'</td><td>'+v[3]+'</td></tr>';}).join('')+'</table></div>';
+  }
+  $('input').addEventListener('input', buildRules);
+  $('run').addEventListener('click', run);
+  $('sample').addEventListener('click', function(){ $('input').value='email,age,id\na@x.com,30,1\nbad-email,200,1\nb@y.com,,2'; buildRules();
+    var rows=$('rules').children; rows[0].querySelector('.ty').value='email'; rows[0].querySelector('.req').checked=true;
+    rows[1].querySelector('.ty').value='int'; rows[2].querySelector('.uniq').checked=true; run(); });
+  buildRules();
+</script>
+</body>
+</html>
