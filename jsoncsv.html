@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>JSON ↔ CSV 변환 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="JSON과 CSV를 양방향으로 변환합니다. JSON 객체 배열 ↔ 표(CSV). 따옴표·쉼표·줄바꿈 처리. 업로드 없이 브라우저에서만 변환."/>
+<link rel="canonical" href="https://gemini2k.co.kr/jsoncsv.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="JSON ↔ CSV 변환 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="JSON 객체 배열과 CSV 표를 양방향 변환. 브라우저에서만 처리."/>
+<meta property="og:url" content="https://gemini2k.co.kr/jsoncsv.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .dir{display:flex;gap:.5rem;margin-bottom:.9rem;}
+  .dir button{flex:1;padding:.55rem;border:1px solid var(--border);background:var(--surface);border-radius:9px;cursor:pointer;font-family:inherit;font-size:.9rem;color:var(--muted);}
+  .dir button.on{background:#eef6ff;border-color:var(--teal,#1aa3e0);color:var(--text);font-weight:700;}
+  .io textarea{width:100%;min-height:150px;padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88rem;resize:vertical;background:var(--surface);color:var(--text);}
+  .io label{display:block;font-size:.85rem;font-weight:600;margin:.6rem 0 .3rem;}
+  .err{color:#b3402f;font-size:.85rem;margin-top:.5rem;font-weight:600;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:#fafbff;border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1>JSON ↔ CSV 변환</h1>
+  <p class="sub">JSON 객체 배열과 CSV 표를 양쪽으로 변환합니다. 엑셀에 붙이거나 코드에 넣기 좋게.</p>
+
+  <div class="card">
+    <div class="dir">
+      <button id="d-j2c" class="on">JSON → CSV</button>
+      <button id="d-c2j">CSV → JSON</button>
+    </div>
+    <div class="io">
+      <label id="in-lbl">입력 (JSON 배열)</label>
+      <textarea id="input" placeholder='[{"name":"철수","age":20},{"name":"영희","age":22}]'></textarea>
+      <div class="row" style="margin-top:.8rem;">
+        <button class="btn" id="convert">변환</button>
+        <button class="btn btn-ghost" id="copy">📋 결과 복사</button>
+        <button class="btn btn-ghost" id="download">⬇ 다운로드</button>
+      </div>
+      <div class="err" id="err" style="display:none;"></div>
+      <label id="out-lbl">결과 (CSV)</label>
+      <textarea id="output" readonly placeholder="결과가 여기에 표시됩니다"></textarea>
+    </div>
+    <div class="note">
+      JSON → CSV는 객체 배열의 모든 키를 모아 머리글로 만들고, 값에 쉼표·따옴표·줄바꿈이 있으면 자동으로 따옴표 처리합니다. CSV → JSON은 첫 줄을 머리글로 보고 객체 배열을 만듭니다. 모든 변환은 브라우저에서만 이루어집니다.
+    </div>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a><a href="privacy.html" data-i18n="foot.policy">· 개인정보처리방침</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var dir = 'j2c';
+
+  function csvCell(v){
+    if(v===null||v===undefined) return '';
+    var s = (typeof v==='object') ? JSON.stringify(v) : String(v);
+    if(/[",\n\r]/.test(s)) s = '"' + s.replace(/"/g,'""') + '"';
+    return s;
+  }
+  function jsonToCsv(text){
+    var data = JSON.parse(text);
+    if(!Array.isArray(data)) throw new Error('JSON은 객체 배열 [ {...}, {...} ] 형태여야 합니다.');
+    if(data.length===0) return '';
+    var keys=[]; data.forEach(function(o){ if(o&&typeof o==='object') Object.keys(o).forEach(function(k){ if(keys.indexOf(k)<0) keys.push(k); }); });
+    var lines=[ keys.map(csvCell).join(',') ];
+    data.forEach(function(o){ lines.push(keys.map(function(k){ return csvCell(o?o[k]:''); }).join(',')); });
+    return lines.join('\n');
+  }
+  function parseCsv(text){
+    var rows=[], row=[], cur='', i=0, inq=false, c;
+    text = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+    while(i<text.length){ c=text[i];
+      if(inq){ if(c==='"'){ if(text[i+1]==='"'){ cur+='"'; i++; } else inq=false; } else cur+=c; }
+      else { if(c==='"') inq=true; else if(c===','){ row.push(cur); cur=''; } else if(c==='\n'){ row.push(cur); rows.push(row); row=[]; cur=''; } else cur+=c; }
+      i++;
+    }
+    row.push(cur); rows.push(row);
+    // 마지막 빈 줄 제거
+    if(rows.length && rows[rows.length-1].length===1 && rows[rows.length-1][0]==='') rows.pop();
+    return rows;
+  }
+  function csvToJson(text){
+    var rows=parseCsv(text);
+    if(rows.length<1) return '[]';
+    var headers=rows[0], out=[];
+    for(var r=1;r<rows.length;r++){ var o={}; for(var c=0;c<headers.length;c++){ o[headers[c]] = rows[r][c]!==undefined?rows[r][c]:''; } out.push(o); }
+    return JSON.stringify(out, null, 2);
+  }
+  function convert(){
+    $('err').style.display='none';
+    var inp=$('input').value.trim();
+    if(!inp){ $('output').value=''; return; }
+    try{ $('output').value = (dir==='j2c') ? jsonToCsv(inp) : csvToJson(inp); }
+    catch(e){ $('err').textContent='오류: '+e.message; $('err').style.display=''; $('output').value=''; }
+  }
+  function setDir(d){
+    dir=d;
+    $('d-j2c').classList.toggle('on', d==='j2c'); $('d-c2j').classList.toggle('on', d==='c2j');
+    $('in-lbl').textContent = d==='j2c' ? '입력 (JSON 배열)' : '입력 (CSV)';
+    $('out-lbl').textContent = d==='j2c' ? '결과 (CSV)' : '결과 (JSON)';
+    $('input').placeholder = d==='j2c' ? '[{"name":"철수","age":20}]' : 'name,age\n철수,20';
+    convert();
+  }
+  function toast(m){ var el=$('toast'); el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  $('d-j2c').addEventListener('click', function(){ setDir('j2c'); });
+  $('d-c2j').addEventListener('click', function(){ setDir('c2j'); });
+  $('convert').addEventListener('click', convert);
+  $('input').addEventListener('input', convert);
+  $('copy').addEventListener('click', function(){ if(!$('output').value){ toast('결과가 없습니다'); return; }
+    navigator.clipboard.writeText($('output').value).then(function(){ toast('복사됐습니다'); }); });
+  $('download').addEventListener('click', function(){ var v=$('output').value; if(!v){ toast('결과가 없습니다'); return; }
+    var ext=dir==='j2c'?'csv':'json'; var mime=dir==='j2c'?'text/csv':'application/json';
+    var bom = dir==='j2c' ? '﻿' : '';   // CSV 엑셀 한글 호환
+    var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([bom+v],{type:mime+';charset=utf-8'})); a.download='converted.'+ext; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1000); toast('다운로드'); });
+</script>
+</body>
+</html>

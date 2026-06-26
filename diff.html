@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>텍스트 비교 (diff) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="두 텍스트의 차이를 줄 단위로 비교합니다. 추가·삭제된 줄을 색으로 표시. 문서 버전 비교, 코드 변경 확인. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/diff.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="텍스트 비교 (diff) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="두 텍스트의 차이를 줄 단위로 비교하고 색으로 표시. 브라우저에서만 처리."/>
+<meta property="og:url" content="https://gemini2k.co.kr/diff.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .io{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+  .io .fld label{display:block;font-size:.85rem;font-weight:600;margin-bottom:.3rem;}
+  .io textarea{width:100%;min-height:160px;padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9rem;resize:vertical;background:var(--surface);color:var(--text);}
+  .opts{display:flex;gap:1rem;align-items:center;margin:1rem 0 .3rem;flex-wrap:wrap;font-size:.88rem;}
+  .summary{font-size:.85rem;color:var(--muted);margin:.6rem 0;}
+  .summary .add{color:#1f7a55;font-weight:700;} .summary .del{color:#b3402f;font-weight:700;}
+  .diff{border:1px solid var(--border);border-radius:11px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;}
+  .dl{display:flex;white-space:pre-wrap;word-break:break-word;padding:.1rem .2rem;}
+  .dl .gut{flex-shrink:0;width:1.6rem;text-align:center;color:var(--muted);user-select:none;}
+  .dl.add{background:#eafaf1;} .dl.add .gut{color:#1f7a55;}
+  .dl.del{background:#fdeeec;} .dl.del .gut{color:#b3402f;}
+  .dl.eq{color:var(--text);}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:#fafbff;border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1>텍스트 비교 (diff)</h1>
+  <p class="sub">두 글을 줄 단위로 비교해 추가·삭제된 부분을 색으로 보여 줍니다. 문서 버전, 코드 변경 확인에.</p>
+
+  <div class="card">
+    <div class="io">
+      <div class="fld"><label for="a">원본 (A)</label><textarea id="a" placeholder="원본 텍스트"></textarea></div>
+      <div class="fld"><label for="b">비교 (B)</label><textarea id="b" placeholder="비교할 텍스트"></textarea></div>
+    </div>
+    <div class="opts">
+      <label><input id="trim" type="checkbox" checked/> 줄 끝 공백 무시</label>
+      <label><input id="ignorecase" type="checkbox"/> 대소문자 무시</label>
+    </div>
+    <div class="row"><button class="btn" id="run">비교하기</button></div>
+    <div class="summary" id="summary" style="display:none;"></div>
+    <div class="diff" id="diff" style="display:none;"></div>
+    <div class="note">
+      줄(line) 단위로 가장 긴 공통 부분(LCS)을 찾아 차이를 표시합니다. 초록(+)은 B에만 있는 줄, 빨강(−)은 A에만 있는 줄입니다. 모든 비교는 브라우저에서만 이루어지며 입력은 전송되지 않습니다.
+    </div>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a><a href="privacy.html" data-i18n="foot.policy">· 개인정보처리방침</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function norm(line){ var s=line; if($('trim').checked) s=s.replace(/\s+$/,''); if($('ignorecase').checked) s=s.toLowerCase(); return s; }
+
+  function diff(a, b){
+    var na=a.map(norm), nb=b.map(norm), n=a.length, m=b.length;
+    // LCS DP
+    var dp=[]; for(var i=0;i<=n;i++){ dp.push(new Uint32Array(m+1)); }
+    for(var i=n-1;i>=0;i--){ for(var j=m-1;j>=0;j--){
+      dp[i][j] = (na[i]===nb[j]) ? dp[i+1][j+1]+1 : Math.max(dp[i+1][j], dp[i][j+1]); } }
+    var ops=[], i2=0, j2=0;
+    while(i2<n && j2<m){
+      if(na[i2]===nb[j2]){ ops.push(['eq',a[i2]]); i2++; j2++; }
+      else if(dp[i2+1][j2] >= dp[i2][j2+1]){ ops.push(['del',a[i2]]); i2++; }
+      else { ops.push(['add',b[j2]]); j2++; }
+    }
+    while(i2<n){ ops.push(['del',a[i2++]]); }
+    while(j2<m){ ops.push(['add',b[j2++]]); }
+    return ops;
+  }
+
+  function run(){
+    var a=$('a').value.split('\n'), b=$('b').value.split('\n');
+    if($('a').value==='' ) a=[]; if($('b').value==='') b=[];
+    var ops=diff(a,b), add=0, del=0;
+    var html=ops.map(function(o){ var t=o[0]; if(t==='add')add++; if(t==='del')del++;
+      var g = t==='add'?'+':(t==='del'?'−':' ');
+      return '<div class="dl '+t+'"><span class="gut">'+g+'</span><span>'+esc(o[1])+'</span></div>'; }).join('');
+    $('diff').innerHTML = html || '<div class="dl eq"><span class="gut"> </span><span>(내용 없음)</span></div>';
+    $('summary').innerHTML = '<span class="add">+'+add+' 추가</span> · <span class="del">−'+del+' 삭제</span> · 같은 줄 '+(ops.length-add-del)+'개';
+    $('diff').style.display=''; $('summary').style.display='';
+  }
+  $('run').addEventListener('click', run);
+  ['trim','ignorecase'].forEach(function(id){ $(id).addEventListener('change', function(){ if($('diff').style.display!=='none') run(); }); });
+</script>
+</body>
+</html>

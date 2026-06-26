@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>퍼센트 계산기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="백분율을 네 가지 방식으로 계산합니다. A는 B의 몇 %, B의 A%, 증감률, N% 증가·감소 후 값. 할인·인상·비율 계산. 브라우저에서 즉시."/>
+<link rel="canonical" href="https://gemini2k.co.kr/percent.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="퍼센트 계산기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="백분율 4가지 계산: 비율·증감률·N% 증감 후 값. 할인·인상 계산. 브라우저에서 즉시."/>
+<meta property="og:url" content="https://gemini2k.co.kr/percent.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="i18n.js"></script>
+<style>
+  .pcard{border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1rem;}
+  .pcard h3{font-size:.95rem;margin:0 0 .7rem;}
+  .pline{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:1rem;}
+  .pline input{width:90px;padding:.5rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:1rem;text-align:right;color:var(--text);}
+  .pline select{padding:.5rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;color:var(--text);}
+  .pline .eq{color:var(--muted);}
+  .pline .out{font-weight:800;color:#3a7bf0;font-size:1.15rem;min-width:70px;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:#fafbff;border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <nav>
+    <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="zh">中文</option><option value="ja">日本語</option>
+    </select>
+    <a href="https://gemini2k.kr" target="_blank" rel="noopener" data-i18n="nav.blog">블로그</a>
+  </nav>
+</div></header>
+
+<div class="toolwrap">
+  <a class="back" href="index.html" data-i18n="back">← 전체 도구</a>
+  <h1>퍼센트 계산기</h1>
+  <p class="sub">비율·증감률·할인·인상을 네 가지 방식으로 바로 계산합니다. 숫자를 입력하면 즉시 결과가 나옵니다.</p>
+
+  <div class="card">
+    <div class="pcard">
+      <h3>① A는 B의 몇 %인가</h3>
+      <div class="pline"><input id="a1" type="number" value="30"/> 는 <input id="b1" type="number" value="200"/> 의 <span class="eq">=</span> <span class="out" id="o1">15%</span></div>
+    </div>
+    <div class="pcard">
+      <h3>② B의 A%는 얼마인가</h3>
+      <div class="pline"><input id="a2" type="number" value="15"/> % 의 <input id="b2" type="number" value="200"/> <span class="eq">=</span> <span class="out" id="o2">30</span></div>
+    </div>
+    <div class="pcard">
+      <h3>③ A에서 B로 몇 % 증감</h3>
+      <div class="pline"><input id="a3" type="number" value="200"/> 에서 <input id="b3" type="number" value="260"/> 로 <span class="eq">=</span> <span class="out" id="o3">+30%</span></div>
+    </div>
+    <div class="pcard">
+      <h3>④ A를 N% 증가/감소</h3>
+      <div class="pline"><input id="a4" type="number" value="200"/> 를
+        <input id="n4" type="number" value="10"/> %
+        <select id="m4"><option value="up">증가</option><option value="down">감소</option></select>
+        <span class="eq">=</span> <span class="out" id="o4">220</span></div>
+    </div>
+    <div class="note">
+      ③ 증감률은 (B−A)÷A×100, 양수면 증가(+) 음수면 감소(−)입니다. ④는 할인가(감소)·인상가(증가) 계산에 쓰세요. 소수점은 둘째 자리까지 반올림해 보여 줍니다. 모든 계산은 브라우저에서 이루어집니다.
+    </div>
+  </div>
+</div>
+
+<footer class="foot"><div class="foot-in">
+  <span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>
+  <a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a><a href="privacy.html" data-i18n="foot.policy">· 개인정보처리방침</a>
+  <span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  function n(id){ var v=parseFloat($(id).value); return isFinite(v)?v:0; }
+  function r2(x){ return (Math.round(x*100)/100).toLocaleString('ko-KR'); }
+  function calc(){
+    var b1=n('b1'); $('o1').textContent = (b1? r2(n('a1')/b1*100):0) + '%';
+    $('o2').textContent = r2(n('b2')*n('a2')/100);
+    var a3=n('a3'); var d = a3? (n('b3')-a3)/a3*100 : 0; $('o3').textContent = (d>=0?'+':'') + r2(d) + '%';
+    var f = $('m4').value==='up' ? 1+n('n4')/100 : 1-n('n4')/100; $('o4').textContent = r2(n('a4')*f);
+  }
+  ['a1','b1','a2','b2','a3','b3','a4','n4','m4'].forEach(function(id){ $(id).addEventListener('input', calc); });
+  calc();
+</script>
+</body>
+</html>
