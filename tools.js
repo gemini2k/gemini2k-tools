@@ -150,4 +150,5 @@ window.TOOLS = [
   { key:'namematch',h:'namematch.html',ic:'💕', chip:'c-amber', cat:'심리·운세', k:'이름 궁합 테스트 사랑 연애 커플 재미 획수 name compatibility 姓名配对 相性 이름궁합', related:['bloodtype','mbti','agecalc'] },
   { key:'saju',h:'saju.html',ic:'🔮', chip:'c-cyan', cat:'심리·운세', k:'사주 만세력 사주팔자 팔자 천간지지 간지 오행 띠 일간 명리 saju four pillars 四柱 八字 사주팔자 만세력', related:['agecalc','lunar','bloodtype'] },
   { key:'copsrobbers',h:'copsrobbers.html',ic:'🚔', chip:'c-blue', cat:'게임', k:'경찰과 도둑 2인용 추격 보석 도둑잡기 멀티 둘이서 cops robbers chase 2player 警察小偷 泥棒 경찰도둑 2인용게임', related:['tank','topdown','maze'] },
+  { key:'slimefps',h:'slimefps.html',ic:'🔫', chip:'c-green', cat:'게임', k:'fps 슈팅 1인칭 총 슬라임 건앤슬라임 gun slime shooter 3d 사격 射击 シューティング 슬라임슈팅 fps게임', related:['space3d','tank','spaceshooter'] },
 ];

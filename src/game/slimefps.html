@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>건앤슬라임 3D FPS 게임 (슬라임 슈팅) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="다가오는 슬라임을 총으로 처치하는 3D 1인칭 슈팅(FPS) 게임. WASD 이동, 마우스 조준·클릭 발사, 목표 수의 슬라임을 잡으면 클리어. Three.js 3D 그래픽, 모바일 터치 조작, 일시정지 지원. PC·모바일 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/slimefps.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="건앤슬라임 3D FPS 게임 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="다가오는 슬라임을 총으로 처치하는 3D FPS 게임. WASD·마우스 조준·클릭 발사, 모바일 터치. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/slimefps.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="/vendor/three-r134/three.min.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:72px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);}
+  .stage{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#0a0d18;}
+  .view{width:100%;}
+  .cross{position:absolute;left:50%;top:50%;width:26px;height:26px;transform:translate(-50%,-50%);pointer-events:none;z-index:3;}
+  .cross::before,.cross::after{content:'';position:absolute;background:rgba(255,255,255,.85);box-shadow:0 0 2px rgba(0,0,0,.6);}
+  .cross::before{left:50%;top:0;width:2px;height:100%;transform:translateX(-50%);}
+  .cross::after{top:50%;left:0;height:2px;width:100%;transform:translateY(-50%);}
+  .hp{position:absolute;left:12px;bottom:12px;width:160px;height:14px;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.3);border-radius:8px;overflow:hidden;z-index:3;pointer-events:none;}
+  .hp>i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);transition:width .2s;}
+  .hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(0,0,0,.55);color:#fff;font-size:.8rem;padding:.3rem .7rem;border-radius:8px;z-index:3;pointer-events:none;}
+  .over{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(8,12,30,.86);color:#fff;z-index:4;}
+  .over .big{font-size:1.6rem;font-weight:800;margin-bottom:.3rem;} .over .sm{font-size:.95rem;opacity:.9;margin-bottom:1rem;line-height:1.6;}
+  .touch{display:flex;justify-content:space-between;align-items:flex-end;margin-top:1rem;}
+  .dpad{display:grid;grid-template-columns:repeat(3,46px);grid-template-rows:repeat(2,46px);gap:.3rem;touch-action:none;}
+  .dpad button{border:1px solid var(--border);background:var(--surface);border-radius:10px;font-size:1.05rem;color:var(--text);cursor:pointer;user-select:none;}
+  .dpad button:active,.dpad button.on{background:var(--accent-soft);}
+  .du{grid-column:2;grid-row:1;} .dl{grid-column:1;grid-row:2;} .dd{grid-column:2;grid-row:2;} .dr{grid-column:3;grid-row:2;}
+  .fire{width:86px;height:86px;border-radius:50%;border:1px solid var(--border);background:var(--accent-soft);color:var(--text);font-weight:800;cursor:pointer;user-select:none;}
+  .fire:active{background:var(--accent);color:#fff;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "건앤슬라임 3D FPS",
+  "description": "다가오는 슬라임을 총으로 처치하는 3D 1인칭 슈팅(FPS) 게임. WASD 이동·마우스 조준·클릭 발사, 목표 수 클리어. Three.js 3D, 모바일 터치, 일시정지 지원.",
+  "url": "https://gemini2k.co.kr/slimefps.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Shooter",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1>건앤슬라임 <span style="font-size:.9rem;color:var(--muted)">(3D FPS)</span></h1>
+  <p class="sub">사방에서 다가오는 슬라임을 총으로 처치하세요! 목표 수만큼 잡으면 클리어, 체력이 0이 되면 게임 오버.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li><b>이동 W A S D</b>, <b>조준</b>은 화면을 클릭해 마우스로(다시 보려면 ESC). <b>발사 = 마우스 클릭</b></li>
+    <li>모바일: 왼쪽 <b>이동 버튼</b>, 화면을 <b>드래그</b>해 조준, 오른쪽 <b>발사 버튼</b></li>
+    <li>슬라임이 닿으면 체력이 깎여요. <b>Space/P</b> 또는 ⏸ 버튼으로 일시정지</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="scores">
+        <div class="sbox"><div class="l">남은 슬라임</div><div class="v" id="left">-</div></div>
+        <div class="sbox"><div class="l">처치</div><div class="v" id="kills">0</div></div>
+        <div class="sbox"><div class="l">골드</div><div class="v" id="gold">0</div></div>
+      </div>
+      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+    </div>
+    <div class="stage">
+      <div class="view g3d-stage" id="view"></div>
+      <div class="cross" id="cross" style="display:none"></div>
+      <div class="hp" id="hpwrap" style="display:none"><i id="hp"></i></div>
+      <div class="hint" id="hint" style="display:none">화면을 클릭하면 마우스로 조준할 수 있어요</div>
+      <div class="over" id="gover"><div><div class="big" id="goverBig">🔫 GUN &amp; SLIME</div><div class="sm" id="goverSm">다가오는 슬라임을 모두 처치하세요!</div><button class="btn" id="goverBtn" type="button">게임 시작</button></div></div>
+    </div>
+    <div class="touch">
+      <div class="dpad" id="dpad"><button class="du" data-d="u">▲</button><button class="dl" data-d="l">◀</button><button class="dd" data-d="d">▼</button><button class="dr" data-d="r">▶</button></div>
+      <button class="fire" id="fireBtn" type="button">발사</button>
+    </div>
+    <div class="note">Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 데스크톱은 마우스 조준(포인터 잠금), 모바일은 드래그 조준을 지원합니다. 진행은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="game-core.js"></script>
+<script src="three-core.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var T=Three3D.setup($('view'),{bg:0x0a0d18, fov:78, ratio:0.62, far:300});
+  if(!T){ ['cross','hpwrap','hint','dpad','fireBtn','restart','gover'].forEach(function(id){ var e=$(id); if(e)e.style.display='none'; }); return; }
+  var THREE=T.THREE, scene=T.scene, camera=T.camera;
+  scene.add(new THREE.AmbientLight(0x8893b8,0.9));
+  var dl=new THREE.DirectionalLight(0xffffff,0.8); dl.position.set(20,40,10); scene.add(dl);
+  scene.fog=new THREE.Fog(0x0a0d18, 30, 90);
+
+  var ARENA=44, EYE=1.7, TARGET=20, MAXALIVE=6;
+  var yaw=0, pitch=0, px=0, pz=0, health=100, kills=0, gold=0, spawned=0, state='ready';
+  var slimes=[], tracers=[], keys={u:0,d:0,l:0,r:0};
+  var FWD=new THREE.Vector3(), tmp=new THREE.Vector3();
+
+  function buildOnce(){
+    var grid=new THREE.GridHelper(ARENA*2, 36, 0x2a3a66, 0x18223f); scene.add(grid);
+    var gnd=new THREE.Mesh(new THREE.PlaneGeometry(ARENA*2,ARENA*2), new THREE.MeshLambertMaterial({color:0x12182e}));
+    gnd.rotation.x=-Math.PI/2; gnd.position.y=-0.01; scene.add(gnd);
+    // 외벽
+    var wm=new THREE.MeshLambertMaterial({color:0x26314f});
+    [[0,ARENA],[0,-ARENA],[ARENA,0],[-ARENA,0]].forEach(function(p,i){
+      var horiz=i<2; var w=new THREE.Mesh(new THREE.BoxGeometry(horiz?ARENA*2:1.5, 4, horiz?1.5:ARENA*2), wm);
+      w.position.set(p[0],2,p[1]); scene.add(w); });
+    // 엄폐물
+    var cm=new THREE.MeshLambertMaterial({color:0x33406b});
+    [[12,10],[-14,8],[8,-16],[-10,-12],[0,18],[18,-4]].forEach(function(c){
+      var b=new THREE.Mesh(new THREE.BoxGeometry(4,3,4),cm); b.position.set(c[0],1.5,c[1]); scene.add(b); });
+  }
+  function makeSlime(){
+    var g=new THREE.Group();
+    var body=new THREE.Mesh(new THREE.SphereGeometry(1,18,14), new THREE.MeshStandardMaterial({color:0x4ade80,roughness:.5,emissive:0x114022,emissiveIntensity:.4}));
+    body.scale.y=0.8; body.position.y=0.85; g.add(body);
+    var em=new THREE.MeshBasicMaterial({color:0x0a0a0a});
+    var e1=new THREE.Mesh(new THREE.SphereGeometry(0.14,8,8),em), e2=e1.clone();
+    e1.position.set(-0.32,1.05,0.78); e2.position.set(0.32,1.05,0.78); g.add(e1); g.add(e2);
+    g._body=body; g._hp=2; g._phase=Math.random()*6;
+    return g;
+  }
+  function spawnSlime(){
+    var ang=Math.random()*Math.PI*2, r=ARENA*0.7+Math.random()*5;
+    var s=makeSlime(); s.position.set(Math.cos(ang)*r,0,Math.sin(ang)*r);
+    s._spd=2.4+kills*0.06+Math.random()*0.6; scene.add(s); slimes.push(s); spawned++;
+  }
+  function clearSlimes(){ slimes.forEach(function(s){ scene.remove(s); }); slimes=[]; tracers.forEach(function(t){scene.remove(t.line);}); tracers=[]; }
+
+  function forward(){ FWD.set(-Math.sin(yaw)*Math.cos(pitch), Math.sin(pitch), -Math.cos(yaw)*Math.cos(pitch)); return FWD; }
+  function shoot(){
+    if(state!=='play') return;
+    // 조준선(히트스캔): 화면 중앙 방향과의 각도가 작은 가장 가까운 슬라임
+    var f=forward().clone(); var camPos=new THREE.Vector3(px,EYE,pz);
+    var best=null, bestDist=1e9;
+    for(var i=0;i<slimes.length;i++){ var s=slimes[i]; tmp.set(s.position.x-px, (s.position.y+0.85)-EYE, s.position.z-pz);
+      var dist=tmp.length(); if(dist>60) continue; tmp.normalize();
+      var dot=f.x*tmp.x+f.y*tmp.y+f.z*tmp.z; // 1에 가까울수록 정조준
+      var aimR=0.06+ (1.2/Math.max(4,dist)); // 가까울수록 관대
+      if(dot>1-aimR && dist<bestDist){ best=i; bestDist=dist; }
+    }
+    // 트레이서 연출
+    addTracer(camPos, camPos.clone().add(f.clone().multiplyScalar(best!=null?bestDist:60)));
+    if(best!=null){ var s=slimes[best]; s._hp--; flash(s);
+      if(s._hp<=0){ scene.remove(s); slimes.splice(best,1); kills++; gold+=50; $('kills').textContent=kills; $('gold').textContent=gold; updateLeft();
+        if(kills>=TARGET){ win(); } }
+    }
+  }
+  function flash(s){ if(s._body){ s._body.material.emissiveIntensity=1.2; setTimeout(function(){ try{s._body.material.emissiveIntensity=.4;}catch(e){} },90); } }
+  function addTracer(a,b){ var geo=new THREE.BufferGeometry().setFromPoints([a,b]);
+    var line=new THREE.Line(geo,new THREE.LineBasicMaterial({color:0xfff080})); scene.add(line); tracers.push({line:line,t:0.06}); }
+  function updateLeft(){ $('left').textContent=Math.max(0,TARGET-kills); }
+
+  T.start(function(dt){
+    // 카메라
+    camera.rotation.order='YXZ'; camera.rotation.y=yaw; camera.rotation.x=pitch; camera.position.set(px,EYE,pz);
+    // 트레이서 수명
+    for(var i=tracers.length-1;i>=0;i--){ tracers[i].t-=dt; if(tracers[i].t<=0){ scene.remove(tracers[i].line); tracers.splice(i,1); } }
+    if(state!=='play') return;
+    // 이동
+    var mf={x:-Math.sin(yaw),z:-Math.cos(yaw)}, rt={x:Math.cos(yaw),z:-Math.sin(yaw)};
+    var mx=0,mz=0; if(keys.u){mx+=mf.x;mz+=mf.z;} if(keys.d){mx-=mf.x;mz-=mf.z;} if(keys.r){mx+=rt.x;mz+=rt.z;} if(keys.l){mx-=rt.x;mz-=rt.z;}
+    if(mx||mz){ var l=Math.hypot(mx,mz); mx/=l; mz/=l; var sp=8*dt; px+=mx*sp; pz+=mz*sp;
+      var lim=ARENA-2; px=Math.max(-lim,Math.min(lim,px)); pz=Math.max(-lim,Math.min(lim,pz)); }
+    // 슬라임 스폰 유지
+    while(slimes.length<MAXALIVE && spawned<TARGET+ MAXALIVE) spawnSlime();
+    // 슬라임 이동/공격
+    for(var i=slimes.length-1;i>=0;i--){ var s=slimes[i]; var dx=px-s.position.x, dz=pz-s.position.z, d=Math.hypot(dx,dz)||1;
+      s.position.x+=dx/d*s._spd*dt; s.position.z+=dz/d*s._spd*dt;
+      s.position.y=Math.abs(Math.sin((performance.now()/1000+s._phase)*4))*0.25; // 통통
+      s.rotation.y=Math.atan2(dx,dz);
+      if(d<1.6){ health-=18*dt; $('hp').style.width=Math.max(0,health)+'%'; if(health<=0){ lose(); return; } }
+    }
+  });
+
+  function begin(){ clearSlimes(); yaw=0;pitch=0;px=0;pz=0;health=100;kills=0;gold=0;spawned=0;
+    $('kills').textContent='0'; $('gold').textContent='0'; $('hp').style.width='100%'; updateLeft();
+    state='play'; $('gover').style.display='none'; $('cross').style.display='block'; $('hpwrap').style.display='block';
+    if(!isTouch && !locked) $('hint').style.display='block';
+    for(var i=0;i<MAXALIVE;i++) spawnSlime();
+  }
+  function win(){ state='over'; exitLock(); $('goverBig').textContent='🎉 클리어!'; $('goverSm').textContent='슬라임 '+TARGET+'마리 처치! 골드 '+gold; $('goverBtn').textContent='다시 하기'; $('gover').style.display='flex'; $('cross').style.display='none'; $('hint').style.display='none'; }
+  function lose(){ state='over'; exitLock(); $('goverBig').textContent='💀 게임 오버'; $('goverSm').textContent='처치 '+kills+'/'+TARGET+' · 골드 '+gold; $('goverBtn').textContent='다시 시작'; $('gover').style.display='flex'; $('cross').style.display='none'; $('hint').style.display='none'; }
+
+  // ===== 입력 =====
+  var isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0, locked=false;
+  function look(dx,dy,scale){ yaw-=dx*scale; pitch-=dy*scale; var lim=Math.PI/2-0.05; pitch=Math.max(-lim,Math.min(lim,pitch)); }
+  function exitLock(){ if(document.exitPointerLock && document.pointerLockElement) document.exitPointerLock(); }
+  // 키보드
+  var KMAP={w:'u',a:'l',s:'d',d:'r',W:'u',A:'l',S:'d',D:'r',ArrowUp:'u',ArrowLeft:'l',ArrowDown:'d',ArrowRight:'r'};
+  document.addEventListener('keydown',function(e){ var k=KMAP[e.key]; if(k){ keys[k]=1; if(e.key.indexOf('Arrow')===0)e.preventDefault(); } });
+  document.addEventListener('keyup',function(e){ var k=KMAP[e.key]; if(k) keys[k]=0; });
+  // 포인터 잠금(데스크톱)
+  document.addEventListener('pointerlockchange',function(){ locked=(document.pointerLockElement===T.dom); if(locked)$('hint').style.display='none'; else if(state==='play'&&!isTouch)$('hint').style.display='block'; });
+  T.dom.addEventListener('mousedown',function(e){ if(state!=='play') return;
+    if(locked){ shoot(); } else if(!isTouch){ if(T.dom.requestPointerLock) T.dom.requestPointerLock(); } });
+  document.addEventListener('mousemove',function(e){ if(locked && state==='play') look(e.movementX||0, e.movementY||0, 0.0022); });
+  // 터치/드래그 조준
+  var drag=null;
+  T.dom.addEventListener('touchstart',function(e){ if(state!=='play')return; drag={x:e.touches[0].clientX,y:e.touches[0].clientY}; },{passive:true});
+  T.dom.addEventListener('touchmove',function(e){ if(!drag||state!=='play')return; var t=e.touches[0]; look(t.clientX-drag.x, t.clientY-drag.y, 0.005); drag={x:t.clientX,y:t.clientY}; e.preventDefault(); },{passive:false});
+  T.dom.addEventListener('touchend',function(){ drag=null; });
+  // 이동 버튼
+  Array.prototype.forEach.call($('dpad').querySelectorAll('button'),function(b){ var d=b.dataset.d;
+    function on(e){ e.preventDefault(); keys[d]=1; b.classList.add('on'); } function off(e){ e&&e.preventDefault(); keys[d]=0; b.classList.remove('on'); }
+    b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off); });
+  // 발사 버튼
+  $('fireBtn').addEventListener('pointerdown',function(e){ e.preventDefault(); shoot(); });
+  $('goverBtn').addEventListener('click',function(e){ e.stopPropagation(); begin(); });
+  $('restart').addEventListener('click',function(){ state='ready'; exitLock(); clearSlimes(); $('goverBig').textContent='🔫 GUN & SLIME'; $('goverSm').textContent='다가오는 슬라임을 모두 처치하세요!'; $('goverBtn').textContent='게임 시작'; $('gover').style.display='flex'; $('cross').style.display='none'; $('hpwrap').style.display='none'; $('hint').style.display='none'; });
+
+  buildOnce();
+  window._dbg={ shoot:shoot, slimes:function(){return slimes;}, kills:function(){return kills;}, health:function(){return health;}, state:function(){return state;},
+    begin:begin, hurt:function(n){ health-=n; if(health<=0)lose(); },
+    spawnAhead:function(){ var f=forward(); var s=makeSlime(); s.position.set(px+f.x*8, 0, pz+f.z*8); s._spd=0; s._hp=1; scene.add(s); slimes.push(s); return s; } };
+})();
+</script>
+</body>
+</html>
