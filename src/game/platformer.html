@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>옆스크롤 플랫포머 게임 (달리고 점프) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="긴 스테이지를 달리고 점프하며 코인을 모아 깃발까지 가는 옆스크롤 점프 게임. 카메라가 따라 움직이는 넓은 레벨, 방향키·WASD·모바일 버튼 조작, 일시정지 지원. PC·모바일 무료, 설치 없이 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/platformer.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="옆스크롤 플랫포머 게임 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="긴 스테이지를 달리고 점프하며 코인을 모아 깃발까지. 넓은 레벨, 일시정지. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/platformer.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:64px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);}
+  .stage{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  canvas{display:block;width:100%;height:auto;touch-action:none;}
+  .over{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(8,12,30,.82);color:#fff;}
+  .over .big{font-size:1.5rem;font-weight:800;margin-bottom:.3rem;} .over .sm{font-size:.9rem;opacity:.85;margin-bottom:.9rem;}
+  .ctrl{display:flex;justify-content:space-between;gap:.6rem;margin-top:1rem;}
+  .ctrl .mv{display:flex;gap:.4rem;}
+  .ctrl button{border:1px solid var(--border);background:var(--surface);border-radius:12px;font-size:1.3rem;color:var(--text);cursor:pointer;user-select:none;width:64px;height:56px;}
+  .ctrl button:active,.ctrl button.on{background:var(--accent-soft);}
+  .ctrl .jump{width:120px;font-size:1rem;font-weight:700;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "옆스크롤 플랫포머",
+  "description": "긴 스테이지를 달리고 점프하며 코인을 모아 깃발까지 가는 옆스크롤 점프 게임. 넓은 레벨, 방향키·WASD·모바일 버튼, 일시정지 지원.",
+  "url": "https://gemini2k.co.kr/platformer.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Platformer",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:680px;">
+  <h1>옆스크롤 플랫포머</h1>
+  <p class="sub">긴 스테이지를 달리고 점프하며 코인을 모아 끝의 깃발까지 도착하세요. 구덩이에 빠지지 않게 조심!</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li><b>← →</b> 또는 <b>A D</b>로 달리고, <b>↑ / W / 점프 버튼 / 화면 탭</b>으로 점프합니다</li>
+    <li>발판을 밟고 이동하며 <b>코인</b>을 모으고 오른쪽 끝 <b>깃발</b>에 도착하세요</li>
+    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지 (점프는 Space가 아닙니다)</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="scores">
+        <div class="sbox"><div class="l">단계</div><div class="v" id="level">1</div></div>
+        <div class="sbox"><div class="l">코인</div><div class="v" id="coins">0/0</div></div>
+        <div class="sbox"><div class="l">생명</div><div class="v" id="lives">3</div></div>
+      </div>
+      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+    </div>
+    <div class="stage">
+      <canvas id="cv" width="640" height="400"></canvas>
+      <div class="over" id="gover"><div><div class="big" id="goverBig">🏃 플랫포머</div><div class="sm" id="goverSm">달리고 점프해 깃발까지 가세요!</div><button class="btn" id="goverBtn" type="button">시작하기</button></div></div>
+    </div>
+    <div class="ctrl">
+      <div class="mv">
+        <button data-d="l" aria-label="왼쪽">◀</button>
+        <button data-d="r" aria-label="오른쪽">▶</button>
+      </div>
+      <button class="jump" data-d="j" aria-label="점프">⤴ 점프</button>
+    </div>
+    <div class="note">레벨은 매번 무작위로 생성됩니다. 구덩이에 빠지거나 가시에 닿으면 생명이 줄고 출발점으로 돌아갑니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="game-core.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'), x=cv.getContext('2d'); var VW=cv.width, VH=cv.height;
+  var gc=GameCore.init({mount:document.querySelector('.card')});
+  var GRAV=1700, MOVE=260, JUMP=620, GROUND=VH-50;
+  var plats, coins, spikes, goalX, player, cam=0, state='ready', level=1, lives=3, total=0, got=0, LEVEL_W;
+  var keys={l:false,r:false}, wantJump=false;
+
+  function rand(a,b){ return a+Math.random()*(b-a); }
+  function build(){
+    LEVEL_W=2600+level*500; plats=[]; coins=[]; spikes=[];
+    var px=0; var y=GROUND;
+    // 시작 발판
+    plats.push({x:0,y:y,w:360,h:VH-y});
+    px=360;
+    while(px<LEVEL_W-400){
+      var gap=rand(70,120+level*8);              // 구덩이
+      px+=gap;
+      var segW=rand(160,360);
+      var dy=rand(-70,70); y=Math.max(VH-220,Math.min(VH-40, y+dy));
+      plats.push({x:px,y:y,w:segW,h:VH-y});
+      // 코인들
+      var nc=Math.floor(rand(1,4)); for(var c=0;c<nc;c++){ coins.push({x:px+rand(20,segW-20), y:y-rand(30,90)}); }
+      // 가끔 가시
+      if(Math.random()<0.35 && segW>200){ spikes.push({x:px+segW/2-15, y:y-14, w:30, h:14}); }
+      // 가끔 떠있는 발판
+      if(Math.random()<0.5){ var fy=y-rand(80,150), fx=px+rand(0,segW-100); plats.push({x:fx,y:fy,w:rand(80,140),h:16}); coins.push({x:fx+40,y:fy-30}); }
+      px+=segW;
+    }
+    // 끝 발판 + 깃발
+    plats.push({x:px,y:GROUND,w:420,h:VH-GROUND}); goalX=px+200;
+    total=coins.length; got=0;
+    player={x:60,y:GROUND-60,w:26,h:36,vx:0,vy:0,onGround:false,face:1};
+    cam=0; $('level').textContent=level; $('lives').textContent=lives; $('coins').textContent=got+'/'+total;
+  }
+  function rectHit(a,b){ return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y; }
+
+  function update(dt){
+    if(state!=='play') return;
+    var p=player;
+    p.vx=(keys.r?MOVE:0)-(keys.l?MOVE:0); if(p.vx>0)p.face=1; else if(p.vx<0)p.face=-1;
+    if(wantJump && p.onGround){ p.vy=-JUMP; p.onGround=false; } wantJump=false;
+    p.vy+=GRAV*dt; if(p.vy>900)p.vy=900;
+    // X 이동 + 충돌
+    p.x+=p.vx*dt;
+    for(var i=0;i<plats.length;i++){ var pl=plats[i]; if(rectHit(p,pl)){ if(p.vx>0) p.x=pl.x-p.w; else if(p.vx<0) p.x=pl.x+pl.w; } }
+    if(p.x<0)p.x=0;
+    // Y 이동 + 충돌
+    p.y+=p.vy*dt; p.onGround=false;
+    for(var j=0;j<plats.length;j++){ var pl2=plats[j]; if(rectHit(p,pl2)){
+      if(p.vy>0){ p.y=pl2.y-p.h; p.vy=0; p.onGround=true; } else if(p.vy<0){ p.y=pl2.y+pl2.h; p.vy=0; } } }
+    // 낙사
+    if(p.y>VH+80){ die(); return; }
+    // 가시
+    for(var s=0;s<spikes.length;s++){ if(rectHit(p,spikes[s])){ die(); return; } }
+    // 코인
+    for(var c=coins.length-1;c>=0;c--){ var co=coins[c]; if(Math.abs(p.x+p.w/2-co.x)<20&&Math.abs(p.y+p.h/2-co.y)<22){ coins.splice(c,1); got++; $('coins').textContent=got+'/'+total; } }
+    // 골인
+    if(p.x+p.w/2>goalX){ win(); return; }
+    // 카메라
+    cam=Math.max(0,Math.min(LEVEL_W-VW, p.x-VW*0.4));
+  }
+  function die(){ lives--; $('lives').textContent=lives; if(lives<=0){ lose(); return; } player.x=60; player.y=GROUND-60; player.vx=0; player.vy=0; cam=0; }
+
+  function draw(){
+    // 하늘 그라데이션
+    var g=x.createLinearGradient(0,0,0,VH); g.addColorStop(0,'#1a2348'); g.addColorStop(1,'#0c1430'); x.fillStyle=g; x.fillRect(0,0,VW,VH);
+    // 먼 배경 언덕(시차)
+    x.fillStyle='rgba(80,110,180,.18)'; for(var h=0;h<6;h++){ var hx=((h*420)-cam*0.3)%(VW+420)-210; x.beginPath(); x.arc(hx+210,VH,180,Math.PI,0); x.fill(); }
+    // 발판
+    for(var i=0;i<plats.length;i++){ var pl=plats[i]; var sx=pl.x-cam; if(sx>VW||sx+pl.w<0) continue;
+      x.fillStyle='#3a4d7a'; x.fillRect(sx,pl.y,pl.w,pl.h); x.fillStyle='#4f6aa3'; x.fillRect(sx,pl.y,pl.w,6); }
+    // 가시
+    x.fillStyle='#e05555'; for(var s=0;s<spikes.length;s++){ var sp=spikes[s], ssx=sp.x-cam; if(ssx>VW||ssx+sp.w<0)continue;
+      for(var t=0;t<sp.w;t+=10){ x.beginPath(); x.moveTo(ssx+t,sp.y+sp.h); x.lineTo(ssx+t+5,sp.y); x.lineTo(ssx+t+10,sp.y+sp.h); x.closePath(); x.fill(); } }
+    // 코인
+    for(var c=0;c<coins.length;c++){ var co=coins[c], cx=co.x-cam; if(cx<-20||cx>VW+20)continue; x.fillStyle='#facc15'; x.beginPath(); x.arc(cx,co.y,8,0,7); x.fill(); x.fillStyle='#b8860b'; x.fillRect(cx-1.5,co.y-5,3,10); }
+    // 깃발
+    var gx=goalX-cam; if(gx>-40&&gx<VW+40){ x.strokeStyle='#ddd'; x.lineWidth=4; x.beginPath(); x.moveTo(gx,GROUND); x.lineTo(gx,GROUND-120); x.stroke(); x.fillStyle='#34d399'; x.beginPath(); x.moveTo(gx,GROUND-120); x.lineTo(gx+48,GROUND-104); x.lineTo(gx,GROUND-88); x.closePath(); x.fill(); }
+    // 플레이어
+    var p=player, ppx=p.x-cam; x.fillStyle='#4da3ff'; roundRect(ppx,p.y,p.w,p.h,6); x.fill();
+    x.fillStyle='#fff'; x.fillRect(ppx+(p.face>0?p.w-10:4),p.y+8,6,6);
+  }
+  function roundRect(X,Y,W,H,r){ x.beginPath(); x.moveTo(X+r,Y); x.arcTo(X+W,Y,X+W,Y+H,r); x.arcTo(X+W,Y+H,X,Y+H,r); x.arcTo(X,Y+H,X,Y,r); x.arcTo(X,Y,X+W,Y,r); x.closePath(); }
+
+  var last=0, raf=0;
+  function loop(t){ raf=requestAnimationFrame(loop); var dt=Math.min(0.04,((t-last)/1000)||0); last=t; if(!gc.isPaused()) update(dt); draw(); }
+  function startLoop(){ if(!raf){ last=performance.now(); raf=requestAnimationFrame(loop); } }
+
+  function begin(){ state='play'; $('gover').style.display='none'; }
+  function win(){ state='over'; $('goverBig').textContent='🏁 단계 '+level+' 완료!'; $('goverSm').textContent='코인 '+got+'/'+total+' · 다음은 더 길어집니다'; $('goverBtn').textContent='다음 단계'; $('gover').style.display='flex'; level++; }
+  function lose(){ state='over'; $('goverBig').textContent='💀 게임 오버'; $('goverSm').textContent='단계 '+level+'에서 종료 — 코인 '+got+'/'+total; $('goverBtn').textContent='다시 시작'; $('gover').style.display='flex'; }
+
+  // 입력
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){ keys.l=true; e.preventDefault(); }
+    else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){ keys.r=true; e.preventDefault(); }
+    else if(e.key==='ArrowUp'||e.key==='w'||e.key==='W'){ wantJump=true; e.preventDefault(); }
+  });
+  document.addEventListener('keyup',function(e){ if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')keys.l=false; else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')keys.r=false; });
+  Array.prototype.forEach.call(document.querySelectorAll('.ctrl button'),function(b){ var d=b.dataset.d;
+    function on(e){ e.preventDefault(); if(d==='j'){ wantJump=true; } else { keys[d]=true; b.classList.add('on'); } }
+    function off(e){ e&&e.preventDefault(); if(d!=='j'){ keys[d]=false; b.classList.remove('on'); } }
+    b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off); });
+  cv.addEventListener('pointerdown',function(e){ e.preventDefault(); wantJump=true; });
+
+  $('goverBtn').addEventListener('click',function(e){ e.stopPropagation();
+    if($('goverBig').textContent.indexOf('오버')>=0){ level=1; lives=3; } build(); begin(); });
+  $('restart').addEventListener('click',function(){ level=1; lives=3; state='ready'; $('goverBig').textContent='🏃 플랫포머'; $('goverSm').textContent='달리고 점프해 깃발까지 가세요!'; $('goverBtn').textContent='시작하기'; $('gover').style.display='flex'; build(); });
+
+  build(); startLoop();
+})();
+</script>
+</body>
+</html>

@@ -130,4 +130,7 @@ window.TOOLS = [
   { key:'imgmerge',h:'imgmerge.html',ic:'🧩', chip:'c-green', cat:'이미지', k:'이미지 합치기 이어붙이기 연결 콜라주 격자 세로 가로 긴 스크린샷 merge combine collage 拼接 結合 이미지합치기', related:['image','imgcrop','imgframe'] },
   { key:'imgframe',h:'imgframe.html',ic:'🎀', chip:'c-violet', cat:'이미지', k:'스크린샷 꾸미기 배경 여백 둥근모서리 그림자 frame mockup beautify screenshot 美化 装飾 스샷꾸미기', related:['image','imgwatermark','ogimage'] },
   { key:'imgmosaic',h:'imgmosaic.html',ic:'🔲', chip:'c-rose', cat:'개인정보', k:'모자이크 블러 가리기 얼굴 개인정보 민감정보 사진 마스킹 mosaic blur pixelate 马赛克 モザイク 모자이크', related:['exif','mask','imgcrop'] },
+  { key:'explore3d',h:'explore3d.html',ic:'🌳', chip:'c-green', cat:'게임', k:'3D 탐험 보석 수집 오픈필드 자유이동 어드벤처 3d explore gem adventure roam 探索 探検 3d탐험 자유이동게임', related:['maze3d','topdown','runner3d'] },
+  { key:'topdown',h:'topdown.html',ic:'🗺️', chip:'c-amber', cat:'게임', k:'탑다운 탐험 미궁 큰맵 보물찾기 추격 어드벤처 topdown explore treasure 探索 探検 맵탐험 보물찾기게임', related:['explore3d','maze3d','platformer'] },
+  { key:'platformer',h:'platformer.html',ic:'🏃', chip:'c-blue', cat:'게임', k:'플랫포머 옆스크롤 점프 달리기 발판 코인 platformer jump run 横版 跳跃 플랫포머 점프게임', related:['runner3d','topdown','explore3d'] },
 ];

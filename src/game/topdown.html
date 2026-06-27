@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>탑다운 미궁 탐험 게임 (큰 맵·보물 찾기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="화면보다 훨씬 넓은 미궁을 카메라를 따라 돌아다니며 보물을 모으고 추격자를 피하는 탐험 게임. 미니맵 제공, 방향키·WASD·모바일 버튼 조작, 일시정지 지원. PC·모바일 무료, 설치 없이 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/topdown.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="탑다운 미궁 탐험 게임 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="화면보다 넓은 미궁을 돌아다니며 보물을 모으고 추격자를 피하는 탐험 게임. 미니맵, 일시정지. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/topdown.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:64px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);}
+  .stage{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#0c1430;}
+  canvas{display:block;width:100%;height:auto;touch-action:none;}
+  .over{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(8,12,30,.82);color:#fff;}
+  .over .big{font-size:1.5rem;font-weight:800;margin-bottom:.3rem;} .over .sm{font-size:.9rem;opacity:.85;margin-bottom:.9rem;}
+  .joy{display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,56px);gap:.4rem;justify-content:center;margin-top:1rem;touch-action:none;}
+  .joy button{border:1px solid var(--border);background:var(--surface);border-radius:12px;font-size:1.3rem;color:var(--text);cursor:pointer;user-select:none;}
+  .joy button:active,.joy button.on{background:var(--accent-soft);}
+  .j-up{grid-column:2;grid-row:1;} .j-left{grid-column:1;grid-row:2;} .j-down{grid-column:2;grid-row:2;} .j-right{grid-column:3;grid-row:2;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "탑다운 미궁 탐험",
+  "description": "화면보다 넓은 미궁을 카메라를 따라 돌아다니며 보물을 모으고 추격자를 피하는 탐험 게임. 미니맵, 방향키·WASD·모바일 버튼, 일시정지 지원.",
+  "url": "https://gemini2k.co.kr/topdown.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Adventure",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:640px;">
+  <h1>탑다운 미궁 탐험</h1>
+  <p class="sub">화면보다 훨씬 넓은 미궁을 돌아다니며 보물을 모으세요. 빨간 추격자에게 닿지 않도록 조심하세요!</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li><b>방향키 / WASD</b> 또는 아래 버튼·화면 드래그로 이동합니다</li>
+    <li>맵 곳곳의 <b>보물(노란 별)</b>을 모두 모으면 다음 단계로</li>
+    <li>오른쪽 위 <b>미니맵</b>으로 위치를 파악하세요. <b>Space/P</b>로 일시정지</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="scores">
+        <div class="sbox"><div class="l">단계</div><div class="v" id="level">1</div></div>
+        <div class="sbox"><div class="l">보물</div><div class="v" id="coins">0/0</div></div>
+        <div class="sbox"><div class="l">생명</div><div class="v" id="lives">3</div></div>
+      </div>
+      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+    </div>
+    <div class="stage">
+      <canvas id="cv" width="600" height="440"></canvas>
+      <div class="over" id="gover"><div><div class="big" id="goverBig">🗺️ 미궁 탐험</div><div class="sm" id="goverSm">넓은 미궁을 돌아다니며 보물을 모으세요!</div><button class="btn" id="goverBtn" type="button">시작하기</button></div></div>
+    </div>
+    <div class="joy">
+      <button class="j-up" data-d="u" aria-label="위">▲</button>
+      <button class="j-left" data-d="l" aria-label="왼쪽">◀</button>
+      <button class="j-down" data-d="d" aria-label="아래">▼</button>
+      <button class="j-right" data-d="r" aria-label="오른쪽">▶</button>
+    </div>
+    <div class="note">맵은 매번 무작위로 생성됩니다. 추격자에게 닿으면 생명이 하나 줄고 출발점으로 돌아갑니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="game-core.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'), x=cv.getContext('2d');
+  var VW=cv.width, VH=cv.height;
+  var gc=GameCore.init({mount:document.querySelector('.card')});
+  var WORLD_W, WORLD_H, walls, coins, enemies, player, cam={x:0,y:0}, state='ready', level=1, lives=3, total=0, got=0, inv=0;
+  var keys={u:false,d:false,l:false,r:false};
+  var R=18;
+
+  function rand(a,b){ return a+Math.random()*(b-a); }
+  function rectsOverlap(ax,ay,aw,ah,bx,by,bw,bh){ return ax<bx+bw&&ax+aw>bx&&ay<by+bh&&ay+ah>by; }
+
+  function build(){
+    WORLD_W=1400+level*200; WORLD_H=1100+level*150;
+    walls=[];
+    // 외벽
+    var t=24; walls.push([0,0,WORLD_W,t]); walls.push([0,WORLD_H-t,WORLD_W,t]); walls.push([0,0,t,WORLD_H]); walls.push([WORLD_W-t,0,t,WORLD_H]);
+    // 내부 벽(무작위 블록)
+    var nW=14+level*3;
+    for(var i=0;i<nW;i++){ var ww=rand(60,260), wh=rand(30,200), wx=rand(60,WORLD_W-60-ww), wy=rand(60,WORLD_H-60-wh);
+      // 시작점 근처는 비움
+      if(rectsOverlap(wx,wy,ww,wh, 60,60,200,200)) continue;
+      walls.push([wx,wy,ww,wh]); }
+    player={x:120,y:120};
+    // 보물
+    coins=[]; total=8+level*2; var placed=0, guard=0;
+    while(placed<total && guard++<2000){ var c={x:rand(50,WORLD_W-50),y:rand(50,WORLD_H-50)};
+      if(hitWall(c.x-12,c.y-12,24,24)) continue; coins.push(c); placed++; }
+    total=coins.length; got=0;
+    // 적
+    enemies=[]; var nE=2+level;
+    for(var e=0;e<nE;e++){ var en, g2=0; do{ en={x:rand(300,WORLD_W-50),y:rand(300,WORLD_H-50)}; }while(hitWall(en.x-14,en.y-14,28,28)&&g2++<200);
+      en.vx=rand(-1,1); en.vy=rand(-1,1); en.sp=40+level*6; enemies.push(en); }
+    $('level').textContent=level; $('lives').textContent=lives; $('coins').textContent=got+'/'+total;
+    centerCam(true);
+  }
+  function hitWall(px,py,pw,ph){ for(var i=0;i<walls.length;i++){ var w=walls[i]; if(rectsOverlap(px,py,pw,ph,w[0],w[1],w[2],w[3])) return true; } return false; }
+  function centerCam(){ cam.x=Math.max(0,Math.min(WORLD_W-VW, player.x-VW/2)); cam.y=Math.max(0,Math.min(WORLD_H-VH, player.y-VH/2)); }
+
+  function update(dt){
+    if(state!=='play') return;
+    if(inv>0) inv-=dt;
+    var vx=(keys.r?1:0)-(keys.l?1:0), vy=(keys.d?1:0)-(keys.u?1:0);
+    if(vx||vy){ var len=Math.hypot(vx,vy); vx/=len; vy/=len; var sp=200*dt;
+      var nx=player.x+vx*sp; if(!hitWall(nx-R/2,player.y-R/2,R,R)) player.x=nx;
+      var ny=player.y+vy*sp; if(!hitWall(player.x-R/2,ny-R/2,R,R)) player.y=ny;
+      player.x=Math.max(R,Math.min(WORLD_W-R,player.x)); player.y=Math.max(R,Math.min(WORLD_H-R,player.y));
+    }
+    // 보물
+    for(var i=coins.length-1;i>=0;i--){ var c=coins[i]; if(Math.hypot(player.x-c.x,player.y-c.y)<R+8){ coins.splice(i,1); got++; $('coins').textContent=got+'/'+total; if(coins.length===0){ win(); return; } } }
+    // 적 이동(플레이어 추적 + 약간 무작위)
+    for(var e=0;e<enemies.length;e++){ var en=enemies[e]; var dx=player.x-en.x, dy=player.y-en.y, d=Math.hypot(dx,dy)||1;
+      en.vx+= (dx/d)*0.06 + rand(-0.05,0.05); en.vy+= (dy/d)*0.06 + rand(-0.05,0.05);
+      var vl=Math.hypot(en.vx,en.vy)||1; en.vx/=vl; en.vy/=vl; var es=en.sp*dt;
+      var enx=en.x+en.vx*es, eny=en.y+en.vy*es;
+      if(hitWall(enx-14,en.y-14,28,28)){ en.vx*=-1; enx=en.x; } if(hitWall(en.x-14,eny-14,28,28)){ en.vy*=-1; eny=en.y; }
+      en.x=Math.max(20,Math.min(WORLD_W-20,enx)); en.y=Math.max(20,Math.min(WORLD_H-20,eny));
+      if(inv<=0 && Math.hypot(player.x-en.x,player.y-en.y)<R+14){ hitByEnemy(); }
+    }
+    centerCam();
+  }
+  function hitByEnemy(){ lives--; $('lives').textContent=lives; inv=1.5; player.x=120; player.y=120; centerCam();
+    if(lives<=0){ lose(); } }
+
+  function draw(){
+    x.fillStyle='#0c1430'; x.fillRect(0,0,VW,VH);
+    // 격자
+    x.strokeStyle='rgba(80,100,160,.15)'; x.lineWidth=1; var gs=50;
+    var ox=-(cam.x%gs), oy=-(cam.y%gs);
+    for(var gx=ox;gx<VW;gx+=gs){ x.beginPath(); x.moveTo(gx,0); x.lineTo(gx,VH); x.stroke(); }
+    for(var gy=oy;gy<VH;gy+=gs){ x.beginPath(); x.moveTo(0,gy); x.lineTo(VW,gy); x.stroke(); }
+    // 벽
+    x.fillStyle='#28365e';
+    for(var i=0;i<walls.length;i++){ var w=walls[i]; x.fillRect(w[0]-cam.x,w[1]-cam.y,w[2],w[3]); }
+    // 보물
+    for(var c=0;c<coins.length;c++){ star(coins[c].x-cam.x, coins[c].y-cam.y, 9, '#facc15'); }
+    // 적
+    for(var e=0;e<enemies.length;e++){ var en=enemies[e]; circle(en.x-cam.x,en.y-cam.y,14,'#ef4444'); circle(en.x-cam.x-4,en.y-cam.y-3,2.5,'#fff'); circle(en.x-cam.x+4,en.y-cam.y-3,2.5,'#fff'); }
+    // 플레이어
+    if(!(inv>0 && (Math.floor(inv*10)%2))) { circle(player.x-cam.x,player.y-cam.y,R/2+3,'#4da3ff'); circle(player.x-cam.x,player.y-cam.y,R/2,'#9fd0ff'); }
+    drawMinimap();
+  }
+  function circle(cx,cy,r,col){ x.fillStyle=col; x.beginPath(); x.arc(cx,cy,r,0,7); x.fill(); }
+  function star(cx,cy,r,col){ x.fillStyle=col; x.beginPath(); for(var i=0;i<10;i++){ var ang=Math.PI/5*i-Math.PI/2, rr=i%2?r*0.45:r; x.lineTo(cx+Math.cos(ang)*rr, cy+Math.sin(ang)*rr); } x.closePath(); x.fill(); }
+  function drawMinimap(){ var mw=110, mh=Math.round(mw*WORLD_H/WORLD_W), mx=VW-mw-10, my=10;
+    x.fillStyle='rgba(8,12,30,.7)'; x.fillRect(mx,my,mw,mh); x.strokeStyle='rgba(160,180,240,.5)'; x.strokeRect(mx,my,mw,mh);
+    var sx=mw/WORLD_W, sy=mh/WORLD_H;
+    x.fillStyle='#facc15'; for(var c=0;c<coins.length;c++){ x.fillRect(mx+coins[c].x*sx-1,my+coins[c].y*sy-1,2,2); }
+    x.fillStyle='#ef4444'; for(var e=0;e<enemies.length;e++){ x.fillRect(mx+enemies[e].x*sx-1,my+enemies[e].y*sy-1,2,2); }
+    x.fillStyle='#4da3ff'; x.fillRect(mx+player.x*sx-2,my+player.y*sy-2,4,4);
+  }
+
+  var last=0, raf=0;
+  function loop(t){ raf=requestAnimationFrame(loop); var dt=Math.min(0.05,((t-last)/1000)||0); last=t;
+    if(!gc.isPaused()) update(dt); draw(); }
+  function startLoop(){ if(!raf){ last=performance.now(); raf=requestAnimationFrame(loop); } }
+
+  function begin(){ state='play'; $('gover').style.display='none'; }
+  function win(){ state='over'; $('goverBig').textContent='🎉 단계 '+level+' 완료!'; $('goverSm').textContent='모든 보물 획득! 다음은 더 넓어집니다'; $('goverBtn').textContent='다음 단계'; $('gover').style.display='flex'; level++; }
+  function lose(){ state='over'; $('goverBig').textContent='💀 게임 오버'; $('goverSm').textContent='단계 '+level+'에서 종료 — 보물 '+got+'/'+total; $('goverBtn').textContent='다시 시작'; $('gover').style.display='flex'; }
+  function nextOrRetry(){ if($('goverBtn').textContent==='다시 시작'||$('goverBtn').textContent==='시작하기'){ if(lives<=0||state==='ready'){ level=Math.max(1,level); if(lives<=0){ level=1; } lives=3; } }
+    if(lives<=0){ lives=3; level=1; } build(); begin(); }
+
+  // 입력
+  var KEYMAP={ArrowUp:'u',ArrowDown:'d',ArrowLeft:'l',ArrowRight:'r',w:'u',s:'d',a:'l',d:'r',W:'u',S:'d',A:'l',D:'r'};
+  document.addEventListener('keydown',function(e){ var k=KEYMAP[e.key]; if(k){ e.preventDefault(); keys[k]=true; } });
+  document.addEventListener('keyup',function(e){ var k=KEYMAP[e.key]; if(k){ keys[k]=false; } });
+  var joy=document.querySelector('.joy');
+  Array.prototype.forEach.call(joy.querySelectorAll('button'),function(b){ var d=b.dataset.d;
+    function on(e){ e.preventDefault(); keys[d]=true; b.classList.add('on'); } function off(e){ e&&e.preventDefault(); keys[d]=false; b.classList.remove('on'); }
+    b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off); });
+  var origin=null;
+  cv.addEventListener('pointerdown',function(e){ origin={x:e.clientX,y:e.clientY}; });
+  cv.addEventListener('pointermove',function(e){ if(!origin)return; var dx=e.clientX-origin.x,dy=e.clientY-origin.y,th=12; keys.l=dx<-th;keys.r=dx>th;keys.u=dy<-th;keys.d=dy>th; });
+  function dragEnd(){ origin=null; keys.l=keys.r=keys.u=keys.d=false; }
+  cv.addEventListener('pointerup',dragEnd); cv.addEventListener('pointercancel',dragEnd);
+
+  $('goverBtn').addEventListener('click',function(e){ e.stopPropagation();
+    if(state==='ready'){ build(); begin(); }
+    else if($('goverBig').textContent.indexOf('오버')>=0){ level=1; lives=3; build(); begin(); }
+    else { build(); begin(); } });
+  $('restart').addEventListener('click',function(){ level=1; lives=3; state='ready'; $('goverBig').textContent='🗺️ 미궁 탐험'; $('goverSm').textContent='넓은 미궁을 돌아다니며 보물을 모으세요!'; $('goverBtn').textContent='시작하기'; $('gover').style.display='flex'; build(); });
+
+  build(); startLoop();
+})();
+</script>
+</body>
+</html>
