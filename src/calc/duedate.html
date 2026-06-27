@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>출산 예정일 계산기 (임신 주수·분기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="마지막 생리 시작일(LMP)로 출산 예정일과 현재 임신 주수, 임신 분기, 남은 날짜를 계산합니다(네겔레 법칙). 참고용. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/duedate.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="출산 예정일 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="LMP로 출산 예정일·임신 주수·분기 계산(참고용). 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/duedate.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .fld{margin-bottom:1rem;}.fld label{font-weight:700;font-size:.85rem;color:var(--muted);display:block;margin-bottom:.35rem;}
+  .fld input{width:100%;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1.05rem;}
+  .big{text-align:center;margin:1.2rem 0 .4rem;}.big .n{font-size:1.9rem;font-weight:800;color:var(--accent);}.big .u{font-size:.9rem;color:var(--muted);}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:1rem;}
+  .item{background:var(--ground);border:1px solid var(--border);border-radius:11px;padding:.7rem;text-align:center;}.item .l{font-size:.72rem;color:var(--muted);font-weight:700;}.item .v{font-size:1.15rem;font-weight:700;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"출산 예정일 계산기","description":"마지막 생리일로 출산 예정일·임신 주수·분기를 계산합니다.","url":"https://gemini2k.co.kr/duedate.html","applicationCategory":"HealthApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:540px;">
+  <h1>출산 예정일 계산기</h1>
+  <p class="sub">마지막 생리 시작일을 넣으면 출산 예정일과 현재 임신 주수를 알려 줍니다(참고용).</p>
+  <div class="card">
+    <div class="fld"><label>마지막 생리 시작일 (LMP)</label><input id="lmp" type="date"/></div>
+    <div class="fld"><label>평균 생리주기 (일)</label><input id="cycle" type="number" value="28"/></div>
+    <div class="big"><div class="n" id="due">-</div><div class="u">출산 예정일</div></div>
+    <div class="grid">
+      <div class="item"><div class="l">현재 임신 주수</div><div class="v" id="weeks">-</div></div>
+      <div class="item"><div class="l">임신 분기</div><div class="v" id="tri">-</div></div>
+      <div class="item"><div class="l">예정일까지</div><div class="v" id="left">-</div></div>
+      <div class="item"><div class="l">진행률</div><div class="v" id="prog">-</div></div>
+    </div>
+    <div class="note">네겔레 법칙(LMP + 280일, 주기 28일 기준)으로 계산하며 주기에 따라 보정합니다. 실제 예정일은 초음파·의료진 판단과 다를 수 있으니 <b>참고용</b>입니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var DOW=['일','월','화','수','목','금','토'];
+  function calc(){ var v=$('lmp').value; if(!v)return; var lmp=new Date(v); var cyc=+$('cycle').value||28;
+    var due=new Date(lmp.getTime()+ (280+(cyc-28))*86400000);
+    var today=new Date(); today.setHours(0,0,0,0);
+    var days=Math.floor((today-lmp)/86400000); var w=Math.floor(days/7), d=days%7;
+    $('due').textContent=due.getFullYear()+'년 '+(due.getMonth()+1)+'월 '+due.getDate()+'일 ('+DOW[due.getDay()]+')';
+    if(days<0){ $('weeks').textContent='-'; $('tri').textContent='-'; }
+    else { $('weeks').textContent=w+'주 '+d+'일'; $('tri').textContent=(w<13?'1분기':w<27?'2분기':'3분기'); }
+    var left=Math.ceil((due-today)/86400000);
+    $('left').textContent= left>0? 'D-'+left : (left===0?'오늘 🎉':'D+'+(-left));
+    var prog=Math.max(0,Math.min(100,Math.round(days/280*100))); $('prog').textContent=prog+'%';
+  }
+  (function(){var t=new Date();t.setDate(t.getDate()-70);var p=function(n){return(n<10?'0':'')+n;};$('lmp').value=t.getFullYear()+'-'+p(t.getMonth()+1)+'-'+p(t.getDate());})();
+  ['lmp','cycle'].forEach(function(id){$(id).addEventListener('input',calc);$(id).addEventListener('change',calc);});
+  calc();
+</script>
+</body>
+</html>

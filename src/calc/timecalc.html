@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>시간 계산기 (시간 더하기·빼기·차이) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="시:분:초를 더하고 빼거나 두 시각 사이의 시간 차이를 계산합니다. 근무시간·영상길이·합산에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/timecalc.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="시간 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="시:분:초 더하기·빼기·시각 차이 계산. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/timecalc.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:.9rem;}
+  .seg button{padding:.5rem .9rem;border:0;background:var(--surface);color:var(--text);font-family:inherit;font-weight:700;cursor:pointer;}.seg button.on{background:var(--accent);color:#fff;}
+  .trow{display:flex;gap:.5rem;align-items:center;margin-bottom:.7rem;}
+  .trow input{width:70px;padding:.5rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1.05rem;text-align:center;}
+  .trow .op{font-size:1.3rem;font-weight:800;color:var(--accent);width:24px;text-align:center;}
+  .trow .lab{width:54px;font-size:.85rem;color:var(--muted);font-weight:700;}
+  .big{text-align:center;margin:1.2rem 0;}.big .n{font-size:1.9rem;font-weight:800;color:var(--accent);}.big .u{font-size:.9rem;color:var(--muted);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"시간 계산기","description":"시:분:초를 더하고 빼거나 두 시각 차이를 계산합니다.","url":"https://gemini2k.co.kr/timecalc.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:520px;">
+  <h1>시간 계산기</h1>
+  <p class="sub">시:분:초를 더하거나 빼고, 두 시각 사이의 차이를 계산합니다.</p>
+  <div class="card">
+    <div class="seg" id="seg"><button data-m="add" class="on" type="button">더하기/빼기</button><button data-m="diff" type="button">시각 차이</button></div>
+    <div id="m-add">
+      <div class="trow"><span class="lab">시간 A</span><input id="a_h" type="number" value="1" placeholder="시"/><span>:</span><input id="a_m" type="number" value="30" placeholder="분"/><span>:</span><input id="a_s" type="number" value="0" placeholder="초"/></div>
+      <div class="trow"><span class="op" id="opSign">＋</span><input id="b_h" type="number" value="2" placeholder="시"/><span>:</span><input id="b_m" type="number" value="45" placeholder="분"/><span>:</span><input id="b_s" type="number" value="30" placeholder="초"/></div>
+      <div style="text-align:center;margin:.4rem 0;"><button class="btn btn-ghost" id="toggle" type="button">＋/－ 전환</button></div>
+    </div>
+    <div id="m-diff" class="hide">
+      <div class="trow"><span class="lab">시각 1</span><input id="t1" type="time" step="1" value="09:00:00" style="width:auto;flex:1;"/></div>
+      <div class="trow"><span class="lab">시각 2</span><input id="t2" type="time" step="1" value="18:30:00" style="width:auto;flex:1;"/></div>
+    </div>
+    <div class="big"><div class="n" id="out">-</div><div class="u" id="outsub"></div></div>
+    <div class="note">‘시각 차이’에서 시각2가 시각1보다 이르면 자정을 넘긴 것으로 보고 24시간을 더합니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var mode='add', sign=1;
+  function fmt(sec){ var neg=sec<0; sec=Math.abs(Math.round(sec)); var h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60; return (neg?'-':'')+h+'시간 '+m+'분 '+s+'초'; }
+  function calc(){
+    if(mode==='add'){ var a=(+$('a_h').value||0)*3600+(+$('a_m').value||0)*60+(+$('a_s').value||0);
+      var b=(+$('b_h').value||0)*3600+(+$('b_m').value||0)*60+(+$('b_s').value||0);
+      var r=a+sign*b; $('out').textContent=fmt(r); $('outsub').textContent='총 '+Math.round(Math.abs(r))+'초 · '+(Math.abs(r)/3600).toFixed(2)+'시간'; }
+    else { var p1=$('t1').value.split(':').map(Number), p2=$('t2').value.split(':').map(Number);
+      var s1=p1[0]*3600+p1[1]*60+(p1[2]||0), s2=p2[0]*3600+p2[1]*60+(p2[2]||0); var d=s2-s1; if(d<0)d+=86400;
+      $('out').textContent=fmt(d); $('outsub').textContent='총 '+(d/3600).toFixed(2)+'시간 · '+(d/60).toFixed(0)+'분'; }
+  }
+  $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;mode=b.dataset.m;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
+    $('m-add').classList.toggle('hide',mode!=='add');$('m-diff').classList.toggle('hide',mode!=='diff');calc();});
+  $('toggle').addEventListener('click',function(){sign=-sign;$('opSign').textContent=sign>0?'＋':'－';calc();});
+  ['a_h','a_m','a_s','b_h','b_m','b_s','t1','t2'].forEach(function(id){$(id).addEventListener('input',calc);});
+  calc();
+</script>
+</body>
+</html>

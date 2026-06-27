@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>표준체중·적정체중 계산기 (BMI·Broca·Devine) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="키를 넣으면 BMI 정상 범위 체중과 표준체중(Broca·Devine 공식)을 계산합니다. 적정 체중 범위를 한눈에. 참고용. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/idealweight.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="표준체중·적정체중 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="키로 BMI 정상범위·표준체중(Broca·Devine) 계산. 참고용. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/idealweight.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .fld{margin-bottom:1rem;}.fld label{font-weight:700;font-size:.85rem;color:var(--muted);display:block;margin-bottom:.35rem;}
+  .fld input,.fld select{width:100%;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1.05rem;}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+  .big{text-align:center;margin:1.2rem 0 .4rem;}.big .n{font-size:1.9rem;font-weight:800;color:var(--accent);}.big .u{font-size:.9rem;color:var(--muted);}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:1rem;}.item{background:var(--ground);border:1px solid var(--border);border-radius:11px;padding:.7rem;text-align:center;}.item .l{font-size:.72rem;color:var(--muted);font-weight:700;}.item .v{font-size:1.1rem;font-weight:700;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"표준체중·적정체중 계산기","description":"키로 BMI 정상범위 체중과 표준체중을 계산합니다.","url":"https://gemini2k.co.kr/idealweight.html","applicationCategory":"HealthApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:540px;">
+  <h1>표준체중·적정체중 계산기</h1>
+  <p class="sub">키로 BMI 정상 범위 체중과 여러 공식의 표준체중을 계산합니다(참고용).</p>
+  <div class="card">
+    <div class="row"><div class="fld"><label>키 (cm)</label><input id="h" type="number" inputmode="decimal" value="170"/></div>
+    <div class="fld"><label>성별</label><select id="sex"><option value="m">남성</option><option value="f">여성</option></select></div></div>
+    <div class="big"><div class="n" id="range">-</div><div class="u">BMI 정상 범위(18.5~23) 체중</div></div>
+    <div class="grid">
+      <div class="item"><div class="l">표준체중(BMI 22)</div><div class="v" id="bmi22">-</div></div>
+      <div class="item"><div class="l">Broca 보정</div><div class="v" id="broca">-</div></div>
+      <div class="item"><div class="l">Devine</div><div class="v" id="devine">-</div></div>
+      <div class="item"><div class="l">미용 체중(BMI 20)</div><div class="v" id="bmi20">-</div></div>
+    </div>
+    <div class="note">표준체중 공식은 참고용이며, 근육량·체형을 반영하지 않습니다. 건강 판단은 전문의와 상담하세요. 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function kg(n){return n.toFixed(1)+' kg';}
+  function calc(){ var h=+$('h').value||0, sex=$('sex').value; if(h<100){$('range').textContent='키 확인';return;}
+    var m=h/100;
+    $('range').textContent=(18.5*m*m).toFixed(1)+' ~ '+(23*m*m).toFixed(1)+' kg';
+    $('bmi22').textContent=kg(22*m*m);
+    $('bmi20').textContent=kg(20*m*m);
+    $('broca').textContent=kg((h-100)*(sex==='m'?0.9:0.85));
+    var inch=(h-152.4)/2.54; var dev=(sex==='m'?50:45.5)+2.3*Math.max(0,inch); $('devine').textContent=kg(dev);
+  }
+  ['h','sex'].forEach(function(id){$(id).addEventListener('input',calc);$(id).addEventListener('change',calc);});
+  calc();
+</script>
+</body>
+</html>

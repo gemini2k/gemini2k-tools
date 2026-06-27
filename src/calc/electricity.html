@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>전기요금 계산기 (주택용 누진제 추정) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="월 사용량(kWh)을 넣으면 주택용 저압/고압 누진제 기준 예상 전기요금을 추정합니다. 기본요금·전력량요금·기후환경요금·부가세 포함. 참고용. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/electricity.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="전기요금 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="월 사용량(kWh)으로 주택용 누진 전기요금 추정. 참고용. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/electricity.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .fld{margin-bottom:1rem;}.fld label{font-weight:700;font-size:.85rem;color:var(--muted);display:block;margin-bottom:.35rem;}
+  .fld input,.fld select{width:100%;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1.05rem;}
+  .big{text-align:center;margin:1.2rem 0 .4rem;}.big .n{font-size:2.1rem;font-weight:800;color:var(--accent);}.big .u{font-size:.9rem;color:var(--muted);}
+  .lines{font-size:.93rem;line-height:1.95;}.lines .r{display:flex;justify-content:space-between;border-bottom:1px dashed var(--border);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"전기요금 계산기","description":"월 사용량으로 주택용 누진제 전기요금을 추정합니다.","url":"https://gemini2k.co.kr/electricity.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:540px;">
+  <h1>전기요금 계산기</h1>
+  <p class="sub">한 달 사용량(kWh)을 넣으면 주택용 누진제 기준 예상 전기요금을 추정합니다(참고용).</p>
+  <div class="card">
+    <div class="fld"><label>월 사용량 (kWh)</label><input id="kwh" type="number" inputmode="numeric" value="300"/></div>
+    <div class="fld"><label>공급 방식</label><select id="type"><option value="low">주택용 저압</option><option value="high">주택용 고압(아파트 등)</option></select></div>
+    <div class="big"><div class="n" id="total">-</div><div class="u">예상 청구금액 (부가세·기금 포함)</div></div>
+    <div class="lines">
+      <div class="r"><span>기본요금</span><span id="base">-</span></div>
+      <div class="r"><span>전력량요금(누진)</span><span id="energy">-</span></div>
+      <div class="r"><span>기후환경·연료비조정</span><span id="climate">-</span></div>
+      <div class="r"><span>부가가치세(10%)</span><span id="vat">-</span></div>
+      <div class="r"><span>전력산업기반기금(3.7%)</span><span id="fund">-</span></div>
+    </div>
+    <div class="note">2024년경 주택용 누진 3단계(저압: 1~200kWh, 201~400, 401~ / 단가 차등)를 근사 적용한 <b>추정치</b>입니다. 실제 청구액은 계절·복지할인·검침일·요금개정에 따라 다릅니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function won(n){return Math.round(n).toLocaleString()+'원';}
+  // 근사 단가(원). 저압/고압
+  var T={ low:{ base:[910,1600,7300], lim:[200,400], rate:[120,214.6,307.3] },
+          high:{ base:[730,1260,6060], lim:[200,400], rate:[105,174,242.3] } };
+  var CLIMATE=9, FUEL=5; // 원/kWh 근사(기후환경요금+연료비조정)
+  function calc(){ var kwh=Math.max(0,+$('kwh').value||0), t=$('type').value, c=T[t];
+    var base = kwh<=c.lim[0]?c.base[0] : kwh<=c.lim[1]?c.base[1] : c.base[2];
+    var e=0, rem=kwh;
+    var s1=Math.min(rem,c.lim[0]); e+=s1*c.rate[0]; rem-=s1;
+    if(rem>0){ var s2=Math.min(rem,c.lim[1]-c.lim[0]); e+=s2*c.rate[1]; rem-=s2; }
+    if(rem>0){ e+=rem*c.rate[2]; }
+    var climate=kwh*(CLIMATE+FUEL);
+    var pre=base+e+climate;
+    var vat=pre*0.1, fund=pre*0.037;
+    var total=Math.floor((pre+vat+fund)/10)*10;
+    $('base').textContent=won(base); $('energy').textContent=won(e); $('climate').textContent=won(climate);
+    $('vat').textContent=won(vat); $('fund').textContent=won(fund); $('total').textContent=won(total);
+  }
+  ['kwh','type'].forEach(function(id){$(id).addEventListener('input',calc);$(id).addEventListener('change',calc);});
+  calc();
+</script>
+</body>
+</html>

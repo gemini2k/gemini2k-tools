@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>의류·신발 사이즈 변환표 (한국·US·EU·UK) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="신발(mm·US·EU·UK)과 의류(한국·US·유럽) 사이즈를 변환합니다. 해외직구·온라인 쇼핑 사이즈 비교에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/sizeconv.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="의류·신발 사이즈 변환표 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="신발(mm·US·EU·UK)·의류(KR·US·EU) 사이즈 변환. 해외직구에. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/sizeconv.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .seg{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+  .seg button{padding:.5rem .9rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;font-weight:700;cursor:pointer;}.seg button.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .tblwrap{overflow:auto;border:1px solid var(--border);border-radius:11px;}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;}th,td{border-bottom:1px solid var(--border);padding:.5rem .6rem;text-align:center;}th{background:var(--accent-soft);font-weight:700;position:sticky;top:0;}
+  tr.hl td{background:var(--accent-soft);font-weight:800;}
+  .fld{margin:.8rem 0;}.fld label{font-weight:700;font-size:.85rem;color:var(--muted);margin-right:.5rem;}
+  .fld select{padding:.5rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"의류·신발 사이즈 변환표","description":"신발·의류 사이즈를 한국·US·EU·UK 기준으로 변환합니다.","url":"https://gemini2k.co.kr/sizeconv.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:680px;">
+  <h1>의류·신발 사이즈 변환표</h1>
+  <p class="sub">신발·의류 사이즈를 한국·미국·유럽·영국 기준으로 비교합니다. 해외직구·쇼핑에 쓰세요.</p>
+  <div class="card">
+    <div class="seg" id="seg"><button data-c="shoeM" class="on" type="button">남성 신발</button><button data-c="shoeW" type="button">여성 신발</button><button data-c="clothM" type="button">남성 의류</button><button data-c="clothW" type="button">여성 의류</button></div>
+    <div class="fld"><label>내 사이즈 강조</label><select id="hl"></select></div>
+    <div class="tblwrap"><table id="tbl"></table></div>
+    <div class="note">브랜드·국가별로 실측이 다를 수 있어 변환표는 일반적인 기준의 <b>참고용</b>입니다. 신발은 발 길이(mm) 기준이 가장 정확합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var DATA={
+    shoeM:{cols:['mm(한국)','US','UK','EU'],rows:[[250,7,6,40],[255,7.5,6.5,40.5],[260,8,7,41],[265,8.5,7.5,42],[270,9,8,43],[275,9.5,8.5,43.5],[280,10,9,44],[285,10.5,9.5,45],[290,11,10,46]]},
+    shoeW:{cols:['mm(한국)','US','UK','EU'],rows:[[220,5,3,35],[225,5.5,3.5,35.5],[230,6,4,36],[235,6.5,4.5,37],[240,7,5,37.5],[245,7.5,5.5,38],[250,8,6,39],[255,8.5,6.5,40],[260,9,7,41]]},
+    clothM:{cols:['한국','호칭','US','EU','가슴(cm)'],rows:[[90,'XS','XS',44,'85'],[95,'S','S',46,'90'],[100,'M','M',48,'95'],[105,'L','L',50,'100'],[110,'XL','XL',52,'105'],[115,'2XL','XXL',54,'110']]},
+    clothW:{cols:['한국','호칭','US','EU','가슴(cm)'],rows:[[44,'XS',0,32,'82'],[55,'S',4,36,'86'],[66,'M',8,38,'90'],[77,'L',12,40,'94'],[88,'XL',16,42,'98'],[99,'2XL',18,44,'103']]}
+  };
+  var cur='shoeM';
+  function render(){ var d=DATA[cur];
+    var h='<thead><tr>'+d.cols.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>';
+    var hlv=$('hl').value;
+    h+=d.rows.map(function(r){ var hit=String(r[0])===hlv; return '<tr class="'+(hit?'hl':'')+'">'+r.map(function(c){return '<td>'+c+'</td>';}).join('')+'</tr>'; }).join('');
+    h+='</tbody>'; $('tbl').innerHTML=h;
+  }
+  function fillHl(){ var d=DATA[cur]; $('hl').innerHTML='<option value="">선택 안함</option>'+d.rows.map(function(r){return '<option value="'+r[0]+'">'+r[0]+' ('+d.cols[0]+')</option>';}).join(''); }
+  $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;cur=b.dataset.c;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});fillHl();render();});
+  $('hl').addEventListener('change',render);
+  fillHl(); render();
+</script>
+</body>
+</html>

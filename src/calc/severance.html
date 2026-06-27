@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>퇴직금 계산기 (평균임금·재직일수) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="입사일·퇴사일과 최근 3개월 급여로 법정 퇴직금을 계산합니다. 1일 평균임금 × 30일 × 재직일수/365 기준. 참고용. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/severance.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="퇴직금 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="입사·퇴사일과 3개월 급여로 퇴직금 계산. 참고용. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/severance.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .fld{margin-bottom:1rem;}.fld label{font-weight:700;font-size:.85rem;color:var(--muted);display:block;margin-bottom:.35rem;}
+  .fld input{width:100%;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1.05rem;}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+  .big{text-align:center;margin:1.3rem 0 .4rem;}.big .n{font-size:2.2rem;font-weight:800;color:var(--accent);}.big .u{font-size:.95rem;color:var(--muted);}
+  .lines{font-size:.95rem;line-height:2;}.lines .r{display:flex;justify-content:space-between;border-bottom:1px dashed var(--border);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"퇴직금 계산기","description":"입사·퇴사일과 3개월 급여로 법정 퇴직금을 계산합니다.","url":"https://gemini2k.co.kr/severance.html","applicationCategory":"FinanceApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:560px;">
+  <h1>퇴직금 계산기</h1>
+  <p class="sub">입사일·퇴사일과 최근 3개월 급여를 넣으면 법정 퇴직금을 계산합니다(참고용).</p>
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol><li>입사일·퇴사일을 선택합니다</li><li>퇴사 직전 <b>3개월 총급여</b>(세전, 상여·수당 포함)를 입력합니다</li><li>1일 평균임금×30일×재직일수/365로 계산됩니다</li></ol></div></div>
+  <div class="card">
+    <div class="row"><div class="fld"><label>입사일</label><input id="join" type="date"/></div><div class="fld"><label>퇴사일</label><input id="leave" type="date"/></div></div>
+    <div class="fld"><label>최근 3개월 총급여 (세전, 원)</label><input id="pay" type="number" inputmode="numeric" value="9000000"/></div>
+    <div class="fld"><label>연간 상여금 (선택, 원)</label><input id="bonus" type="number" inputmode="numeric" value="0"/></div>
+    <div class="big"><div class="n" id="sev">-</div><div class="u">예상 퇴직금(세전)</div></div>
+    <div class="lines"><div class="r"><span>재직일수</span><span id="days">-</span></div><div class="r"><span>1일 평균임금</span><span id="avg">-</span></div></div>
+    <div class="note">평균임금 = (3개월 총급여 + 연간상여×3/12) ÷ 3개월 일수. 퇴직금 = 1일 평균임금 × 30 × (재직일수/365). 실제 금액은 통상임금 비교·세금 등으로 달라질 수 있어 참고용입니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function won(n){return Math.round(n).toLocaleString()+'원';}
+  function calc(){ var j=$('join').value,l=$('leave').value; if(!j||!l)return;
+    var jd=new Date(j),ld=new Date(l); var days=Math.round((ld-jd)/86400000); if(days<=0){$('sev').textContent='날짜 확인';return;}
+    var pay=+$('pay').value||0, bonus=+$('bonus').value||0;
+    var base3=pay + bonus*3/12;          // 3개월 산정 임금
+    var avgDaily=base3/91;                // 3개월 약 91일 근사
+    var sev=avgDaily*30*(days/365);
+    $('days').textContent=days.toLocaleString()+'일 ('+(days/365).toFixed(1)+'년)';
+    $('avg').textContent=won(avgDaily);
+    $('sev').textContent=won(sev);
+  }
+  (function(){var t=new Date(),p=function(n){return(n<10?'0':'')+n;};$('leave').value=t.getFullYear()+'-'+p(t.getMonth()+1)+'-'+p(t.getDate());var j=new Date(t.getFullYear()-2,t.getMonth(),t.getDate());$('join').value=j.getFullYear()+'-'+p(j.getMonth()+1)+'-'+p(j.getDate());})();
+  ['join','leave','pay','bonus'].forEach(function(id){$(id).addEventListener('input',calc);$(id).addEventListener('change',calc);});
+  calc();
+</script>
+</body>
+</html>

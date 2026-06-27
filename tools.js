@@ -165,4 +165,12 @@ window.TOOLS = [
   { key:'num2en',h:'num2en.html',ic:'🔤', chip:'c-cyan', cat:'변환기', k:'숫자 영어 변환 금액 영문 표기 number to words english 数字英文 英語 숫자영어', related:['numkor','numformat','roman'] },
   { key:'unicodeconv',h:'unicodeconv.html',ic:'🆎', chip:'c-violet', cat:'개발자', k:'유니코드 변환 코드포인트 이스케이프 utf-8 바이트 unicode escape codepoint 编码 文字コード 유니코드변환', related:['htmlentity','base64','unicodeconv'] },
   { key:'dice',h:'dice.html',ic:'🎲', chip:'c-amber', cat:'생성기', k:'주사위 랜덤 숫자 굴리기 보드게임 추첨 무작위 dice random roll 骰子 サイコロ 주사위', related:['roulette','lotto','ladder'] },
+  { key:'severance',h:'severance.html',ic:'💼', chip:'c-green', cat:'계산기', k:'퇴직금 계산 평균임금 재직일수 퇴사 severance pay 退职金 退職金 퇴직금계산기', related:['salary','loan','savings'] },
+  { key:'jeonse',h:'jeonse.html',ic:'🏠', chip:'c-blue', cat:'계산기', k:'전월세 전환 전세 월세 보증금 전환율 jeonse rent 房租 家賃 전월세전환 전세월세', related:['loan','vat','savings'] },
+  { key:'fuelcost',h:'fuelcost.html',ic:'⛽', chip:'c-amber', cat:'계산기', k:'유류비 기름값 연비 주유 카풀 거리 fuel cost 油费 ガソリン代 유류비계산 기름값', related:['fuelcost','currency','percent'] },
+  { key:'timecalc',h:'timecalc.html',ic:'⏱️', chip:'c-cyan', cat:'계산기', k:'시간 계산 더하기 빼기 차이 시분초 근무시간 time calculator 时间计算 時間計算 시간계산기', related:['workdays','dday','timecalc'] },
+  { key:'duedate',h:'duedate.html',ic:'🤰', chip:'c-rose', cat:'건강', k:'출산 예정일 임신 주수 분기 lmp 임신계산 due date pregnancy 预产期 出産予定日 출산예정일', related:['agecalc','dday','bmi'] },
+  { key:'electricity',h:'electricity.html',ic:'⚡', chip:'c-amber', cat:'계산기', k:'전기요금 누진제 kwh 한전 전기세 electricity bill 电费 電気料金 전기요금계산기', related:['vat','percent','savings'] },
+  { key:'idealweight',h:'idealweight.html',ic:'⚖️', chip:'c-green', cat:'건강', k:'표준체중 적정체중 정상체중 bmi broca devine ideal weight 标准体重 標準体重 표준체중계산', related:['bmi','calorie','water'] },
+  { key:'sizeconv',h:'sizeconv.html',ic:'👟', chip:'c-violet', cat:'변환기', k:'사이즈 변환 신발 의류 옷 mm us eu uk 해외직구 size chart 尺码 サイズ 사이즈변환표', related:['unit','pyeong','numformat'] },
 ];
