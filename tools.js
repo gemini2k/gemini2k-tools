@@ -155,4 +155,6 @@ window.TOOLS = [
   { key:'roulette',h:'roulette.html',ic:'🎯', chip:'c-rose', cat:'생성기', k:'돌림판 룰렛 추첨 랜덤 뽑기 제비 메뉴 결정 roulette wheel spinner picker 转盘 ルーレット 돌림판 추첨기', related:['ladder','lotto','pw'] },
   { key:'emoji',h:'emoji.html',ic:'😀', chip:'c-amber', cat:'텍스트', k:'이모지 이모티콘 emoji 특수문자 기호 복사 검색 emoticon symbol 表情符号 絵文字 이모지모음', related:['htmlentity','caseconv','lines'] },
   { key:'xmlformat',h:'xmlformat.html',ic:'📐', chip:'c-green', cat:'개발자', k:'xml 포매터 정렬 압축 검증 포맷 rss svg beautify minify format 格式化 整形 xml정렬', related:['jsonyaml','json','sqlformat'] },
+  { key:'cyberchef',h:'cyberchef.html',ic:'🔪', chip:'c-violet', cat:'개발자', k:'사이버셰프 cyberchef 암복호화 인코딩 디코딩 base64 hex 해시 jwt aes 정규식 변환 데이터 보안 cyber chef encode decode 加密 暗号 사이버셰프', related:['base64','hash','jwt'] },
+  { key:'excalidraw',h:'excalidraw.html',ic:'✏️', chip:'c-cyan', cat:'시각화', k:'엑스칼리드로 excalidraw 화이트보드 다이어그램 손그림 와이어프레임 아키텍처 플로차트 그림 whiteboard draw 白板 ホワイトボード 엑스칼리드로', related:['diagram','mindmap','drawmap'] },
 ];

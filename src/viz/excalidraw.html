@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>Excalidraw — 손그림 화이트보드·다이어그램·와이어프레임 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="Excalidraw를 설치 없이 브라우저에서. 손으로 그린 듯한 화이트보드로 시스템 아키텍처·플로차트·와이어프레임·브레인스토밍을 그리고 PNG·SVG로 저장. 모든 작업은 브라우저에서만, 자체 호스팅(MIT)."/>
+<link rel="canonical" href="https://gemini2k.co.kr/excalidraw.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="Excalidraw — 손그림 화이트보드 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="손그림 스타일 화이트보드로 아키텍처·플로차트·와이어프레임을 그리고 저장. 브라우저에서만, 자체 호스팅."/>
+<meta property="og:url" content="https://gemini2k.co.kr/excalidraw.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .appbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.7rem;}
+  .appbar .lic{font-size:.8rem;color:var(--muted);}
+  .appbar .lic a{color:var(--accent);}
+  .appframe{width:100%;height:80vh;min-height:560px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff;}
+  .appframe iframe{width:100%;height:100%;border:0;display:block;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Excalidraw (자체 호스팅)",
+  "description": "손그림 스타일 화이트보드로 아키텍처·플로차트·와이어프레임·브레인스토밍을 그리고 PNG·SVG로 저장하는 협업 드로잉 도구. 자체 호스팅, 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/excalidraw.html",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "license": "https://opensource.org/licenses/MIT",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1200px;">
+  <h1>Excalidraw</h1>
+  <p class="sub">손으로 그린 듯한 느낌의 화이트보드. 시스템 아키텍처·플로차트·와이어프레임·브레인스토밍을 자유롭게 그리고 PNG·SVG로 저장하세요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>상단 도구바에서 사각형·화살표·텍스트 등을 골라 캔버스에 그립니다</li>
+    <li>요소를 선택해 색·굵기·글꼴을 바꾸고, 드래그로 이동·연결합니다</li>
+    <li>왼쪽 메뉴에서 <b>이미지로 내보내기(PNG/SVG)</b> 또는 <b>.excalidraw</b> 파일로 저장</li>
+  </ol></div></div>
+
+  <div class="card" style="max-width:none;">
+    <div class="appbar">
+      <span class="lic">✏️ 오픈소스 <b>Excalidraw</b> · MIT · 출처 <a href="https://github.com/excalidraw/excalidraw" target="_blank" rel="noopener">excalidraw/excalidraw</a> (자체 호스팅)</span>
+      <a class="btn btn-ghost" href="/apps/excalidraw/index.html" target="_blank" rel="noopener">↗ 새 탭에서 전체화면</a>
+    </div>
+    <div class="appframe"><iframe src="/apps/excalidraw/index.html" title="Excalidraw" loading="lazy" referrerpolicy="no-referrer"></iframe></div>
+    <div class="note">Excalidraw는 오픈소스(MIT License)이며, 글꼴·번역 등 모든 자원을 본 사이트에 자체 호스팅합니다(외부 서버 호출 없음). 그린 내용은 브라우저(이 기기)에만 저장되며 서버로 전송되지 않습니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+</body>
+</html>

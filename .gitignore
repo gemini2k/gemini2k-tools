@@ -8,3 +8,4 @@ __pycache__/
 
 # 빌드 출력
 dist/
+apps/

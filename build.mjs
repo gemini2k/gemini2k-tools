@@ -16,7 +16,8 @@ fs.mkdirSync(DIST, { recursive: true });
 // 1) 루트 공용 자산 복사(html·빌드·소스·문서·원본CSV 제외)
 const SKIP = new Set([
   'src', 'dist', 'build.mjs', 'deploy', 'node_modules', '.git', '.gitignore',
-  'README.md', 'LICENSE', 'NOTICE', '__pycache__', 'package.json', 'package-lock.json'
+  'README.md', 'LICENSE', 'NOTICE', '__pycache__', 'package.json', 'package-lock.json',
+  'apps'   // 대용량 자체호스팅 앱(CyberChef·Excalidraw)은 별도 1회 업로드, 라우팅 배포에서 제외
 ]);
 let assets = 0;
 for (const name of fs.readdirSync(ROOT)) {
