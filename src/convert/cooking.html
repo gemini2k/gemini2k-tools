@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>요리 계량 변환기 (컵·스푼·g·ml) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="요리 계량을 컵·큰술·작은술·ml·g로 변환합니다. 재료별 무게(밀가루·설탕·물 등) 근사 반영. 레시피 환산에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/cooking.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="요리 계량 변환기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="컵·큰술·작은술·ml·g 요리 계량 변환(재료별 근사). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/cooking.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem;}
+  .fld label{font-weight:700;font-size:.85rem;color:var(--muted);display:block;margin-bottom:.35rem;}
+  .fld input,.fld select{width:100%;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1.05rem;}
+  .item{border:1px solid var(--border);border-radius:11px;padding:.6rem .9rem;background:var(--ground);margin-bottom:.5rem;display:flex;justify-content:space-between;}.item .l{color:var(--muted);font-weight:700;}.item .v{font-weight:800;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"요리 계량 변환기","description":"컵·큰술·작은술·ml·g로 요리 계량을 변환합니다.","url":"https://gemini2k.co.kr/cooking.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:540px;">
+  <h1>요리 계량 변환기</h1>
+  <p class="sub">컵·큰술·작은술·ml·g를 서로 변환합니다. 재료를 고르면 무게(g)도 환산돼요.</p>
+  <div class="card">
+    <div class="row">
+      <div class="fld"><label>값</label><input id="v" type="number" inputmode="decimal" value="1"/></div>
+      <div class="fld"><label>단위</label><select id="u"><option value="cup">컵 (200ml)</option><option value="tbsp">큰술 (15ml)</option><option value="tsp">작은술 (5ml)</option><option value="ml">ml</option><option value="g">g</option></select></div>
+    </div>
+    <div class="fld" style="margin-bottom:1rem;"><label>재료 (무게 환산용)</label><select id="ing"><option value="1">물·우유 (1.0 g/ml)</option><option value="0.53">밀가루 (0.53)</option><option value="0.85">설탕 (0.85)</option><option value="1.2">소금 (1.2)</option><option value="0.91">식용유 (0.91)</option><option value="0.96">버터 (0.96)</option><option value="0.8">쌀 (0.8)</option></select></div>
+    <div id="res"></div>
+    <div class="note">한국 표준 계량컵 200ml, 큰술 15ml, 작은술 5ml 기준입니다. g 환산은 재료 밀도의 <b>근사값</b>이라 실제와 다소 차이가 있을 수 있습니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var ML={cup:200,tbsp:15,tsp:5,ml:1};
+  function calc(){ var v=+$('v').value||0, u=$('u').value, dens=+$('ing').value||1, ml;
+    if(u==='g') ml=v/dens; else ml=v*ML[u];
+    var g=ml*dens;
+    var items=[['컵', (ml/200).toFixed(2)+' 컵'],['큰술', (ml/15).toFixed(1)+' 큰술'],['작은술', (ml/5).toFixed(1)+' 작은술'],['ml', ml.toFixed(0)+' ml'],['g (무게)', g.toFixed(0)+' g']];
+    $('res').innerHTML=items.map(function(it){return '<div class="item"><span class="l">'+it[0]+'</span><span class="v">'+it[1]+'</span></div>';}).join('');
+  }
+  ['v','u','ing'].forEach(function(id){$(id).addEventListener('input',calc);$(id).addEventListener('change',calc);});
+  calc();
+</script>
+</body>
+</html>

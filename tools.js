@@ -197,4 +197,10 @@ window.TOOLS = [
   { key:'imgfilter',h:'imgfilter.html',ic:'🎞️', chip:'c-violet', cat:'이미지', k:'이미지 필터 흑백 세피아 밝기 대비 채도 블러 image filter grayscale 滤镜 フィルター 이미지필터', related:['image','imgcrop','imgframe'] },
   { key:'qrdecode',h:'qrdecode.html',ic:'📷', chip:'c-blue', cat:'이미지', k:'qr 읽기 디코더 인식 스캔 코드 qr decoder reader scan 二维码识别 QR読み取り qr읽기', related:['qr','barcode','exif'] },
   { key:'angle',h:'angle.html',ic:'📐', chip:'c-amber', cat:'변환기', k:'각도 변환 도 라디안 그라드 회전수 도분초 dms angle radian 角度 角度変換 각도변환', related:['unit','radix','numformat'] },
+  { key:'romanize',h:'romanize.html',ic:'🔡', chip:'c-blue', cat:'텍스트', k:'한글 로마자 변환 영문 표기 이름 주소 romanize korean 罗马字 ローマ字 로마자변환', related:['hangul','caseconv','slug'] },
+  { key:'nickname',h:'nickname.html',ic:'🐣', chip:'c-rose', cat:'생성기', k:'닉네임 생성 별명 랜덤 아이디 게임 sns nickname generator 昵称 ニックネーム 닉네임생성기', related:['passphrase','dice','roulette'] },
+  { key:'placeholder',h:'placeholder.html',ic:'🖼️', chip:'c-violet', cat:'생성기', k:'플레이스홀더 더미 이미지 목업 자리표시 placeholder dummy image 占位图 ダミー画像 더미이미지', related:['ogimage','favicon','imgframe'] },
+  { key:'steps',h:'steps.html',ic:'🚶', chip:'c-green', cat:'건강', k:'걸음 수 거리 칼로리 만보 보폭 소모 steps calories distance 步数 歩数 걸음수칼로리', related:['calorie','pace','water'] },
+  { key:'pace',h:'pace.html',ic:'🏃', chip:'c-amber', cat:'건강', k:'러닝 페이스 마라톤 기록 속도 달리기 분km running pace 配速 ペース 러닝페이스', related:['steps','calorie','heartrate'] },
+  { key:'cooking',h:'cooking.html',ic:'🥄', chip:'c-cyan', cat:'변환기', k:'요리 계량 변환 컵 큰술 작은술 ml g 레시피 cooking measure cup tbsp 量勺 計量 요리계량', related:['unit','numformat','sizeconv'] },
 ];

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>러닝 페이스 계산기 (마라톤 기록·속도) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="거리와 시간으로 러닝 페이스(분/km)와 속도(km/h)를 계산하고, 5K·10K·하프·풀코스 예상 기록을 보여 줍니다. 달리기·마라톤 훈련에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/pace.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="러닝 페이스 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="거리·시간으로 페이스·속도·코스별 예상 기록. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/pace.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .fld{margin-bottom:1rem;}.fld label{font-weight:700;font-size:.85rem;color:var(--muted);display:block;margin-bottom:.35rem;}
+  .fld input,.fld select{width:100%;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1.05rem;}
+  .trow{display:flex;gap:.5rem;}.trow input{text-align:center;}
+  .big{text-align:center;margin:1.2rem 0 .4rem;}.big .n{font-size:2rem;font-weight:800;color:var(--accent);}.big .u{font-size:.9rem;color:var(--muted);}
+  .tbl{width:100%;border-collapse:collapse;margin-top:.8rem;font-size:.92rem;}.tbl th,.tbl td{border-bottom:1px solid var(--border);padding:.45rem;text-align:center;}.tbl th{background:var(--accent-soft);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"러닝 페이스 계산기","description":"거리·시간으로 페이스·속도와 코스별 예상 기록을 계산합니다.","url":"https://gemini2k.co.kr/pace.html","applicationCategory":"HealthApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:540px;">
+  <h1>러닝 페이스 계산기</h1>
+  <p class="sub">달린 거리와 시간으로 페이스(분/km)와 속도를 계산하고 코스별 예상 기록을 보여 줍니다.</p>
+  <div class="card">
+    <div class="fld"><label>거리 (km)</label><input id="dist" type="number" inputmode="decimal" value="5"/></div>
+    <div class="fld"><label>시간 (시 : 분 : 초)</label><div class="trow"><input id="hh" type="number" value="0" placeholder="시"/><input id="mm" type="number" value="30" placeholder="분"/><input id="ss" type="number" value="0" placeholder="초"/></div></div>
+    <div class="big"><div class="n" id="pace">-</div><div class="u">페이스 (분/km) · <span id="speed">-</span></div></div>
+    <table class="tbl"><thead><tr><th>코스</th><th>예상 기록</th></tr></thead><tbody id="rows"></tbody></table>
+    <div class="note">예상 기록은 동일 페이스 유지를 가정한 단순 계산으로, 거리가 길수록 실제보다 빠르게 나옵니다(참고용). 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function fmt(sec){ sec=Math.round(sec); var h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60; return (h>0?h+':':'')+(h>0?('0'+m).slice(-2):m)+':'+('0'+s).slice(-2); }
+  function calc(){ var d=+$('dist').value||0; var t=(+$('hh').value||0)*3600+(+$('mm').value||0)*60+(+$('ss').value||0);
+    if(d<=0||t<=0){ $('pace').textContent='-'; $('speed').textContent='-'; $('rows').innerHTML=''; return; }
+    var paceSec=t/d; var pm=Math.floor(paceSec/60),ps=Math.round(paceSec%60); if(ps===60){pm++;ps=0;}
+    $('pace').textContent=pm+"'"+('0'+ps).slice(-2)+'"'; $('speed').textContent=(d/(t/3600)).toFixed(2)+' km/h';
+    var courses=[['1K',1],['5K',5],['10K',10],['하프(21.1K)',21.0975],['풀코스(42.2K)',42.195]];
+    $('rows').innerHTML=courses.map(function(c){ return '<tr><td>'+c[0]+'</td><td>'+fmt(paceSec*c[1])+'</td></tr>'; }).join('');
+  }
+  ['dist','hh','mm','ss'].forEach(function(id){$(id).addEventListener('input',calc);});
+  calc();
+</script>
+</body>
+</html>
