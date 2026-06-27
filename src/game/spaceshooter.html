@@ -79,10 +79,12 @@
   </div>
 </div>
 
+<script src="game-core.js"></script>
 <script src="tool-shell.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
   var cv=$('cv'), x=cv.getContext('2d'), W=400, H=560;
+  var gc=GameCore.init({});
   var ship, bullets, enemies, stars, score, lives, state='ready', last=0, fireT=0, spawnT=0, raf=null;
 
   function reset(){ ship={x:W/2,y:H-54,w:34}; bullets=[]; enemies=[]; score=0; lives=3; fireT=0; spawnT=0;
@@ -93,7 +95,7 @@
 
   function loop(t){
     var dt=Math.min(40,t-last); last=t;
-    if(state==='play'){
+    if(state==='play' && !gc.isPaused()){
       // 별
       stars.forEach(function(s){ s.y+=s.s*dt*0.05; if(s.y>H){ s.y=0; s.x=Math.random()*W; } });
       // 발사

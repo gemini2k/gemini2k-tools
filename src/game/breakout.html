@@ -83,10 +83,12 @@
   </div>
 </div>
 
+<script src="game-core.js"></script>
 <script src="tool-shell.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
   var cv=$('cv'), x=cv.getContext('2d'), W=480, H=600;
+  var gc=GameCore.init({});
   var COLS=8, ROWS=5, BW=W/COLS, BH=26, TOP=56;
   var paddle, ball, bricks, score, lives, state; // ready|play|over|win
   var BCOL=['#f87171','#fb923c','#fbbf24','#34d399','#38bdf8'];
@@ -105,7 +107,7 @@
   function hideOverlay(){ $('ov').classList.add('hide'); }
 
   function step(){
-    if(state==='play'){
+    if(state==='play' && !gc.isPaused()){
       ball.x+=ball.vx; ball.y+=ball.vy;
       if(ball.x<ball.r){ ball.x=ball.r; ball.vx*=-1; } if(ball.x>W-ball.r){ ball.x=W-ball.r; ball.vx*=-1; }
       if(ball.y<ball.r){ ball.y=ball.r; ball.vy*=-1; }

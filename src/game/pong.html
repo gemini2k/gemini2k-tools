@@ -75,10 +75,12 @@
   </div>
 </div>
 
+<script src="game-core.js"></script>
 <script src="tool-shell.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
   var cv=$('cv'), x=cv.getContext('2d'), W=600, H=400, PW=12, PH=78, WIN=11;
+  var gc=GameCore.init({});
   var lp, rp, ball, sl, sr, state='ready', raf=null;
   var DIFF={easy:{sp:4.5,react:0.06},normal:{sp:6,react:0.10},hard:{sp:8,react:0.16}};
 
@@ -88,7 +90,7 @@
   function start(){ if(state==='play') return; if(state==='over'){ reset(true); } state='play'; $('ov').classList.add('hide'); if(!raf) loop(); }
 
   function loop(){
-    if(state==='play'){
+    if(state==='play' && !gc.isPaused()){
       ball.x+=ball.vx; ball.y+=ball.vy;
       if(ball.y<8){ball.y=8;ball.vy*=-1;} if(ball.y>H-8){ball.y=H-8;ball.vy*=-1;}
       // 왼쪽 패들

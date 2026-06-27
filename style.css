@@ -63,6 +63,13 @@ button{font-family:inherit;cursor:pointer;}
 .search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
 
 /* 카테고리 칩 */
+/* 게임 공통 일시정지 컨트롤 바 */
+.gc-bar{display:flex;justify-content:center;gap:.5rem;margin-top:1rem;}
+.gc-btn{padding:.5rem 1.1rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);
+  color:var(--text);font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s;}
+.gc-btn:hover{border-color:var(--accent);color:var(--accent);}
+.gc-btn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+
 /* 전체/일반/전문가 토글(세그먼트) */
 .tiertog{position:relative;display:inline-flex;gap:.25rem;margin:1.1rem auto 0;padding:.25rem;
   background:var(--surface);border:1px solid var(--border);border-radius:999px;}

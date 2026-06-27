@@ -86,10 +86,12 @@
   </div>
 </div>
 
+<script src="game-core.js"></script>
 <script src="tool-shell.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
   var cv=$('cv'), x=cv.getContext('2d'), W=360, H=540, LANES=3, LW=W/LANES, CARW=46, CARH=78;
+  var gc=GameCore.init({});
   var lane, cars, score, best=+(localStorage.getItem('cardodge:best')||0), state='ready', last=0, spawnT=0, speed, dash=0, raf=null;
   $('best').textContent=best;
   function laneX(l){ return l*LW + LW/2; }
@@ -99,7 +101,7 @@
   function move(d){ if(state!=='play'){ start(); return; } lane=Math.max(0,Math.min(LANES-1,lane+d)); }
 
   function loop(t){ var dt=Math.min(40,t-last); last=t;
-    if(state==='play'){
+    if(state==='play' && !gc.isPaused()){
       dash=(dash+speed*dt)%40; score+=dt*0.02; $('score').textContent=Math.floor(score);
       speed+=dt*0.00002;
       spawnT+=dt; if(spawnT> Math.max(620, 1100-score*1.2)){ spawnT=0; var l=Math.floor(Math.random()*LANES); cars.push({l:l,y:-CARH,col:['#f87171','#fbbf24','#34d399','#a78bfa'][Math.floor(Math.random()*4)]}); }

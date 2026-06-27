@@ -89,11 +89,13 @@
   </div>
 </div>
 
+<script src="game-core.js"></script>
 <script src="tool-shell.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
   var cv=$('cv'), x=cv.getContext('2d'), N=20, CS=20, W=400;
   var snake, dir, ndir, food, score, best=+(localStorage.getItem('snake:best')||0), state='ready', tick=null;
+  var gc=GameCore.init({onPause:function(){ if(tick){clearInterval(tick);tick=null;} }, onResume:function(){ if(state==='play'&&!tick) tick=setInterval(step,110); }});
   $('best').textContent=best;
 
   function reset(){ snake=[{x:8,y:10},{x:7,y:10},{x:6,y:10}]; dir=ndir={x:1,y:0}; score=0; $('score').textContent=0; placeFood(); state='ready'; $('ov').classList.remove('hide'); draw(); }
