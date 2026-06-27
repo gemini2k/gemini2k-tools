@@ -177,7 +177,7 @@
   function esc(s){ return String(s).replace(/"/g,'&quot;'); }
 
   // 전문가/일반 구분: 전문 카테고리 또는 tool.tier==='pro'
-  var PRO_CATS=['GIS','데이터','개발자','개인정보','시각화'];
+  var PRO_CATS=['GIS','데이터','개발자','개인정보','시각화','문서'];
   function tierOf(x){ return x.tier || (PRO_CATS.indexOf(x.cat)>=0?'pro':'basic'); }
   function tierMatch(x){ return activeTier==='all' || tierOf(x)===activeTier; }
   // 레지스트리 순서를 보존한 카테고리 목록 / 카테고리별 도구 (현재 tier 반영)

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>엑셀 뷰어 (XLSX 미리보기·검색) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="엑셀 파일(.xlsx·.xls)을 설치 없이 브라우저에서 바로 열어 시트별 표로 보고 검색합니다. 업로드 없이 기기 안에서만 처리되어 안전합니다. 빠른 미리보기와 셀 내용 검색 지원."/>
+<link rel="canonical" href="https://gemini2k.co.kr/xlsxview.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="엑셀 뷰어 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="엑셀(.xlsx·.xls)을 설치 없이 브라우저에서 열어 시트별 표로 보고 검색. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/xlsxview.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .drop{border:2px dashed var(--border);border-radius:14px;padding:2rem 1rem;text-align:center;color:var(--muted);cursor:pointer;transition:.15s;}
+  .drop:hover,.drop.over{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+  .drop .big{font-size:2rem;margin-bottom:.4rem;}
+  .bar{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin:.8rem 0;}
+  .tabs{display:flex;flex-wrap:wrap;gap:.4rem;}
+  .tabs button{padding:.4rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-family:inherit;font-weight:600;cursor:pointer;font-size:.85rem;}
+  .tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .bar input[type=search]{flex:1;min-width:140px;padding:.5rem .7rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .tblwrap{overflow:auto;max-height:560px;border:1px solid var(--border);border-radius:11px;}
+  table{border-collapse:collapse;font-size:.84rem;}
+  th,td{border:1px solid var(--border);padding:.32rem .55rem;text-align:left;white-space:nowrap;max-width:320px;overflow:hidden;text-overflow:ellipsis;}
+  th{background:var(--accent-soft);position:sticky;top:0;font-weight:700;z-index:1;}
+  td.rh{background:var(--ground);color:var(--muted);font-weight:600;position:sticky;left:0;text-align:right;}
+  mark{background:#ffe27a;color:#16181f;border-radius:3px;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "엑셀 뷰어",
+  "description": "엑셀 파일(.xlsx·.xls)을 설치 없이 브라우저에서 시트별 표로 보고 검색합니다. 업로드 없이 기기 안에서만 처리.",
+  "url": "https://gemini2k.co.kr/xlsxview.html",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:980px;">
+  <h1>엑셀 뷰어</h1>
+  <p class="sub">엑셀 프로그램 없이 .xlsx·.xls 파일을 바로 열어 시트별로 보고 내용을 검색합니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>엑셀 파일을 끌어다 놓거나 클릭해 올립니다</li>
+    <li>아래 탭으로 시트를 전환합니다</li>
+    <li>검색창에 입력하면 일치하는 행만 보여주고 일치 부분을 강조합니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="drop" id="drop"><div class="big">📈</div><div><strong>엑셀 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.xlsx · .xls · .ods</div></div>
+    <input type="file" id="file" accept=".xlsx,.xls,.ods" class="hide"/>
+    <div class="bar hide" id="bar">
+      <div class="tabs" id="tabs"></div>
+      <input type="search" id="q" placeholder="셀 내용 검색…"/>
+    </div>
+    <div class="tblwrap hide" id="tblwrap"></div>
+    <div class="note">파일은 서버로 전송되지 않고 브라우저 안에서만 열립니다. 큰 시트는 처음 1,000행까지 표시합니다(검색은 표시된 범위에서 동작). 서식·수식 결과는 값으로 표시됩니다.</div>
+  </div>
+</div>
+
+<script src="/vendor/xlsx-0.18.5/xlsx.full.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var wb=null, sheets={}, cur=null, MAXROW=1000;
+  function readFile(f){ if(!f) return; var fr=new FileReader();
+    fr.onload=function(e){ try{ wb=XLSX.read(e.target.result,{type:'array'}); build(); }
+      catch(err){ $('tblwrap').classList.remove('hide'); $('tblwrap').innerHTML='<div style="padding:1rem;color:var(--muted)">파일을 열 수 없습니다. 엑셀 형식이 맞는지 확인해 주세요.</div>'; } };
+    fr.readAsArrayBuffer(f);
+  }
+  function build(){
+    sheets={}; wb.SheetNames.forEach(function(n){ sheets[n]=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,defval:''}); });
+    $('tabs').innerHTML=wb.SheetNames.map(function(n,i){ return '<button data-n="'+i+'">'+n.replace(/</g,'&lt;')+'</button>'; }).join('');
+    $('bar').classList.remove('hide');
+    select(wb.SheetNames[0]);
+  }
+  function colName(i){ var s=''; i++; while(i>0){ var m=(i-1)%26; s=String.fromCharCode(65+m)+s; i=Math.floor((i-1)/26); } return s; }
+  function esc(s){ return String(s).replace(/[&<>]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]);}); }
+  function select(name){ cur=name;
+    Array.prototype.forEach.call($('tabs').children,function(b){ b.classList.toggle('on', wb.SheetNames[+b.dataset.n]===name); });
+    render();
+  }
+  function render(){
+    var rows=sheets[cur]||[], q=$('q').value.trim().toLowerCase();
+    var maxc=0; rows.forEach(function(r){ if(r.length>maxc)maxc=r.length; }); maxc=Math.max(maxc,1);
+    var shown=rows.slice(0,MAXROW);
+    var h='<table><thead><tr><th></th>';
+    for(var c=0;c<maxc;c++) h+='<th>'+colName(c)+'</th>'; h+='</tr></thead><tbody>';
+    var count=0;
+    for(var i=0;i<shown.length;i++){ var r=shown[i];
+      var rowText = r.join(' ').toLowerCase();
+      if(q && rowText.indexOf(q)<0) continue;
+      count++;
+      h+='<tr><td class="rh">'+(i+1)+'</td>';
+      for(var c=0;c<maxc;c++){ var v=esc(r[c]==null?'':r[c]);
+        if(q && v.toLowerCase().indexOf(q)>=0){ var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'); v=v.replace(re,'<mark>$1</mark>'); }
+        h+='<td>'+v+'</td>'; }
+      h+='</tr>';
+    }
+    h+='</tbody></table>';
+    $('tblwrap').innerHTML=h; $('tblwrap').classList.remove('hide');
+  }
+  $('drop').addEventListener('click',function(){ $('file').click(); });
+  $('file').addEventListener('change',function(e){ if(e.target.files[0]) readFile(e.target.files[0]); });
+  ['dragover','dragenter'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.add('over');}); });
+  ['dragleave','drop'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.remove('over');}); });
+  $('drop').addEventListener('drop',function(e){ if(e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]); });
+  $('tabs').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) select(wb.SheetNames[+b.dataset.n]); });
+  $('q').addEventListener('input',render);
+</script>
+</body>
+</html>

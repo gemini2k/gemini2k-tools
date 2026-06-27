@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>PPT(PPTX) 텍스트 추출기 (슬라이드별) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="파워포인트 파일(.pptx)에서 슬라이드별 텍스트를 한 번에 뽑아내 복사·다운로드합니다. 파워포인트 없이 브라우저에서 바로, 업로드 없이 기기 안에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/pptx2txt.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="PPT(PPTX) 텍스트 추출기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="파워포인트(.pptx) 슬라이드별 텍스트를 추출해 복사·다운로드. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/pptx2txt.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .drop{border:2px dashed var(--border);border-radius:14px;padding:2rem 1rem;text-align:center;color:var(--muted);cursor:pointer;transition:.15s;}
+  .drop:hover,.drop.over{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+  .drop .big{font-size:2rem;margin-bottom:.4rem;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:.7rem 0;}
+  .meta{font-size:.85rem;color:var(--muted);margin:.5rem 0;}
+  .slides{display:flex;flex-direction:column;gap:.7rem;}
+  .slide{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.7rem .9rem;}
+  .slide h3{margin:0 0 .4rem;font-size:.82rem;color:var(--accent);font-weight:800;}
+  .slide pre{margin:0;white-space:pre-wrap;font-family:inherit;font-size:.92rem;line-height:1.55;color:var(--text);}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "PPT(PPTX) 텍스트 추출기",
+  "description": "파워포인트(.pptx)에서 슬라이드별 텍스트를 추출해 복사·다운로드합니다. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/pptx2txt.html",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:820px;">
+  <h1>PPT(PPTX) 텍스트 추출기</h1>
+  <p class="sub">파워포인트(.pptx)의 모든 슬라이드 텍스트를 순서대로 추출합니다. 발표 자료 내용을 빠르게 가져오세요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>파워포인트 파일(.pptx)을 끌어다 놓거나 클릭해 올립니다</li>
+    <li>슬라이드별 텍스트가 순서대로 추출됩니다</li>
+    <li>‘전체 복사’ 또는 ‘.txt 다운로드’로 가져갑니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="drop" id="drop"><div class="big">📑</div><div><strong>파워포인트 파일(.pptx)을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.pptx (구형 .ppt는 미지원)</div></div>
+    <input type="file" id="file" accept=".pptx" class="hide"/>
+    <div class="meta hide" id="meta"></div>
+    <div class="actions hide" id="actions">
+      <button class="btn" id="copy" type="button">📋 전체 복사</button>
+      <button class="btn btn-ghost" id="dl" type="button">⬇️ .txt 다운로드</button>
+    </div>
+    <div class="slides hide" id="slides"></div>
+    <div class="note">.pptx(2007 이후 형식)만 지원합니다. 구형 .ppt는 파워포인트에서 .pptx로 저장 후 사용하세요. 도형·텍스트 상자의 글자를 슬라이드 순서대로 추출하며 이미지·차트 그림은 제외됩니다. 파일은 브라우저 안에서만 처리됩니다.</div>
+  </div>
+</div>
+
+<script src="/vendor/jszip-3.10.1/jszip.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  var slides=[], baseName='presentation';
+  function fail(m){ $('meta').classList.remove('hide'); $('meta').textContent=m; $('actions').classList.add('hide'); $('slides').classList.add('hide'); }
+  function readFile(f){ if(!f) return; baseName=f.name.replace(/\.[^.]+$/,'')||'presentation';
+    if(!/\.pptx$/i.test(f.name)){ fail('.pptx 파일만 지원합니다. 구형 .ppt는 .pptx로 저장 후 사용하세요.'); return; }
+    f.arrayBuffer().then(function(buf){ return JSZip.loadAsync(buf); }).then(function(zip){
+      var names=Object.keys(zip.files).filter(function(n){ return /^ppt\/slides\/slide\d+\.xml$/.test(n); });
+      if(!names.length) throw new Error('슬라이드를 찾을 수 없습니다.');
+      names.sort(function(a,b){ return (+a.match(/slide(\d+)/)[1]) - (+b.match(/slide(\d+)/)[1]); });
+      return Promise.all(names.map(function(n){ return zip.file(n).async('string'); }));
+    }).then(function(xmls){ slides=xmls.map(extract); show(); })
+    .catch(function(e){ fail('파일을 읽을 수 없습니다. 올바른 .pptx 파일인지 확인해 주세요.'); });
+  }
+  function extract(xml){
+    var out=[]; var re=/<a:t>([\s\S]*?)<\/a:t>/g, m;
+    while((m=re.exec(xml))){ out.push(m[1]); }
+    var s=out.join('\n')
+      .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'");
+    return s.replace(/\n{3,}/g,'\n\n').trim();
+  }
+  function allText(){ return slides.map(function(s,i){ return '── 슬라이드 '+(i+1)+' ──\n'+(s||'(텍스트 없음)'); }).join('\n\n'); }
+  function show(){
+    var n=slides.length, words=slides.join(' ').split(/\s+/).filter(Boolean).length;
+    $('meta').classList.remove('hide'); $('meta').textContent='슬라이드 '+n+'개 · 단어 약 '+words.toLocaleString()+'개';
+    $('slides').innerHTML=slides.map(function(s,i){ return '<div class="slide"><h3>슬라이드 '+(i+1)+'</h3><pre>'+esc(s||'(텍스트 없음)')+'</pre></div>'; }).join('');
+    $('slides').classList.remove('hide'); $('actions').classList.remove('hide');
+  }
+  function esc(s){ return String(s).replace(/[&<>]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]);}); }
+  function download(){ var blob=new Blob([allText()],{type:'text/plain;charset=utf-8'}); var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=baseName+'.txt'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); }
+  $('drop').addEventListener('click',function(){ $('file').click(); });
+  $('file').addEventListener('change',function(e){ if(e.target.files[0]) readFile(e.target.files[0]); });
+  ['dragover','dragenter'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.add('over');}); });
+  ['dragleave','drop'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.remove('over');}); });
+  $('drop').addEventListener('drop',function(e){ if(e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]); });
+  $('copy').addEventListener('click',function(){ if(slides.length) navigator.clipboard.writeText(allText()).then(function(){toast('복사됐습니다');}); });
+  $('dl').addEventListener('click',download);
+</script>
+</body>
+</html>

@@ -117,4 +117,10 @@ window.TOOLS = [
   { key:'mindmap',h:'mindmap.html',ic:'🧠', chip:'c-violet', cat:'시각화', k:'마인드맵 브레인스토밍 생각정리 가지 노드 트리 기획 mind map 思维导图 マインドマップ 마인드맵그리기', related:['diagram','chartmaker','palette'] },
   { key:'imgpalette',h:'imgpalette.html',ic:'🖌️', chip:'c-rose', cat:'시각화', k:'이미지 색상 추출 대표색 주요색 팔레트 컬러 추출 사진 로고 color extract palette 取色 配色 색추출', related:['palette','color','contrast'] },
   { key:'ogimage',h:'ogimage.html',ic:'🖼️', chip:'c-cyan', cat:'시각화', k:'og 이미지 썸네일 생성 sns 공유 카드 소셜 thumbnail 오픈그래프 open graph 缩略图 サムネ 썸네일생성', related:['chartmaker','palette','favicon'] },
+  { key:'excel2csv',h:'excel2csv.html',ic:'📊', chip:'c-green', cat:'문서', k:'엑셀 csv json 변환 xlsx xls 시트 추출 convert excel 转换 変換 엑셀변환 엑셀csv', related:['csv2excel','xlsxview','csvviewer'] },
+  { key:'csv2excel',h:'csv2excel.html',ic:'📥', chip:'c-blue', cat:'문서', k:'csv json 엑셀 변환 xlsx 만들기 표 to excel 转excel エクセル変換 csv엑셀', related:['excel2csv','xlsxview','jsoncsv'] },
+  { key:'xlsxview',h:'xlsxview.html',ic:'📈', chip:'c-cyan', cat:'문서', k:'엑셀 뷰어 보기 미리보기 열기 검색 xlsx viewer 표 시트 查看 ビューア 엑셀열기 엑셀뷰어', related:['excel2csv','csvviewer','csv2excel'] },
+  { key:'docx2txt',h:'docx2txt.html',ic:'📝', chip:'c-violet', cat:'문서', k:'워드 docx 텍스트 추출 word 본문 글자 변환 text extract 文档 ワード 워드추출 워드텍스트', related:['pptx2txt','hwpx2txt','wordcount'] },
+  { key:'pptx2txt',h:'pptx2txt.html',ic:'📑', chip:'c-amber', cat:'문서', k:'파워포인트 ppt pptx 텍스트 추출 슬라이드 발표 text powerpoint extract 幻灯片 パワポ ppt추출', related:['docx2txt','hwpx2txt','mindmap'] },
+  { key:'hwpx2txt',h:'hwpx2txt.html',ic:'📄', chip:'c-rose', cat:'문서', k:'한글 hwpx hwp 텍스트 추출 본문 한컴 hancom 변환 韩文 ハングル 한글추출 한글텍스트', related:['docx2txt','pptx2txt','wordcount'] },
 ];
