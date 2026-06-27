@@ -189,4 +189,12 @@ window.TOOLS = [
   { key:'clicker',h:'clicker.html',ic:'🪙', chip:'c-amber', cat:'게임', k:'클리커 방치형 키우기 코인 클릭 idle clicker 放置 クリッカー 클리커게임', related:['g2048','whack','clicker'] },
   { key:'tetris',h:'tetris.html',ic:'🧱', chip:'c-cyan', cat:'게임', k:'테트리스 블록 쌓기 줄없애기 tetris block 俄罗斯方块 テトリス 테트리스게임', related:['g2048','breakout','snake'] },
   { key:'flappy',h:'flappy.html',ic:'🐤', chip:'c-blue', cat:'게임', k:'플래피 버드 점프 파이프 한손 flappy bird tap 飞翔 フラッピー 플래피버드', related:['runner3d','cardodge','breakout'] },
+  { key:'tarot',h:'tarot.html',ic:'🔮', chip:'c-violet', cat:'심리·운세', k:'타로 카드 한장 뽑기 운세 메이저아르카나 tarot card 塔罗 タロット 타로카드', related:['saju','fortunecookie','mbti'] },
+  { key:'fortunecookie',h:'fortunecookie.html',ic:'🥠', chip:'c-amber', cat:'심리·운세', k:'포춘쿠키 오늘의 한마디 행운 메시지 운세 fortune cookie 幸运饼 おみくじ 포춘쿠키', related:['tarot','saju','lotto'] },
+  { key:'zodiacanim',h:'zodiacanim.html',ic:'🐯', chip:'c-rose', cat:'심리·운세', k:'띠별 성격 십이지 띠 운세 궁합 zodiac animal 生肖 干支 띠성격 띠별운세', related:['saju','bloodtype','agecalc'] },
+  { key:'img2ascii',h:'img2ascii.html',ic:'🔤', chip:'c-green', cat:'이미지', k:'이미지 아스키 아트 ascii art 글자 그림 변환 사진 image to ascii 字符画 アスキーアート 아스키아트', related:['pixelate','imgfilter','imgpalette'] },
+  { key:'pixelate',h:'pixelate.html',ic:'🟦', chip:'c-cyan', cat:'이미지', k:'이미지 픽셀화 도트화 픽셀아트 모자이크 pixelate dot art 像素化 ピクセル化 픽셀아트', related:['imgmosaic','imgfilter','img2ascii'] },
+  { key:'imgfilter',h:'imgfilter.html',ic:'🎞️', chip:'c-violet', cat:'이미지', k:'이미지 필터 흑백 세피아 밝기 대비 채도 블러 image filter grayscale 滤镜 フィルター 이미지필터', related:['image','imgcrop','imgframe'] },
+  { key:'qrdecode',h:'qrdecode.html',ic:'📷', chip:'c-blue', cat:'이미지', k:'qr 읽기 디코더 인식 스캔 코드 qr decoder reader scan 二维码识别 QR読み取り qr읽기', related:['qr','barcode','exif'] },
+  { key:'angle',h:'angle.html',ic:'📐', chip:'c-amber', cat:'변환기', k:'각도 변환 도 라디안 그라드 회전수 도분초 dms angle radian 角度 角度変換 각도변환', related:['unit','radix','numformat'] },
 ];

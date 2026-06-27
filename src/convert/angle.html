@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>각도 변환기 (도·라디안·그라드·시:분:초) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="각도를 도(°)·라디안·그라드·회전수·도분초(DMS)로 상호 변환합니다. 수학·공학·천문에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/angle.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="각도 변환기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="도·라디안·그라드·회전수·도분초 변환. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/angle.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .fld{margin-bottom:1rem;}.fld label{font-weight:700;font-size:.85rem;color:var(--muted);display:block;margin-bottom:.35rem;}
+  .fld input,.fld select{width:100%;padding:.65rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1.1rem;}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+  .item{border:1px solid var(--border);border-radius:11px;padding:.6rem .9rem;background:var(--ground);cursor:pointer;margin-bottom:.5rem;}.item .l{font-size:.72rem;color:var(--muted);font-weight:700;}.item .v{font-size:1.1rem;font-weight:700;margin-top:.15rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"각도 변환기","description":"도·라디안·그라드·회전수·도분초를 상호 변환합니다.","url":"https://gemini2k.co.kr/angle.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:540px;">
+  <h1>각도 변환기</h1>
+  <p class="sub">각도를 도·라디안·그라드·회전수·도분초로 한 번에 변환합니다. 줄을 클릭하면 복사돼요.</p>
+  <div class="card">
+    <div class="row"><div class="fld"><label>값</label><input id="v" type="number" inputmode="decimal" value="90"/></div>
+    <div class="fld"><label>단위</label><select id="u"><option value="deg">도(°)</option><option value="rad">라디안(rad)</option><option value="grad">그라드(grad)</option><option value="turn">회전수(turn)</option></select></div></div>
+    <div id="res"></div>
+    <div class="note">π 라디안 = 180° = 200 grad = 0.5 회전. 도분초(DMS)는 1°=60′=3600″ 기준입니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function dms(deg){ var neg=deg<0;deg=Math.abs(deg);var d=Math.floor(deg),mf=(deg-d)*60,m=Math.floor(mf),s=((mf-m)*60); return (neg?'-':'')+d+'° '+m+"' "+s.toFixed(1)+'"'; }
+  function fmt(n){ return Math.abs(n)<1e-9?'0':(+n.toPrecision(10)).toString(); }
+  function render(){ var v=parseFloat($('v').value); if(isNaN(v)){$('res').innerHTML='';return;} var u=$('u').value, deg;
+    if(u==='deg')deg=v; else if(u==='rad')deg=v*180/Math.PI; else if(u==='grad')deg=v*0.9; else deg=v*360;
+    var items=[['도 (°)',fmt(deg)],['라디안 (rad)',fmt(deg*Math.PI/180)],['그라드 (grad)',fmt(deg/0.9)],['회전수 (turn)',fmt(deg/360)],['도분초 (DMS)',dms(deg)],['π 배수',fmt(deg/180)+' π']];
+    $('res').innerHTML=items.map(function(it){return '<div class="item" data-v="'+(''+it[1]).replace(/"/g,'&quot;')+'"><div class="l">'+it[0]+'</div><div class="v">'+it[1]+'</div></div>';}).join('');
+  }
+  ['v','u'].forEach(function(id){$(id).addEventListener('input',render);$(id).addEventListener('change',render);});
+  $('res').addEventListener('click',function(e){var it=e.target.closest('.item');if(it){navigator.clipboard.writeText(it.dataset.v).then(function(){toast('복사됐습니다');});}});
+  render();
+</script>
+</body>
+</html>

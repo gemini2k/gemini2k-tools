@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>이미지 필터 (흑백·세피아·밝기·대비) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="사진에 흑백·세피아·반전 필터와 밝기·대비·채도·블러를 적용해 PNG로 저장합니다. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/imgfilter.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="이미지 필터 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="흑백·세피아·밝기·대비·채도·블러 필터 적용·저장. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/imgfilter.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .drop{border:2px dashed var(--border);border-radius:14px;padding:1.6rem 1rem;text-align:center;color:var(--muted);cursor:pointer;}.drop:hover{border-color:var(--accent);color:var(--accent);}
+  .presets{display:flex;flex-wrap:wrap;gap:.4rem;margin:.8rem 0;}.presets button{padding:.4rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-family:inherit;font-weight:600;cursor:pointer;font-size:.85rem;}.presets button:hover{background:var(--accent-soft);}
+  .sliders{display:grid;grid-template-columns:1fr 1fr;gap:.5rem 1rem;margin:.6rem 0;}
+  .sliders label{display:flex;flex-direction:column;gap:.2rem;font-size:.78rem;font-weight:700;color:var(--muted);}
+  .cvwrap{text-align:center;border:1px solid var(--border);border-radius:12px;overflow:auto;background:var(--surface);}canvas{max-width:100%;height:auto;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"이미지 필터","description":"흑백·세피아·밝기·대비·채도·블러 필터를 적용합니다.","url":"https://gemini2k.co.kr/imgfilter.html","applicationCategory":"MultimediaApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:720px;">
+  <h1>이미지 필터</h1>
+  <p class="sub">사진에 필터와 밝기·대비·채도 등을 적용하고 저장합니다.</p>
+  <div class="card">
+    <div class="drop" id="drop"><div style="font-size:1.8rem">🎞️</div><div><strong>이미지를 끌어다 놓거나 클릭</strong></div></div>
+    <input type="file" id="file" accept="image/*" class="hide"/>
+    <div class="opts hide" id="opts">
+      <div class="presets"><button data-p="none">원본</button><button data-p="gray">흑백</button><button data-p="sepia">세피아</button><button data-p="invert">반전</button><button data-p="cool">쿨톤</button><button data-p="warm">웜톤</button><button data-p="vivid">선명</button></div>
+      <div class="sliders">
+        <label>밝기 <input id="bri" type="range" min="0" max="200" value="100"/></label>
+        <label>대비 <input id="con" type="range" min="0" max="200" value="100"/></label>
+        <label>채도 <input id="sat" type="range" min="0" max="300" value="100"/></label>
+        <label>블러 <input id="blur" type="range" min="0" max="10" value="0"/></label>
+        <label>색조 <input id="hue" type="range" min="0" max="360" value="0"/></label>
+        <label>세피아 <input id="sep" type="range" min="0" max="100" value="0"/></label>
+      </div>
+      <button class="btn" id="dl" type="button">⬇️ PNG 저장</button>
+    </div>
+    <div class="cvwrap hide" id="cvwrap"><canvas id="cv"></canvas></div>
+    <div class="note">CSS 필터를 캔버스에 적용해 저장합니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'),x=cv.getContext('2d'),img=null;
+  function read(f){ if(!f||!/^image\//.test(f.type))return; var u=URL.createObjectURL(f),im=new Image(); im.onload=function(){img=im;URL.revokeObjectURL(u);$('opts').classList.remove('hide');$('cvwrap').classList.remove('hide');render();}; im.src=u; }
+  function filt(){ return 'brightness('+$('bri').value+'%) contrast('+$('con').value+'%) saturate('+$('sat').value+'%) blur('+$('blur').value+'px) hue-rotate('+$('hue').value+'deg) sepia('+$('sep').value+'%)'; }
+  function render(){ if(!img)return; cv.width=img.naturalWidth; cv.height=img.naturalHeight; x.filter=filt(); x.clearRect(0,0,cv.width,cv.height); x.drawImage(img,0,0); x.filter='none'; }
+  var PRE={none:[100,100,100,0,0,0],gray:[100,100,0,0,0,0],sepia:[100,100,100,0,0,90],invert:null,cool:[100,105,110,0,200,0],warm:[105,100,120,0,330,20],vivid:[105,120,160,0,0,0]};
+  function preset(p){ if(p==='invert'){ render(); x.globalCompositeOperation='difference'; x.fillStyle='#fff'; x.fillRect(0,0,cv.width,cv.height); x.globalCompositeOperation='source-over'; return; }
+    var v=PRE[p]; $('bri').value=v[0];$('con').value=v[1];$('sat').value=v[2];$('blur').value=v[3];$('hue').value=v[4];$('sep').value=v[5]; render(); }
+  $('drop').addEventListener('click',function(){$('file').click();});
+  $('file').addEventListener('change',function(e){if(e.target.files[0])read(e.target.files[0]);});
+  ['dragover','dragenter'].forEach(function(ev){$('drop').addEventListener(ev,function(e){e.preventDefault();});});
+  $('drop').addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files[0])read(e.dataTransfer.files[0]);});
+  $('.presets'); document.querySelector('.presets').addEventListener('click',function(e){var b=e.target.closest('button');if(b)preset(b.dataset.p);});
+  ['bri','con','sat','blur','hue','sep'].forEach(function(id){$(id).addEventListener('input',render);});
+  $('dl').addEventListener('click',function(){if(!img)return;cv.toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='filtered.png';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120);});});
+</script>
+</body>
+</html>

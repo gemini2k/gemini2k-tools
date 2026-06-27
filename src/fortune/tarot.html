@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>타로 한 장 뽑기 (오늘의 타로 카드) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="메이저 아르카나 22장 중 한 장을 뽑아 카드 의미를 보는 재미용 타로. 정·역방향 키워드. 과학적 근거 없는 오락용. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/tarot.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="타로 한 장 뽑기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="메이저 아르카나 22장 중 한 장 뽑기(재미용). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/tarot.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .card3{max-width:240px;margin:0 auto 1rem;aspect-ratio:2/3;border-radius:16px;background:linear-gradient(160deg,#3b2a6b,#5b5bf5);border:3px solid #ffd86b;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:1rem;}
+  .card3 .ic{font-size:3.4rem;} .card3 .nm{font-size:1.3rem;font-weight:800;margin-top:.4rem;} .card3 .or{font-size:.85rem;opacity:.9;}
+  .mean{text-align:center;font-size:1rem;line-height:1.7;margin:1rem 0;min-height:2em;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"타로 한 장 뽑기","description":"메이저 아르카나 22장 중 한 장을 뽑는 재미용 타로.","url":"https://gemini2k.co.kr/tarot.html","applicationCategory":"LifestyleApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:480px;">
+  <h1>타로 한 장 뽑기 <span style="font-size:.9rem;color:var(--muted)">(재미)</span></h1>
+  <p class="sub">마음속으로 질문을 떠올리고 카드를 뽑아 보세요. 가볍게 즐기는 재미용 타로입니다.</p>
+  <div class="card">
+    <div class="card3" id="card"><div class="ic">🔮</div><div class="nm">카드를 뽑아보세요</div></div>
+    <div class="mean" id="mean"></div>
+    <button class="btn" id="draw" type="button" style="width:100%;">🎴 카드 뽑기</button>
+    <div class="note">타로는 <b>과학적 근거가 없는 오락용</b>입니다. 운세를 단정하지 않으며 재미로만 즐겨 주세요. 카드는 무작위로 정·역방향이 정해집니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var CARDS=[
+    ['🃏','광대(The Fool)','새로운 시작·모험·순수','경솔·무모함을 조심'],
+    ['🎩','마법사(The Magician)','의지·창조·재능 발휘','속임수·집중력 부족'],
+    ['🌙','여사제(High Priestess)','직관·비밀·내면의 지혜','감춰진 의도·혼란'],
+    ['👑','여황제(The Empress)','풍요·돌봄·창의','의존·과보호'],
+    ['🏛️','황제(The Emperor)','안정·권위·리더십','독선·완고함'],
+    ['📜','교황(The Hierophant)','전통·가르침·신뢰','형식주의·고정관념'],
+    ['💞','연인(The Lovers)','사랑·선택·조화','갈등·우유부단'],
+    ['🏇','전차(The Chariot)','추진력·승리·의지','통제 상실·조급함'],
+    ['🦁','힘(Strength)','용기·인내·자제','자신감 부족·불안'],
+    ['🏮','은둔자(The Hermit)','성찰·탐구·고독','고립·회피'],
+    ['🎡','운명의 수레바퀴','전환점·행운·순환','정체·불운의 시기'],
+    ['⚖️','정의(Justice)','균형·공정·책임','불공정·회피'],
+    ['🙃','매달린 사람','관점 전환·기다림·헌신','희생·정체'],
+    ['🦋','죽음(Death)','변화·끝과 시작·재생','집착·정체'],
+    ['🍷','절제(Temperance)','조화·중용·치유','불균형·과함'],
+    ['😈','악마(The Devil)','욕망·집착·유혹','속박에서 벗어남'],
+    ['🗼','탑(The Tower)','급변·각성·해방','충격·붕괴 주의'],
+    ['⭐','별(The Star)','희망·영감·치유','실망·자신감 저하'],
+    ['🌕','달(The Moon)','상상·불안·무의식','혼란·환상 주의'],
+    ['☀️','태양(The Sun)','기쁨·성공·활력','과신·지연'],
+    ['📯','심판(Judgement)','부활·결단·각성','후회·미루기'],
+    ['🌍','세계(The World)','완성·성취·통합','미완·마무리 필요']
+  ];
+  function draw(){ var c=CARDS[Math.floor(Math.random()*CARDS.length)]; var up=Math.random()<0.65;
+    $('card').innerHTML='<div class="ic"'+(up?'':' style="transform:rotate(180deg)"')+'>'+c[0]+'</div><div class="nm">'+c[1]+'</div><div class="or">'+(up?'정방향 ▲':'역방향 ▼')+'</div>';
+    $('mean').innerHTML='<b>'+(up?'정방향':'역방향')+':</b> '+(up?c[2]:c[3]);
+  }
+  $('draw').addEventListener('click',draw);
+</script>
+</body>
+</html>

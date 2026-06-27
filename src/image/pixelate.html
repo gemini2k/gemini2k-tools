@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>이미지 픽셀화·도트화 (픽셀아트) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="사진을 픽셀(도트) 그림으로 만듭니다. 픽셀 크기·색 수 조절, PNG 저장. 픽셀아트·프로필에. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/pixelate.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="이미지 픽셀화·도트화 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="사진을 픽셀아트로 변환·저장. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/pixelate.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .drop{border:2px dashed var(--border);border-radius:14px;padding:1.6rem 1rem;text-align:center;color:var(--muted);cursor:pointer;}.drop:hover{border-color:var(--accent);color:var(--accent);}
+  .opts{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin:.8rem 0;font-size:.88rem;}.opts label{display:inline-flex;gap:.4rem;align-items:center;font-weight:600;}
+  .cvwrap{text-align:center;border:1px solid var(--border);border-radius:12px;overflow:auto;background:var(--surface);}canvas{max-width:100%;height:auto;image-rendering:pixelated;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"이미지 픽셀화·도트화","description":"사진을 픽셀(도트) 그림으로 변환합니다.","url":"https://gemini2k.co.kr/pixelate.html","applicationCategory":"MultimediaApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:720px;">
+  <h1>이미지 픽셀화·도트화</h1>
+  <p class="sub">사진을 픽셀아트 느낌으로 바꿉니다. 픽셀 크기를 키울수록 더 큰 도트가 됩니다.</p>
+  <div class="card">
+    <div class="drop" id="drop"><div style="font-size:1.8rem">🟦</div><div><strong>이미지를 끌어다 놓거나 클릭</strong></div></div>
+    <input type="file" id="file" accept="image/*" class="hide"/>
+    <div class="opts hide" id="opts"><label>픽셀 크기 <input id="px" type="range" min="2" max="40" value="10"/><span id="pv">10</span></label><label>색 단계 <input id="lv" type="range" min="2" max="32" value="32"/><span id="lvv">32</span></label><button class="btn" id="dl" type="button">⬇️ PNG 저장</button></div>
+    <div class="cvwrap hide" id="cvwrap"><canvas id="cv"></canvas></div>
+    <div class="note">픽셀 크기만큼 블록 평균색으로 묶고, 색 단계로 색을 양자화합니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'),x=cv.getContext('2d'),img=null;
+  function read(f){ if(!f||!/^image\//.test(f.type))return; var u=URL.createObjectURL(f),im=new Image(); im.onload=function(){img=im;URL.revokeObjectURL(u);$('opts').classList.remove('hide');$('cvwrap').classList.remove('hide');render();}; im.src=u; }
+  function render(){ if(!img)return; var px=+$('px').value,lv=+$('lv').value; $('pv').textContent=px;$('lvv').textContent=lv;
+    var W=img.naturalWidth,H=img.naturalHeight; cv.width=W; cv.height=H;
+    var sw=Math.max(1,Math.round(W/px)), sh=Math.max(1,Math.round(H/px));
+    var tmp=document.createElement('canvas');tmp.width=sw;tmp.height=sh;var tx=tmp.getContext('2d');tx.drawImage(img,0,0,sw,sh);
+    var d;try{d=tx.getImageData(0,0,sw,sh);}catch(e){return;} var data=d.data, step=255/(lv-1);
+    for(var i=0;i<data.length;i+=4){ data[i]=Math.round(data[i]/step)*step; data[i+1]=Math.round(data[i+1]/step)*step; data[i+2]=Math.round(data[i+2]/step)*step; }
+    tx.putImageData(d,0,0);
+    x.imageSmoothingEnabled=false; x.clearRect(0,0,W,H); x.drawImage(tmp,0,0,sw,sh,0,0,W,H);
+  }
+  $('drop').addEventListener('click',function(){$('file').click();});
+  $('file').addEventListener('change',function(e){if(e.target.files[0])read(e.target.files[0]);});
+  ['dragover','dragenter'].forEach(function(ev){$('drop').addEventListener(ev,function(e){e.preventDefault();});});
+  $('drop').addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files[0])read(e.dataTransfer.files[0]);});
+  ['px','lv'].forEach(function(id){$(id).addEventListener('input',render);});
+  $('dl').addEventListener('click',function(){if(!img)return;cv.toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='pixel.png';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120);});});
+</script>
+</body>
+</html>

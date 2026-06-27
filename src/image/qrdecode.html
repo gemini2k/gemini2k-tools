@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>QR코드 읽기·디코더 (이미지에서 QR 인식) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="QR코드 이미지를 올리면 안에 담긴 텍스트·URL을 읽어 줍니다. 캡처·스크린샷도 인식. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/qrdecode.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="QR코드 읽기·디코더 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="QR 이미지에서 텍스트·URL 인식. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/qrdecode.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .drop{border:2px dashed var(--border);border-radius:14px;padding:2rem 1rem;text-align:center;color:var(--muted);cursor:pointer;}.drop:hover{border-color:var(--accent);color:var(--accent);}
+  .drop .big{font-size:2rem;}
+  .result{margin-top:1rem;}
+  .res{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.9rem;word-break:break-all;font-size:1.05rem;min-height:2em;}
+  .res a{color:var(--accent);}
+  .actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.6rem;}
+  .preview{text-align:center;margin-top:.8rem;}.preview img{max-width:220px;max-height:220px;border:1px solid var(--border);border-radius:10px;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"QR코드 읽기·디코더","description":"QR코드 이미지에서 텍스트·URL을 읽습니다.","url":"https://gemini2k.co.kr/qrdecode.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:600px;">
+  <h1>QR코드 읽기 (디코더)</h1>
+  <p class="sub">QR코드 이미지를 올리면 안에 담긴 내용을 읽어 줍니다.</p>
+  <div class="card">
+    <div class="drop" id="drop"><div class="big">🔳</div><div><strong>QR 이미지를 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG · 스크린샷</div></div>
+    <input type="file" id="file" accept="image/*" class="hide"/>
+    <div class="result hide" id="resultWrap">
+      <div class="res" id="res"></div>
+      <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 복사</button><a class="btn btn-ghost hide" id="open" target="_blank" rel="noopener noreferrer">↗ 링크 열기</a></div>
+    </div>
+    <div class="preview hide" id="pv"><img id="img" alt="미리보기"/></div>
+    <div class="note">QR이 또렷하고 정면에서 찍힌 이미지일수록 인식이 잘 됩니다. 인식이 안 되면 더 크고 선명한 이미지로 시도하세요. 이미지는 서버로 전송되지 않고 브라우저에서만 분석됩니다.</div>
+  </div>
+</div>
+<script src="/vendor/jsqr-1.4.0/jsQR.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function read(f){ if(!f||!/^image\//.test(f.type))return; var u=URL.createObjectURL(f),im=new Image();
+    im.onload=function(){ $('img').src=u; $('pv').classList.remove('hide');
+      var W=Math.min(1000,im.naturalWidth),H=Math.round(im.naturalHeight*W/im.naturalWidth);
+      var cv=document.createElement('canvas');cv.width=W;cv.height=H;var x=cv.getContext('2d');x.drawImage(im,0,0,W,H);
+      var data;try{data=x.getImageData(0,0,W,H);}catch(e){show(null,'보안 정책으로 분석 불가');return;}
+      var code=null; try{ code=jsQR(data.data,W,H); }catch(e){}
+      if(code&&code.data) show(code.data); else show(null,'QR코드를 찾지 못했어요. 더 선명한 이미지로 시도해 주세요.');
+    }; im.src=u;
+  }
+  function show(text,err){ $('resultWrap').classList.remove('hide'); var op=$('open');
+    if(text){ var isUrl=/^https?:\/\//i.test(text); $('res').innerHTML= isUrl? '<a href="'+text.replace(/"/g,'&quot;')+'" target="_blank" rel="noopener noreferrer">'+text.replace(/</g,'&lt;')+'</a>' : text.replace(/</g,'&lt;');
+      window._qr=text; if(isUrl){op.href=text;op.classList.remove('hide');}else op.classList.add('hide'); }
+    else { $('res').textContent='⚠️ '+err; window._qr=''; op.classList.add('hide'); }
+  }
+  $('drop').addEventListener('click',function(){$('file').click();});
+  $('file').addEventListener('change',function(e){if(e.target.files[0])read(e.target.files[0]);});
+  ['dragover','dragenter'].forEach(function(ev){$('drop').addEventListener(ev,function(e){e.preventDefault();});});
+  $('drop').addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files[0])read(e.dataTransfer.files[0]);});
+  $('copy').addEventListener('click',function(){if(window._qr)navigator.clipboard.writeText(window._qr).then(function(){toast('복사됐습니다');});});
+</script>
+</body>
+</html>
