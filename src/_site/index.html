@@ -105,6 +105,9 @@
 </div>
 
 <style>
+  .morebtn{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.7rem;border:1px dashed var(--border);border-radius:12px;background:var(--surface);color:var(--accent);font-family:inherit;font-weight:700;font-size:.92rem;cursor:pointer;transition:.12s;}
+  .morebtn:hover{background:var(--accent-soft);border-color:var(--accent);}
+  .capnote{grid-column:1/-1;text-align:center;color:var(--muted);font-size:.85rem;padding:.6rem;background:var(--accent-soft);border-radius:10px;margin:.3rem 0 0;}
   .about{max-width:820px;margin:1rem auto 0;padding:1.6rem 1.1rem 2.2rem;line-height:1.75;color:var(--text);border-top:1px solid var(--border);}
   .about h2{font-size:1.3rem;font-weight:800;margin:.2rem 0 .8rem;}
   .about h3{font-size:1.06rem;font-weight:700;margin:1.5rem 0 .5rem;}
@@ -169,6 +172,7 @@
   var favsec=document.getElementById('favsec'), favgrid=document.getElementById('favgrid'),
       recentsec=document.getElementById('recentsec'), recentgrid=document.getElementById('recentgrid');
   var FAV_KEY='tools:favorites', RECENT_KEY='tools:recent', COLLAPSE_KEY='tools:collapsed', RECENT_MAX=8;
+  var PREVIEW=8, SEARCH_CAP=60;   // '전체' 미리보기 카드 수 / 검색 결과 상한 (1000개 확장 대비)
 
   function load(key){ try{ return JSON.parse(localStorage.getItem(key))||[]; }catch(e){ return []; } }
   function save(key,arr){ try{ localStorage.setItem(key, JSON.stringify(arr)); }catch(e){} }
@@ -211,11 +215,18 @@
   function renderFav(){ favgrid.innerHTML = load(FAV_KEY).map(byKey).filter(Boolean).map(cardHtml).join(''); }
   function renderRecent(){ recentgrid.innerHTML = load(RECENT_KEY).map(byKey).filter(Boolean).map(cardHtml).join(''); }
 
-  // 섹션 카드 지연 렌더(멱등) — 펼쳐져 보이는 섹션만 생성
-  function renderSectionCards(sec){
-    if(sec.dataset.rendered) return;
-    sec.querySelector('.catsec-g').innerHTML = toolsIn(sec.dataset.cat).map(cardHtml).join('');
-    sec.dataset.rendered='1';
+  // 섹션 카드 지연 렌더(멱등) — 펼쳐진 섹션만 생성.
+  // full=false('전체' 둘러보기): 미리보기 PREVIEW개 + '더 보기' / full=true(특정 카테고리 선택): 전체
+  function renderSectionCards(sec, full){
+    var mode = full ? 'full' : 'preview';
+    if(sec.dataset.rendered===mode) return;
+    var cat=sec.dataset.cat, list=toolsIn(cat);
+    var shown = full ? list : list.slice(0, PREVIEW);
+    var html = shown.map(cardHtml).join('');
+    if(!full && list.length>PREVIEW)
+      html += '<button class="morebtn" type="button" data-cat="'+esc(cat)+'">'+t('hub.more')+' (+'+(list.length-PREVIEW)+')</button>';
+    sec.querySelector('.catsec-g').innerHTML = html;
+    sec.dataset.rendered = mode;
   }
   function buildSections(){
     sectionsBox.innerHTML = catList().map(function(c){
@@ -246,9 +257,11 @@
       var hay=(x.k+' '+t('tool.'+x.key+'.t')+' '+t('tool.'+x.key+'.d')+' '+x.key).toLowerCase();
       return hay.indexOf(s)!==-1;
     });
-    searchgrid.innerHTML = list.map(cardHtml).join('');
-    searchTitle.textContent = t('search.results')+' ('+list.length+')';
-    empty.style.display = list.length ? 'none' : '';
+    var total=list.length, html=list.slice(0,SEARCH_CAP).map(cardHtml).join('');
+    if(total>SEARCH_CAP) html += '<p class="capnote">'+t('search.cap').replace('{n}',SEARCH_CAP).replace('{total}',total)+'</p>';
+    searchgrid.innerHTML = html;
+    searchTitle.textContent = t('search.results')+' ('+total+')';
+    empty.style.display = total ? 'none' : '';
   }
 
   function syncURL(){
@@ -271,7 +284,7 @@
       sectionsBox.querySelectorAll('.catsec').forEach(function(sec){
         var show = activeCat==='전체' || sec.dataset.cat===activeCat;
         sec.style.display = show ? '' : 'none';
-        if(show && !sec.classList.contains('collapsed')) renderSectionCards(sec);
+        if(show && !sec.classList.contains('collapsed')) renderSectionCards(sec, activeCat!=='전체');
       });
       empty.style.display='none';
     }
@@ -291,7 +304,7 @@
   }
   window.onI18n = renderHub;                 // 언어 전환 시 재렌더(activeCat·검색어·접힘 상태 보존)
   document.getElementById('langsel').addEventListener('change', function(e){ setLang(e.target.value); });
-  q.addEventListener('input', update);
+  var _debT; q.addEventListener('input', function(){ clearTimeout(_debT); _debT=setTimeout(update,120); });
   chipsBox.addEventListener('click', function(e){
     var b=e.target.closest('.chip'); if(!b) return;
     activeCat=b.dataset.cat;
@@ -309,12 +322,16 @@
   });
   // 섹션 헤더 클릭 = 접기/펼치기(상태 저장, 펼칠 때 지연 렌더)
   sectionsBox.addEventListener('click', function(e){
+    var more=e.target.closest('.morebtn');
+    if(more){ activeCat=more.dataset.cat;
+      chipsBox.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('on', c.dataset.cat===activeCat); });
+      update(); chipsBox.scrollIntoView({block:'start'}); return; }
     var h=e.target.closest('.catsec-h'); if(!h) return;
     var sec=h.closest('.catsec'), nowCol=!sec.classList.contains('collapsed');
     sec.classList.toggle('collapsed', nowCol);
     h.setAttribute('aria-expanded', String(!nowCol));
     setCollapsed(sec.dataset.cat, nowCol);
-    if(!nowCol) renderSectionCards(sec);
+    if(!nowCol) renderSectionCards(sec, activeCat!=='전체');
   });
   // 별(span) 클릭/키보드 = 즐겨찾기 토글 (카드 이동 차단) / 카드 클릭 = 최근 기록
   document.addEventListener('click', function(e){
