@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>가위바위보 게임 (컴퓨터 대결) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="컴퓨터와 가위바위보 대결! 점수 기록, 연승 카운트. 가볍게 즐기는 무료 미니게임. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/rps.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="가위바위보 게임 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="컴퓨터와 가위바위보 대결, 점수·연승. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/rps.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .scores{display:flex;gap:.6rem;justify-content:center;margin-bottom:1rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.4rem .9rem;text-align:center;min-width:70px;}.sbox .l{font-size:.66rem;color:var(--muted);font-weight:700;}.sbox .v{font-size:1.3rem;font-weight:800;}
+  .battle{display:flex;align-items:center;justify-content:center;gap:1rem;font-size:3rem;margin:1.2rem 0;min-height:70px;}
+  .vs{font-size:1rem;color:var(--muted);font-weight:700;}
+  .result{text-align:center;font-size:1.4rem;font-weight:800;min-height:1.6em;margin-bottom:1rem;}
+  .pick{display:flex;gap:.8rem;justify-content:center;}
+  .pick button{font-size:2.4rem;width:84px;height:84px;border:2px solid var(--border);border-radius:18px;background:var(--surface);cursor:pointer;transition:.12s;}
+  .pick button:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-2px);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"가위바위보 게임","description":"컴퓨터와 가위바위보 대결, 점수·연승 기록.","url":"https://gemini2k.co.kr/rps.html","applicationCategory":"GameApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:480px;">
+  <h1>가위바위보</h1>
+  <p class="sub">컴퓨터와 대결하세요! 아래에서 하나를 고르면 됩니다.</p>
+  <div class="card">
+    <div class="scores"><div class="sbox"><div class="l">승</div><div class="v" id="win" style="color:#16a34a">0</div></div><div class="sbox"><div class="l">무</div><div class="v" id="draw">0</div></div><div class="sbox"><div class="l">패</div><div class="v" id="lose" style="color:#ef4444">0</div></div><div class="sbox"><div class="l">연승</div><div class="v" id="streak" style="color:var(--accent)">0</div></div></div>
+    <div class="battle"><span id="me">❔</span><span class="vs">VS</span><span id="cpu">❔</span></div>
+    <div class="result" id="result">고르세요!</div>
+    <div class="pick"><button data-m="0" type="button">✊</button><button data-m="1" type="button">✌️</button><button data-m="2" type="button">✋</button></div>
+    <div class="note">0=바위 1=가위 2=보. 컴퓨터는 무작위로 냅니다. 기록은 저장되지 않습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var EMO=['✊','✌️','✋'], NAME=['바위','가위','보'], w=0,d=0,l=0,st=0;
+  function play(me){ var cpu=Math.floor(Math.random()*3); $('me').textContent=EMO[me]; $('cpu').textContent=EMO[cpu];
+    var r=(me-cpu+3)%3; // 0 무, 1 me win(바위>가위), 2 lose
+    if(r===0){ d++; st=0; $('result').textContent='무승부 😐'; $('result').style.color='var(--muted)'; }
+    else if(r===1){ w++; st++; $('result').textContent='이겼어요! 🎉'; $('result').style.color='#16a34a'; }
+    else { l++; st=0; $('result').textContent='졌어요 😢'; $('result').style.color='#ef4444'; }
+    $('win').textContent=w; $('draw').textContent=d; $('lose').textContent=l; $('streak').textContent=st;
+  }
+  document.querySelector('.pick').addEventListener('click',function(e){var b=e.target.closest('button');if(b)play(+b.dataset.m);});
+</script>
+</body>
+</html>

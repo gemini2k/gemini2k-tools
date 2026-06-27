@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>사이먼 게임 (색·소리 순서 기억) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="점점 길어지는 색과 소리 순서를 따라 누르는 기억력 게임 사이먼. 단계가 오를수록 어려워집니다. 집중력·기억력 훈련. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/simon.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="사이먼 게임 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="색·소리 순서를 기억해 따라 누르는 기억력 게임. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/simon.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .stat{display:flex;gap:.6rem;justify-content:center;margin-bottom:1rem;}.sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.4rem .9rem;text-align:center;}.sbox .l{font-size:.66rem;color:var(--muted);font-weight:700;}.sbox .v{font-size:1.4rem;font-weight:800;}
+  .pad{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:320px;margin:0 auto;}
+  .b{aspect-ratio:1;border-radius:14px;cursor:pointer;opacity:.55;transition:opacity .1s,transform .1s;}
+  .b.on{opacity:1;transform:scale(1.04);}
+  .b0{background:#22c55e;}.b1{background:#ef4444;}.b2{background:#3b82f6;}.b3{background:#f59e0b;}
+  .msg{text-align:center;font-size:1.1rem;font-weight:700;margin:1rem 0;min-height:1.4em;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"사이먼 게임","description":"색과 소리 순서를 기억해 따라 누르는 기억력 게임.","url":"https://gemini2k.co.kr/simon.html","applicationCategory":"GameApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:460px;">
+  <h1>사이먼 게임</h1>
+  <p class="sub">불이 들어오는 순서를 기억했다가 똑같이 눌러 보세요. 단계가 오를수록 순서가 길어집니다.</p>
+  <div class="card">
+    <div class="stat"><div class="sbox"><div class="l">단계</div><div class="v" id="level">0</div></div><div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div></div>
+    <div class="msg" id="msg">시작 버튼을 누르세요</div>
+    <div class="pad" id="pad"><div class="b b0" data-i="0"></div><div class="b b1" data-i="1"></div><div class="b b2" data-i="2"></div><div class="b b3" data-i="3"></div></div>
+    <button class="btn" id="start" type="button" style="width:100%;margin-top:1rem;">▶ 시작</button>
+    <div class="note">단계마다 한 칸씩 길어집니다. 틀리면 게임이 끝나요. 소리는 브라우저에서 합성됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var seq=[], step=0, level=0, best=0, playing=false, accept=false;
+  var actx=null, FREQ=[330,440,550,660];
+  function tone(i){ try{ if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended')actx.resume();
+    var o=actx.createOscillator(),g=actx.createGain(); o.frequency.value=FREQ[i]; o.connect(g); g.connect(actx.destination);
+    g.gain.setValueAtTime(0.0001,actx.currentTime); g.gain.exponentialRampToValueAtTime(0.2,actx.currentTime+0.02); g.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+0.32); o.start(); o.stop(actx.currentTime+0.34); }catch(e){} }
+  function flash(i){ var el=$('pad').children[i]; el.classList.add('on'); tone(i); setTimeout(function(){el.classList.remove('on');},300); }
+  function playSeq(){ accept=false; var k=0; var iv=setInterval(function(){ if(k>=seq.length){ clearInterval(iv); accept=true; $('msg').textContent='따라 누르세요!'; return; } flash(seq[k]); k++; }, 600); }
+  function next(){ level++; $('level').textContent=level; seq.push(Math.floor(Math.random()*4)); step=0; $('msg').textContent='잘 보세요...'; setTimeout(playSeq,700); }
+  function start(){ seq=[]; level=0; playing=true; next(); }
+  function press(i){ if(!accept||!playing)return; flash(i);
+    if(seq[step]===i){ step++; if(step===seq.length){ accept=false; if(level>best){best=level;$('best').textContent=best;} setTimeout(next,700); } }
+    else { playing=false; accept=false; $('msg').textContent='💥 틀렸어요! 단계 '+level+' 도달'; } }
+  $('pad').addEventListener('pointerdown',function(e){var b=e.target.closest('.b');if(b)press(+b.dataset.i);});
+  $('start').addEventListener('click',start);
+</script>
+</body>
+</html>

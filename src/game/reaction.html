@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>반응속도 테스트 (순발력 측정) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="화면이 초록색으로 바뀌는 순간 클릭해 반응속도(ms)를 측정합니다. 평균 기록, 등급 평가. 순발력 테스트 미니게임. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/reaction.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="반응속도 테스트 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="초록불에 클릭, 반응속도(ms) 측정·평균·등급. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/reaction.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .pad{height:300px;border-radius:16px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.4rem;font-weight:800;color:#fff;cursor:pointer;user-select:none;transition:background .05s;}
+  .wait{background:#e0563b;} .ready{background:#16a34a;} .idle{background:#3b6fd4;} .early{background:#f59e0b;}
+  .stat{display:flex;gap:.6rem;justify-content:center;margin-top:1rem;}.sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.4rem .9rem;text-align:center;}.sbox .l{font-size:.66rem;color:var(--muted);font-weight:700;}.sbox .v{font-size:1.3rem;font-weight:800;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"반응속도 테스트","description":"초록불에 클릭해 반응속도(ms)를 측정합니다.","url":"https://gemini2k.co.kr/reaction.html","applicationCategory":"GameApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:560px;">
+  <h1>반응속도 테스트</h1>
+  <p class="sub">파란 화면을 클릭해 시작하고, <b>초록색</b>으로 바뀌는 순간 최대한 빨리 클릭하세요!</p>
+  <div class="card">
+    <div class="pad idle" id="pad">클릭해서 시작</div>
+    <div class="stat"><div class="sbox"><div class="l">이번</div><div class="v" id="last">-</div></div><div class="sbox"><div class="l">평균</div><div class="v" id="avg">-</div></div><div class="sbox"><div class="l">최고</div><div class="v" id="best">-</div></div><div class="sbox"><div class="l">등급</div><div class="v" id="grade">-</div></div></div>
+    <div class="note">사람의 평균 반응속도는 약 200~250ms입니다. 너무 일찍 클릭하면 다시 시작됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var state='idle', t0=0, timer=null, times=[], best=null;
+  var pad=$('pad');
+  function setPad(cls,txt){ pad.className='pad '+cls; pad.textContent=txt; }
+  function start(){ state='wait'; setPad('wait','초록색을 기다리세요...'); var delay=1000+Math.random()*3000;
+    timer=setTimeout(function(){ state='ready'; t0=performance.now(); setPad('ready','지금 클릭!'); }, delay); }
+  function grade(ms){ return ms<200?'😎 최상':ms<260?'👍 빠름':ms<330?'🙂 보통':'🐢 느림'; }
+  pad.addEventListener('pointerdown',function(){
+    if(state==='idle'||state==='done'||state==='early'){ start(); return; }
+    if(state==='wait'){ clearTimeout(timer); state='early'; setPad('early','너무 일찍! 다시 클릭'); return; }
+    if(state==='ready'){ var ms=Math.round(performance.now()-t0); state='done'; times.push(ms); if(best==null||ms<best)best=ms;
+      var avg=Math.round(times.reduce(function(a,b){return a+b;},0)/times.length);
+      $('last').textContent=ms+'ms'; $('avg').textContent=avg+'ms'; $('best').textContent=best+'ms'; $('grade').textContent=grade(ms);
+      setPad('idle',ms+'ms! 클릭해서 다시'); }
+  });
+</script>
+</body>
+</html>

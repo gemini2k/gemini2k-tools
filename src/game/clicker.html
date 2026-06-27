@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>클리커 게임 (방치형 키우기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="클릭으로 코인을 모으고 자동 생산 업그레이드를 사는 방치형 클리커 게임. 진행 상황 자동 저장. 가볍게 즐기는 무료 미니게임. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/clicker.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="클리커 게임 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="클릭으로 코인 모으고 업그레이드 사는 방치형 게임. 자동 저장. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/clicker.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .count{text-align:center;font-size:2.4rem;font-weight:800;color:var(--accent);}
+  .rate{text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:1rem;}
+  .coin{display:block;margin:0 auto 1.2rem;width:140px;height:140px;border-radius:50%;border:none;background:radial-gradient(circle at 35% 30%,#ffe27a,#f5a623);font-size:4rem;cursor:pointer;user-select:none;transition:transform .05s;box-shadow:0 6px 0 #c77f12;}
+  .coin:active{transform:translateY(3px);box-shadow:0 3px 0 #c77f12;}
+  .ups{display:grid;gap:.5rem;}
+  .up{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);border-radius:11px;padding:.6rem .9rem;background:var(--ground);cursor:pointer;}
+  .up:hover{border-color:var(--accent);} .up.dis{opacity:.45;cursor:not-allowed;}
+  .up .n{font-weight:700;} .up .d{font-size:.78rem;color:var(--muted);} .up .c{font-weight:800;color:var(--accent);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"클리커 게임","description":"클릭으로 코인을 모으고 업그레이드를 사는 방치형 게임.","url":"https://gemini2k.co.kr/clicker.html","applicationCategory":"GameApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:480px;">
+  <h1>클리커 게임</h1>
+  <p class="sub">코인을 클릭해 모으고, 업그레이드를 사서 자동으로 벌어 보세요!</p>
+  <div class="card">
+    <div class="count"><span id="coins">0</span> 🪙</div>
+    <div class="rate" id="rate">클릭당 1 · 초당 0</div>
+    <button class="coin" id="coin" type="button">🪙</button>
+    <div class="ups" id="ups"></div>
+    <button class="btn btn-ghost" id="reset" type="button" style="width:100%;margin-top:.8rem;">처음부터</button>
+    <div class="note">진행 상황은 이 기기(localStorage)에 자동 저장됩니다. 가볍게 즐기는 방치형 게임이에요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var KEY='clicker:save';
+  var UPS=[
+    {id:'click',n:'강한 클릭',d:'클릭당 +1',base:15,type:'click',amt:1},
+    {id:'auto',n:'자동 채굴기',d:'초당 +1',base:50,type:'auto',amt:1},
+    {id:'factory',n:'공장',d:'초당 +8',base:500,type:'auto',amt:8},
+    {id:'bank',n:'은행',d:'초당 +50',base:5000,type:'auto',amt:50}
+  ];
+  var S={coins:0, perClick:1, perSec:0, owned:{}};
+  function load(){ try{var d=JSON.parse(localStorage.getItem(KEY));if(d){S=d;S.owned=S.owned||{};}}catch(e){} }
+  function save(){ try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} }
+  function cost(u){ var o=S.owned[u.id]||0; return Math.floor(u.base*Math.pow(1.15,o)); }
+  function render(){ $('coins').textContent=Math.floor(S.coins).toLocaleString(); $('rate').textContent='클릭당 '+S.perClick+' · 초당 '+S.perSec;
+    $('ups').innerHTML=UPS.map(function(u){ var c=cost(u), can=S.coins>=c, o=S.owned[u.id]||0;
+      return '<div class="up '+(can?'':'dis')+'" data-id="'+u.id+'"><span><span class="n">'+u.n+' <small style="color:var(--muted)">x'+o+'</small></span><br><span class="d">'+u.d+'</span></span><span class="c">'+c.toLocaleString()+' 🪙</span></div>'; }).join('');
+  }
+  function buy(id){ var u=UPS.filter(function(x){return x.id===id;})[0]; var c=cost(u); if(S.coins<c)return; S.coins-=c; S.owned[id]=(S.owned[id]||0)+1;
+    if(u.type==='click')S.perClick+=u.amt; else S.perSec+=u.amt; save(); render(); }
+  $('coin').addEventListener('click',function(){ S.coins+=S.perClick; $('coins').textContent=Math.floor(S.coins).toLocaleString(); });
+  $('ups').addEventListener('click',function(e){var u=e.target.closest('.up');if(u)buy(u.dataset.id);});
+  $('reset').addEventListener('click',function(){ if(confirm('처음부터 다시 시작할까요?')){ S={coins:0,perClick:1,perSec:0,owned:{}}; save(); render(); } });
+  load(); render();
+  setInterval(function(){ if(S.perSec>0){ S.coins+=S.perSec/10; $('coins').textContent=Math.floor(S.coins).toLocaleString(); } },100);
+  setInterval(function(){ save(); render(); },3000);
+</script>
+</body>
+</html>

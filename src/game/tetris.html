@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>테트리스 게임 (블록 쌓기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="떨어지는 블록을 회전·이동해 줄을 없애는 클래식 테트리스. 레벨·점수, 방향키·버튼·스와이프 조작, 일시정지 지원. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/tetris.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="테트리스 게임 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="블록을 쌓아 줄을 없애는 클래식 테트리스. 일시정지. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/tetris.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .gbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.6rem;}
+  .scores{display:flex;gap:.6rem;}.sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:60px;}.sbox .l{font-size:.62rem;color:var(--muted);font-weight:700;}.sbox .v{font-size:1.1rem;font-weight:800;}
+  .stage{position:relative;text-align:center;}
+  canvas{border:1px solid var(--border);border-radius:10px;background:#0c1020;max-width:100%;height:auto;touch-action:none;}
+  .over{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(8,12,30,.84);color:#fff;border-radius:10px;}
+  .over .big{font-size:1.4rem;font-weight:800;margin-bottom:.6rem;}
+  .dpad{display:grid;grid-template-columns:repeat(4,56px);gap:.4rem;justify-content:center;margin-top:1rem;}
+  .dpad button{height:52px;border:1px solid var(--border);background:var(--surface);border-radius:11px;font-size:1.2rem;color:var(--text);cursor:pointer;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"테트리스","description":"떨어지는 블록을 회전·이동해 줄을 없애는 게임.","url":"https://gemini2k.co.kr/tetris.html","applicationCategory":"GameApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:420px;">
+  <h1>테트리스</h1>
+  <p class="sub">블록을 회전·이동해 가로 줄을 채워 없애세요. 방향키 ←→ 이동, ↑ 회전, ↓ 빠르게, Space/P 일시정지.</p>
+  <div class="card">
+    <div class="gbar"><div class="scores"><div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div><div class="sbox"><div class="l">줄</div><div class="v" id="lines">0</div></div><div class="sbox"><div class="l">레벨</div><div class="v" id="level">1</div></div></div>
+      <button class="btn btn-ghost" id="restart" type="button">새 게임</button></div>
+    <div class="stage"><canvas id="cv" width="240" height="480"></canvas><div class="over" id="over" style="display:none;"><div><div class="big" id="overBig">게임 오버</div><button class="btn" id="overBtn" type="button">다시 시작</button></div></div></div>
+    <div class="dpad"><button data-a="l">◀</button><button data-a="rot">🔄</button><button data-a="r">▶</button><button data-a="d">▼</button></div>
+    <div class="note">10×20 격자, 7종 블록. 한 번에 여러 줄을 없애면 점수가 더 높습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="game-core.js"></script><script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'),x=cv.getContext('2d'),CW=12,CH=24,W=10,H=20,grid;
+  var gc=GameCore.init({mount:document.querySelector('.card')});
+  var SHAPES=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[1,1,0],[0,1,1]],[[0,1,1],[1,1,0]]];
+  var COLORS=['#22d3ee','#facc15','#a855f7','#3b82f6','#f97316','#22c55e','#ef4444'];
+  var cur,px,py,score,lines,level,over,dropT,state;
+  function reset(){ grid=[]; for(var r=0;r<H;r++){grid.push(new Array(W).fill(-1));} score=0;lines=0;level=1;over=false;dropT=0;state='play'; $('over').style.display='none'; spawn(); upd(); }
+  function spawn(){ var i=Math.floor(Math.random()*SHAPES.length); cur={s:SHAPES[i].map(function(r){return r.slice();}),c:i}; px=Math.floor((W-cur.s[0].length)/2); py=0; if(collide(px,py,cur.s)){ over=true; state='over'; $('overBig').textContent='게임 오버 · 점수 '+score; $('over').style.display='flex'; } }
+  function collide(ox,oy,s){ for(var r=0;r<s.length;r++)for(var c=0;c<s[r].length;c++){ if(!s[r][c])continue; var nx=ox+c,ny=oy+r; if(nx<0||nx>=W||ny>=H)return true; if(ny>=0&&grid[ny][nx]>=0)return true; } return false; }
+  function merge(){ for(var r=0;r<cur.s.length;r++)for(var c=0;c<cur.s[r].length;c++){ if(cur.s[r][c]){ var ny=py+r; if(ny>=0)grid[ny][px+c]=cur.c; } } }
+  function clearLines(){ var n=0; for(var r=H-1;r>=0;r--){ if(grid[r].every(function(v){return v>=0;})){ grid.splice(r,1); grid.unshift(new Array(W).fill(-1)); n++; r++; } }
+    if(n){ lines+=n; score+=[0,100,300,500,800][n]*level; level=1+Math.floor(lines/10); } }
+  function rot(){ var s=cur.s, ns=s[0].map(function(_,i){return s.map(function(r){return r[i];}).reverse();}); if(!collide(px,py,ns))cur.s=ns; }
+  function move(dx,dy){ if(!collide(px+dx,py+dy,cur.s)){px+=dx;py+=dy;return true;} return false; }
+  function step(){ if(!move(0,1)){ merge(); clearLines(); spawn(); } }
+  function upd(){ $('score').textContent=score; $('lines').textContent=lines; $('level').textContent=level; }
+  function draw(){ x.fillStyle='#0c1020'; x.fillRect(0,0,cv.width,cv.height);
+    for(var r=0;r<H;r++)for(var c=0;c<W;c++){ if(grid[r][c]>=0)cell(c,r,COLORS[grid[r][c]]); }
+    if(cur&&!over)for(var rr=0;rr<cur.s.length;rr++)for(var cc=0;cc<cur.s[rr].length;cc++){ if(cur.s[rr][cc])cell(px+cc,py+rr,COLORS[cur.c]); }
+  }
+  function cell(c,r,col){ if(r<0)return; x.fillStyle=col; x.fillRect(c*CW+1,r*CW+1,CW-2,CW-2); }
+  var last=0,raf=0;
+  function loop(t){ raf=requestAnimationFrame(loop); var dt=t-last; last=t; if(state==='play'&&!gc.isPaused()&&!over){ dropT+=dt; var spd=Math.max(80,700-(level-1)*60); if(dropT>spd){dropT=0;step();upd();} } draw(); }
+  function act(a){ if(over||state!=='play'||gc.isPaused())return; if(a==='l')move(-1,0); else if(a==='r')move(1,0); else if(a==='d'){move(0,1);dropT=0;} else if(a==='rot')rot(); draw(); }
+  document.addEventListener('keydown',function(e){ var m={ArrowLeft:'l',ArrowRight:'r',ArrowDown:'d',ArrowUp:'rot'}[e.key]; if(m){e.preventDefault();act(m);} });
+  document.querySelector('.dpad').addEventListener('click',function(e){var b=e.target.closest('button');if(b)act(b.dataset.a);});
+  var sx,sy; cv.addEventListener('pointerdown',function(e){sx=e.clientX;sy=e.clientY;});
+  cv.addEventListener('pointerup',function(e){ if(sx==null)return; var dx=e.clientX-sx,dy=e.clientY-sy; if(Math.max(Math.abs(dx),Math.abs(dy))<14){act('rot');} else if(Math.abs(dx)>Math.abs(dy)){act(dx>0?'r':'l');} else if(dy>0){act('d');} sx=null; });
+  $('restart').addEventListener('click',reset); $('overBtn').addEventListener('click',reset);
+  reset(); raf=requestAnimationFrame(loop);
+  window._dbg={state:function(){return state;},score:function(){return score;},reset:reset};
+})();
+</script>
+</body>
+</html>

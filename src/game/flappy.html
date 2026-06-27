@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>플래피 버드 게임 (한 손가락 점프) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="탭(또는 ↑)으로 새를 띄워 파이프 사이를 통과하는 플래피 버드 스타일 게임. 최고 점수 저장, 일시정지. 한 손으로 즐기는 미니게임. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/flappy.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="플래피 버드 게임 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="탭으로 새를 띄워 파이프 통과. 최고점 저장·일시정지. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/flappy.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .gbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.6rem;}
+  .scores{display:flex;gap:.6rem;}.sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;}.sbox .l{font-size:.62rem;color:var(--muted);font-weight:700;}.sbox .v{font-size:1.2rem;font-weight:800;}
+  .stage{position:relative;}canvas{width:100%;height:auto;border:1px solid var(--border);border-radius:12px;display:block;touch-action:none;cursor:pointer;}
+  .over{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(8,12,30,.78);color:#fff;border-radius:12px;}
+  .over .big{font-size:1.4rem;font-weight:800;margin-bottom:.3rem;}.over .sm{font-size:.9rem;opacity:.9;margin-bottom:.9rem;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"플래피 버드 게임","description":"탭으로 새를 띄워 파이프를 통과하는 게임.","url":"https://gemini2k.co.kr/flappy.html","applicationCategory":"GameApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:440px;">
+  <h1>플래피 버드</h1>
+  <p class="sub">화면을 탭(또는 ↑)해서 새를 띄우고 파이프 사이를 통과하세요! Space/P로 일시정지.</p>
+  <div class="card">
+    <div class="gbar"><div class="scores"><div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div><div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div></div>
+      <button class="btn btn-ghost" id="restart" type="button">새 게임</button></div>
+    <div class="stage"><canvas id="cv" width="360" height="480"></canvas>
+      <div class="over" id="over"><div><div class="big" id="overBig">🐤 플래피 버드</div><div class="sm" id="overSm">탭해서 시작!</div><button class="btn" id="overBtn" type="button">시작</button></div></div></div>
+    <div class="note">파이프나 바닥·천장에 닿으면 끝납니다. 최고 점수는 이 기기에 저장됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="game-core.js"></script><script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'),x=cv.getContext('2d'),W=cv.width,H=cv.height;
+  var gc=GameCore.init({mount:document.querySelector('.card')});
+  var bird,pipes,score,best,state,gap=130,pw=52,speed=2.1;
+  try{best=+localStorage.getItem('flappy:best')||0;}catch(e){best=0;} $('best').textContent=best;
+  function reset(){ bird={y:H/2,v:0,r:13}; pipes=[]; score=0; state='ready'; $('score').textContent='0'; $('overBig').textContent='🐤 플래피 버드'; $('overSm').textContent='탭해서 시작!'; $('overBtn').textContent='시작'; $('over').style.display='flex'; }
+  function begin(){ if(state==='play')return; bird={y:H/2,v:0,r:13}; pipes=[{x:W+40,h:rand()}]; score=0; $('score').textContent='0'; state='play'; $('over').style.display='none'; }
+  function rand(){ return 60+Math.random()*(H-gap-160); }
+  function flap(){ if(state==='ready'||state==='over'){ begin(); return; } if(state==='play')bird.v=-5.2; }
+  function die(){ state='over'; if(score>best){best=score;try{localStorage.setItem('flappy:best',best);}catch(e){}$('best').textContent=best;} $('overBig').textContent='💥 게임 오버'; $('overSm').textContent='점수 '+score+' · 최고 '+best; $('overBtn').textContent='다시'; $('over').style.display='flex'; }
+  var last=0,raf=0;
+  function loop(t){ raf=requestAnimationFrame(loop); var dt=Math.min(2,(t-last)/16.67)||1; last=t;
+    if(state==='play'&&!gc.isPaused()){ bird.v+=0.32*dt; bird.y+=bird.v*dt;
+      for(var i=0;i<pipes.length;i++)pipes[i].x-=speed*dt;
+      if(pipes.length&&pipes[pipes.length-1].x<W-200)pipes.push({x:W+40,h:rand()});
+      pipes=pipes.filter(function(p){ if(!p.passed&&p.x+pw<40){p.passed=1;score++;$('score').textContent=score;} return p.x>-pw; });
+      if(bird.y+bird.r>H-20||bird.y-bird.r<0)die();
+      for(var j=0;j<pipes.length;j++){ var p=pipes[j]; if(40+bird.r>p.x&&40-bird.r<p.x+pw){ if(bird.y-bird.r<p.h||bird.y+bird.r>p.h+gap)die(); } }
+    }
+    draw(); }
+  function draw(){ var g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#2a3a66');g.addColorStop(1,'#0c1430'); x.fillStyle=g; x.fillRect(0,0,W,H);
+    x.fillStyle='#2e7d52'; pipes.forEach(function(p){ x.fillRect(p.x,0,pw,p.h); x.fillRect(p.x,p.h+gap,pw,H-p.h-gap-20); x.fillStyle='#3a9968'; x.fillRect(p.x-3,p.h-16,pw+6,16); x.fillRect(p.x-3,p.h+gap,pw+6,16); x.fillStyle='#2e7d52'; });
+    x.fillStyle='#6b4f2a'; x.fillRect(0,H-20,W,20);
+    x.save(); x.translate(40,bird.y); x.rotate(Math.max(-0.5,Math.min(1,bird.v*0.08))); x.fillStyle='#facc15'; x.beginPath(); x.arc(0,0,bird.r,0,7); x.fill();
+    x.fillStyle='#fff'; x.beginPath(); x.arc(4,-4,4,0,7); x.fill(); x.fillStyle='#000'; x.beginPath(); x.arc(5,-4,2,0,7); x.fill(); x.fillStyle='#f97316'; x.fillRect(bird.r-2,-2,7,4); x.restore();
+  }
+  cv.addEventListener('pointerdown',function(e){e.preventDefault();flap();});
+  document.addEventListener('keydown',function(e){ if(e.key==='ArrowUp'||e.key==='w'||e.key==='W'){e.preventDefault();flap();} });
+  $('restart').addEventListener('click',reset); $('overBtn').addEventListener('click',begin);
+  reset(); raf=requestAnimationFrame(loop);
+  window._dbg={state:function(){return state;},begin:begin,flap:flap};
+})();
+</script>
+</body>
+</html>

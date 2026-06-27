@@ -181,4 +181,12 @@ window.TOOLS = [
   { key:'passphrase',h:'passphrase.html',ic:'🔐', chip:'c-rose', cat:'생성기', k:'패스프레이즈 비밀번호 단어 조합 외우기쉬운 암호 passphrase password 密码 パスフレーズ 패스프레이즈', related:['pw','pwcheck','dice'] },
   { key:'pwcheck',h:'pwcheck.html',ic:'🛡️', chip:'c-blue', cat:'개인정보', k:'비밀번호 강도 측정 엔트로피 해킹시간 안전성 password strength 密码强度 強度 비밀번호강도', related:['pw','passphrase','hash'] },
   { key:'colorname',h:'colorname.html',ic:'🎨', chip:'c-amber', cat:'시각화', k:'색 이름 변환 css color name hex rgb 색상명 가까운색 color name 颜色名 色名 색이름', related:['color','palette','gradient'] },
+  { key:'rps',h:'rps.html',ic:'✊', chip:'c-blue', cat:'게임', k:'가위바위보 묵찌빠 컴퓨터 대결 rps rock paper scissors 石头剪刀布 じゃんけん 가위바위보', related:['dice','roulette','reaction'] },
+  { key:'reaction',h:'reaction.html',ic:'⚡', chip:'c-amber', cat:'게임', k:'반응속도 순발력 테스트 클릭 ms reaction time 反应速度 反応速度 반응속도테스트', related:['simon','whack','typing'] },
+  { key:'baseball',h:'baseball.html',ic:'⚾', chip:'c-green', cat:'게임', k:'숫자야구 스트라이크 볼 추리 number baseball 数字棒球 数当て 숫자야구게임', related:['gomoku','minesweeper','baseball'] },
+  { key:'puzzle15',h:'puzzle15.html',ic:'🔢', chip:'c-violet', cat:'게임', k:'15퍼즐 슬라이드 숫자 퍼즐 8퍼즐 sliding puzzle 数字华容道 スライドパズル 15퍼즐', related:['g2048','memorygame','minesweeper'] },
+  { key:'simon',h:'simon.html',ic:'🎵', chip:'c-rose', cat:'게임', k:'사이먼 색 소리 순서 기억 메모리 simon says memory 记忆 サイモン 사이먼게임', related:['memorygame','reaction','whack'] },
+  { key:'clicker',h:'clicker.html',ic:'🪙', chip:'c-amber', cat:'게임', k:'클리커 방치형 키우기 코인 클릭 idle clicker 放置 クリッカー 클리커게임', related:['g2048','whack','clicker'] },
+  { key:'tetris',h:'tetris.html',ic:'🧱', chip:'c-cyan', cat:'게임', k:'테트리스 블록 쌓기 줄없애기 tetris block 俄罗斯方块 テトリス 테트리스게임', related:['g2048','breakout','snake'] },
+  { key:'flappy',h:'flappy.html',ic:'🐤', chip:'c-blue', cat:'게임', k:'플래피 버드 점프 파이프 한손 flappy bird tap 飞翔 フラッピー 플래피버드', related:['runner3d','cardodge','breakout'] },
 ];

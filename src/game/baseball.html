@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>숫자야구 게임 (스트라이크·볼 추리) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="컴퓨터가 정한 서로 다른 숫자를 추리하는 숫자야구 게임. 스트라이크·볼 힌트로 정답을 맞히세요. 자릿수 3~4 선택. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/baseball.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="숫자야구 게임 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="스트라이크·볼 힌트로 숫자 추리. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/baseball.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .bar{display:flex;gap:.6rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+  .bar input{flex:1;min-width:120px;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:ui-monospace,monospace;font-size:1.3rem;text-align:center;letter-spacing:.3em;}
+  .bar select{padding:.5rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .hist{max-height:300px;overflow:auto;margin-top:.6rem;}
+  .h{display:flex;justify-content:space-between;padding:.45rem .7rem;border-bottom:1px solid var(--border);font-family:ui-monospace,monospace;}
+  .h .g{font-size:1.1rem;letter-spacing:.2em;} .h .r{font-weight:700;color:var(--accent);}
+  .win{text-align:center;font-size:1.2rem;font-weight:800;color:#16a34a;min-height:1.4em;margin:.5rem 0;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"숫자야구 게임","description":"스트라이크·볼 힌트로 숫자를 추리하는 게임.","url":"https://gemini2k.co.kr/baseball.html","applicationCategory":"GameApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:520px;">
+  <h1>숫자야구</h1>
+  <p class="sub">컴퓨터가 정한 <b>서로 다른 숫자</b>를 맞혀 보세요. 자리와 숫자가 맞으면 S(스트라이크), 숫자만 맞으면 B(볼)!</p>
+  <div class="card">
+    <div class="bar">
+      <select id="digits"><option value="3">3자리</option><option value="4">4자리</option></select>
+      <input id="guess" inputmode="numeric" maxlength="4" placeholder="예: 123"/>
+      <button class="btn" id="go" type="button">확인</button>
+    </div>
+    <div class="win" id="win"></div>
+    <button class="btn btn-ghost" id="newgame" type="button" style="width:100%;margin-bottom:.6rem;">새 게임</button>
+    <div class="hist" id="hist"></div>
+    <div class="note">서로 다른 숫자로 구성됩니다(중복 없음). 예: 정답 123에 추측 132 → 1S 2B. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var ans=[], n=3, tries=0, done=false;
+  function newGame(){ n=parseInt($('digits').value,10); var pool=[0,1,2,3,4,5,6,7,8,9]; ans=[]; tries=0; done=false;
+    for(var i=0;i<n;i++){ var idx=Math.floor(Math.random()*pool.length); ans.push(pool.splice(idx,1)[0]); }
+    $('hist').innerHTML=''; $('win').textContent=''; $('guess').value=''; $('guess').maxLength=n; $('guess').focus();
+  }
+  function judge(g){ var s=0,b=0; for(var i=0;i<n;i++){ if(g[i]===ans[i])s++; else if(ans.indexOf(g[i])>=0)b++; } return {s:s,b:b}; }
+  function go(){ if(done)return; var v=$('guess').value.trim(); if(!/^\d+$/.test(v)||v.length!==n){ $('win').textContent='숫자 '+n+'자리를 입력하세요'; $('win').style.color='#e0563b'; return; }
+    var g=v.split('').map(Number); if(new Set(g).size!==n){ $('win').textContent='서로 다른 숫자로 입력하세요'; $('win').style.color='#e0563b'; return; }
+    tries++; var r=judge(g);
+    var txt = r.s===0&&r.b===0 ? 'OUT' : (r.s>0?r.s+'S ':'')+(r.b>0?r.b+'B':''); txt=txt.trim()||'OUT';
+    $('hist').insertAdjacentHTML('afterbegin','<div class="h"><span class="g">'+v+'</span><span class="r">'+txt+'</span><span>'+tries+'회</span></div>');
+    $('guess').value=''; $('guess').focus();
+    if(r.s===n){ done=true; $('win').textContent='🎉 정답! '+tries+'번 만에 맞혔어요'; $('win').style.color='#16a34a'; }
+  }
+  $('go').addEventListener('click',go);
+  $('guess').addEventListener('keydown',function(e){ if(e.key==='Enter')go(); });
+  $('newgame').addEventListener('click',newGame);
+  $('digits').addEventListener('change',newGame);
+  newGame();
+</script>
+</body>
+</html>
