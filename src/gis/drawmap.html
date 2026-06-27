@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>지도 도형 그리기 → WKT·GeoJSON — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="지도 위에 점·선·면을 직접 그려 WKT와 GeoJSON으로 바로 변환합니다. 면적·길이도 계산. GIS 데이터 작성·테스트·공간 쿼리 작성에. 업로드 없이 브라우저에서만 처리."/>
+<link rel="canonical" href="https://gemini2k.co.kr/drawmap.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="지도 도형 그리기 → WKT·GeoJSON — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="지도에 점·선·면을 그려 WKT·GeoJSON으로 변환 + 면적·길이 계산. GIS 데이터 작성용. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/drawmap.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<link rel="stylesheet" href="/vendor/ol-7.5.2/ol.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="/vendor/ol-7.5.2/ol.js"></script>
+<style>
+  .toolbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem;}
+  .toolbar button{padding:.5rem .8rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;font-weight:600;cursor:pointer;}
+  .toolbar button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  #map{width:100%;height:380px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#aadaff;}
+  .out-h{display:flex;justify-content:space-between;align-items:center;margin:1rem 0 .3rem;}
+  .out-h b{font-size:.85rem;} .cp{cursor:pointer;color:var(--teal,#1aa3e0);font-size:.74rem;background:none;border:none;}
+  textarea{width:100%;min-height:80px;border:1px solid var(--border);border-radius:10px;background:var(--ground);padding:.6rem .7rem;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;color:var(--text);resize:vertical;}
+  .stat{margin-top:.6rem;font-size:.9rem;color:var(--text);}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "지도 도형 그리기 → WKT·GeoJSON",
+  "description": "지도 위에 점·선·면을 그려 WKT·GeoJSON으로 변환하고 면적·길이를 계산합니다. GIS 데이터 작성·테스트용.",
+  "url": "https://gemini2k.co.kr/drawmap.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:880px;">
+  <h1>지도 도형 그리기 → WKT·GeoJSON</h1>
+  <p class="sub">지도 위에 점·선·면을 그리면 WKT와 GeoJSON으로 바로 변환됩니다. 면적·길이도 함께 계산합니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>점·선·면 버튼을 누른 뒤 지도를 클릭해 그립니다(면·선은 더블클릭으로 완료)</li>
+    <li>그릴 때마다 아래에 WKT·GeoJSON(경위도)이 갱신됩니다</li>
+    <li>복사 버튼으로 가져가 PostGIS·QGIS 등에 사용하세요</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="toolbar">
+      <button id="bPoint" type="button">📍 점</button>
+      <button id="bLine" type="button">➖ 선</button>
+      <button id="bPoly" type="button">⬠ 면</button>
+      <button id="bClear" type="button" style="margin-left:auto;">🗑 지우기</button>
+    </div>
+    <div id="map"></div>
+    <div class="stat" id="stat"></div>
+    <div class="out-h"><b>WKT (경위도, EPSG:4326)</b><button class="cp" data-t="wkt">복사</button></div>
+    <textarea id="wkt" readonly></textarea>
+    <div class="out-h"><b>GeoJSON</b><button class="cp" data-t="geojson">복사</button></div>
+    <textarea id="geojson" readonly></textarea>
+    <div class="note">3D를 쓰지 않는 표준 OpenLayers 지도입니다. 좌표는 경위도(WGS84)로 출력됩니다. 면적·길이는 측지 계산(구면)으로 근삿값이며, 정밀 용도는 검증해 사용하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  if(typeof ol==='undefined'){ $('map').innerHTML='<div style="padding:2rem;text-align:center;color:#555">지도를 불러오지 못했습니다. 새로고침해 주세요.</div>'; return; }
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  var src=new ol.source.Vector();
+  var style=new ol.style.Style({ stroke:new ol.style.Stroke({color:'#5B5BF5',width:3}), fill:new ol.style.Fill({color:'rgba(91,91,245,.15)'}),
+    image:new ol.style.Circle({radius:6,fill:new ol.style.Fill({color:'#5B5BF5'}),stroke:new ol.style.Stroke({color:'#fff',width:1.5})}) });
+  var layer=new ol.layer.Vector({source:src, style:style});
+  var map=new ol.Map({ target:'map', layers:[ new ol.layer.Tile({source:new ol.source.OSM()}), layer ],
+    view:new ol.View({ center:ol.proj.fromLonLat([127.0,37.5]), zoom:11 }),
+    controls:[ new ol.control.Zoom(), new ol.control.Attribution({collapsible:true}), new ol.control.ScaleLine() ] });
+  setTimeout(function(){ map.updateSize(); },200);
+
+  var draw=null, gj=new ol.format.GeoJSON(), wkt=new ol.format.WKT();
+  function setMode(type,btn){
+    if(draw){ map.removeInteraction(draw); draw=null; }
+    document.querySelectorAll('.toolbar button').forEach(function(b){ b.classList.remove('on'); });
+    if(!type) return;
+    btn.classList.add('on');
+    draw=new ol.interaction.Draw({ source:src, type:type });
+    draw.on('drawend', function(){ setTimeout(output,30); });
+    map.addInteraction(draw);
+  }
+  function output(){
+    var feats=src.getFeatures();
+    if(!feats.length){ $('wkt').value=''; $('geojson').value=''; $('stat').textContent=''; return; }
+    // WKT (각 피처, 4326)
+    var wkts=feats.map(function(f){ var g=f.getGeometry().clone(); g.transform('EPSG:3857','EPSG:4326'); return wkt.writeGeometry(g, {decimals:6}); });
+    $('wkt').value=wkts.join('\n');
+    $('geojson').value=gj.writeFeatures(feats, {featureProjection:'EPSG:3857', dataProjection:'EPSG:4326', decimals:6});
+    // 측정(마지막 도형)
+    var g=feats[feats.length-1].getGeometry(), s='';
+    if(g.getType()==='Polygon'||g.getType()==='MultiPolygon'){ var a=ol.sphere.getArea(g); s='면적: '+fmtA(a); }
+    else if(g.getType()==='LineString'||g.getType()==='MultiLineString'){ var L=ol.sphere.getLength(g); s='길이: '+fmtL(L); }
+    else s='점 '+feats.length+'개';
+    $('stat').textContent=s+' · 도형 '+feats.length+'개';
+  }
+  function fmtL(m){ return m>1000?(Math.round(m/10)/100)+' km':(Math.round(m*100)/100)+' m'; }
+  function fmtA(a){ return a>1e6?(Math.round(a/1e4)/100)+' km²':(Math.round(a*100)/100)+' m²'; }
+
+  $('bPoint').addEventListener('click',function(){ setMode('Point',this); });
+  $('bLine').addEventListener('click',function(){ setMode('LineString',this); });
+  $('bPoly').addEventListener('click',function(){ setMode('Polygon',this); });
+  $('bClear').addEventListener('click',function(){ src.clear(); output(); });
+  document.querySelector('.card').addEventListener('click', function(e){ var b=e.target.closest('.cp'); if(b){ var v=$(b.dataset.t).value; if(v) navigator.clipboard.writeText(v).then(function(){toast('복사됐습니다');}); } });
+})();
+</script>
+</body>
+</html>

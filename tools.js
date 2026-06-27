@@ -111,4 +111,10 @@ window.TOOLS = [
   { key:'stats', h:'stats.html',        ic:'📈', chip:'c-cyan',   cat:'데이터', k:'통계 평균 중앙값 표준편차 분산 사분위 히스토그램 기술통계 statistics mean stdev 统计 統計 통계계산', related:['regression','profiler','chartmaker'] },
   { key:'regression',h:'regression.html',ic:'📉', chip:'c-green', cat:'데이터', k:'상관 회귀 분석 상관계수 피어슨 선형회귀 추세선 결정계수 r2 correlation regression 回归 相関 회귀분석', related:['stats','chartmaker','profiler'] },
   { key:'jsonschema',h:'jsonschema.html',ic:'🧬', chip:'c-amber', cat:'개발자', k:'json 스키마 생성 추론 json schema draft validation 검증 api 문서 模式 スキーマ 제이슨스키마', related:['json','jsonpath','jsoncsv'] },
+  { key:'drawmap',h:'drawmap.html',ic:'✏️', chip:'c-green', cat:'GIS', k:'지도 그리기 도형 점 선 면 폴리곤 wkt geojson 그리기 작도 면적 길이 측정 draw map 绘制 描画 지도작도', related:['geom','coord','geojsoncsv'] },
+  { key:'mockdata',h:'mockdata.html',ic:'🎲', chip:'c-amber', cat:'개발자', k:'목업 더미 데이터 생성 가짜 테스트 fake mock data csv json 샘플 시드 假数据 ダミーデータ 테스트데이터', related:['jsonschema','csvviewer','uuid'] },
+  { key:'sqlformat',h:'sqlformat.html',ic:'🗄️', chip:'c-blue', cat:'개발자', k:'sql 포매터 포맷 정렬 쿼리 정리 예쁘게 beautify format query 美化 整形 sql정렬', related:['json','jsonschema','jsoncsv'] },
+  { key:'mindmap',h:'mindmap.html',ic:'🧠', chip:'c-violet', cat:'시각화', k:'마인드맵 브레인스토밍 생각정리 가지 노드 트리 기획 mind map 思维导图 マインドマップ 마인드맵그리기', related:['diagram','chartmaker','palette'] },
+  { key:'imgpalette',h:'imgpalette.html',ic:'🖌️', chip:'c-rose', cat:'시각화', k:'이미지 색상 추출 대표색 주요색 팔레트 컬러 추출 사진 로고 color extract palette 取色 配色 색추출', related:['palette','color','contrast'] },
+  { key:'ogimage',h:'ogimage.html',ic:'🖼️', chip:'c-cyan', cat:'시각화', k:'og 이미지 썸네일 생성 sns 공유 카드 소셜 thumbnail 오픈그래프 open graph 缩略图 サムネ 썸네일생성', related:['chartmaker','palette','favicon'] },
 ];

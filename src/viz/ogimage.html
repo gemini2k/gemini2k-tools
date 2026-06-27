@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>OG·썸네일 이미지 생성기 (1200×630) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="제목·부제·사이트명을 넣어 SNS 공유용 OG 이미지(1200×630)와 블로그 썸네일을 만듭니다. 그라데이션 배경·색상 선택, PNG 다운로드. 디자인 도구 없이 브라우저에서 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/ogimage.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="OG·썸네일 이미지 생성기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="제목·부제로 SNS 공유 OG 이미지(1200×630)·썸네일 생성. 그라데이션 배경, PNG 다운로드."/>
+<meta property="og:url" content="https://gemini2k.co.kr/ogimage.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .fld{margin-bottom:.9rem;} .fld label{font-weight:700;font-size:.82rem;color:var(--muted);display:block;margin-bottom:.3rem;}
+  .fld input[type=text]{width:100%;padding:.6rem .75rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1rem;}
+  .row{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-bottom:.9rem;}
+  .row label{display:inline-flex;flex-direction:column;gap:.25rem;font-size:.78rem;font-weight:700;color:var(--muted);}
+  .row input[type=color]{width:46px;height:38px;padding:0;border:1px solid var(--border);border-radius:8px;background:none;}
+  .row select{padding:.5rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .chartwrap{margin-top:1rem;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  canvas{display:block;width:100%;height:auto;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "OG·썸네일 이미지 생성기",
+  "description": "제목·부제·사이트명으로 SNS 공유용 OG 이미지(1200×630)와 블로그 썸네일을 만들고 PNG로 내려받습니다.",
+  "url": "https://gemini2k.co.kr/ogimage.html",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1>OG·썸네일 이미지 생성기</h1>
+  <p class="sub">제목과 부제를 넣으면 SNS 공유용 OG 이미지(1200×630)와 블로그 썸네일을 만들어 줍니다.</p>
+
+  <div class="card">
+    <div class="fld"><label>제목</label><input id="title" type="text" value="필요한 도구, 바로 여기"/></div>
+    <div class="fld"><label>부제 (선택)</label><input id="sub" type="text" value="설치 없이 브라우저에서 쓰는 무료 도구"/></div>
+    <div class="fld"><label>사이트/배지 (선택)</label><input id="site" type="text" value="gemini2k.co.kr"/></div>
+    <div class="row">
+      <label>배경<select id="bg"><option value="grad">그라데이션</option><option value="solid">단색</option></select></label>
+      <label>색 1<input id="c1" type="color" value="#5B5BF5"/></label>
+      <label>색 2<input id="c2" type="color" value="#15C39A"/></label>
+      <label>글자색<select id="fg"><option value="#ffffff">흰색</option><option value="#16181f">검정</option></select></label>
+    </div>
+    <div class="chartwrap"><canvas id="cv" width="1200" height="630"></canvas></div>
+    <div style="margin-top:.9rem;"><button class="btn" id="dl" type="button">⬇️ PNG 내려받기 (1200×630)</button></div>
+    <div class="note">표준 OG 비율(1.91:1, 1200×630)로 만듭니다. 카카오톡·페이스북·트위터 공유 카드와 블로그 썸네일에 적합합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'), x=cv.getContext('2d'), W=1200, H=630;
+  function wrap(text, font, maxW){ x.font=font; var words=text.split(' '), lines=[], cur='';
+    for(var i=0;i<words.length;i++){ var t=cur?cur+' '+words[i]:words[i]; if(x.measureText(t).width>maxW && cur){ lines.push(cur); cur=words[i]; } else cur=t; }
+    if(cur)lines.push(cur); return lines; }
+  function draw(){
+    var c1=$('c1').value, c2=$('c2').value, fg=$('fg').value;
+    if($('bg').value==='grad'){ var g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,c1); g.addColorStop(1,c2); x.fillStyle=g; }
+    else x.fillStyle=c1;
+    x.fillRect(0,0,W,H);
+    // 상단 바
+    x.fillStyle='rgba(255,255,255,.25)'; x.fillRect(0,0,W,10);
+    var pad=90, maxW=W-pad*2, y=0;
+    // 사이트 배지
+    var site=$('site').value.trim();
+    if(site){ x.font='bold 30px Pretendard,system-ui,sans-serif'; x.textAlign='left'; x.fillStyle=fg; x.globalAlpha=0.85; x.fillText(site, pad, 110); x.globalAlpha=1; }
+    // 제목(자동 줄바꿈)
+    var titleFont='800 76px Pretendard,system-ui,sans-serif';
+    var tlines=wrap($('title').value||'', titleFont, maxW).slice(0,3);
+    var subLines = $('sub').value.trim()? wrap($('sub').value, '400 38px Pretendard,system-ui,sans-serif', maxW).slice(0,2):[];
+    var blockH=tlines.length*88 + (subLines.length?subLines.length*52+24:0);
+    var startY=(H-blockH)/2 + 70;
+    x.textAlign='left'; x.fillStyle=fg; x.font=titleFont;
+    tlines.forEach(function(l,i){ x.fillText(l, pad, startY+i*88); });
+    if(subLines.length){ x.font='400 38px Pretendard,system-ui,sans-serif'; x.globalAlpha=0.9;
+      subLines.forEach(function(l,i){ x.fillText(l, pad, startY+tlines.length*88+24+i*52); }); x.globalAlpha=1; }
+  }
+  ['title','sub','site','bg','c1','c2','fg'].forEach(function(id){ $(id).addEventListener('input',draw); $(id).addEventListener('change',draw); });
+  $('dl').addEventListener('click',function(){ var a=document.createElement('a'); a.href=cv.toDataURL('image/png'); a.download='og-image.png'; document.body.appendChild(a); a.click(); setTimeout(function(){a.remove();},100); });
+  // 폰트 로드 후 재그리기(웹폰트)
+  draw(); if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(draw); }
+</script>
+</body>
+</html>
