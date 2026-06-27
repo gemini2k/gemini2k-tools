@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>이미지 이어붙이기 (세로·가로·격자 합치기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="여러 이미지를 세로·가로 또는 격자로 한 장으로 합칩니다. 긴 스크린샷 이어붙이기, 비교 이미지, 콜라주에. 간격·배경색 지정. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/imgmerge.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="이미지 이어붙이기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="여러 이미지를 세로·가로·격자로 한 장으로 합치기. 긴 스크린샷·콜라주. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/imgmerge.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .drop{border:2px dashed var(--border);border-radius:14px;padding:1.8rem 1rem;text-align:center;color:var(--muted);cursor:pointer;transition:.15s;}
+  .drop:hover,.drop.over{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+  .drop .big{font-size:1.8rem;margin-bottom:.3rem;}
+  .thumbs{display:flex;flex-wrap:wrap;gap:.5rem;margin:.8rem 0;}
+  .thumb{position:relative;border:1px solid var(--border);border-radius:8px;overflow:hidden;width:78px;height:78px;background:var(--ground);}
+  .thumb img{width:100%;height:100%;object-fit:cover;}
+  .thumb button{position:absolute;top:2px;right:2px;width:20px;height:20px;border:0;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;cursor:pointer;font-size:.8rem;line-height:1;}
+  .thumb .ord{position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,.6);color:#fff;font-size:.7rem;padding:0 .3rem;border-radius:4px;}
+  .opts{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin:.8rem 0;font-size:.9rem;}
+  .opts label{display:inline-flex;gap:.4rem;align-items:center;font-weight:600;margin:0;}
+  .opts select,.opts input[type=number]{padding:.4rem .55rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .opts input[type=number]{width:70px;} .opts input[type=color]{width:42px;height:34px;padding:0;border:1px solid var(--border);border-radius:8px;background:none;}
+  .cvwrap{margin-top:.8rem;border:1px solid var(--border);border-radius:12px;overflow:auto;background:var(--surface);text-align:center;max-height:520px;}
+  canvas{max-width:100%;height:auto;display:inline-block;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "이미지 이어붙이기",
+  "description": "여러 이미지를 세로·가로·격자로 한 장으로 합칩니다. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/imgmerge.html",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:860px;">
+  <h1>이미지 이어붙이기</h1>
+  <p class="sub">여러 이미지를 세로·가로 또는 격자로 한 장으로 합칩니다. 긴 스크린샷 연결이나 비교 이미지에 좋아요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>이미지 여러 장을 한꺼번에 올립니다 (다시 올리면 추가됩니다)</li>
+    <li>방향(세로/가로/격자)·간격·배경색을 고릅니다</li>
+    <li>미리보기를 확인하고 ‘PNG 다운로드’</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="drop" id="drop"><div class="big">🧩</div><div><strong>이미지 여러 장을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG · WebP (여러 장)</div></div>
+    <input type="file" id="file" accept="image/*" multiple class="hide"/>
+    <div class="thumbs" id="thumbs"></div>
+    <div class="opts hide" id="opts">
+      <label>방향 <select id="dir"><option value="v">세로</option><option value="h">가로</option><option value="grid">격자</option></select></label>
+      <label id="colwrap" style="display:none;">열 수 <input id="cols" type="number" min="1" max="10" value="2"/></label>
+      <label>간격 <input id="gap" type="number" min="0" max="100" value="8"/>px</label>
+      <label>배경 <input id="bg" type="color" value="#ffffff"/></label>
+      <button class="btn" id="dl" type="button">⬇️ PNG 다운로드</button>
+    </div>
+    <div class="cvwrap hide" id="cvwrap"><canvas id="cv"></canvas></div>
+    <div class="note">세로/가로는 가운데 정렬로 이어 붙이고, 격자는 칸에 맞춰 배치합니다. 썸네일의 ✕로 제거, 다시 올려서 추가할 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var imgs=[]; var cv=$('cv'), x=cv.getContext('2d');
+  function addFiles(list){ var arr=[].slice.call(list).filter(function(f){return /^image\//.test(f.type);});
+    var left=arr.length; if(!left) return;
+    arr.forEach(function(f){ var url=URL.createObjectURL(f); var im=new Image(); im.onload=function(){ URL.revokeObjectURL(url); imgs.push(im); if(--left===0){ renderThumbs(); draw(); } }; im.onerror=function(){ if(--left===0){renderThumbs();draw();} }; im.src=url; });
+  }
+  function renderThumbs(){ $('thumbs').innerHTML=imgs.map(function(im,i){ return '<div class="thumb"><img src="'+im.src+'"/><span class="ord">'+(i+1)+'</span><button data-i="'+i+'" type="button">✕</button></div>'; }).join('');
+    var has=imgs.length>0; $('opts').classList.toggle('hide',!has); $('cvwrap').classList.toggle('hide',!has); }
+  function draw(){ if(!imgs.length) return; var dir=$('dir').value, gap=+$('gap').value, bg=$('bg').value;
+    var W,H, cols;
+    if(dir==='v'){ W=Math.max.apply(null,imgs.map(function(i){return i.naturalWidth;})); H=imgs.reduce(function(s,i){return s+i.naturalHeight;},0)+gap*(imgs.length-1); }
+    else if(dir==='h'){ H=Math.max.apply(null,imgs.map(function(i){return i.naturalHeight;})); W=imgs.reduce(function(s,i){return s+i.naturalWidth;},0)+gap*(imgs.length-1); }
+    else { cols=Math.max(1,Math.min(10,+$('cols').value)); var rows=Math.ceil(imgs.length/cols);
+      var cw=Math.max.apply(null,imgs.map(function(i){return i.naturalWidth;})), ch=Math.max.apply(null,imgs.map(function(i){return i.naturalHeight;}));
+      W=cw*cols+gap*(cols-1); H=ch*rows+gap*(rows-1); cv._cell=[cw,ch,cols]; }
+    cv.width=W; cv.height=H; x.fillStyle=bg; x.fillRect(0,0,W,H);
+    if(dir==='v'){ var y=0; imgs.forEach(function(i){ x.drawImage(i,(W-i.naturalWidth)/2,y); y+=i.naturalHeight+gap; }); }
+    else if(dir==='h'){ var px=0; imgs.forEach(function(i){ x.drawImage(i,px,(H-i.naturalHeight)/2); px+=i.naturalWidth+gap; }); }
+    else { var cw=cv._cell[0],ch=cv._cell[1],c=cv._cell[2]; imgs.forEach(function(im,idx){ var cxp=(idx%c)*(cw+gap), cyp=Math.floor(idx/c)*(ch+gap);
+      x.drawImage(im, cxp+(cw-im.naturalWidth)/2, cyp+(ch-im.naturalHeight)/2); }); }
+  }
+  $('drop').addEventListener('click',function(){ $('file').click(); });
+  $('file').addEventListener('change',function(e){ addFiles(e.target.files); e.target.value=''; });
+  ['dragover','dragenter'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.add('over');}); });
+  ['dragleave','drop'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.remove('over');}); });
+  $('drop').addEventListener('drop',function(e){ if(e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
+  $('thumbs').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b){ imgs.splice(+b.dataset.i,1); renderThumbs(); draw(); } });
+  $('dir').addEventListener('change',function(){ $('colwrap').style.display=$('dir').value==='grid'?'':'none'; draw(); });
+  ['cols','gap','bg'].forEach(function(id){ $(id).addEventListener('input',draw); });
+  $('dl').addEventListener('click',function(){ if(!imgs.length) return; cv.toBlob(function(b){ var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='merged.png'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); }); });
+</script>
+</body>
+</html>

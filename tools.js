@@ -126,4 +126,8 @@ window.TOOLS = [
   { key:'pdf2txt',h:'pdf2txt.html',ic:'📕', chip:'c-rose', cat:'문서', k:'pdf 텍스트 추출 글자 본문 변환 text extract 论文 보고서 계약서 pdf추출 pdf텍스트 pdf글자', related:['docx2txt','pdf2img','pmerge'] },
   { key:'pdf2img',h:'pdf2img.html',ic:'🖼️', chip:'c-cyan', cat:'문서', k:'pdf 이미지 변환 png 페이지 캡처 convert image 截图 pdf png pdf이미지 pdf png변환', related:['pdf2txt','img2pdf','psplit'] },
   { key:'mdtable',h:'mdtable.html',ic:'📋', chip:'c-violet', cat:'개발자', k:'마크다운 표 변환 markdown table 깃허브 노션 엑셀 csv 표 markdown 表格 마크다운표 표마크다운', related:['md','csvtable','excel2csv'] },
+  { key:'imgwatermark',h:'imgwatermark.html',ic:'💧', chip:'c-blue', cat:'이미지', k:'이미지 워터마크 watermark 도용방지 저작권 반복 대각선 사진 로고 텍스트 水印 透かし 워터마크', related:['image','imgframe','exif'] },
+  { key:'imgmerge',h:'imgmerge.html',ic:'🧩', chip:'c-green', cat:'이미지', k:'이미지 합치기 이어붙이기 연결 콜라주 격자 세로 가로 긴 스크린샷 merge combine collage 拼接 結合 이미지합치기', related:['image','imgcrop','imgframe'] },
+  { key:'imgframe',h:'imgframe.html',ic:'🎀', chip:'c-violet', cat:'이미지', k:'스크린샷 꾸미기 배경 여백 둥근모서리 그림자 frame mockup beautify screenshot 美化 装飾 스샷꾸미기', related:['image','imgwatermark','ogimage'] },
+  { key:'imgmosaic',h:'imgmosaic.html',ic:'🔲', chip:'c-rose', cat:'개인정보', k:'모자이크 블러 가리기 얼굴 개인정보 민감정보 사진 마스킹 mosaic blur pixelate 马赛克 モザイク 모자이크', related:['exif','mask','imgcrop'] },
 ];
