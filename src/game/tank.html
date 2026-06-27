@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>탱크 배틀 게임 (넓은 아레나·적 격파) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="넓은 아레나를 누비며 적 탱크를 격파하는 탑다운 전차 게임. 카메라가 따라 움직이고, 장애물을 엄폐물 삼아 전투하세요. 방향키·WASD·발사 버튼·모바일 조작, 일시정지 지원. PC·모바일 무료, 설치 없이 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/tank.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="탱크 배틀 게임 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="넓은 아레나에서 적 탱크를 격파하는 탑다운 전차 게임. 엄폐물 활용, 일시정지. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/tank.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:64px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);}
+  .stage{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#1a1c14;}
+  canvas{display:block;width:100%;height:auto;touch-action:none;}
+  .over{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(8,12,30,.82);color:#fff;}
+  .over .big{font-size:1.5rem;font-weight:800;margin-bottom:.3rem;} .over .sm{font-size:.9rem;opacity:.85;margin-bottom:.9rem;}
+  .ctrl{display:flex;justify-content:space-between;align-items:flex-end;gap:.6rem;margin-top:1rem;}
+  .joy{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(2,52px);gap:.35rem;touch-action:none;}
+  .joy button{border:1px solid var(--border);background:var(--surface);border-radius:11px;font-size:1.2rem;color:var(--text);cursor:pointer;user-select:none;}
+  .joy button:active,.joy button.on{background:var(--accent-soft);}
+  .j-up{grid-column:2;grid-row:1;} .j-left{grid-column:1;grid-row:2;} .j-down{grid-column:2;grid-row:2;} .j-right{grid-column:3;grid-row:2;}
+  .fire{width:96px;height:96px;border-radius:50%;border:1px solid var(--border);background:var(--accent-soft);color:var(--text);font-weight:800;font-size:1rem;cursor:pointer;user-select:none;}
+  .fire:active{background:var(--accent);color:#fff;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "탱크 배틀",
+  "description": "넓은 아레나를 누비며 적 탱크를 격파하는 탑다운 전차 게임. 엄폐물 활용, 카메라 추적, 일시정지 지원.",
+  "url": "https://gemini2k.co.kr/tank.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Action",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:660px;">
+  <h1>탱크 배틀</h1>
+  <p class="sub">넓은 아레나를 누비며 적 탱크를 모두 격파하세요. 장애물을 엄폐물로 활용하면 유리합니다!</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li><b>↑/W</b> 전진, <b>↓/S</b> 후진, <b>←→/A D</b> 회전 (아래 방향 버튼도 가능)</li>
+    <li><b>F 키 · 발사 버튼 · 화면 탭</b>으로 포탄을 발사합니다 (포신 방향으로)</li>
+    <li>적을 모두 없애면 다음 웨이브. <b>Space/P</b>로 일시정지 (발사는 Space 아님)</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="scores">
+        <div class="sbox"><div class="l">웨이브</div><div class="v" id="wave">1</div></div>
+        <div class="sbox"><div class="l">적</div><div class="v" id="enemies">0</div></div>
+        <div class="sbox"><div class="l">체력</div><div class="v" id="hp">100</div></div>
+      </div>
+      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+    </div>
+    <div class="stage">
+      <canvas id="cv" width="640" height="440"></canvas>
+      <div class="over" id="gover"><div><div class="big" id="goverBig">🎯 탱크 배틀</div><div class="sm" id="goverSm">아레나의 적을 모두 격파하세요!</div><button class="btn" id="goverBtn" type="button">시작하기</button></div></div>
+    </div>
+    <div class="ctrl">
+      <div class="joy">
+        <button class="j-up" data-d="u" aria-label="전진">▲</button>
+        <button class="j-left" data-d="l" aria-label="좌회전">◀</button>
+        <button class="j-down" data-d="d" aria-label="후진">▼</button>
+        <button class="j-right" data-d="r" aria-label="우회전">▶</button>
+      </div>
+      <button class="fire" id="fireBtn" type="button">발사</button>
+    </div>
+    <div class="note">아레나와 적 배치는 매번 무작위로 생성됩니다. 적의 포탄과 충돌에 주의하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="game-core.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'), x=cv.getContext('2d'); var VW=cv.width, VH=cv.height;
+  var gc=GameCore.init({mount:document.querySelector('.card')});
+  var WORLD_W=1500, WORLD_H=1200;
+  var walls, me, foes, bullets, cam={x:0,y:0}, state='ready', wave=1, hp=100;
+  var keys={u:false,d:false,l:false,r:false};
+
+  function rand(a,b){ return a+Math.random()*(b-a); }
+  function rectsOverlap(ax,ay,aw,ah,bx,by,bw,bh){ return ax<bx+bw&&ax+aw>bx&&ay<by+bh&&ay+ah>by; }
+  function hitWall(px,py,r){ for(var i=0;i<walls.length;i++){ var w=walls[i]; if(rectsOverlap(px-r,py-r,2*r,2*r,w[0],w[1],w[2],w[3])) return true; } return false; }
+
+  function build(){
+    walls=[]; var t=20;
+    walls.push([0,0,WORLD_W,t]); walls.push([0,WORLD_H-t,WORLD_W,t]); walls.push([0,0,t,WORLD_H]); walls.push([WORLD_W-t,0,t,WORLD_H]);
+    for(var i=0;i<8+wave;i++){ var ww=rand(50,160), wh=rand(50,160), wx=rand(60,WORLD_W-60-ww), wy=rand(60,WORLD_H-60-wh);
+      if(rectsOverlap(wx,wy,ww,wh, WORLD_W/2-120,WORLD_H/2-120,240,240)) continue; walls.push([wx,wy,ww,wh]); }
+    me={x:WORLD_W/2,y:WORLD_H/2,a:-Math.PI/2,r:16,cool:0};
+    bullets=[]; foes=[]; var nF=2+wave;
+    for(var f=0;f<nF;f++){ var en,g=0; do{ en={x:rand(100,WORLD_W-100),y:rand(100,WORLD_H-100)}; }while((hitWall(en.x,en.y,18)||Math.hypot(en.x-me.x,en.y-me.y)<300)&&g++<200);
+      en.a=rand(0,6.28); en.r=16; en.cool=rand(0.5,2); en.hp=2; en.turn=rand(-1,1); en.move=rand(0.3,0.8); foes.push(en); }
+    hp=100; wave=wave; $('wave').textContent=wave; $('enemies').textContent=foes.length; $('hp').textContent=hp;
+    centerCam();
+  }
+  function centerCam(){ cam.x=Math.max(0,Math.min(WORLD_W-VW,me.x-VW/2)); cam.y=Math.max(0,Math.min(WORLD_H-VH,me.y-VH/2)); }
+  function fire(who, isFoe){ if(who.cool>0) return; who.cool=isFoe?1.4:0.35;
+    bullets.push({x:who.x+Math.cos(who.a)*who.r, y:who.y+Math.sin(who.a)*who.r, vx:Math.cos(who.a)*460, vy:Math.sin(who.a)*460, foe:isFoe, life:2.2}); }
+
+  function update(dt){
+    if(state!=='play') return;
+    if(me.cool>0)me.cool-=dt;
+    if(keys.l)me.a-=2.4*dt; if(keys.r)me.a+=2.4*dt;
+    var mv=(keys.u?1:0)-(keys.d?1:0);
+    if(mv){ var sp=170*dt*mv; var nx=me.x+Math.cos(me.a)*sp, ny=me.y+Math.sin(me.a)*sp;
+      if(!hitWall(nx,me.y,me.r))me.x=nx; if(!hitWall(me.x,ny,me.r))me.y=ny;
+      me.x=Math.max(me.r,Math.min(WORLD_W-me.r,me.x)); me.y=Math.max(me.r,Math.min(WORLD_H-me.r,me.y)); }
+    // 적 AI
+    for(var f=0;f<foes.length;f++){ var en=foes[f]; if(en.cool>0)en.cool-=dt;
+      var dx=me.x-en.x, dy=me.y-en.y, d=Math.hypot(dx,dy)||1, target=Math.atan2(dy,dx);
+      var da=((target-en.a+Math.PI*3)%(Math.PI*2))-Math.PI; en.a+=Math.max(-1.6*dt,Math.min(1.6*dt,da));
+      if(d>150){ var es=70*dt; var enx=en.x+Math.cos(en.a)*es, eny=en.y+Math.sin(en.a)*es; if(!hitWall(enx,en.y,en.r))en.x=enx; if(!hitWall(en.x,eny,en.r))en.y=eny; }
+      if(Math.abs(da)<0.25 && d<560) fire(en,true);
+    }
+    // 포탄
+    for(var b=bullets.length-1;b>=0;b--){ var bl=bullets[b]; bl.x+=bl.vx*dt; bl.y+=bl.vy*dt; bl.life-=dt;
+      if(bl.life<=0||hitWall(bl.x,bl.y,3)){ bullets.splice(b,1); continue; }
+      if(bl.foe){ if(Math.hypot(bl.x-me.x,bl.y-me.y)<me.r){ hp-=12; $('hp').textContent=Math.max(0,hp); bullets.splice(b,1); if(hp<=0){ lose(); return; } continue; } }
+      else { for(var f2=foes.length-1;f2>=0;f2--){ var en2=foes[f2]; if(Math.hypot(bl.x-en2.x,bl.y-en2.y)<en2.r){ en2.hp--; bullets.splice(b,1); if(en2.hp<=0){ foes.splice(f2,1); $('enemies').textContent=foes.length; if(foes.length===0){ win(); return; } } break; } } }
+    }
+    centerCam();
+  }
+  function draw(){
+    x.fillStyle='#1a1c14'; x.fillRect(0,0,VW,VH);
+    x.strokeStyle='rgba(120,130,80,.12)'; var gs=48, ox=-(cam.x%gs), oy=-(cam.y%gs);
+    for(var gx=ox;gx<VW;gx+=gs){ x.beginPath(); x.moveTo(gx,0); x.lineTo(gx,VH); x.stroke(); }
+    for(var gy=oy;gy<VH;gy+=gs){ x.beginPath(); x.moveTo(0,gy); x.lineTo(VW,gy); x.stroke(); }
+    x.fillStyle='#4a4632'; for(var i=0;i<walls.length;i++){ var w=walls[i]; x.fillRect(w[0]-cam.x,w[1]-cam.y,w[2],w[3]); }
+    drawTank(me,'#4da3ff','#9fd0ff');
+    for(var f=0;f<foes.length;f++) drawTank(foes[f],'#e0563b','#f0a08a');
+    for(var b=0;b<bullets.length;b++){ var bl=bullets[b]; x.fillStyle=bl.foe?'#ffcf66':'#9fe0ff'; x.beginPath(); x.arc(bl.x-cam.x,bl.y-cam.y,4,0,7); x.fill(); }
+    drawMinimap();
+  }
+  function drawTank(tk,body,turret){ var sx=tk.x-cam.x, sy=tk.y-cam.y; x.save(); x.translate(sx,sy); x.rotate(tk.a);
+    x.fillStyle=body; x.fillRect(-tk.r,-tk.r+3,2*tk.r,2*tk.r-6);
+    x.fillStyle='#2b2b2b'; x.fillRect(-tk.r,-tk.r,2*tk.r,4); x.fillRect(-tk.r,tk.r-4,2*tk.r,4);
+    x.fillStyle=turret; x.beginPath(); x.arc(0,0,tk.r*0.55,0,7); x.fill();
+    x.fillStyle='#222'; x.fillRect(0,-2.5,tk.r+8,5); x.restore(); }
+  function drawMinimap(){ var mw=104, mh=Math.round(mw*WORLD_H/WORLD_W), mx=VW-mw-10, my=10;
+    x.fillStyle='rgba(8,12,12,.7)'; x.fillRect(mx,my,mw,mh); x.strokeStyle='rgba(180,180,120,.5)'; x.strokeRect(mx,my,mw,mh);
+    var sx=mw/WORLD_W, sy=mh/WORLD_H; x.fillStyle='#e0563b';
+    for(var f=0;f<foes.length;f++) x.fillRect(mx+foes[f].x*sx-1,my+foes[f].y*sy-1,3,3);
+    x.fillStyle='#4da3ff'; x.fillRect(mx+me.x*sx-2,my+me.y*sy-2,4,4); }
+
+  var last=0, raf=0;
+  function loop(t){ raf=requestAnimationFrame(loop); var dt=Math.min(0.04,((t-last)/1000)||0); last=t; if(!gc.isPaused()) update(dt); draw(); }
+  function startLoop(){ if(!raf){ last=performance.now(); raf=requestAnimationFrame(loop); } }
+
+  function begin(){ state='play'; $('gover').style.display='none'; }
+  function win(){ state='over'; $('goverBig').textContent='🎉 웨이브 '+wave+' 격파!'; $('goverSm').textContent='다음 웨이브는 적이 더 많아집니다'; $('goverBtn').textContent='다음 웨이브'; $('gover').style.display='flex'; wave++; }
+  function lose(){ state='over'; $('goverBig').textContent='💥 파괴됨'; $('goverSm').textContent='웨이브 '+wave+'에서 종료'; $('goverBtn').textContent='다시 시작'; $('gover').style.display='flex'; }
+
+  var KEYMAP={ArrowUp:'u',ArrowDown:'d',ArrowLeft:'l',ArrowRight:'r',w:'u',s:'d',a:'l',d:'r',W:'u',S:'d',A:'l',D:'r'};
+  document.addEventListener('keydown',function(e){ var k=KEYMAP[e.key]; if(k){ e.preventDefault(); keys[k]=true; } else if(e.key==='f'||e.key==='F'){ e.preventDefault(); if(state==='play')fire(me,false); } });
+  document.addEventListener('keyup',function(e){ var k=KEYMAP[e.key]; if(k){ keys[k]=false; } });
+  Array.prototype.forEach.call(document.querySelectorAll('.joy button'),function(b){ var d=b.dataset.d;
+    function on(e){ e.preventDefault(); keys[d]=true; b.classList.add('on'); } function off(e){ e&&e.preventDefault(); keys[d]=false; b.classList.remove('on'); }
+    b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off); });
+  function doFire(e){ e.preventDefault(); if(state==='play')fire(me,false); }
+  $('fireBtn').addEventListener('pointerdown',doFire);
+  cv.addEventListener('pointerdown',doFire);
+
+  $('goverBtn').addEventListener('click',function(e){ e.stopPropagation();
+    if($('goverBig').textContent.indexOf('파괴')>=0){ wave=1; } build(); begin(); });
+  $('restart').addEventListener('click',function(){ wave=1; state='ready'; $('goverBig').textContent='🎯 탱크 배틀'; $('goverSm').textContent='아레나의 적을 모두 격파하세요!'; $('goverBtn').textContent='시작하기'; $('gover').style.display='flex'; build(); });
+  build(); startLoop();
+})();
+</script>
+</body>
+</html>

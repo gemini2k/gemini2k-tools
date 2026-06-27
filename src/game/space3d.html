@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>3D 우주 비행 게임 (링 통과·소행성 회피) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="우주선을 조종해 넓은 우주 공간을 날며 링을 통과하고 소행성을 피하는 3D 비행 게임. 속도가 점점 빨라집니다. 카메라 추적, 방향키·WASD·모바일 버튼·드래그 조작, 일시정지 지원. PC·모바일 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/space3d.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="3D 우주 비행 게임 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="우주선으로 링을 통과하고 소행성을 피하는 3D 비행 게임. 속도 증가, 일시정지. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/space3d.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="/vendor/three-r134/three.min.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:72px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);}
+  .joy{display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,56px);gap:.4rem;justify-content:center;margin-top:1rem;touch-action:none;}
+  .joy button{border:1px solid var(--border);background:var(--surface);border-radius:12px;font-size:1.3rem;color:var(--text);cursor:pointer;user-select:none;}
+  .joy button:active,.joy button.on{background:var(--accent-soft);}
+  .j-up{grid-column:2;grid-row:1;} .j-left{grid-column:1;grid-row:2;} .j-down{grid-column:2;grid-row:2;} .j-right{grid-column:3;grid-row:2;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "3D 우주 비행",
+  "description": "우주선을 조종해 넓은 우주를 날며 링을 통과하고 소행성을 피하는 3D 비행 게임. 속도 증가, 카메라 추적, 일시정지 지원.",
+  "url": "https://gemini2k.co.kr/space3d.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Action",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:600px;">
+  <h1>3D 우주 비행</h1>
+  <p class="sub">우주선을 조종해 빛나는 링을 통과하고 소행성을 피하세요. 속도가 점점 빨라집니다!</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li><b>방향키 / WASD</b> 또는 아래 버튼·화면 드래그로 우주선을 상하좌우로 움직입니다</li>
+    <li>파란 <b>링</b>을 통과하면 +10점, 갈색 <b>소행성</b>에 부딪히면 생명이 줄어요</li>
+    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="scores">
+        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l">생명</div><div class="v" id="lives">3</div></div>
+        <div class="sbox"><div class="l">속도</div><div class="v" id="spd">1.0x</div></div>
+      </div>
+      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+    </div>
+    <div class="g3d-wrap">
+      <div class="g3d-stage" id="stage"></div>
+      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig">🚀 우주 비행</div><div class="sm" id="goverSm">링을 통과하고 소행성을 피하세요!</div><button class="btn" id="goverBtn" type="button">시작하기</button></div></div>
+    </div>
+    <div class="joy">
+      <button class="j-up" data-d="u" aria-label="위">▲</button>
+      <button class="j-left" data-d="l" aria-label="왼쪽">◀</button>
+      <button class="j-down" data-d="d" aria-label="아래">▼</button>
+      <button class="j-right" data-d="r" aria-label="오른쪽">▶</button>
+    </div>
+    <div class="note">우주선은 자동으로 전진합니다. 좌우상하로 움직여 링을 통과하세요. Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="game-core.js"></script>
+<script src="three-core.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var T=Three3D.setup($('stage'),{bg:0x05060f, fov:70, ratio:0.9});
+  if(!T){ document.querySelector('.joy').style.display='none'; $('restart').style.display='none'; $('gover').style.display='none'; return; }
+  var THREE=T.THREE, scene=T.scene, camera=T.camera;
+  scene.add(new THREE.AmbientLight(0x8895c0,0.9));
+  var dl=new THREE.DirectionalLight(0xffffff,0.8); dl.position.set(5,8,10); scene.add(dl);
+  scene.fog=new THREE.Fog(0x05060f, 60, 130);
+
+  var ship, rings=[], rocks=[], state='ready', score=0, lives=3, dist=0, baseSpeed=26;
+  var keys={u:false,d:false,l:false,r:false}, BOUND=14;
+
+  function buildOnce(){
+    // 별
+    var sg=new THREE.BufferGeometry(); var pos=[]; for(var i=0;i<900;i++){ pos.push((Math.random()*2-1)*120,(Math.random()*2-1)*80,-Math.random()*260); }
+    sg.setAttribute('position', new THREE.Float32BufferAttribute(pos,3));
+    var stars=new THREE.Points(sg, new THREE.PointsMaterial({color:0x9fb4ff,size:0.5})); scene.add(stars); scene._stars=stars;
+    // 우주선
+    ship=new THREE.Group();
+    var hull=new THREE.Mesh(new THREE.ConeGeometry(0.7,2.2,16), new THREE.MeshStandardMaterial({color:0x4da3ff,roughness:.3,metalness:.5,emissive:0x102040,emissiveIntensity:.6}));
+    hull.rotation.x=-Math.PI/2; ship.add(hull);
+    var wing=new THREE.Mesh(new THREE.BoxGeometry(2.4,0.12,0.7), new THREE.MeshStandardMaterial({color:0x2a6cc0})); wing.position.z=0.4; ship.add(wing);
+    scene.add(ship);
+    for(var r=0;r<7;r++) rings.push(makeRing());
+    for(var k=0;k<9;k++) rocks.push(makeRock());
+  }
+  function makeRing(){ var m=new THREE.Mesh(new THREE.TorusGeometry(2.6,0.28,10,28), new THREE.MeshStandardMaterial({color:0x35d3ff,emissive:0x0a4a66,emissiveIntensity:.8})); placeAhead(m); m._scored=false; scene.add(m); return m; }
+  function makeRock(){ var m=new THREE.Mesh(new THREE.DodecahedronGeometry(1.1+Math.random()*0.9), new THREE.MeshStandardMaterial({color:0x9a6a3a,roughness:.95,flatShading:true})); placeAhead(m,true); scene.add(m); return m; }
+  function placeAhead(m, far){ m.position.set((Math.random()*2-1)*BOUND,(Math.random()*2-1)*9, -(40+Math.random()*120)-(far?40:0)); if(m._scored!=null) m._scored=false; }
+
+  function reset(){ score=0; lives=3; dist=0; ship.position.set(0,0,0); $('score').textContent='0'; $('lives').textContent='3'; $('spd').textContent='1.0x';
+    rings.forEach(function(r){ placeAhead(r); }); rocks.forEach(function(r){ placeAhead(r,true); }); }
+
+  T.start(function(dt){
+    if(state==='play'){
+      dist+=dt; var spd=baseSpeed+dist*0.6; $('spd').textContent=(spd/baseSpeed).toFixed(1)+'x';
+      var mv=18*dt;
+      if(keys.l)ship.position.x-=mv; if(keys.r)ship.position.x+=mv; if(keys.u)ship.position.y+=mv; if(keys.d)ship.position.y-=mv;
+      ship.position.x=Math.max(-BOUND,Math.min(BOUND,ship.position.x)); ship.position.y=Math.max(-9,Math.min(9,ship.position.y));
+      ship.rotation.z=(keys.l?0.4:0)-(keys.r?0.4:0); ship.rotation.x=(keys.u?-0.25:0)+(keys.d?0.25:0);
+      var dz=spd*dt;
+      for(var i=0;i<rings.length;i++){ var rg=rings[i]; rg.position.z+=dz; rg.rotation.z+=dt;
+        if(!rg._scored && rg.position.z>ship.position.z-1 && rg.position.z<ship.position.z+1){ rg._scored=true;
+          if(Math.hypot(ship.position.x-rg.position.x,ship.position.y-rg.position.y)<2.6){ score+=10; $('score').textContent=score; } }
+        if(rg.position.z>10){ placeAhead(rg); } }
+      for(var k=0;k<rocks.length;k++){ var rk=rocks[k]; rk.position.z+=dz; rk.rotation.x+=dt*0.5; rk.rotation.y+=dt*0.7;
+        if(rk.position.z>ship.position.z-1 && rk.position.z<ship.position.z+1){
+          if(Math.hypot(ship.position.x-rk.position.x,ship.position.y-rk.position.y)<2.0){ hit(); rk.position.z+=20; } }
+        if(rk.position.z>10){ placeAhead(rk,true); } }
+    }
+    // 카메라 추적(뒤에서)
+    var cx=ship.position.x*0.6, cy=ship.position.y*0.5+2.5;
+    camera.position.x+=(cx-camera.position.x)*0.1; camera.position.y+=(cy-camera.position.y)*0.1; camera.position.z=8;
+    camera.lookAt(ship.position.x*0.3, ship.position.y*0.3, ship.position.z-12);
+  });
+
+  function hit(){ lives--; $('lives').textContent=lives; if(lives<=0) lose(); }
+  function begin(){ reset(); state='play'; $('gover').style.display='none'; }
+  function lose(){ state='over'; $('goverBig').textContent='💥 게임 오버'; $('goverSm').textContent='점수 '+score+' — 다시 도전해 보세요!'; $('goverBtn').textContent='다시 시작'; $('gover').style.display=''; }
+
+  var KEYMAP={ArrowUp:'u',ArrowDown:'d',ArrowLeft:'l',ArrowRight:'r',w:'u',s:'d',a:'l',d:'r',W:'u',S:'d',A:'l',D:'r'};
+  document.addEventListener('keydown',function(e){ var k=KEYMAP[e.key]; if(k){ e.preventDefault(); keys[k]=true; } });
+  document.addEventListener('keyup',function(e){ var k=KEYMAP[e.key]; if(k){ keys[k]=false; } });
+  Array.prototype.forEach.call(document.querySelectorAll('.joy button'),function(b){ var d=b.dataset.d;
+    function on(e){ e.preventDefault(); keys[d]=true; b.classList.add('on'); } function off(e){ e&&e.preventDefault(); keys[d]=false; b.classList.remove('on'); }
+    b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off); });
+  var origin=null;
+  T.dom.addEventListener('pointerdown',function(e){ origin={x:e.clientX,y:e.clientY}; });
+  T.dom.addEventListener('pointermove',function(e){ if(!origin)return; var dx=e.clientX-origin.x,dy=e.clientY-origin.y,th=12; keys.l=dx<-th;keys.r=dx>th;keys.u=dy<-th;keys.d=dy>th; });
+  function de(){ origin=null; keys.l=keys.r=keys.u=keys.d=false; } T.dom.addEventListener('pointerup',de); T.dom.addEventListener('pointercancel',de);
+  $('goverBtn').addEventListener('click',function(e){ e.stopPropagation(); begin(); });
+  $('restart').addEventListener('click',function(){ state='ready'; $('goverBig').textContent='🚀 우주 비행'; $('goverSm').textContent='링을 통과하고 소행성을 피하세요!'; $('goverBtn').textContent='시작하기'; $('gover').style.display=''; reset(); });
+  buildOnce(); reset();
+})();
+</script>
+</body>
+</html>

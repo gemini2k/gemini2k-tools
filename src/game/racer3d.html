@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>3D 레이싱 게임 (트랙 주행·랩타임) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="넓은 서킷을 도는 3D 자동차 레이싱 게임. 가속·브레이크·조향으로 트랙을 달리고 랩타임에 도전하세요. 카메라 추적, 방향키·WASD·모바일 버튼 조작, 일시정지 지원. PC·모바일 무료, 설치 없이 바로."/>
+<link rel="canonical" href="https://gemini2k.co.kr/racer3d.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="3D 레이싱 게임 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="넓은 서킷을 도는 3D 레이싱. 가속·조향·랩타임 도전. 카메라 추적, 일시정지. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/racer3d.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="/vendor/three-r134/three.min.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:72px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);}
+  .joy{display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,56px);gap:.4rem;justify-content:center;margin-top:1rem;touch-action:none;}
+  .joy button{border:1px solid var(--border);background:var(--surface);border-radius:12px;font-size:1.3rem;color:var(--text);cursor:pointer;user-select:none;}
+  .joy button:active,.joy button.on{background:var(--accent-soft);}
+  .j-up{grid-column:2;grid-row:1;} .j-left{grid-column:1;grid-row:2;} .j-down{grid-column:2;grid-row:2;} .j-right{grid-column:3;grid-row:2;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "3D 레이싱",
+  "description": "넓은 서킷을 도는 3D 자동차 레이싱 게임. 가속·브레이크·조향, 랩타임 도전, 카메라 추적, 일시정지 지원.",
+  "url": "https://gemini2k.co.kr/racer3d.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Racing",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:600px;">
+  <h1>3D 레이싱</h1>
+  <p class="sub">넓은 서킷을 달리며 랩타임에 도전하세요. 트랙을 벗어나면 느려지니 코너를 잘 공략하세요!</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li><b>↑/W</b> 가속, <b>↓/S</b> 브레이크·후진, <b>←→/A D</b> 조향 (아래 버튼·화면 드래그도 가능)</li>
+    <li>회색 트랙을 따라 한 바퀴 돌면 <b>랩</b>이 올라갑니다 — 최고 랩타임에 도전!</li>
+    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="scores">
+        <div class="sbox"><div class="l">랩</div><div class="v" id="lap">0</div></div>
+        <div class="sbox"><div class="l">현재</div><div class="v" id="cur">0.0</div></div>
+        <div class="sbox"><div class="l">최고랩</div><div class="v" id="best">-</div></div>
+      </div>
+      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+    </div>
+    <div class="g3d-wrap">
+      <div class="g3d-stage" id="stage"></div>
+      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig">🏁 3D 레이싱</div><div class="sm" id="goverSm">트랙을 달려 랩타임에 도전!</div><button class="btn" id="goverBtn" type="button">시작하기</button></div></div>
+    </div>
+    <div class="joy">
+      <button class="j-up" data-d="u" aria-label="가속">▲</button>
+      <button class="j-left" data-d="l" aria-label="좌회전">◀</button>
+      <button class="j-down" data-d="d" aria-label="브레이크">▼</button>
+      <button class="j-right" data-d="r" aria-label="우회전">▶</button>
+    </div>
+    <div class="note">트랙(회색 링)을 벗어나면 잔디 저항으로 속도가 줄어듭니다. Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="game-core.js"></script>
+<script src="three-core.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var T=Three3D.setup($('stage'),{bg:0x0a1024, fov:62, ratio:0.9});
+  if(!T){ document.querySelector('.joy').style.display='none'; $('restart').style.display='none'; $('gover').style.display='none'; return; }
+  var THREE=T.THREE, scene=T.scene, camera=T.camera;
+  scene.add(new THREE.AmbientLight(0xaab6d8,0.85));
+  var dl=new THREE.DirectionalLight(0xffffff,0.7); dl.position.set(30,50,20); scene.add(dl);
+  scene.fog=new THREE.Fog(0x0a1024, 60, 160);
+
+  var R=34, TW=9;  // 트랙 중심 반지름, 폭
+  var car, heading=0, speed=0, state='ready', lap=0, curT=0, best=null, lastQuad=0, checkpoint=false;
+  var keys={u:false,d:false,l:false,r:false};
+  var fwd=new THREE.Vector3();
+
+  function buildOnce(){
+    var gnd=new THREE.Mesh(new THREE.PlaneGeometry(400,400), new THREE.MeshLambertMaterial({color:0x16321f}));
+    gnd.rotation.x=-Math.PI/2; gnd.position.y=-0.05; scene.add(gnd);
+    var ring=new THREE.Mesh(new THREE.RingGeometry(R-TW/2, R+TW/2, 80), new THREE.MeshLambertMaterial({color:0x3a3f4a, side:THREE.DoubleSide}));
+    ring.rotation.x=-Math.PI/2; scene.add(ring);
+    // 차선 중앙 점선
+    for(var a=0;a<Math.PI*2;a+=0.18){ var dot=new THREE.Mesh(new THREE.BoxGeometry(1.4,0.05,0.5), new THREE.MeshBasicMaterial({color:0xd8dd55})); dot.position.set(Math.cos(a)*R,0.05,Math.sin(a)*R); dot.rotation.y=-a; scene.add(dot); }
+    // 출발선
+    var sl=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.06,TW), new THREE.MeshBasicMaterial({color:0xffffff})); sl.position.set(R,0.06,0); scene.add(sl);
+    // 차
+    car=new THREE.Group();
+    var body=new THREE.Mesh(new THREE.BoxGeometry(2.4,0.7,1.3), new THREE.MeshStandardMaterial({color:0xff5252,roughness:.4,metalness:.3})); body.position.y=0.5; car.add(body);
+    var top=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.6,1.1), new THREE.MeshStandardMaterial({color:0x991f1f})); top.position.set(-0.2,1.0,0); car.add(top);
+    scene.add(car);
+  }
+  function reset(){ lap=0; curT=0; best=best; speed=0; heading=Math.PI/2; checkpoint=false;
+    car.position.set(R,0,0); car.rotation.y=-heading; lastQuad=quad(R,0);
+    $('lap').textContent='0'; $('cur').textContent='0.0'; }
+  function quad(x,z){ return (x>=0?(z>=0?0:3):(z>=0?1:2)); }
+
+  T.start(function(dt){
+    if(state==='play'){
+      curT+=dt; $('cur').textContent=curT.toFixed(1);
+      var accel=0; if(keys.u)accel=26; else if(keys.d)accel=-18;
+      // 트랙 이탈시 저항
+      var rr=Math.hypot(car.position.x,car.position.z); var onTrack=Math.abs(rr-R)<=TW/2+1;
+      var drag=onTrack?2.2:9;
+      speed+=accel*dt; speed-=speed*drag*dt; speed=Math.max(-12,Math.min(34,speed));
+      var turn=(keys.l?1:0)-(keys.r?1:0); heading+=turn*1.8*dt*Math.min(1,Math.abs(speed)/6)*(speed<0?-1:1);
+      fwd.set(Math.cos(heading),0,Math.sin(heading));
+      car.position.x+=fwd.x*speed*dt; car.position.z+=fwd.z*speed*dt;
+      car.rotation.y=-heading;
+      // 랩 판정: 출발선(양의 x, z≈0) 통과, 반대편 체크포인트 경유 필요
+      var q=quad(car.position.x,car.position.z);
+      if(q===2||q===1) checkpoint=true;
+      if(lastQuad===3 && q===0 && checkpoint && speed>0){ lap++; if(best==null||curT<best)best=curT; $('best').textContent=best.toFixed(1); curT=0; checkpoint=false; $('lap').textContent=lap; }
+      lastQuad=q;
+    }
+    // 카메라 추적
+    var cx=car.position.x-Math.cos(heading)*12, cz=car.position.z-Math.sin(heading)*12;
+    camera.position.x+=(cx-camera.position.x)*0.12; camera.position.z+=(cz-camera.position.z)*0.12;
+    camera.position.y+=(7-camera.position.y)*0.12; camera.lookAt(car.position.x,1,car.position.z);
+  });
+
+  function begin(){ reset(); state='play'; $('gover').style.display='none'; }
+  // 입력
+  var KEYMAP={ArrowUp:'u',ArrowDown:'d',ArrowLeft:'l',ArrowRight:'r',w:'u',s:'d',a:'l',d:'r',W:'u',S:'d',A:'l',D:'r'};
+  document.addEventListener('keydown',function(e){ var k=KEYMAP[e.key]; if(k){ e.preventDefault(); keys[k]=true; } });
+  document.addEventListener('keyup',function(e){ var k=KEYMAP[e.key]; if(k){ keys[k]=false; } });
+  Array.prototype.forEach.call(document.querySelectorAll('.joy button'),function(b){ var d=b.dataset.d;
+    function on(e){ e.preventDefault(); keys[d]=true; b.classList.add('on'); } function off(e){ e&&e.preventDefault(); keys[d]=false; b.classList.remove('on'); }
+    b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off); });
+  var origin=null;
+  T.dom.addEventListener('pointerdown',function(e){ origin={x:e.clientX,y:e.clientY}; });
+  T.dom.addEventListener('pointermove',function(e){ if(!origin)return; var dx=e.clientX-origin.x,dy=e.clientY-origin.y,th=14; keys.l=dx<-th;keys.r=dx>th;keys.u=dy<-th;keys.d=dy>th; });
+  function de(){ origin=null; keys.l=keys.r=keys.u=keys.d=false; } T.dom.addEventListener('pointerup',de); T.dom.addEventListener('pointercancel',de);
+  $('goverBtn').addEventListener('click',function(e){ e.stopPropagation(); begin(); });
+  $('restart').addEventListener('click',function(){ state='ready'; $('goverBig').textContent='🏁 3D 레이싱'; $('goverSm').textContent='트랙을 달려 랩타임에 도전!'; $('goverBtn').textContent='시작하기'; $('gover').style.display=''; reset(); });
+  buildOnce(); reset();
+})();
+</script>
+</body>
+</html>
