@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>이모지 모음·검색 (클릭 복사) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="자주 쓰는 이모지를 카테고리별로 모아 검색하고 클릭 한 번으로 복사합니다. 표정·사람·동물·음식·여행·사물·기호 등. 최근 사용 기억. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/emoji.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="이모지 모음·검색 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="이모지를 카테고리별로 검색하고 클릭으로 복사. 최근 사용 기억. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/emoji.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .search{width:100%;padding:.7rem .9rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1rem;margin-bottom:.8rem;}
+  .tabs{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.8rem;}
+  .tabs button{padding:.35rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-family:inherit;cursor:pointer;font-size:.85rem;}
+  .tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:.3rem;max-height:420px;overflow:auto;}
+  .grid button{font-size:1.7rem;line-height:1;padding:.35rem 0;border:1px solid transparent;border-radius:9px;background:none;cursor:pointer;}
+  .grid button:hover{background:var(--accent-soft);border-color:var(--border);}
+  .cat-h{font-weight:800;font-size:.8rem;color:var(--muted);margin:.6rem 0 .3rem;}
+  .empty{color:var(--muted);padding:1rem;text-align:center;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "이모지 모음·검색",
+  "description": "이모지를 카테고리별로 검색하고 클릭 한 번으로 복사합니다. 최근 사용 기억. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/emoji.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:720px;">
+  <h1>이모지 모음·검색</h1>
+  <p class="sub">이모지를 클릭하면 바로 복사됩니다. 검색어로 찾거나 카테고리 탭으로 둘러보세요.</p>
+
+  <div class="card">
+    <input class="search" id="q" type="search" placeholder="검색: 웃음, heart, 강아지, 별, fire …"/>
+    <div class="tabs" id="tabs"></div>
+    <div class="grid" id="grid"></div>
+    <div class="note">클릭하면 클립보드에 복사됩니다. 최근 사용한 이모지는 이 기기에 기억됩니다. 검색은 한글·영문 키워드를 지원합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1200); }
+  // [이모지, 키워드(한/영 공백구분)]
+  var DATA={
+    '표정':[['😀','웃음 smile 기쁨'],['😄','웃음 happy'],['😁','활짝 grin'],['😂','눈물 웃음 lol joy'],['🤣','폭소 rofl'],['😊','미소 blush'],['🙂','미소 slight'],['😉','윙크 wink'],['😍','하트눈 love'],['🥰','사랑 smiling'],['😘','뽀뽀 kiss'],['😗','키스'],['🤗','포옹 hug'],['🤔','생각 thinking 고민'],['🤨','의심'],['😐','무표정 neutral'],['😴','잠 sleep 졸림'],['😪','졸림'],['😎','선글라스 cool'],['🥳','파티 축하 party'],['😭','울음 cry 슬픔'],['😢','눈물 tear'],['😱','놀람 scream 충격'],['😡','화남 angry 분노'],['🤬','욕 화'],['😅','진땀 sweat'],['😇','천사 angel'],['🤩','반짝 star eyes'],['🥲','눈물미소'],['😋','맛 yum'],['😜','메롱'],['🤪','광대'],['😏','음흉 smirk'],['😬','민망'],['🙄','눈굴림 roll'],['😮','놀람 wow'],['🤯','폭발 mind blown'],['🥶','추움 cold'],['🥵','더움 hot'],['😈','악마 devil'],['💀','해골 skull 죽음'],['👻','유령 ghost'],['🤡','광대 clown'],['💩','똥 poop']],
+    '사람':[['👍','좋아요 따봉 thumbs up'],['👎','싫어요 down'],['👏','박수 clap'],['🙌','만세 raise'],['🙏','기도 부탁 thanks pray'],['🤝','악수 handshake'],['👋','인사 wave hi'],['✌️','브이 peace'],['🤞','행운 crossed'],['👌','오케이 ok'],['💪','근육 강함 muscle'],['🫶','하트손 손하트'],['🙋','손들기'],['🤦','이마 facepalm'],['🤷','글쎄 shrug'],['👀','눈 eyes 주목'],['🧠','뇌 brain'],['❤️','하트 heart love 사랑'],['🧡','주황하트'],['💛','노랑하트'],['💚','초록하트'],['💙','파랑하트'],['💜','보라하트'],['🖤','검정하트'],['🤍','흰하트'],['💔','깨진하트 broken'],['💕','두하트'],['💖','반짝하트'],['💗','커지는하트'],['💯','백점 100 perfect'],['🔥','불 fire 핫'],['✨','반짝 sparkle'],['⭐','별 star'],['🌟','별 빛나는'],['💫','어지러움 별'],['💥','폭발 boom'],['💢','분노표시']],
+    '동물':[['🐶','강아지 dog 개'],['🐱','고양이 cat'],['🐭','쥐 mouse'],['🐹','햄스터'],['🐰','토끼 rabbit'],['🦊','여우 fox'],['🐻','곰 bear'],['🐼','판다 panda'],['🐨','코알라'],['🐯','호랑이 tiger'],['🦁','사자 lion'],['🐮','소 cow'],['🐷','돼지 pig'],['🐸','개구리 frog'],['🐵','원숭이 monkey'],['🐔','닭 chicken'],['🐧','펭귄 penguin'],['🐦','새 bird'],['🦄','유니콘'],['🐝','벌 bee'],['🦋','나비 butterfly'],['🐢','거북이 turtle'],['🐍','뱀 snake'],['🐙','문어 octopus'],['🦀','게 crab'],['🐠','물고기 fish'],['🐬','돌고래'],['🐳','고래 whale'],['🦖','공룡 dino'],['🌻','해바라기'],['🌸','벚꽃 flower 꽃'],['🌹','장미 rose'],['🌳','나무 tree'],['🌵','선인장'],['🍀','네잎클로버 luck']],
+    '음식':[['🍎','사과 apple'],['🍌','바나나'],['🍓','딸기 strawberry'],['🍇','포도'],['🍉','수박'],['🍑','복숭아 peach'],['🍒','체리'],['🍕','피자 pizza'],['🍔','햄버거 burger'],['🍟','감자튀김 fries'],['🌭','핫도그'],['🍗','치킨 chicken'],['🍜','라면 noodle'],['🍣','초밥 sushi'],['🍙','주먹밥'],['🍚','밥 rice'],['🍰','케이크 cake'],['🎂','생일케이크 birthday'],['🍪','쿠키'],['🍩','도넛'],['🍫','초콜릿'],['🍬','사탕 candy'],['🍦','아이스크림'],['☕','커피 coffee'],['🍺','맥주 beer'],['🍻','건배 cheers'],['🍷','와인 wine'],['🥤','음료 drink'],['🧋','버블티']],
+    '활동·여행':[['⚽','축구 soccer'],['🏀','농구 basketball'],['⚾','야구 baseball'],['🎾','테니스'],['🏐','배구'],['🎮','게임 game'],['🎯','다트 target'],['🎲','주사위 dice'],['🎸','기타 guitar'],['🎹','피아노'],['🎤','마이크 노래'],['🎧','헤드폰'],['🎨','그림 art'],['📷','카메라 camera'],['🎬','영화 movie'],['🏆','트로피 우승 win'],['🥇','금메달 1등'],['✈️','비행기 plane'],['🚗','자동차 car'],['🚀','로켓 rocket'],['🏠','집 house'],['🗺️','지도 map'],['🏖️','해변 beach'],['🏔️','산 mountain'],['🌈','무지개 rainbow'],['☀️','해 sun'],['🌙','달 moon'],['⛄','눈사람 snow'],['🎄','크리스마스 tree'],['🎁','선물 gift']],
+    '사물·기호':[['💡','전구 아이디어 idea'],['📱','폰 phone'],['💻','노트북 laptop'],['🖥️','컴퓨터'],['⌚','시계 watch'],['📦','상자 box'],['✉️','편지 mail'],['📌','핀 pin'],['📎','클립'],['🔑','열쇠 key'],['🔒','잠금 lock'],['💰','돈 money 골드'],['💳','카드 card'],['🛒','장바구니 cart'],['🔔','알림 bell'],['📢','확성기'],['⏰','알람 alarm'],['✅','체크 check 완료'],['❌','엑스 x 취소'],['⚠️','경고 warning'],['❓','물음표 question'],['❗','느낌표'],['➡️','오른쪽 arrow'],['⬅️','왼쪽'],['⬆️','위'],['⬇️','아래'],['🔄','새로고침 refresh'],['➕','플러스 plus'],['➖','마이너스'],['✔️','체크'],['©️','저작권'],['™️','상표'],['🔴','빨강원'],['🟢','초록원'],['🔵','파랑원']]
+  };
+  var CATS=Object.keys(DATA), active='최근';
+  function recent(){ try{ return JSON.parse(localStorage.getItem('emoji:recent'))||[]; }catch(e){ return []; } }
+  function pushRecent(e){ var r=recent().filter(function(x){return x!==e;}); r.unshift(e); r=r.slice(0,24); try{ localStorage.setItem('emoji:recent',JSON.stringify(r)); }catch(e2){} }
+  function renderTabs(){ var tabs=['최근'].concat(CATS); $('tabs').innerHTML=tabs.map(function(c){ return '<button data-c="'+c+'" class="'+(c===active?'on':'')+'">'+c+'</button>'; }).join(''); }
+  function cell(e){ return '<button data-e="'+e+'" title="복사">'+e+'</button>'; }
+  function render(){
+    var q=$('q').value.trim().toLowerCase();
+    if(q){ var out=''; CATS.forEach(function(c){ var hits=DATA[c].filter(function(it){ return it[0].indexOf(q)>=0 || it[1].toLowerCase().indexOf(q)>=0; });
+      if(hits.length) out+='<div class="cat-h" style="grid-column:1/-1">'+c+'</div>'+hits.map(function(it){return cell(it[0]);}).join(''); });
+      $('grid').innerHTML=out||'<div class="empty" style="grid-column:1/-1">검색 결과가 없어요</div>'; return; }
+    if(active==='최근'){ var r=recent(); $('grid').innerHTML= r.length? r.map(cell).join('') : '<div class="empty" style="grid-column:1/-1">이모지를 클릭하면 최근 목록에 쌓여요</div>'; return; }
+    $('grid').innerHTML=DATA[active].map(function(it){return cell(it[0]);}).join('');
+  }
+  $('tabs').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; active=b.dataset.c; $('q').value=''; renderTabs(); render(); });
+  $('grid').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; var em=b.dataset.e;
+    navigator.clipboard.writeText(em).then(function(){toast(em+' 복사됨');}).catch(function(){toast(em+' (복사 실패)');}); pushRecent(em); if(active==='최근'&&!$('q').value) render(); });
+  $('q').addEventListener('input',render);
+  renderTabs(); render();
+</script>
+</body>
+</html>

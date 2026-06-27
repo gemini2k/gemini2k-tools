@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>돌림판 추첨기 (룰렛 랜덤 뽑기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="항목을 적어 넣고 돌리면 무작위로 하나를 뽑아주는 돌림판(룰렛) 추첨기. 점심 메뉴·당첨자·순서 정하기에. 당첨 항목 제거, 색상 자동. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/roulette.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="돌림판 추첨기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="항목을 넣고 돌려 무작위로 뽑는 룰렛 추첨기. 점심 메뉴·당첨자·순서 정하기. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/roulette.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .layout{display:grid;grid-template-columns:1fr 280px;gap:1.2rem;align-items:start;}
+  @media(max-width:620px){ .layout{grid-template-columns:1fr;} }
+  .wheelwrap{position:relative;text-align:center;}
+  canvas{max-width:100%;height:auto;}
+  .ptr{position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:1.8rem;z-index:2;color:var(--accent);text-shadow:0 1px 3px rgba(0,0,0,.4);}
+  .spinbtn{margin-top:.8rem;}
+  textarea{width:100%;min-height:200px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:inherit;font-size:.95rem;color:var(--text);resize:vertical;}
+  .winner{margin-top:1rem;text-align:center;font-size:1.4rem;font-weight:800;color:var(--accent);min-height:1.6em;}
+  .opts{display:flex;gap:1rem;align-items:center;margin:.6rem 0;font-size:.88rem;}
+  .opts label{display:inline-flex;gap:.4rem;align-items:center;font-weight:600;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "돌림판 추첨기",
+  "description": "항목을 넣고 돌리면 무작위로 하나를 뽑아주는 룰렛 추첨기. 당첨 항목 제거 지원. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/roulette.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1>돌림판 추첨기</h1>
+  <p class="sub">항목을 적고 돌리면 무작위로 하나를 뽑아 줍니다. 점심 메뉴·당첨자·발표 순서 정하기에 딱이에요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>오른쪽에 항목을 한 줄에 하나씩 입력합니다 (2개 이상)</li>
+    <li>‘돌리기’를 누르면 돌림판이 회전하고 결과가 나옵니다</li>
+    <li>‘당첨 시 제거’를 켜면 뽑힌 항목이 사라져 순서 정하기에 좋아요</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="layout">
+      <div>
+        <div class="wheelwrap"><div class="ptr">▼</div><canvas id="wheel" width="360" height="360"></canvas></div>
+        <div class="spinbtn"><button class="btn" id="spin" type="button" style="width:100%;">🎯 돌리기</button></div>
+        <div class="winner" id="winner"></div>
+      </div>
+      <div>
+        <label style="font-weight:700;font-size:.85rem;">항목 (한 줄에 하나)</label>
+        <textarea id="items">짜장면
+짬뽕
+탕수육
+김치찌개
+돈까스</textarea>
+        <div class="opts"><label><input type="checkbox" id="remove"/> 당첨 시 제거</label></div>
+      </div>
+    </div>
+    <div class="note">결과는 암호학적 난수가 아닌 일반 난수로 공정하게 무작위 선택됩니다. 항목 색상은 자동 배정됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('wheel'), x=cv.getContext('2d'), W=cv.width, H=cv.height, cx=W/2, cy=H/2, R=W/2-6;
+  var angle=0, spinning=false;
+  var COLORS=['#5B5BF5','#15C39A','#F59E0B','#EF4444','#A855F7','#3D7BF0','#EC4899','#10B981','#F97316','#6366F1','#14B8A6','#E11D48'];
+  function items(){ return $('items').value.split(/\r?\n/).map(function(s){return s.trim();}).filter(Boolean); }
+  function draw(){
+    var arr=items(); x.clearRect(0,0,W,H); if(!arr.length){ x.fillStyle='#888'; x.textAlign='center'; x.fillText('항목을 입력하세요',cx,cy); return; }
+    var n=arr.length, seg=Math.PI*2/n;
+    for(var i=0;i<n;i++){ var a0=angle+i*seg, a1=a0+seg;
+      x.beginPath(); x.moveTo(cx,cy); x.arc(cx,cy,R,a0,a1); x.closePath(); x.fillStyle=COLORS[i%COLORS.length]; x.fill();
+      x.save(); x.translate(cx,cy); x.rotate(a0+seg/2); x.textAlign='right'; x.fillStyle='#fff'; x.font='bold 15px Pretendard,sans-serif';
+      var label=arr[i].length>10?arr[i].slice(0,9)+'…':arr[i]; x.fillText(label, R-12, 5); x.restore();
+    }
+    x.beginPath(); x.arc(cx,cy,26,0,Math.PI*2); x.fillStyle='#fff'; x.fill(); x.strokeStyle='var(--border)'; x.lineWidth=2; x.stroke();
+  }
+  function spin(){ var arr=items(); if(spinning||arr.length<2){ if(arr.length<2)$('winner').textContent='2개 이상 입력하세요'; return; }
+    spinning=true; $('winner').textContent=''; $('spin').disabled=true;
+    var n=arr.length, seg=Math.PI*2/n;
+    var target=(Math.random()*n)|0;
+    // 포인터(상단, -90도)가 가리키도록 회전량 계산
+    var spins=5+Math.random()*3;
+    var pointer=-Math.PI/2;
+    var targetCenter=target*seg+seg/2;
+    var finalAngle=spins*Math.PI*2 + (pointer - targetCenter);
+    var start=angle, dur=4200+Math.random()*800, t0=performance.now();
+    function step(now){ var p=Math.min(1,(now-t0)/dur); var e=1-Math.pow(1-p,3); angle=start+(finalAngle-start)*e; draw();
+      if(p<1){ requestAnimationFrame(step); } else { spinning=false; $('spin').disabled=false; angle=((finalAngle%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
+        $('winner').textContent='🎉 '+arr[target];
+        if($('remove').checked){ arr.splice(target,1); $('items').value=arr.join('\n'); draw(); }
+        window._winner=arr[target]||$('winner').textContent;
+      } }
+    requestAnimationFrame(step);
+  }
+  $('items').addEventListener('input',function(){ if(!spinning) draw(); });
+  $('spin').addEventListener('click',spin);
+  draw();
+  window._spinNow=spin;
+</script>
+</body>
+</html>

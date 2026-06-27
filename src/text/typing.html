@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>타자 속도 측정 (타수·정확도 타이핑 테스트) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="한글·영문 문장을 따라 입력해 타자 속도(타/분, CPM·WPM)와 정확도를 측정합니다. 실시간 진행·오타 표시, 여러 문장. 타자 연습에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/typing.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="타자 속도 측정 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="한글·영문 타자 속도(타/분·WPM)와 정확도 측정. 실시간 진행·오타 표시. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/typing.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .opts{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-bottom:.8rem;font-size:.9rem;}
+  .opts label{display:inline-flex;gap:.4rem;align-items:center;font-weight:600;}
+  .target{font-size:1.15rem;line-height:2;letter-spacing:.02em;background:var(--ground);border:1px solid var(--border);border-radius:11px;padding:.9rem 1rem;min-height:3em;user-select:none;}
+  .target .c{border-radius:3px;} .target .ok{color:#16a34a;} .target .bad{background:#fecaca;color:#b91c1c;}
+  [data-theme=dark] .target .bad{background:#7f1d1d;color:#fecaca;}
+  .target .cur{background:var(--accent);color:#fff;}
+  textarea{width:100%;margin-top:.8rem;min-height:80px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:inherit;font-size:1.05rem;color:var(--text);resize:vertical;}
+  .stat{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin:1rem 0;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:11px;padding:.6rem;text-align:center;}
+  .sbox .l{font-size:.68rem;color:var(--muted);font-weight:700;} .sbox .v{font-size:1.5rem;font-weight:800;color:var(--accent);}
+  .actions{display:flex;gap:.6rem;flex-wrap:wrap;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "타자 속도 측정",
+  "description": "한글·영문 문장을 따라 입력해 타자 속도(타/분·WPM)와 정확도를 측정합니다. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/typing.html",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:720px;">
+  <h1>타자 속도 측정</h1>
+  <p class="sub">제시된 문장을 그대로 입력하면 타자 속도(타/분)와 정확도를 실시간으로 측정합니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>언어(한글/영문)를 고르고 아래 입력칸을 클릭합니다</li>
+    <li>제시 문장을 그대로 입력하세요. 첫 글자 입력 순간부터 시간이 측정됩니다</li>
+    <li>문장을 끝내면 타/분·정확도가 나옵니다. ‘다음 문장’으로 계속 연습하세요</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="opts">
+      <label>언어 <select id="lang"><option value="ko">한글</option><option value="en">영문</option></select></label>
+    </div>
+    <div class="target" id="target"></div>
+    <textarea id="input" placeholder="여기에 입력하세요…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+    <div class="stat">
+      <div class="sbox"><div class="l">타/분 (CPM)</div><div class="v" id="cpm">0</div></div>
+      <div class="sbox"><div class="l">WPM</div><div class="v" id="wpm">0</div></div>
+      <div class="sbox"><div class="l">정확도</div><div class="v" id="acc">100%</div></div>
+      <div class="sbox"><div class="l">시간</div><div class="v" id="time">0.0</div></div>
+    </div>
+    <div class="actions"><button class="btn btn-ghost" id="next" type="button">다음 문장 ↻</button><button class="btn btn-ghost" id="reset" type="button">다시</button></div>
+    <div class="note">타/분(CPM)은 한글의 경우 자판 입력 수(타수)를 기준으로, 영문은 글자 수를 기준으로 계산합니다. WPM은 타수를 5로 나눈 표준 환산값입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var SENT={ ko:[
+    '오늘도 좋은 하루 보내세요. 타자 연습으로 손가락을 풀어 봅니다.',
+    '꾸준한 연습이 실력을 만듭니다. 천천히 정확하게 입력해 보세요.',
+    '바람이 불어오는 언덕에 올라 멀리 보이는 바다를 바라보았다.',
+    '코딩은 문제를 작은 조각으로 나누어 해결하는 과정의 연속이다.',
+    '작은 습관이 모여 큰 변화를 만든다는 사실을 잊지 마세요.'
+  ], en:[
+    'The quick brown fox jumps over the lazy dog near the river.',
+    'Practice makes perfect, so keep typing every single day.',
+    'A journey of a thousand miles begins with a single step forward.',
+    'Clean code is simple and direct, reading like well written prose.',
+    'Stay curious and keep learning new things throughout your life.'
+  ]};
+  var KCHO=[1,2,1,1,2,1,1,1,2,1,2,1,1,2,1,1,1,1,1];
+  var KJUNG=[1,1,1,1,1,1,1,1,1,2,2,2,1,1,2,2,2,1,1,2,1];
+  var KJONG=[0,1,2,2,1,2,2,1,1,2,2,2,2,2,2,2,1,1,2,1,2,1,1,1,1,1,1,1];
+  function keysOf(ch){ var c=ch.charCodeAt(0); if(c>=0xAC00&&c<=0xD7A3){ var s=c-0xAC00; return KCHO[Math.floor(s/588)]+KJUNG[Math.floor((s%588)/28)]+KJONG[s%28]; } return 1; }
+  function strokes(str){ var n=0; for(var i=0;i<str.length;i++) n+=keysOf(str[i]); return n; }
+
+  var target='', started=0, finished=false, tick=null;
+  function pick(){ var arr=SENT[$('lang').value]; target=arr[(Math.random()*arr.length)|0]; render(''); $('input').value=''; started=0; finished=false; setStats(0,0,100,0); stopTick(); $('input').focus(); }
+  function render(typed){
+    var h=''; for(var i=0;i<target.length;i++){ var cls='c'; if(i<typed.length){ cls+= typed[i]===target[i]?' ok':' bad'; } else if(i===typed.length){ cls+=' cur'; }
+      var ch=target[i]==='&'?'&amp;':target[i]==='<'?'&lt;':target[i]; h+='<span class="'+cls+'">'+ch+'</span>'; }
+    $('target').innerHTML=h;
+  }
+  function setStats(cpm,wpm,acc,t){ $('cpm').textContent=cpm; $('wpm').textContent=wpm; $('acc').textContent=acc+'%'; $('time').textContent=t.toFixed(1); }
+  function startTick(){ stopTick(); tick=setInterval(update,100); }
+  function stopTick(){ if(tick){ clearInterval(tick); tick=null; } }
+  function update(){ if(!started) return; var typed=$('input').value; var elapsed=(performance.now()-started)/1000;
+    var correct=0; for(var i=0;i<typed.length&&i<target.length;i++) if(typed[i]===target[i]) correct++;
+    var lang=$('lang').value;
+    var unit = lang==='ko' ? strokes(target.slice(0,correct)) : correct;
+    var cpm = elapsed>0 ? Math.round(unit/elapsed*60) : 0;
+    var acc = typed.length? Math.round(correct/typed.length*100):100;
+    setStats(cpm, Math.round(cpm/5), acc, elapsed);
+  }
+  $('input').addEventListener('input',function(){
+    var typed=$('input').value;
+    if(!started && typed.length){ started=performance.now(); startTick(); }
+    render(typed);
+    if(typed.length>=target.length && !finished){ finished=true; update(); stopTick();
+      var ok=true; for(var i=0;i<target.length;i++) if(typed[i]!==target[i]){ok=false;break;}
+      $('target').innerHTML+= ok?' <b style="color:#16a34a">✓ 완성!</b>':' <b style="color:#f59e0b">— 오타가 있어요</b>';
+    }
+  });
+  $('lang').addEventListener('change',pick);
+  $('next').addEventListener('click',pick);
+  $('reset').addEventListener('click',function(){ $('input').value=''; started=0; finished=false; render(''); setStats(0,0,100,0); stopTick(); $('input').focus(); });
+  pick();
+</script>
+</body>
+</html>

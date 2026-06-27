@@ -151,4 +151,8 @@ window.TOOLS = [
   { key:'saju',h:'saju.html',ic:'🔮', chip:'c-cyan', cat:'심리·운세', k:'사주 만세력 사주팔자 팔자 천간지지 간지 오행 띠 일간 명리 saju four pillars 四柱 八字 사주팔자 만세력', related:['agecalc','lunar','bloodtype'] },
   { key:'copsrobbers',h:'copsrobbers.html',ic:'🚔', chip:'c-blue', cat:'게임', k:'경찰과 도둑 2인용 추격 보석 도둑잡기 멀티 둘이서 cops robbers chase 2player 警察小偷 泥棒 경찰도둑 2인용게임', related:['tank','topdown','maze'] },
   { key:'slimefps',h:'slimefps.html',ic:'🔫', chip:'c-green', cat:'게임', k:'fps 슈팅 1인칭 총 슬라임 건앤슬라임 gun slime shooter 3d 사격 射击 シューティング 슬라임슈팅 fps게임', related:['space3d','tank','spaceshooter'] },
+  { key:'typing',h:'typing.html',ic:'⌨️', chip:'c-blue', cat:'텍스트', k:'타자 속도 측정 타이핑 연습 타수 cpm wpm 정확도 typing speed test 打字 タイピング 타자연습 타자속도', related:['lines','wordfreq','textstats'] },
+  { key:'roulette',h:'roulette.html',ic:'🎯', chip:'c-rose', cat:'생성기', k:'돌림판 룰렛 추첨 랜덤 뽑기 제비 메뉴 결정 roulette wheel spinner picker 转盘 ルーレット 돌림판 추첨기', related:['ladder','lotto','pw'] },
+  { key:'emoji',h:'emoji.html',ic:'😀', chip:'c-amber', cat:'텍스트', k:'이모지 이모티콘 emoji 특수문자 기호 복사 검색 emoticon symbol 表情符号 絵文字 이모지모음', related:['htmlentity','caseconv','lines'] },
+  { key:'xmlformat',h:'xmlformat.html',ic:'📐', chip:'c-green', cat:'개발자', k:'xml 포매터 정렬 압축 검증 포맷 rss svg beautify minify format 格式化 整形 xml정렬', related:['jsonyaml','json','sqlformat'] },
 ];
