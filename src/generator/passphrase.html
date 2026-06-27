@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>패스프레이즈 생성기 (외우기 쉬운 비밀번호) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="여러 단어를 조합해 외우기 쉽고 안전한 패스프레이즈를 만듭니다. 단어 수·구분자·숫자·대문자 옵션, 엔트로피 표시. 암호학적 난수. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/passphrase.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="패스프레이즈 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="외우기 쉬운 단어 조합 비밀번호 생성·엔트로피 표시. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/passphrase.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .out{font-family:ui-monospace,monospace;font-size:1.4rem;font-weight:700;text-align:center;padding:1rem;border:1px solid var(--border);border-radius:12px;background:var(--ground);word-break:break-all;margin:1rem 0;cursor:pointer;}
+  .opts{display:grid;gap:.8rem;}.opts .r{display:flex;align-items:center;gap:.6rem;font-size:.92rem;font-weight:600;flex-wrap:wrap;}
+  .opts input[type=number]{width:70px;padding:.4rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .opts select{padding:.4rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .ent{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:.6rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"패스프레이즈 생성기","description":"외우기 쉽고 안전한 단어 조합 비밀번호를 생성합니다.","url":"https://gemini2k.co.kr/passphrase.html","applicationCategory":"SecurityApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:600px;">
+  <h1>패스프레이즈 생성기</h1>
+  <p class="sub">단어를 조합해 외우기 쉬우면서도 안전한 비밀번호(패스프레이즈)를 만듭니다. 결과를 클릭하면 복사돼요.</p>
+  <div class="card">
+    <div class="ent" id="ent"></div>
+    <div class="out" id="out">…</div>
+    <div class="opts">
+      <div class="r">단어 수 <input id="words" type="number" min="2" max="10" value="4"/>
+        구분자 <select id="sep"><option value="-">- 하이픈</option><option value="_">_ 밑줄</option><option value=".">. 점</option><option value=" ">(공백)</option><option value="">(붙임)</option></select></div>
+      <div class="r"><label><input type="checkbox" id="cap" checked/> 첫 글자 대문자</label><label><input type="checkbox" id="num" checked/> 숫자 추가</label></div>
+      <button class="btn" id="gen" type="button" style="width:100%;">🔄 새로 생성</button>
+    </div>
+    <div class="note">단어 목록(영문)에서 암호학적 난수(crypto)로 무작위 선택합니다. 단어 수가 많을수록 안전합니다(권장 4개 이상). 생성된 비밀번호는 어디에도 전송·저장되지 않습니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var W="apple river stone tiger cloud maple ocean piano amber forest comet pixel mango brave lunar quartz ember willow harbor falcon cedar mint rocket violet copper galaxy honey ledge marble nimbus orchid pebble quokka raven summit thunder umbra velvet walnut yonder zephyr basil cobalt dune echo frost glacier hazel ivory jade koala lemon meadow nectar opal prairie ripple sienna tulip valley whisper crimson denim azure".split(' ');
+  function rnd(n){ var a=new Uint32Array(1); (window.crypto||{}).getRandomValues?crypto.getRandomValues(a):a[0]=Math.floor(Math.random()*4294967296); return a[0]%n; }
+  function gen(){ var n=Math.max(2,Math.min(10,parseInt($('words').value,10)||4)), sep=$('sep').value, cap=$('cap').checked, num=$('num').checked;
+    var parts=[]; for(var i=0;i<n;i++){ var w=W[rnd(W.length)]; if(cap)w=w.charAt(0).toUpperCase()+w.slice(1); parts.push(w); }
+    var pw=parts.join(sep); if(num)pw+=sep+(rnd(90)+10);
+    $('out').textContent=pw;
+    var bits=Math.round(n*Math.log2(W.length)+(num?9.4:0));
+    $('ent').textContent='약 '+bits+' 비트 엔트로피 · '+(bits>=70?'매우 강함':bits>=50?'강함':'보통');
+    window._pw=pw;
+  }
+  ['words','sep','cap','num'].forEach(function(id){$(id).addEventListener('input',gen);$(id).addEventListener('change',gen);});
+  $('gen').addEventListener('click',gen);
+  $('out').addEventListener('click',function(){if(window._pw)navigator.clipboard.writeText(window._pw).then(function(){toast('복사됐습니다');});});
+  gen();
+</script>
+</body>
+</html>

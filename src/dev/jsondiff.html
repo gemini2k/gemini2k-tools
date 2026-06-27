@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>JSON 비교(diff) — 두 JSON 차이 찾기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="두 JSON을 구조적으로 비교해 추가·삭제·변경된 경로와 값을 찾아줍니다. API 응답·설정 비교에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/jsondiff.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="JSON 비교(diff) — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="두 JSON의 추가·삭제·변경 경로를 비교. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/jsondiff.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}@media(max-width:600px){.grid2{grid-template-columns:1fr;}}
+  textarea{width:100%;min-height:130px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.84rem;color:var(--text);resize:vertical;}
+  .err{color:#e0563b;font-size:.84rem;min-height:1.1em;margin:.4rem 0;}
+  .difflist{margin-top:.8rem;font-family:ui-monospace,monospace;font-size:.86rem;}
+  .d{padding:.4rem .6rem;border-radius:8px;margin-bottom:.3rem;word-break:break-all;}
+  .add{background:rgba(34,197,94,.15);} .del{background:rgba(239,68,68,.15);} .chg{background:rgba(245,158,11,.18);}
+  .sum{display:flex;gap:.6rem;flex-wrap:wrap;margin:.6rem 0;}.sbox{background:var(--ground);border:1px solid var(--border);border-radius:9px;padding:.3rem .7rem;font-weight:700;font-size:.85rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"JSON 비교(diff)","description":"두 JSON의 추가·삭제·변경을 비교합니다.","url":"https://gemini2k.co.kr/jsondiff.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:880px;">
+  <h1>JSON 비교 (diff)</h1>
+  <p class="sub">두 JSON을 구조적으로 비교해 어떤 경로가 추가·삭제·변경됐는지 보여 줍니다.</p>
+  <div class="card">
+    <div class="grid2">
+      <div><label style="font-weight:700;font-size:.85rem;">JSON A (이전)</label><textarea id="a">{"name":"홍길동","age":30,"tags":["x","y"],"vip":false}</textarea></div>
+      <div><label style="font-weight:700;font-size:.85rem;">JSON B (이후)</label><textarea id="b">{"name":"홍길동","age":31,"tags":["x","z"],"city":"서울"}</textarea></div>
+    </div>
+    <div class="err" id="err"></div>
+    <div class="sum" id="sum"></div>
+    <div class="difflist" id="out"></div>
+    <div class="note">경로(dot notation)로 차이를 나열합니다. <span style="color:#16a34a">＋추가</span> / <span style="color:#b91c1c">－삭제</span> / <span style="color:#b45309">≠변경</span>. 배열은 인덱스 기준 비교입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function isObj(v){return v&&typeof v==='object';}
+  function diff(a,b,path,out){
+    if(a===b)return;
+    if(!isObj(a)||!isObj(b)){ if(JSON.stringify(a)!==JSON.stringify(b)) out.push(['chg',path,a,b]); return; }
+    var keys={}; Object.keys(a).forEach(function(k){keys[k]=1;}); Object.keys(b).forEach(function(k){keys[k]=1;});
+    Object.keys(keys).forEach(function(k){ var p=path?path+'.'+k:k, av=a[k], bv=b[k];
+      if(!(k in a)) out.push(['add',p,undefined,bv]);
+      else if(!(k in b)) out.push(['del',p,av,undefined]);
+      else if(isObj(av)&&isObj(bv)) diff(av,bv,p,out);
+      else if(JSON.stringify(av)!==JSON.stringify(bv)) out.push(['chg',p,av,bv]);
+    });
+  }
+  function fmt(v){ return v===undefined?'∅':JSON.stringify(v); }
+  function run(){ $('err').textContent=''; var A,B;
+    try{A=JSON.parse($('a').value);}catch(e){$('err').textContent='A JSON 오류: '+e.message;return;}
+    try{B=JSON.parse($('b').value);}catch(e){$('err').textContent='B JSON 오류: '+e.message;return;}
+    var out=[]; diff(A,B,'',out);
+    var na=out.filter(function(d){return d[0]==='add';}).length, nd=out.filter(function(d){return d[0]==='del';}).length, nc=out.filter(function(d){return d[0]==='chg';}).length;
+    $('sum').innerHTML='<span class="sbox" style="color:#16a34a">＋추가 '+na+'</span><span class="sbox" style="color:#b91c1c">－삭제 '+nd+'</span><span class="sbox" style="color:#b45309">≠변경 '+nc+'</span>';
+    if(!out.length){ $('out').innerHTML='<div class="d" style="color:var(--muted)">차이가 없습니다 (동일)</div>'; return; }
+    $('out').innerHTML=out.map(function(d){ var cls=d[0], sym=cls==='add'?'＋':cls==='del'?'－':'≠';
+      var txt = cls==='add'? d[1]+' = '+fmt(d[3]) : cls==='del'? d[1]+' = '+fmt(d[2]) : d[1]+' : '+fmt(d[2])+' → '+fmt(d[3]);
+      return '<div class="d '+cls+'">'+sym+' '+txt.replace(/</g,'&lt;')+'</div>'; }).join('');
+  }
+  ['a','b'].forEach(function(id){$(id).addEventListener('input',run);});
+  run();
+</script>
+</body>
+</html>

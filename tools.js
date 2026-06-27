@@ -173,4 +173,12 @@ window.TOOLS = [
   { key:'electricity',h:'electricity.html',ic:'⚡', chip:'c-amber', cat:'계산기', k:'전기요금 누진제 kwh 한전 전기세 electricity bill 电费 電気料金 전기요금계산기', related:['vat','percent','savings'] },
   { key:'idealweight',h:'idealweight.html',ic:'⚖️', chip:'c-green', cat:'건강', k:'표준체중 적정체중 정상체중 bmi broca devine ideal weight 标准体重 標準体重 표준체중계산', related:['bmi','calorie','water'] },
   { key:'sizeconv',h:'sizeconv.html',ic:'👟', chip:'c-violet', cat:'변환기', k:'사이즈 변환 신발 의류 옷 mm us eu uk 해외직구 size chart 尺码 サイズ 사이즈변환표', related:['unit','pyeong','numformat'] },
+  { key:'csv2sql',h:'csv2sql.html',ic:'🗃️', chip:'c-blue', cat:'개발자', k:'csv sql insert 변환 db 적재 데이터베이스 쿼리 생성 csv to sql 转换 변환', related:['sqlformat','jsoncsv','csvviewer'] },
+  { key:'json2ts',h:'json2ts.html',ic:'🔷', chip:'c-cyan', cat:'개발자', k:'json typescript 인터페이스 타입 변환 ts interface type 类型 型 타입생성', related:['jsonschema','json','jsonyaml'] },
+  { key:'jsondiff',h:'jsondiff.html',ic:'🔍', chip:'c-amber', cat:'개발자', k:'json 비교 diff 차이 변경 추가 삭제 compare 比较 比較 json비교', related:['diff','csvdiff','jsonpath'] },
+  { key:'ulid',h:'ulid.html',ic:'🆔', chip:'c-violet', cat:'개발자', k:'ulid 고유 아이디 정렬 식별자 uuid 대안 생성 sortable id 唯一标识 識別子', related:['uuid','hash','hmac'] },
+  { key:'envjson',h:'envjson.html',ic:'🔧', chip:'c-green', cat:'개발자', k:'env json 변환 환경변수 dotenv 설정 config 环境变量 環境変数 env변환', related:['jsonyaml','json','xmlformat'] },
+  { key:'passphrase',h:'passphrase.html',ic:'🔐', chip:'c-rose', cat:'생성기', k:'패스프레이즈 비밀번호 단어 조합 외우기쉬운 암호 passphrase password 密码 パスフレーズ 패스프레이즈', related:['pw','pwcheck','dice'] },
+  { key:'pwcheck',h:'pwcheck.html',ic:'🛡️', chip:'c-blue', cat:'개인정보', k:'비밀번호 강도 측정 엔트로피 해킹시간 안전성 password strength 密码强度 強度 비밀번호강도', related:['pw','passphrase','hash'] },
+  { key:'colorname',h:'colorname.html',ic:'🎨', chip:'c-amber', cat:'시각화', k:'색 이름 변환 css color name hex rgb 색상명 가까운색 color name 颜色名 色名 색이름', related:['color','palette','gradient'] },
 ];
