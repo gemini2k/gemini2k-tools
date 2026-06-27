@@ -140,4 +140,8 @@ window.TOOLS = [
   { key:'wordfreq',h:'wordfreq.html',ic:'🔠', chip:'c-violet', cat:'텍스트', k:'단어 빈도 분석 카운트 자주쓰는 키워드 글쓰기 seo 통계 word frequency count 词频 単語頻度 단어빈도', related:['textstats','lines','char'] },
   { key:'jsonyaml',h:'jsonyaml.html',ic:'🔄', chip:'c-green', cat:'개발자', k:'json yaml 변환 yml 설정 config convert 转换 変換 json야믈 yaml변환', related:['json','jsoncsv','jsonschema'] },
   { key:'barcode',h:'barcode.html',ic:'▮', chip:'c-amber', cat:'생성기', k:'바코드 생성 code128 ean upc 상품코드 재고 barcode generate 条形码 バーコード 바코드만들기', related:['qr','favicon','base64'] },
+  { key:'agecalc',h:'agecalc.html',ic:'🎂', chip:'c-rose', cat:'계산기', k:'만나이 계산 나이 연나이 세는나이 띠 별자리 생일 age 年龄 年齢 만나이계산기 나이계산', related:['dday','lunar','workdays'] },
+  { key:'dutchpay',h:'dutchpay.html',ic:'🧮', chip:'c-blue', cat:'계산기', k:'더치페이 n빵 엔빵 나누기 1인당 회식 정산 split bill 摊分 割り勘 더치페이 정산', related:['percent','vat','salary'] },
+  { key:'discount',h:'discount.html',ic:'🏷️', chip:'c-amber', cat:'계산기', k:'할인 계산 할인율 세일 정가 할인가 쿠폰 쇼핑 discount sale 折扣 割引 할인계산기 세일계산', related:['percent','vat','currency'] },
+  { key:'savings',h:'savings.html',ic:'🐷', chip:'c-green', cat:'계산기', k:'적금 예금 이자 계산 만기 단리 복리 이자소득세 저축 savings deposit interest 存款 利息 적금계산기 예금이자', related:['loan','salary','vat'] },
 ];

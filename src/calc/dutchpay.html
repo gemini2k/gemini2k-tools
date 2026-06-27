@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>더치페이·N빵 계산기 (1인당 금액·정산) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="총 금액과 인원을 넣으면 1인당 낼 금액을 깔끔하게 계산합니다. 올림 단위 설정, 팁·봉사료 추가, 일부 인원이 더 내는 경우까지. 모임·회식 정산에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/dutchpay.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="더치페이·N빵 계산기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="총액·인원으로 1인당 금액 계산. 올림 단위, 팁 추가. 모임·회식 정산에. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/dutchpay.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .fld{margin-bottom:1rem;} .fld label{font-weight:700;font-size:.85rem;color:var(--muted);display:block;margin-bottom:.35rem;}
+  .fld input,.fld select{width:100%;padding:.65rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1.05rem;}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+  .big{text-align:center;margin:1.3rem 0 .6rem;}
+  .big .n{font-size:2.4rem;font-weight:800;color:var(--accent);} .big .u{font-size:.95rem;color:var(--muted);}
+  .lines{margin-top:.8rem;font-size:.92rem;line-height:1.9;}
+  .lines .r{display:flex;justify-content:space-between;border-bottom:1px dashed var(--border);padding:.15rem 0;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "더치페이·N빵 계산기",
+  "description": "총 금액과 인원으로 1인당 금액을 계산합니다. 올림 단위, 팁 추가 지원. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/dutchpay.html",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:520px;">
+  <h1>더치페이·N빵 계산기</h1>
+  <p class="sub">총 금액과 인원만 넣으면 1인당 낼 금액을 깔끔하게 나눠 줍니다. 올림 단위와 팁도 반영돼요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>총 금액과 인원을 입력합니다</li>
+    <li>필요하면 팁·봉사료(%)와 1인당 올림 단위를 고릅니다</li>
+    <li>1인당 금액과 모인 총액·차액을 바로 확인합니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="fld"><label for="total">총 금액 (원)</label><input id="total" type="number" min="0" value="83000" inputmode="numeric"/></div>
+    <div class="row">
+      <div class="fld"><label for="people">인원</label><input id="people" type="number" min="1" value="4" inputmode="numeric"/></div>
+      <div class="fld"><label for="tip">팁·봉사료 (%)</label><input id="tip" type="number" min="0" value="0" inputmode="decimal"/></div>
+    </div>
+    <div class="fld"><label for="round">1인당 올림 단위</label><select id="round">
+      <option value="1">원 단위(올림 없음)</option>
+      <option value="100" selected>100원</option>
+      <option value="500">500원</option>
+      <option value="1000">1,000원</option>
+    </select></div>
+    <div class="big"><div class="n" id="per">-</div><div class="u">1인당</div></div>
+    <div class="lines">
+      <div class="r"><span>팁 포함 총액</span><span id="grand">-</span></div>
+      <div class="r"><span>1인당 × 인원</span><span id="collected">-</span></div>
+      <div class="r"><span>남는 차액(올림 적립)</span><span id="diff">-</span></div>
+    </div>
+    <div class="note">올림 단위를 적용하면 1인당 금액이 깔끔해지고, 모인 금액이 실제 총액보다 조금 많아질 수 있습니다(차액은 팁이나 적립으로). 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function won(n){ return Math.round(n).toLocaleString()+'원'; }
+  function calc(){
+    var total=+$('total').value||0, people=Math.max(1,parseInt($('people').value,10)||1), tip=+$('tip').value||0, unit=+$('round').value||1;
+    var grand=total*(1+tip/100);
+    var per=Math.ceil(grand/people/unit)*unit;
+    var collected=per*people;
+    $('per').textContent=won(per);
+    $('grand').textContent=won(grand);
+    $('collected').textContent=won(collected);
+    $('diff').textContent=won(collected-grand);
+  }
+  ['total','people','tip','round'].forEach(function(id){ $(id).addEventListener('input',calc); $(id).addEventListener('change',calc); });
+  calc();
+</script>
+</body>
+</html>
