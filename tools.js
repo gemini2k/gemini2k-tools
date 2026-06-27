@@ -148,4 +148,5 @@ window.TOOLS = [
   { key:'bloodtype',h:'bloodtype.html',ic:'🩸', chip:'c-rose', cat:'심리·운세', k:'혈액형 성격 abo a형 b형 o형 ab형 궁합 재미 blood type 血型 血液型 혈액형성격', related:['mbti','namematch','biorhythm'] },
   { key:'biorhythm',h:'biorhythm.html',ic:'📈', chip:'c-green', cat:'심리·운세', k:'바이오리듬 신체 감성 지성 컨디션 곡선 리듬 biorhythm 生物节律 バイオリズム 바이오리듬', related:['mbti','agecalc','bloodtype'] },
   { key:'namematch',h:'namematch.html',ic:'💕', chip:'c-amber', cat:'심리·운세', k:'이름 궁합 테스트 사랑 연애 커플 재미 획수 name compatibility 姓名配对 相性 이름궁합', related:['bloodtype','mbti','agecalc'] },
+  { key:'saju',h:'saju.html',ic:'🔮', chip:'c-cyan', cat:'심리·운세', k:'사주 만세력 사주팔자 팔자 천간지지 간지 오행 띠 일간 명리 saju four pillars 四柱 八字 사주팔자 만세력', related:['agecalc','lunar','bloodtype'] },
 ];

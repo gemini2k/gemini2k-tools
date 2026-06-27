@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>사주 만세력 (사주팔자·오행 분포 변환) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="생년월일시를 넣으면 사주팔자(년·월·일·시주의 천간지지 8글자)와 띠, 일간, 오행(목화토금수) 분포를 계산합니다. 전통 간지 변환·참고용. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/saju.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="사주 만세력 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="생년월일시로 사주팔자(천간지지 8글자)·띠·일간·오행 분포 변환. 전통 간지·참고용. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/saju.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem;}
+  .fld label{font-weight:700;font-size:.85rem;color:var(--muted);display:block;margin-bottom:.35rem;}
+  .fld input,.fld select{width:100%;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1rem;}
+  .pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin:1.1rem 0;}
+  .pil{border:1px solid var(--border);border-radius:12px;overflow:hidden;text-align:center;}
+  .pil .ph{font-size:.74rem;font-weight:700;color:var(--muted);padding:.35rem;background:var(--ground);}
+  .pil .ch{font-size:2rem;font-weight:800;line-height:1.25;padding:.2rem 0;}
+  .pil .ko{font-size:.78rem;color:var(--muted);padding-bottom:.4rem;}
+  .summary{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0;}
+  .chip2{background:var(--accent-soft);color:var(--accent);border-radius:9px;padding:.35rem .7rem;font-size:.88rem;font-weight:700;}
+  .ohaeng{margin-top:1rem;}
+  .ebar{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;font-size:.85rem;}
+  .ebar .lab{width:64px;font-weight:700;} .ebar .track{flex:1;height:16px;background:var(--ground);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  .ebar .fill{height:100%;} .ebar .cnt{width:24px;text-align:right;font-weight:700;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "사주 만세력",
+  "description": "생년월일시로 사주팔자(천간지지 8글자)·띠·일간·오행 분포를 변환합니다. 전통 간지 변환·참고용. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/saju.html",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:600px;">
+  <h1>사주 만세력</h1>
+  <p class="sub">생년월일시를 넣으면 사주팔자(년·월·일·시주)와 띠·일간·오행 분포를 전통 간지로 변환해 드립니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li><b>양력</b> 생년월일과 태어난 시각을 선택합니다 (시간을 모르면 ‘모름’)</li>
+    <li>사주팔자 8글자(천간/지지)와 띠·일간이 표시됩니다</li>
+    <li>오행(목·화·토·금·수) 분포로 기운의 균형을 살펴보세요</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="row">
+      <div class="fld"><label for="birth">생년월일 (양력)</label><input id="birth" type="date"/></div>
+      <div class="fld"><label for="hour">태어난 시각</label><select id="hour">
+        <option value="-1">모름</option>
+        <option value="0">23:30~01:29 (자시)</option>
+        <option value="2">01:30~03:29 (축시)</option>
+        <option value="4">03:30~05:29 (인시)</option>
+        <option value="6">05:30~07:29 (묘시)</option>
+        <option value="8">07:30~09:29 (진시)</option>
+        <option value="10">09:30~11:29 (사시)</option>
+        <option value="12">11:30~13:29 (오시)</option>
+        <option value="14">13:30~15:29 (미시)</option>
+        <option value="16">15:30~17:29 (신시)</option>
+        <option value="18">17:30~19:29 (유시)</option>
+        <option value="20">19:30~21:29 (술시)</option>
+        <option value="22">21:30~23:29 (해시)</option>
+      </select></div>
+    </div>
+    <div class="summary" id="summary"></div>
+    <div class="pillars" id="pillars"></div>
+    <div class="ohaeng" id="ohaeng"></div>
+    <div class="note">전통 만세력 방식의 <b>간지 변환·참고용</b>입니다. 양력 기준이며 절기·입춘은 근사치(±1일)로 계산하므로 절기 경계일에 태어난 경우 실제와 다를 수 있습니다. 일주는 율리우스적일(JDN) 기반 60갑자로 계산합니다. 운세를 단정하는 도구가 아니며, 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var STEM=['갑','을','병','정','무','기','경','신','임','계'];
+  var STEMH=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+  var BRANCH=['자','축','인','묘','진','사','오','미','신','유','술','해'];
+  var BRANCHH=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  var ANIMAL=['쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지'];
+  var STEM_E=[0,0,1,1,2,2,3,3,4,4];          // 목0 화1 토2 금3 수4
+  var BRANCH_E=[4,2,0,0,2,1,1,2,3,3,2,4];    // 자축인묘진사오미신유술해
+  var ENAME=['목(木)','화(火)','토(土)','금(金)','수(水)'];
+  var ECOLOR=['#2e9e5b','#e0563b','#d4a017','#8a9098','#3b6fd4'];
+  // 절기(절) 시작 근사: 그 달에서 새 지지가 시작되는 날 + 시작 지지 index
+  var CUTDAY=[0,6,4,6,5,6,6,7,8,8,8,7,7];
+  var BEGIN =[0,1,2,3,4,5,6,7,8,9,10,11,0]; // month1→丑(1)..month12→子(0)
+
+  function jdn(y,m,d){ var a=Math.floor((14-m)/12); var yy=y+4800-a; var mm=m+12*a-3;
+    return d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-Math.floor(yy/100)+Math.floor(yy/400)-32045; }
+  function mod(n,m){ return ((n%m)+m)%m; }
+
+  function compute(y,m,d,hourIdx){
+    // 년주: 입춘(2/4) 기준
+    var effY=y; if(m<2 || (m===2 && d<4)) effY=y-1;
+    var yStem=mod(effY-4,10), yBranch=mod(effY-4,12);
+    // 월주: 절기 근사
+    var mBranch = d>=CUTDAY[m] ? BEGIN[m] : mod(BEGIN[m]+11,12);
+    var inYin=[2,4,6,8,0][yStem%5];               // 五虎遁: 寅월 천간
+    var mOffset=mod(mBranch-2,12);                  // 寅→0
+    var mStem=mod(inYin+mOffset,10);
+    // 일주: JDN 기반 60갑자 (갑자=0). (JDN+49)%60
+    var idx=mod(jdn(y,m,d)+49,60);
+    var dStem=idx%10, dBranch=idx%12;
+    // 시주
+    var hStem=-1, hBranch=-1;
+    if(hourIdx>=0){ hBranch=Math.floor(((hourIdx+1)%24)/2)%12; // hourIdx는 시작시 기준(0=자)
+      // 위 select의 value는 이미 지지 index*2 형태 → 단순화: value가 0,2,4..22 => branch=value/2
+      hBranch=hourIdx/2;
+      var ziStem=[0,2,4,6,8][dStem%5];             // 五鼠遁
+      hStem=mod(ziStem+hBranch,10);
+    }
+    return {y:[yStem,yBranch], m:[mStem,mBranch], d:[dStem,dBranch], h:hStem>=0?[hStem,hBranch]:null};
+  }
+
+  function render(){
+    var v=$('birth').value; if(!v){ return; }
+    var p=v.split('-'), y=+p[0], mo=+p[1], d=+p[2], hourIdx=parseInt($('hour').value,10);
+    var s=compute(y,mo,d,hourIdx);
+    // 요약
+    $('summary').innerHTML='<span class="chip2">띠: '+ANIMAL[s.y[1]]+'띠</span>'
+      +'<span class="chip2">일간(나): '+STEM[s.d[0]]+'('+STEMH[s.d[0]]+') · '+ENAME[STEM_E[s.d[0]]]+'</span>';
+    // 기둥
+    var cols=[['시주',s.h],['일주',s.d],['월주',s.m],['년주',s.y]];
+    $('pillars').innerHTML=cols.map(function(c){
+      if(!c[1]) return '<div class="pil"><div class="ph">'+c[0]+'</div><div class="ch" style="opacity:.4">·<br>·</div><div class="ko">시간 모름</div></div>';
+      var st=c[1][0], br=c[1][1];
+      return '<div class="pil"><div class="ph">'+c[0]+'</div>'
+        +'<div class="ch"><span style="color:'+ECOLOR[STEM_E[st]]+'">'+STEMH[st]+'</span><br><span style="color:'+ECOLOR[BRANCH_E[br]]+'">'+BRANCHH[br]+'</span></div>'
+        +'<div class="ko">'+STEM[st]+BRANCH[br]+'</div></div>';
+    }).join('');
+    // 오행 분포
+    var cnt=[0,0,0,0,0];
+    [s.y,s.m,s.d].concat(s.h?[s.h]:[]).forEach(function(pil){ cnt[STEM_E[pil[0]]]++; cnt[BRANCH_E[pil[1]]]++; });
+    var totalC=cnt.reduce(function(a,b){return a+b;},0);
+    $('ohaeng').innerHTML='<div style="font-weight:700;margin-bottom:.5rem;">오행 분포 ('+totalC+'자)</div>'+
+      cnt.map(function(c,i){ var pct=Math.round(c/totalC*100);
+        return '<div class="ebar"><span class="lab" style="color:'+ECOLOR[i]+'">'+ENAME[i]+'</span><span class="track"><span class="fill" style="width:'+pct+'%;background:'+ECOLOR[i]+'"></span></span><span class="cnt">'+c+'</span></div>'; }).join('');
+  }
+  (function(){ $('birth').value='1990-05-15'; })();
+  ['birth','hour'].forEach(function(id){ $(id).addEventListener('change',render); $(id).addEventListener('input',render); });
+  render();
+  // 자체 검증용 노출(테스트)
+  window._saju=compute;
+</script>
+</body>
+</html>
