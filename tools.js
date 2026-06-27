@@ -106,4 +106,9 @@ window.TOOLS = [
   { key:'stack3d',h:'stack3d.html',ic:'🧱', chip:'c-violet', cat:'게임', k:'3d 타워 쌓기 스택 블록 stack tower 입체 three.js 3D게임 입체게임 쌓기게임', related:['runner3d','maze3d','g2048'] },
   { key:'runner3d',h:'runner3d.html',ic:'🏃', chip:'c-cyan', cat:'게임', k:'3d 러너 엔드리스 달리기 큐브 장애물 피하기 runner 입체 three.js 3D게임 달리기게임', related:['cardodge','stack3d','snake'] },
   { key:'maze3d',h:'maze3d.html',ic:'🌐', chip:'c-green', cat:'게임', k:'3d 미로 찾기 공 굴리기 maze 입체 three.js 미로게임 3D게임 길찾기', related:['stack3d','runner3d','minesweeper'] },
+  { key:'chartmaker',h:'chartmaker.html',ic:'📊', chip:'c-violet', cat:'시각화', k:'차트 메이커 그래프 막대 선 원형 파이 산점도 그래프 그리기 chart graph 图表 グラフ 차트생성', related:['stats','regression','palette'] },
+  { key:'palette',h:'palette.html',     ic:'🎨', chip:'c-rose',   cat:'시각화', k:'색 팔레트 배색 보색 유사색 삼각 색조합 컬러 스킴 palette color scheme 配色 パレット 색상조합', related:['color','contrast','chartmaker'] },
+  { key:'stats', h:'stats.html',        ic:'📈', chip:'c-cyan',   cat:'데이터', k:'통계 평균 중앙값 표준편차 분산 사분위 히스토그램 기술통계 statistics mean stdev 统计 統計 통계계산', related:['regression','profiler','chartmaker'] },
+  { key:'regression',h:'regression.html',ic:'📉', chip:'c-green', cat:'데이터', k:'상관 회귀 분석 상관계수 피어슨 선형회귀 추세선 결정계수 r2 correlation regression 回归 相関 회귀분석', related:['stats','chartmaker','profiler'] },
+  { key:'jsonschema',h:'jsonschema.html',ic:'🧬', chip:'c-amber', cat:'개발자', k:'json 스키마 생성 추론 json schema draft validation 검증 api 문서 模式 スキーマ 제이슨스키마', related:['json','jsonpath','jsoncsv'] },
 ];

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>상관·회귀 분석기 (산점도·추세선) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="두 변수(x,y) 데이터로 피어슨 상관계수와 단순 선형 회귀식(기울기·절편·결정계수 R²)을 계산하고 산점도에 추세선을 그립니다. 데이터 분석·상관관계 확인에. 업로드 없이 브라우저에서만."/>
+<link rel="canonical" href="https://gemini2k.co.kr/regression.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="상관·회귀 분석기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="x,y 데이터의 피어슨 상관계수·선형 회귀식(기울기·절편·R²)+산점도 추세선. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/regression.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  textarea{width:100%;min-height:120px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9rem;color:var(--text);resize:vertical;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin-top:1.1rem;}
+  .stat{background:var(--ground);border:1px solid var(--border);border-radius:11px;padding:.8rem;text-align:center;}
+  .stat .v{font-size:1.3rem;font-weight:800;color:var(--text);} .stat .l{font-size:.74rem;color:var(--muted);margin-top:.2rem;}
+  .eq{text-align:center;font-size:1.15rem;font-weight:800;color:var(--accent);margin:1rem 0 .2rem;font-variant-numeric:tabular-nums;}
+  canvas{display:block;width:100%;height:auto;margin-top:1rem;border:1px solid var(--border);border-radius:11px;background:#fff;}
+  .err{color:#b91c1c;font-size:.85rem;min-height:1.1em;} :root[data-theme="dark"] .err{color:#fca5a5;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "상관·회귀 분석기",
+  "description": "두 변수(x,y)의 피어슨 상관계수와 단순 선형 회귀식(기울기·절편·R²)을 계산하고 산점도에 추세선을 그립니다.",
+  "url": "https://gemini2k.co.kr/regression.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:820px;">
+  <h1>상관·회귀 분석기</h1>
+  <p class="sub">두 변수의 관계를 분석합니다. 피어슨 상관계수와 선형 회귀식, 결정계수(R²)를 구하고 산점도에 추세선을 그립니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>한 줄에 <code>x,y</code> 한 쌍씩 입력합니다(쉼표·탭·공백 구분)</li>
+    <li>상관계수·회귀식·R²과 산점도+추세선이 자동 표시됩니다</li>
+    <li>상관계수는 −1~+1, R²는 설명력(0~1)입니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <textarea id="data">1,2.1
+2,3.9
+3,6.2
+4,7.8
+5,10.1
+6,11.8
+7,14.2</textarea>
+    <div class="err" id="err"></div>
+    <div class="eq" id="eq"></div>
+    <div class="grid" id="grid"></div>
+    <canvas id="cv" width="820" height="380"></canvas>
+    <div class="note">단순 선형 회귀(최소제곱법) y = a·x + b 입니다. R²(결정계수)는 회귀식이 데이터를 얼마나 설명하는지(1에 가까울수록 잘 맞음) 나타냅니다. 상관은 인과가 아니니 해석에 유의하세요. 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'), x=cv.getContext('2d'), W=820, H=380;
+  function pts(){ var out=[]; $('data').value.split(/\r?\n/).forEach(function(l){ var m=l.match(/-?\d+(\.\d+)?/g); if(m&&m.length>=2) out.push([+m[0],+m[1]]); }); return out; }
+  function r3(v){ return Math.round(v*1000)/1000; }
+  function calc(){
+    $('err').textContent=''; var p=pts();
+    if(p.length<2){ $('err').textContent='x,y 쌍을 2개 이상 입력하세요.'; $('eq').textContent=''; $('grid').innerHTML=''; clearC(); return; }
+    var n=p.length, sx=0,sy=0,sxy=0,sxx=0,syy=0;
+    p.forEach(function(d){ sx+=d[0]; sy+=d[1]; sxy+=d[0]*d[1]; sxx+=d[0]*d[0]; syy+=d[1]*d[1]; });
+    var mx=sx/n,my=sy/n;
+    var cov=sxy-n*mx*my, vx=sxx-n*mx*mx, vy=syy-n*my*my;
+    var a = vx!==0 ? cov/vx : 0, b = my - a*mx;
+    var r = (vx*vy>0) ? cov/Math.sqrt(vx*vy) : 0, r2=r*r;
+    $('eq').textContent='y = '+r3(a)+' x '+(b>=0?'+ ':'− ')+r3(Math.abs(b));
+    var strength = Math.abs(r)>=0.7?'강함':Math.abs(r)>=0.4?'중간':Math.abs(r)>=0.2?'약함':'거의 없음';
+    $('grid').innerHTML=[['상관계수 r',r3(r)],['결정계수 R²',r3(r2)],['관계 강도',strength],['데이터 수',n]]
+      .map(function(c){return '<div class="stat"><div class="v">'+c[1]+'</div><div class="l">'+c[0]+'</div></div>';}).join('');
+    plot(p,a,b);
+  }
+  function clearC(){ x.fillStyle='#fff'; x.fillRect(0,0,W,H); }
+  function plot(p,a,b){
+    clearC(); var xs=p.map(function(d){return d[0];}),ys=p.map(function(d){return d[1];});
+    var xmin=Math.min.apply(null,xs),xmax=Math.max.apply(null,xs),ymin=Math.min.apply(null,ys),ymax=Math.max.apply(null,ys);
+    var xr=(xmax-xmin)||1,yr=(ymax-ymin)||1, P={l:50,r:20,t:20,b:34}, W0=W-P.l-P.r,H0=H-P.t-P.b;
+    function X(v){return P.l+W0*(v-xmin)/xr;} function Y(v){return P.t+H0*(1-(v-ymin)/yr);}
+    x.strokeStyle='#e8e9f0'; x.lineWidth=1; for(var t=0;t<=4;t++){ var yy=P.t+H0*t/4; x.beginPath(); x.moveTo(P.l,yy); x.lineTo(W-P.r,yy); x.stroke(); }
+    x.fillStyle='#6b7280'; x.font='12px system-ui'; x.textAlign='right'; x.fillText(r3(ymax),P.l-6,P.t+10); x.fillText(r3(ymin),P.l-6,P.t+H0+4);
+    // 추세선
+    x.strokeStyle='#EF4444'; x.lineWidth=2.5; x.beginPath(); x.moveTo(X(xmin),Y(a*xmin+b)); x.lineTo(X(xmax),Y(a*xmax+b)); x.stroke();
+    // 점
+    x.fillStyle='#5B5BF5'; p.forEach(function(d){ x.beginPath(); x.arc(X(d[0]),Y(d[1]),5,0,7); x.fill(); });
+  }
+  $('data').addEventListener('input', calc);
+  calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>차트 메이커 (막대·선·원·산점도) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="데이터를 붙여넣어 막대·선·원·산점도 차트를 즉시 만들고 PNG로 내려받습니다. 라이브러리 없이 캔버스로 그려 깔끔하고, 제목·색상 지정 가능. 보고서·블로그용 차트를 업로드 없이 브라우저에서."/>
+<link rel="canonical" href="https://gemini2k.co.kr/chartmaker.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="차트 메이커 (막대·선·원·산점도) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="데이터→막대·선·원·산점도 차트 즉시 생성 + PNG 저장. 제목·색 지정. 보고서·블로그용."/>
+<meta property="og:url" content="https://gemini2k.co.kr/chartmaker.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="csvutil.js"></script>
+<style>
+  .opts{display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end;margin-bottom:1rem;}
+  .fld{display:flex;flex-direction:column;gap:.3rem;} .fld label{margin:0;font-size:.78rem;font-weight:700;color:var(--muted);}
+  .fld select,.fld input{padding:.5rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .fld input[type=color]{width:46px;height:38px;padding:0;}
+  textarea{width:100%;min-height:120px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88rem;color:var(--text);resize:vertical;}
+  .chartwrap{margin-top:1rem;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff;}
+  canvas{display:block;width:100%;height:auto;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.9rem;}
+  .err{color:#b91c1c;font-size:.85rem;min-height:1.1em;margin-top:.4rem;} :root[data-theme="dark"] .err{color:#fca5a5;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "차트 메이커 (막대·선·원·산점도)",
+  "description": "데이터를 붙여넣어 막대·선·원·산점도 차트를 만들고 PNG로 내려받습니다. 라이브러리 없이 캔버스로 그려 깔끔하고 제목·색상 지정 가능.",
+  "url": "https://gemini2k.co.kr/chartmaker.html",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:880px;">
+  <h1>차트 메이커</h1>
+  <p class="sub">데이터를 붙여넣으면 막대·선·원·산점도 차트를 바로 그려 줍니다. PNG로 내려받아 보고서·블로그에 쓰세요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>차트 종류를 고르고, 데이터를 한 줄에 하나씩 입력합니다(<code>이름,값</code> · 산점도는 <code>x,y</code>)</li>
+    <li>제목·색을 지정하면 실시간으로 차트가 갱신됩니다</li>
+    <li>‘PNG 내려받기’로 이미지를 저장합니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="opts">
+      <div class="fld"><label>종류</label><select id="type"><option value="bar">막대</option><option value="line">선</option><option value="pie">원형</option><option value="scatter">산점도</option></select></div>
+      <div class="fld" style="flex:1;min-width:160px;"><label>제목</label><input id="title" type="text" value="월별 매출" style="width:100%;"/></div>
+      <div class="fld"><label>색</label><input id="color" type="color" value="#5B5BF5"/></div>
+    </div>
+    <label for="data" style="font-weight:700;font-size:.85rem;">데이터</label>
+    <textarea id="data">1월,120
+2월,180
+3월,150
+4월,220
+5월,260</textarea>
+    <div class="err" id="err"></div>
+    <div class="chartwrap"><canvas id="cv" width="820" height="460"></canvas></div>
+    <div class="actions"><button class="btn" id="dl" type="button">⬇️ PNG 내려받기</button><button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
+    <div class="note">막대·선·원형은 <code>이름,값</code>, 산점도는 <code>x,y</code> 형식입니다. 라이브러리 없이 캔버스로 직접 그리므로 빠르고 외부 전송이 없습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'), x=cv.getContext('2d'), W=820, H=460;
+  var PALETTE=['#5B5BF5','#15C39A','#F59E0B','#EF4444','#3D7BF0','#A855F7','#14B8A6','#F97316','#EC4899','#22C55E'];
+  function parse(){
+    var lines=$('data').value.split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean);
+    var rows=[]; for(var i=0;i<lines.length;i++){ var p=lines[i].split(/[,\t]/); rows.push(p); }
+    return rows;
+  }
+  function clear(){ x.fillStyle='#ffffff'; x.fillRect(0,0,W,H); }
+  function err(m){ $('err').textContent=m||''; }
+  function niceMax(v){ if(v<=0) return 1; var e=Math.pow(10,Math.floor(Math.log10(v))); var n=v/e; var s=n<=1?1:n<=2?2:n<=5?5:10; return s*e; }
+
+  function draw(){
+    err(''); clear();
+    var type=$('type').value, color=$('color').value, title=$('title').value, rows=parse();
+    x.fillStyle='#16181f'; x.font='bold 22px Pretendard,system-ui,sans-serif'; x.textAlign='center';
+    if(title) x.fillText(title, W/2, 34);
+    var PAD={l:60,r:24,t:54,b:54};
+    if(!rows.length){ err('데이터를 입력하세요.'); return; }
+    try{
+      if(type==='pie'){ drawPie(rows); }
+      else if(type==='scatter'){ drawScatter(rows,color,PAD); }
+      else { drawBarLine(rows,type,color,PAD); }
+    }catch(e){ err('데이터 형식을 확인하세요 (이름,값).'); }
+  }
+  function drawBarLine(rows,type,color,P){
+    var labels=rows.map(function(r){return r[0];}), vals=rows.map(function(r){return parseFloat(r[1])||0;});
+    var max=niceMax(Math.max.apply(null,vals.concat([0])) ), min=Math.min.apply(null,vals.concat([0]));
+    if(min>0)min=0; var range=max-min||1;
+    var W0=W-P.l-P.r, H0=H-P.t-P.b;
+    function X(i){ return P.l + (W0)*(i+0.5)/rows.length; }
+    function Y(v){ return P.t + H0*(1-(v-min)/range); }
+    // 그리드 + y라벨
+    x.strokeStyle='#e8e9f0'; x.fillStyle='#6b7280'; x.font='12px system-ui'; x.textAlign='right'; x.lineWidth=1;
+    for(var t=0;t<=5;t++){ var v=min+range*t/5, yy=Y(v); x.beginPath(); x.moveTo(P.l,yy); x.lineTo(W-P.r,yy); x.stroke(); x.fillText((Math.round(v*100)/100).toLocaleString(), P.l-8, yy+4); }
+    // x라벨
+    x.textAlign='center'; x.fillStyle='#6b7280';
+    rows.forEach(function(r,i){ x.fillText(String(labels[i]), X(i), H-P.b+20); });
+    if(type==='bar'){
+      var bw=W0/rows.length*0.6;
+      vals.forEach(function(v,i){ var yy=Y(v), y0=Y(0); x.fillStyle=color; x.fillRect(X(i)-bw/2, Math.min(yy,y0), bw, Math.abs(y0-yy)); });
+    } else {
+      x.strokeStyle=color; x.lineWidth=3; x.beginPath(); vals.forEach(function(v,i){ var px=X(i),py=Y(v); if(i===0)x.moveTo(px,py); else x.lineTo(px,py); }); x.stroke();
+      x.fillStyle=color; vals.forEach(function(v,i){ x.beginPath(); x.arc(X(i),Y(v),4,0,7); x.fill(); });
+    }
+  }
+  function drawScatter(rows,color,P){
+    var pts=rows.map(function(r){return [parseFloat(r[0]),parseFloat(r[1])];}).filter(function(p){return isFinite(p[0])&&isFinite(p[1]);});
+    if(!pts.length) throw 0;
+    var xs=pts.map(function(p){return p[0];}), ys=pts.map(function(p){return p[1];});
+    var xmin=Math.min.apply(null,xs),xmax=Math.max.apply(null,xs),ymin=Math.min.apply(null,ys),ymax=Math.max.apply(null,ys);
+    var xr=(xmax-xmin)||1, yr=(ymax-ymin)||1; var W0=W-P.l-P.r,H0=H-P.t-P.b;
+    function X(v){return P.l+W0*(v-xmin)/xr;} function Y(v){return P.t+H0*(1-(v-ymin)/yr);}
+    x.strokeStyle='#e8e9f0'; x.lineWidth=1; for(var t=0;t<=5;t++){ var yy=P.t+H0*t/5; x.beginPath(); x.moveTo(P.l,yy); x.lineTo(W-P.r,yy); x.stroke(); }
+    x.fillStyle='#6b7280'; x.font='12px system-ui'; x.textAlign='right';
+    x.fillText((Math.round(ymax*100)/100).toLocaleString(),P.l-8,P.t+12); x.fillText((Math.round(ymin*100)/100).toLocaleString(),P.l-8,P.t+H0+4);
+    x.fillStyle=color; pts.forEach(function(p){ x.beginPath(); x.arc(X(p[0]),Y(p[1]),5,0,7); x.fill(); });
+  }
+  function drawPie(rows){
+    var data=rows.map(function(r,i){return {label:r[0], val:Math.max(0,parseFloat(r[1])||0), c:PALETTE[i%PALETTE.length]};});
+    var total=data.reduce(function(a,b){return a+b.val;},0); if(total<=0) throw 0;
+    var cx=W*0.36, cy=H*0.55, R=Math.min(W*0.28,H*0.36), a0=-Math.PI/2;
+    data.forEach(function(d){ var a1=a0+d.val/total*Math.PI*2; x.beginPath(); x.moveTo(cx,cy); x.arc(cx,cy,R,a0,a1); x.closePath(); x.fillStyle=d.c; x.fill(); a0=a1; });
+    // 범례
+    x.textAlign='left'; x.font='14px system-ui';
+    data.forEach(function(d,i){ var ly=H*0.28+i*24, lx=W*0.68; x.fillStyle=d.c; x.fillRect(lx,ly-11,14,14); x.fillStyle='#16181f'; x.fillText(d.label+' '+Math.round(d.val/total*100)+'%', lx+20, ly); });
+  }
+  ['type','title','color','data'].forEach(function(id){ $(id).addEventListener('input',draw); $(id).addEventListener('change',draw); });
+  $('dl').addEventListener('click', function(){ var a=document.createElement('a'); a.href=cv.toDataURL('image/png'); a.download='chart.png'; document.body.appendChild(a); a.click(); setTimeout(function(){a.remove();},100); });
+  $('sample').addEventListener('click', function(){ $('type').value='bar'; $('title').value='분기별 사용자'; $('data').value='1분기,3200\n2분기,4100\n3분기,3800\n4분기,5200'; draw(); });
+  draw();
+</script>
+</body>
+</html>
