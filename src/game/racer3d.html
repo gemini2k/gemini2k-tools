@@ -133,7 +133,7 @@
       var rr=Math.hypot(car.position.x,car.position.z); var onTrack=Math.abs(rr-R)<=TW/2+1;
       var drag=onTrack?2.2:9;
       speed+=accel*dt; speed-=speed*drag*dt; speed=Math.max(-12,Math.min(34,speed));
-      var turn=(keys.l?1:0)-(keys.r?1:0); heading+=turn*1.8*dt*Math.min(1,Math.abs(speed)/6)*(speed<0?-1:1);
+      var turn=(keys.r?1:0)-(keys.l?1:0); heading+=turn*1.8*dt*Math.min(1,Math.abs(speed)/6)*(speed<0?-1:1);
       fwd.set(Math.cos(heading),0,Math.sin(heading));
       car.position.x+=fwd.x*speed*dt; car.position.z+=fwd.z*speed*dt;
       car.rotation.y=-heading;
