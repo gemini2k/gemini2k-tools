@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>텍스트 줄 정리기 (정렬·중복 제거·공백 정리) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="여러 줄 텍스트를 가나다·길이·숫자 순으로 정렬하고, 중복 줄·빈 줄을 제거하며, 앞뒤 공백 정리·줄 번호·접두접미·뒤집기까지 한 번에. 명단·목록 정리에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/lines.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="텍스트 줄 정리기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="여러 줄 텍스트 정렬·중복 제거·빈 줄 제거·공백 정리·줄 번호·뒤집기. 목록 정리에. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/lines.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  textarea{width:100%;min-height:150px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88rem;color:var(--text);resize:vertical;}
+  .ops{display:flex;flex-wrap:wrap;gap:.5rem;margin:.8rem 0;}
+  .ops button{padding:.45rem .75rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;font-weight:600;cursor:pointer;font-size:.85rem;}
+  .ops button:hover{background:var(--accent-soft);border-color:var(--accent);}
+  .ops .sep{width:1px;background:var(--border);margin:0 .2rem;}
+  .opts{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin:.4rem 0 .8rem;font-size:.85rem;color:var(--muted);}
+  .opts label{display:inline-flex;gap:.35rem;align-items:center;font-weight:600;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:.6rem 0;}
+  .arrow{text-align:center;color:var(--muted);font-size:1.3rem;margin:.2rem 0;}
+  .meta{font-size:.82rem;color:var(--muted);margin:.3rem 0;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "텍스트 줄 정리기",
+  "description": "여러 줄 텍스트를 정렬·중복 제거·빈 줄 제거·공백 정리·줄 번호·뒤집기로 정리합니다. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/lines.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:780px;">
+  <h1>텍스트 줄 정리기</h1>
+  <p class="sub">여러 줄로 된 목록·명단을 정렬하고, 중복·빈 줄을 없애고, 공백을 정리합니다. 버튼을 누를 때마다 결과에 적용됩니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>아래에 줄 단위 텍스트를 붙여넣습니다</li>
+    <li>원하는 작업 버튼을 누르면 즉시 적용되어 결과가 갱신됩니다 (이어서 여러 번 적용 가능)</li>
+    <li>‘복사’로 결과를 가져갑니다. ‘되돌리기’로 직전 상태로 돌아갑니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <label for="input" style="font-weight:700;font-size:.85rem;">텍스트 입력</label>
+    <textarea id="input">바나나
+사과
+바나나
+  딸기
+
+포도
+사과
+체리</textarea>
+    <div class="opts">
+      <label><input type="checkbox" id="ci"/> 대소문자 무시</label>
+    </div>
+    <div class="ops">
+      <button data-op="sortAsc" type="button">⬆ 가나다 정렬</button>
+      <button data-op="sortDesc" type="button">⬇ 역순 정렬</button>
+      <button data-op="sortLen" type="button">길이순</button>
+      <button data-op="sortNum" type="button">숫자순</button>
+      <button data-op="shuffle" type="button">무작위 섞기</button>
+      <span class="sep"></span>
+      <button data-op="dedup" type="button">중복 제거</button>
+      <button data-op="blank" type="button">빈 줄 제거</button>
+      <button data-op="trim" type="button">앞뒤 공백 제거</button>
+      <button data-op="reverse" type="button">줄 뒤집기</button>
+      <button data-op="number" type="button">줄 번호</button>
+    </div>
+    <div class="actions">
+      <button class="btn" id="copy" type="button">📋 복사</button>
+      <button class="btn btn-ghost" id="undo" type="button">↶ 되돌리기</button>
+      <button class="btn btn-ghost" id="resetIn" type="button">입력으로 초기화</button>
+    </div>
+    <div class="meta" id="meta"></div>
+    <div class="arrow">↓ 결과</div>
+    <textarea id="out" readonly></textarea>
+    <div class="note">정렬은 한국어·영문·숫자를 자연스럽게 비교합니다(숫자순은 줄 안의 첫 숫자를 기준). 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  var lines=[], histStack=[];
+  function fromInput(){ lines=$('input').value.split(/\r?\n/); render(); }
+  function push(){ histStack.push(lines.slice()); if(histStack.length>50)histStack.shift(); }
+  function ci(){ return $('ci').checked; }
+  function key(s){ return ci()?s.toLowerCase():s; }
+  function firstNum(s){ var m=s.match(/-?\d+(\.\d+)?/); return m?parseFloat(m[0]):NaN; }
+  var OPS={
+    sortAsc:function(a){ return a.slice().sort(function(p,q){ return key(p).localeCompare(key(q),'ko',{numeric:true}); }); },
+    sortDesc:function(a){ return a.slice().sort(function(p,q){ return key(q).localeCompare(key(p),'ko',{numeric:true}); }); },
+    sortLen:function(a){ return a.slice().sort(function(p,q){ return p.length-q.length; }); },
+    sortNum:function(a){ return a.slice().sort(function(p,q){ var x=firstNum(p),y=firstNum(q); if(isNaN(x))return 1; if(isNaN(y))return -1; return x-y; }); },
+    shuffle:function(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=(Math.random()*(i+1))|0; var t=a[i];a[i]=a[j];a[j]=t; } return a; },
+    dedup:function(a){ var seen={},out=[]; a.forEach(function(l){ var k=key(l); if(!seen[k]){ seen[k]=1; out.push(l); } }); return out; },
+    blank:function(a){ return a.filter(function(l){ return l.trim().length; }); },
+    trim:function(a){ return a.map(function(l){ return l.trim(); }); },
+    reverse:function(a){ return a.slice().reverse(); },
+    number:function(a){ var w=String(a.length).length; return a.map(function(l,i){ return (String(i+1)).padStart(w,' ')+'. '+l; }); }
+  };
+  function apply(op){ if(!OPS[op]) return; push(); lines=OPS[op](lines); render(); }
+  function render(){ $('out').value=lines.join('\n');
+    var nonblank=lines.filter(function(l){return l.trim().length;}).length;
+    $('meta').textContent='총 '+lines.length+'줄 · 내용 있는 줄 '+nonblank+'개 · 글자 '+lines.join('').length+'자'; }
+  $('input').addEventListener('input',fromInput);
+  document.querySelector('.ops').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) apply(b.dataset.op); });
+  $('copy').addEventListener('click',function(){ if($('out').value) navigator.clipboard.writeText($('out').value).then(function(){toast('복사됐습니다');}); });
+  $('undo').addEventListener('click',function(){ if(histStack.length){ lines=histStack.pop(); render(); } else toast('되돌릴 작업이 없어요'); });
+  $('resetIn').addEventListener('click',fromInput);
+  fromInput();
+</script>
+</body>
+</html>

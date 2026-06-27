@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>단어 빈도 분석기 (자주 쓰는 단어 세기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="글에서 어떤 단어가 몇 번 나오는지 빈도순으로 분석합니다. 한국어·영문 지원, 불용어 제외, 최소 글자수 설정, CSV 내보내기. 글쓰기·SEO·키워드 분석에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/wordfreq.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="단어 빈도 분석기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="글의 단어 빈도를 분석. 한국어·영문, 불용어 제외, CSV 내보내기. 글쓰기·SEO에. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/wordfreq.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  textarea{width:100%;min-height:150px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:inherit;font-size:.95rem;color:var(--text);resize:vertical;}
+  .opts{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin:.8rem 0;font-size:.85rem;}
+  .opts label{display:inline-flex;gap:.4rem;align-items:center;font-weight:600;}
+  .opts select,.opts input[type=number]{padding:.4rem .55rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .opts input[type=number]{width:60px;}
+  .stat{display:flex;gap:.6rem;flex-wrap:wrap;margin:.6rem 0;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:78px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);} .sbox .v{font-size:1.15rem;font-weight:800;}
+  .tblwrap{max-height:420px;overflow:auto;border:1px solid var(--border);border-radius:11px;margin-top:.4rem;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;}
+  th,td{border-bottom:1px solid var(--border);padding:.4rem .6rem;text-align:left;}
+  th{background:var(--accent-soft);position:sticky;top:0;font-weight:700;}
+  td.n{text-align:right;font-variant-numeric:tabular-nums;width:60px;color:var(--muted);}
+  .bar{height:8px;background:var(--accent);border-radius:4px;}
+  .actions{display:flex;gap:.6rem;margin:.7rem 0;flex-wrap:wrap;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "단어 빈도 분석기",
+  "description": "글에서 단어가 몇 번 나오는지 빈도순으로 분석합니다. 한국어·영문, 불용어 제외, CSV 내보내기. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/wordfreq.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1>단어 빈도 분석기</h1>
+  <p class="sub">글에서 어떤 단어가 자주 쓰였는지 세어 빈도순으로 보여 줍니다. 글쓰기 점검·키워드 분석에 좋아요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>분석할 글을 붙여넣습니다</li>
+    <li>최소 글자수·불용어 제외 등을 조절하면 표가 갱신됩니다</li>
+    <li>‘CSV 복사/다운로드’로 결과를 가져갈 수 있어요</li>
+  </ol></div></div>
+
+  <div class="card">
+    <textarea id="input">분석은 글의 단어를 세는 일입니다. 단어 빈도 분석은 글쓰기에 도움이 됩니다. 같은 단어를 너무 자주 쓰면 글이 단조로워집니다. 분석 결과로 단어 사용을 점검하세요.</textarea>
+    <div class="opts">
+      <label>최소 글자수 <input id="minlen" type="number" min="1" max="10" value="2"/></label>
+      <label><input type="checkbox" id="stop" checked/> 흔한 조사·불용어 제외</label>
+      <label><input type="checkbox" id="lower" checked/> 영문 대소문자 통합</label>
+      <label>상위 <select id="top"><option value="50">50</option><option value="100">100</option><option value="0">전체</option></select></label>
+    </div>
+    <div class="stat">
+      <div class="sbox"><div class="l">전체 단어</div><div class="v" id="totalW">0</div></div>
+      <div class="sbox"><div class="l">고유 단어</div><div class="v" id="uniqW">0</div></div>
+      <div class="sbox"><div class="l">글자수</div><div class="v" id="chars">0</div></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="copy" type="button">📋 CSV 복사</button>
+      <button class="btn btn-ghost" id="dl" type="button">⬇️ CSV 다운로드</button>
+    </div>
+    <div class="tblwrap"><table><thead><tr><th style="width:40px">#</th><th>단어</th><th class="n">횟수</th><th style="width:34%">비율</th></tr></thead><tbody id="tbody"></tbody></table></div>
+    <div class="note">단어는 공백·문장부호 기준으로 나눕니다(한국어는 형태소 분석이 아니라 어절 단위 근사). 불용어 제외는 자주 쓰는 조사·접속사 일부를 거릅니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  var STOP={'은':1,'는':1,'이':1,'가':1,'을':1,'를':1,'의':1,'에':1,'에서':1,'으로':1,'로':1,'와':1,'과':1,'도':1,'만':1,'고':1,'며':1,'하다':1,'있다':1,'그리고':1,'그러나':1,'하지만':1,'또는':1,'the':1,'a':1,'an':1,'and':1,'or':1,'of':1,'to':1,'in':1,'is':1,'are':1,'for':1,'on':1,'with':1,'it':1,'this':1,'that':1};
+  var rows=[];
+  function analyze(){
+    var t=$('input').value, minlen=parseInt($('minlen').value,10)||1, useStop=$('stop').checked, low=$('lower').checked;
+    $('chars').textContent=t.length.toLocaleString();
+    var toks=t.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+    var total=toks.length, map={};
+    for(var i=0;i<toks.length;i++){ var w=toks[i]; if(low && /^[A-Za-z]+$/.test(w)) w=w.toLowerCase();
+      if(w.length<minlen) continue; if(useStop && STOP[w]) continue;
+      map[w]=(map[w]||0)+1; }
+    rows=Object.keys(map).map(function(k){ return [k,map[k]]; }).sort(function(a,b){ return b[1]-a[1] || a[0].localeCompare(b[0],'ko'); });
+    $('totalW').textContent=total.toLocaleString(); $('uniqW').textContent=Object.keys(map).length.toLocaleString();
+    var topN=parseInt($('top').value,10); var show=topN>0?rows.slice(0,topN):rows;
+    var max=show.length?show[0][1]:1;
+    $('tbody').innerHTML=show.map(function(r,i){ var pct=Math.round(r[1]/max*100);
+      return '<tr><td class="n">'+(i+1)+'</td><td>'+esc(r[0])+'</td><td class="n">'+r[1]+'</td><td><div class="bar" style="width:'+pct+'%"></div></td></tr>'; }).join('')
+      || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1rem">분석할 단어가 없습니다</td></tr>';
+  }
+  function esc(s){ return String(s).replace(/[&<>]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]);}); }
+  function csv(){ return '단어,횟수\n'+rows.map(function(r){ var w=/[",\n]/.test(r[0])?'"'+r[0].replace(/"/g,'""')+'"':r[0]; return w+','+r[1]; }).join('\n'); }
+  ['input','minlen','stop','lower','top'].forEach(function(id){ $(id).addEventListener('input',analyze); $(id).addEventListener('change',analyze); });
+  $('copy').addEventListener('click',function(){ if(rows.length) navigator.clipboard.writeText(csv()).then(function(){toast('CSV 복사됨');}); });
+  $('dl').addEventListener('click',function(){ if(!rows.length){toast('데이터가 없어요');return;} var blob=new Blob(['﻿'+csv()],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='wordfreq.csv'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); });
+  analyze();
+</script>
+</body>
+</html>

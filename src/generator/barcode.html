@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>바코드 생성기 (CODE128·EAN·UPC) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="텍스트·숫자를 바코드(CODE128·EAN-13·UPC·CODE39 등)로 만들어 PNG·SVG로 내려받습니다. 색·크기·텍스트 표시 조절. 재고·상품 관리에. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/barcode.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="바코드 생성기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="텍스트·숫자를 바코드(CODE128·EAN·UPC 등)로 생성해 PNG·SVG 다운로드. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/barcode.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .fld{margin-bottom:.9rem;} .fld label{font-weight:700;font-size:.82rem;color:var(--muted);display:block;margin-bottom:.3rem;}
+  .fld input[type=text],.fld select{width:100%;padding:.6rem .75rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1rem;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem;}
+  .grid label{display:flex;flex-direction:column;gap:.25rem;font-size:.78rem;font-weight:700;color:var(--muted);}
+  .grid input[type=color]{width:46px;height:36px;padding:0;border:1px solid var(--border);border-radius:8px;background:none;}
+  .grid input[type=range]{width:100%;}
+  .grid label.chk{flex-direction:row;align-items:center;gap:.4rem;}
+  .bcwrap{margin-top:1.1rem;border:1px solid var(--border);border-radius:12px;background:#fff;padding:1rem;text-align:center;overflow:auto;}
+  .bcwrap svg{max-width:100%;height:auto;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.9rem;}
+  .err{color:#e0563b;font-size:.84rem;margin:.5rem 0;min-height:1.1em;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "바코드 생성기",
+  "description": "텍스트·숫자를 바코드(CODE128·EAN·UPC·CODE39 등)로 생성해 PNG·SVG로 내려받습니다. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/barcode.html",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:680px;">
+  <h1>바코드 생성기</h1>
+  <p class="sub">텍스트나 숫자를 바코드로 만들어 PNG·SVG로 내려받습니다. 상품·재고·자산 관리에 활용하세요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>내용을 입력하고 바코드 형식을 고릅니다 (모르면 <b>CODE128</b> 추천 — 문자·숫자 모두 가능)</li>
+    <li>색·크기·텍스트 표시를 조절합니다</li>
+    <li>‘PNG/SVG 다운로드’로 저장합니다 (EAN·UPC는 정해진 자릿수의 숫자만 가능)</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="fld"><label>내용</label><input id="data" type="text" value="GEMINI2K-001"/></div>
+    <div class="grid">
+      <label>형식<select id="fmt">
+        <option value="CODE128">CODE128 (문자+숫자)</option>
+        <option value="EAN13">EAN-13 (숫자 12~13)</option>
+        <option value="EAN8">EAN-8 (숫자 7~8)</option>
+        <option value="UPC">UPC-A (숫자 11~12)</option>
+        <option value="CODE39">CODE39</option>
+        <option value="ITF14">ITF-14 (숫자 13~14)</option>
+        <option value="codabar">Codabar</option>
+      </select></label>
+      <label>막대 두께 <span id="wv" style="color:var(--accent)">2</span><input id="bw" type="range" min="1" max="5" value="2"/></label>
+      <label>높이 <span id="hv" style="color:var(--accent)">80</span><input id="bh" type="range" min="40" max="160" value="80"/></label>
+      <label>바코드 색<input id="line" type="color" value="#000000"/></label>
+      <label>배경색<input id="bg" type="color" value="#ffffff"/></label>
+      <label class="chk"><input id="showtext" type="checkbox" checked/> 글자 표시</label>
+    </div>
+    <div class="err" id="err"></div>
+    <div class="bcwrap"><svg id="bc"></svg></div>
+    <div class="actions">
+      <button class="btn" id="png" type="button">⬇️ PNG 다운로드</button>
+      <button class="btn btn-ghost" id="svg" type="button">⬇️ SVG 다운로드</button>
+    </div>
+    <div class="note">CODE128은 영문·숫자·기호를 모두 담을 수 있어 가장 널리 쓰입니다. EAN/UPC는 국제 상품코드 규격으로 정해진 자릿수의 숫자만 허용하며 체크digit가 자동 계산됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="/vendor/jsbarcode-3.11.6/JsBarcode.all.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  function render(){
+    $('err').textContent=''; var data=$('data').value, fmt=$('fmt').value;
+    try{
+      JsBarcode('#bc', data, { format:fmt, width:parseInt($('bw').value,10), height:parseInt($('bh').value,10),
+        lineColor:$('line').value, background:$('bg').value, displayValue:$('showtext').checked, margin:10, font:'Pretendard,sans-serif' });
+    }catch(e){ $('bc').innerHTML=''; $('err').textContent='⚠️ 이 형식에 맞지 않는 내용입니다. 형식을 바꾸거나 내용을 확인하세요. (EAN/UPC는 숫자만)'; }
+  }
+  function downloadPNG(){ var svg=$('bc'); if(!svg.querySelector('rect,path')){ toast('먼저 올바른 바코드를 만들어 주세요'); return; }
+    var W=svg.getAttribute('width')||svg.clientWidth, H=svg.getAttribute('height')||svg.clientHeight;
+    var data=new XMLSerializer().serializeToString(svg); var img=new Image();
+    img.onload=function(){ var cv=document.createElement('canvas'); cv.width=W*2; cv.height=H*2; var x=cv.getContext('2d'); x.scale(2,2); x.fillStyle=$('bg').value; x.fillRect(0,0,W,H); x.drawImage(img,0,0);
+      var a=document.createElement('a'); a.href=cv.toDataURL('image/png'); a.download='barcode.png'; document.body.appendChild(a); a.click(); setTimeout(function(){a.remove();},100); };
+    img.onerror=function(){ toast('PNG 변환에 실패했어요'); };
+    img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data);
+  }
+  function downloadSVG(){ var svg=$('bc'); if(!svg.querySelector('rect,path')){ toast('먼저 올바른 바코드를 만들어 주세요'); return; }
+    var data=new XMLSerializer().serializeToString(svg); var blob=new Blob([data],{type:'image/svg+xml'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='barcode.svg'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120);
+  }
+  ['data','fmt','bw','bh','line','bg','showtext'].forEach(function(id){ $(id).addEventListener('input',function(){
+    $('wv').textContent=$('bw').value; $('hv').textContent=$('bh').value; render(); }); });
+  $('png').addEventListener('click',downloadPNG);
+  $('svg').addEventListener('click',downloadSVG);
+  render();
+</script>
+</body>
+</html>

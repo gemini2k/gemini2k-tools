@@ -136,4 +136,8 @@ window.TOOLS = [
   { key:'racer3d',h:'racer3d.html',ic:'🏎️', chip:'c-rose', cat:'게임', k:'3d 레이싱 자동차 경주 트랙 서킷 랩타임 주행 racing car race 赛车 レース 3d레이싱 자동차게임', related:['runner3d','space3d','explore3d'] },
   { key:'space3d',h:'space3d.html',ic:'🚀', chip:'c-violet', cat:'게임', k:'3d 우주 비행 우주선 링 소행성 회피 슈팅 space flight ship 太空 宇宙 3d우주 비행게임', related:['racer3d','runner3d','tank'] },
   { key:'tank',h:'tank.html',ic:'🎯', chip:'c-amber', cat:'게임', k:'탱크 전차 배틀 슈팅 아레나 적격파 발사 tank battle shoot 坦克 戦車 탱크게임 전차게임', related:['space3d','topdown','spaceshooter'] },
+  { key:'lines',h:'lines.html',ic:'📑', chip:'c-blue', cat:'텍스트', k:'텍스트 줄 정렬 중복제거 빈줄 공백 줄번호 뒤집기 목록 명단 정리 sort unique lines 排序 行 줄정리 중복제거', related:['caseconv','textstats','wordfreq'] },
+  { key:'wordfreq',h:'wordfreq.html',ic:'🔠', chip:'c-violet', cat:'텍스트', k:'단어 빈도 분석 카운트 자주쓰는 키워드 글쓰기 seo 통계 word frequency count 词频 単語頻度 단어빈도', related:['textstats','lines','char'] },
+  { key:'jsonyaml',h:'jsonyaml.html',ic:'🔄', chip:'c-green', cat:'개발자', k:'json yaml 변환 yml 설정 config convert 转换 変換 json야믈 yaml변환', related:['json','jsoncsv','jsonschema'] },
+  { key:'barcode',h:'barcode.html',ic:'▮', chip:'c-amber', cat:'생성기', k:'바코드 생성 code128 ean upc 상품코드 재고 barcode generate 条形码 バーコード 바코드만들기', related:['qr','favicon','base64'] },
 ];

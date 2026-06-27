@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>JSON ↔ YAML 변환기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="JSON을 YAML로, YAML을 JSON으로 서로 변환합니다. 들여쓰기 조절, 오류 위치 안내. 설정 파일·API 응답 변환에. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/jsonyaml.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="JSON ↔ YAML 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="JSON↔YAML 상호 변환, 들여쓰기 조절, 오류 안내. 설정 파일 변환에. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/jsonyaml.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:.7rem;}
+  .seg button{padding:.5rem .9rem;border:0;background:var(--surface);color:var(--text);font-family:inherit;font-weight:700;cursor:pointer;font-size:.88rem;}
+  .seg button.on{background:var(--accent);color:#fff;}
+  textarea{width:100%;min-height:170px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;color:var(--text);resize:vertical;}
+  .out{width:100%;min-height:170px;border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem .9rem;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;color:var(--text);resize:vertical;white-space:pre;overflow:auto;}
+  .opts{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin:.7rem 0;font-size:.88rem;}
+  .opts label{display:inline-flex;gap:.4rem;align-items:center;font-weight:600;}
+  .opts select{padding:.4rem .55rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:.6rem 0;}
+  .arrow{text-align:center;color:var(--muted);font-size:1.3rem;margin:.2rem 0;}
+  .err{color:#e0563b;font-size:.84rem;margin:.3rem 0;min-height:1.1em;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "JSON ↔ YAML 변환기",
+  "description": "JSON을 YAML로, YAML을 JSON으로 상호 변환합니다. 들여쓰기 조절, 오류 안내. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/jsonyaml.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:840px;">
+  <h1>JSON ↔ YAML 변환기</h1>
+  <p class="sub">JSON과 YAML을 서로 변환합니다. 설정 파일·API 응답을 원하는 형식으로 바꿔 보세요.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>변환 방향(JSON→YAML / YAML→JSON)을 고릅니다</li>
+    <li>왼쪽에 입력하면 오른쪽에 실시간으로 변환됩니다</li>
+    <li>‘복사’로 결과를 가져갑니다. 형식 오류는 아래에 안내됩니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="seg" id="seg">
+      <button data-dir="j2y" class="on" type="button">JSON → YAML</button>
+      <button data-dir="y2j" type="button">YAML → JSON</button>
+    </div>
+    <textarea id="input">{
+  "name": "gemini2k",
+  "tags": ["tool", "free"],
+  "config": { "dark": true, "lang": "ko" }
+}</textarea>
+    <div class="opts">
+      <label>들여쓰기 <select id="indent"><option value="2">2칸</option><option value="4">4칸</option></select></label>
+    </div>
+    <div class="actions"><button class="btn" id="copy" type="button">📋 복사</button></div>
+    <div class="err" id="err"></div>
+    <div class="arrow">↓</div>
+    <div class="out" id="out"></div>
+    <div class="note">YAML 파싱·직렬화는 표준 라이브러리(js-yaml)를 사용하며 모두 브라우저 안에서 동작합니다. 함수·날짜 등 JSON으로 표현 불가능한 값은 변환되지 않을 수 있습니다.</div>
+  </div>
+</div>
+
+<script src="/vendor/js-yaml-4.1.0/js-yaml.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  var dir='j2y';
+  function run(){
+    var t=$('input').value, ind=parseInt($('indent').value,10); $('err').textContent='';
+    if(!t.trim()){ $('out').textContent=''; return; }
+    try{
+      if(dir==='j2y'){ var obj=JSON.parse(t); $('out').textContent=jsyaml.dump(obj,{indent:ind,lineWidth:-1,noRefs:true}); }
+      else { var o=jsyaml.load(t); $('out').textContent=JSON.stringify(o,null,ind); }
+    }catch(e){ $('out').textContent=''; $('err').textContent='⚠️ '+(dir==='j2y'?'JSON':'YAML')+' 형식 오류: '+(e.message||e); }
+  }
+  $('seg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; dir=b.dataset.dir;
+    Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
+    // 입력 예시 전환은 하지 않고, 현재 출력을 입력으로 넘기면 편함
+    run(); });
+  ['input','indent'].forEach(function(id){ $(id).addEventListener('input',run); $(id).addEventListener('change',run); });
+  $('copy').addEventListener('click',function(){ if($('out').textContent) navigator.clipboard.writeText($('out').textContent).then(function(){toast('복사됐습니다');}); });
+  run();
+</script>
+</body>
+</html>
