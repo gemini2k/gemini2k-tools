@@ -123,4 +123,7 @@ window.TOOLS = [
   { key:'docx2txt',h:'docx2txt.html',ic:'📝', chip:'c-violet', cat:'문서', k:'워드 docx 텍스트 추출 word 본문 글자 변환 text extract 文档 ワード 워드추출 워드텍스트', related:['pptx2txt','hwpx2txt','wordcount'] },
   { key:'pptx2txt',h:'pptx2txt.html',ic:'📑', chip:'c-amber', cat:'문서', k:'파워포인트 ppt pptx 텍스트 추출 슬라이드 발표 text powerpoint extract 幻灯片 パワポ ppt추출', related:['docx2txt','hwpx2txt','mindmap'] },
   { key:'hwpx2txt',h:'hwpx2txt.html',ic:'📄', chip:'c-rose', cat:'문서', k:'한글 hwpx hwp 텍스트 추출 본문 한컴 hancom 변환 韩文 ハングル 한글추출 한글텍스트', related:['docx2txt','pptx2txt','wordcount'] },
+  { key:'pdf2txt',h:'pdf2txt.html',ic:'📕', chip:'c-rose', cat:'문서', k:'pdf 텍스트 추출 글자 본문 변환 text extract 论文 보고서 계약서 pdf추출 pdf텍스트 pdf글자', related:['docx2txt','pdf2img','pmerge'] },
+  { key:'pdf2img',h:'pdf2img.html',ic:'🖼️', chip:'c-cyan', cat:'문서', k:'pdf 이미지 변환 png 페이지 캡처 convert image 截图 pdf png pdf이미지 pdf png변환', related:['pdf2txt','img2pdf','psplit'] },
+  { key:'mdtable',h:'mdtable.html',ic:'📋', chip:'c-violet', cat:'개발자', k:'마크다운 표 변환 markdown table 깃허브 노션 엑셀 csv 표 markdown 表格 마크다운표 표마크다운', related:['md','csvtable','excel2csv'] },
 ];
