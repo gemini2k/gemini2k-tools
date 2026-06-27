@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>경찰과 도둑 2인용 게임 (탑다운 추격) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="한 화면에서 둘이 즐기는 경찰과 도둑 2인용 추격 게임. 역할은 랜덤 배정! 도둑은 보석 5개를 먼저 모으면 승리, 경찰은 도둑을 잡으면 승리. 위에서 내려다보는 2D 탑다운 그래픽, 키보드·터치 조작, 일시정지 지원. PC·모바일 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/copsrobbers.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="경찰과 도둑 2인용 게임 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="둘이 즐기는 경찰과 도둑 추격 게임. 역할 랜덤! 도둑은 보석 5개, 경찰은 도둑 잡기. 2D 탑다운, 일시정지. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/copsrobbers.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .roles{display:flex;gap:.6rem;flex-wrap:wrap;}
+  .rbox{border:1px solid var(--border);border-radius:10px;padding:.4rem .7rem;font-size:.85rem;font-weight:700;}
+  .rbox .k{font-size:.66rem;color:var(--muted);font-weight:700;display:block;}
+  .stage{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#16321f;}
+  canvas{display:block;width:100%;height:auto;touch-action:none;}
+  .over{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(8,12,30,.84);color:#fff;}
+  .over .big{font-size:1.6rem;font-weight:800;margin-bottom:.3rem;} .over .sm{font-size:.95rem;opacity:.9;margin-bottom:1rem;line-height:1.6;}
+  .pads{display:flex;justify-content:space-between;gap:1rem;margin-top:1rem;}
+  .pad{text-align:center;}
+  .pad .pl{font-size:.74rem;font-weight:800;color:var(--muted);margin-bottom:.3rem;}
+  .dpad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,44px);gap:.3rem;touch-action:none;}
+  .dpad button{border:1px solid var(--border);background:var(--surface);border-radius:10px;font-size:1.05rem;color:var(--text);cursor:pointer;user-select:none;}
+  .dpad button:active,.dpad button.on{background:var(--accent-soft);}
+  .du{grid-column:2;grid-row:1;} .dl{grid-column:1;grid-row:2;} .dd{grid-column:2;grid-row:2;} .dr{grid-column:3;grid-row:2;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "경찰과 도둑 2인용",
+  "description": "한 화면에서 둘이 즐기는 경찰과 도둑 2인용 추격 게임. 역할 랜덤 배정, 도둑은 보석 5개·경찰은 도둑 잡기. 2D 탑다운, 일시정지 지원.",
+  "url": "https://gemini2k.co.kr/copsrobbers.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Action",
+  "playMode": "CoOp",
+  "numberOfPlayers": { "@type": "QuantitativeValue", "value": 2 },
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1>경찰과 도둑 <span style="font-size:.9rem;color:var(--muted)">(2인용)</span></h1>
+  <p class="sub">한 화면에서 둘이 대결! 역할은 시작할 때 랜덤으로 정해집니다. 도둑은 보석 5개를 먼저 모으면, 경찰은 도둑을 잡으면 승리!</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li><b>플레이어 1 = W A S D</b>, <b>플레이어 2 = 방향키 ↑ ↓ ← →</b> (또는 아래 화면 버튼)</li>
+    <li>역할은 매판 랜덤! 🦹 도둑은 노란 <b>보석 5개</b>를 모으고, 👮 경찰은 도둑에게 <b>몸으로 닿으면</b> 승리</li>
+    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="roles">
+        <div class="rbox" id="r1"><span class="k">P1 (WASD)</span><span id="r1v">-</span></div>
+        <div class="rbox" id="r2"><span class="k">P2 (←↑↓→)</span><span id="r2v">-</span></div>
+      </div>
+      <button class="btn btn-ghost" id="restart" type="button">새 게임</button>
+    </div>
+    <div class="stage">
+      <canvas id="cv" width="720" height="520"></canvas>
+      <div class="over" id="gover"><div><div class="big" id="goverBig">🚔 경찰과 도둑</div><div class="sm" id="goverSm">시작하면 역할이 랜덤으로 정해집니다!</div><button class="btn" id="goverBtn" type="button">게임 시작</button></div></div>
+    </div>
+    <div class="pads">
+      <div class="pad"><div class="pl">P1 (WASD)</div>
+        <div class="dpad" data-p="1"><button class="du" data-d="u">▲</button><button class="dl" data-d="l">◀</button><button class="dd" data-d="d">▼</button><button class="dr" data-d="r">▶</button></div></div>
+      <div class="pad"><div class="pl">P2 (방향키)</div>
+        <div class="dpad" data-p="2"><button class="du" data-d="u">▲</button><button class="dl" data-d="l">◀</button><button class="dd" data-d="d">▼</button><button class="dr" data-d="r">▶</button></div></div>
+    </div>
+    <div class="note">두 사람이 한 기기로 함께 즐기는 게임입니다(PC 키보드 권장, 모바일은 화면 버튼). 벽은 통과할 수 없어요. 역할이 랜덤이라 매판 긴장감이 다릅니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="game-core.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'), x=cv.getContext('2d'); var W=cv.width, H=cv.height;
+  var gc=GameCore.init({mount:document.querySelector('.card')});
+  var R=15, NEED=5, THIEF_SP=158, POLICE_SP=170;
+  var walls, gems, p1, p2, state='ready', result='', elapsed=0;
+  var keys={1:{u:0,d:0,l:0,r:0},2:{u:0,d:0,l:0,r:0}};
+
+  function rndRange(a,b){ return a+Math.random()*(b-a); }
+  function rectsOverlap(ax,ay,aw,ah,bx,by,bw,bh){ return ax<bx+bw&&ax+aw>bx&&ay<by+bh&&ay+ah>by; }
+  function hitWall(px,py,r){ for(var i=0;i<walls.length;i++){ var w=walls[i]; if(rectsOverlap(px-r,py-r,2*r,2*r,w[0],w[1],w[2],w[3])) return true; } return false; }
+
+  function buildWalls(){
+    var t=16; walls=[[0,0,W,t],[0,H-t,W,t],[0,0,t,H],[W-t,0,t,H]];
+    // 대칭 장애물 배치(공정)
+    walls.push([150,90,60,160]); walls.push([W-150-60,90,60,160]);
+    walls.push([150,H-90-160,60,160]); walls.push([W-150-60,H-90-160,60,160]);
+    walls.push([W/2-30,150,60,220]);
+    walls.push([300,40,120,40]); walls.push([300,H-80,120,40]);
+  }
+  function placeFree(r){ for(var i=0;i<200;i++){ var p={x:rndRange(40,W-40),y:rndRange(40,H-40)}; if(!hitWall(p.x,p.y,r)) return p; } return {x:W/2,y:H/2}; }
+
+  function newGame(){
+    buildWalls();
+    // 역할 랜덤
+    var p1Thief=Math.random()<0.5;
+    p1={x:40,y:40,role:p1Thief?'thief':'police',gems:0,color:p1Thief?'#e0563b':'#3b82f6'};
+    p2={x:W-40,y:H-40,role:p1Thief?'police':'thief',gems:0,color:p1Thief?'#3b82f6':'#e0563b'};
+    // 보석(도둑용) — 충분히 흩뿌림
+    gems=[]; for(var i=0;i<8;i++){ var g=placeFree(10); gems.push(g); }
+    result=''; elapsed=0;
+    $('r1v').textContent=(p1.role==='thief'?'🦹 도둑':'👮 경찰');
+    $('r2v').textContent=(p2.role==='thief'?'🦹 도둑':'👮 경찰');
+    $('r1').style.borderColor=p1.color; $('r2').style.borderColor=p2.color;
+  }
+  function thief(){ return p1.role==='thief'?p1:p2; }
+  function police(){ return p1.role==='police'?p1:p2; }
+
+  function movePlayer(p,k,sp,dt){
+    var vx=(k.r?1:0)-(k.l?1:0), vy=(k.d?1:0)-(k.u?1:0); if(!vx&&!vy) return;
+    var len=Math.hypot(vx,vy); vx/=len; vy/=len; var s=sp*dt;
+    var nx=p.x+vx*s; if(!hitWall(nx,p.y,R)) p.x=Math.max(R,Math.min(W-R,nx));
+    var ny=p.y+vy*s; if(!hitWall(p.x,ny,R)) p.y=Math.max(R,Math.min(H-R,ny));
+  }
+  function update(dt){
+    if(state!=='play') return; elapsed+=dt;
+    movePlayer(p1,keys[1], p1.role==='thief'?THIEF_SP:POLICE_SP, dt);
+    movePlayer(p2,keys[2], p2.role==='thief'?THIEF_SP:POLICE_SP, dt);
+    var th=thief(), po=police();
+    // 보석 획득
+    for(var i=gems.length-1;i>=0;i--){ if(Math.hypot(th.x-gems[i].x,th.y-gems[i].y)<R+9){ gems.splice(i,1); th.gems++;
+      if(th.gems>=NEED){ win('thief'); return; }
+      if(gems.length===0){ var g=placeFree(10); gems.push(g); } } }
+    // 체포
+    if(Math.hypot(th.x-po.x,th.y-po.y)<R*2-3){ win('police'); }
+  }
+  function win(who){ state='over';
+    var thiefIsP1=p1.role==='thief';
+    if(who==='thief'){ result='🦹 도둑 승리!'; $('goverBig').textContent='🦹 도둑 승리!'; $('goverSm').textContent='보석 5개를 모두 모았습니다! ('+(thiefIsP1?'P1':'P2')+' 승)'; }
+    else { result='👮 경찰 승리!'; $('goverBig').textContent='👮 경찰 승리!'; $('goverSm').textContent='도둑을 잡았습니다! ('+(thiefIsP1?'P2':'P1')+' 승)'; }
+    $('goverBtn').textContent='다시 (역할 랜덤)'; $('gover').style.display='flex';
+  }
+
+  function draw(){
+    x.fillStyle='#16321f'; x.fillRect(0,0,W,H);
+    x.strokeStyle='rgba(255,255,255,.05)'; var gs=40;
+    for(var gx=gs;gx<W;gx+=gs){ x.beginPath(); x.moveTo(gx,0); x.lineTo(gx,H); x.stroke(); }
+    for(var gy=gs;gy<H;gy+=gs){ x.beginPath(); x.moveTo(0,gy); x.lineTo(W,gy); x.stroke(); }
+    x.fillStyle='#3a4d3a'; for(var i=0;i<walls.length;i++){ var w=walls[i]; x.fillRect(w[0],w[1],w[2],w[3]); }
+    // 보석
+    for(var g=0;g<gems.length;g++){ diamond(gems[g].x,gems[g].y,9,'#facc15'); }
+    // 플레이어
+    drawPlayer(p1); drawPlayer(p2);
+    // 보석 진행(도둑)
+    var th=thief();
+    x.fillStyle='#fff'; x.font='bold 16px Pretendard,sans-serif'; x.textAlign='left';
+    x.fillText('🦹 보석 '+th.gems+' / '+NEED, 24, 30);
+    x.textAlign='right'; x.fillText('⏱ '+elapsed.toFixed(1)+'s', W-24, 30);
+  }
+  function drawPlayer(p){ x.fillStyle=p.color; x.beginPath(); x.arc(p.x,p.y,R,0,7); x.fill();
+    x.fillStyle='rgba(0,0,0,.25)'; x.beginPath(); x.arc(p.x,p.y,R,0,7); x.lineWidth=3; x.strokeStyle='rgba(255,255,255,.5)'; x.stroke();
+    x.font='15px sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.fillStyle='#fff';
+    x.fillText(p.role==='thief'?'🦹':'👮', p.x, p.y+1); x.textBaseline='alphabetic'; }
+  function diamond(cx,cy,r,col){ x.fillStyle=col; x.beginPath(); x.moveTo(cx,cy-r); x.lineTo(cx+r*0.7,cy); x.lineTo(cx,cy+r); x.lineTo(cx-r*0.7,cy); x.closePath(); x.fill();
+    x.strokeStyle='rgba(255,255,255,.6)'; x.lineWidth=1; x.stroke(); }
+
+  var last=0, raf=0;
+  function loop(t){ raf=requestAnimationFrame(loop); var dt=Math.min(0.04,((t-last)/1000)||0); last=t; if(!gc.isPaused()) update(dt); draw(); }
+  function startLoop(){ if(!raf){ last=performance.now(); raf=requestAnimationFrame(loop); } }
+
+  function begin(){ newGame(); state='play'; $('gover').style.display='none'; }
+  // 입력
+  var KMAP={ 'w':[1,'u'],'a':[1,'l'],'s':[1,'d'],'d':[1,'r'],'W':[1,'u'],'A':[1,'l'],'S':[1,'d'],'D':[1,'r'],
+             'ArrowUp':[2,'u'],'ArrowLeft':[2,'l'],'ArrowDown':[2,'d'],'ArrowRight':[2,'r'] };
+  document.addEventListener('keydown',function(e){ var m=KMAP[e.key]; if(m){ e.preventDefault(); keys[m[0]][m[1]]=1; } });
+  document.addEventListener('keyup',function(e){ var m=KMAP[e.key]; if(m){ keys[m[0]][m[1]]=0; } });
+  Array.prototype.forEach.call(document.querySelectorAll('.dpad'),function(pad){ var pl=pad.dataset.p;
+    Array.prototype.forEach.call(pad.querySelectorAll('button'),function(b){ var d=b.dataset.d;
+      function on(e){ e.preventDefault(); keys[pl][d]=1; b.classList.add('on'); }
+      function off(e){ e&&e.preventDefault(); keys[pl][d]=0; b.classList.remove('on'); }
+      b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off);
+    }); });
+  $('goverBtn').addEventListener('click',function(e){ e.stopPropagation(); begin(); });
+  $('restart').addEventListener('click',function(){ state='ready'; $('goverBig').textContent='🚔 경찰과 도둑'; $('goverSm').textContent='시작하면 역할이 랜덤으로 정해집니다!'; $('goverBtn').textContent='게임 시작'; $('gover').style.display='flex'; newGame(); });
+  newGame(); startLoop();
+  window._dbg={ p1:function(){return p1;}, p2:function(){return p2;}, gems:function(){return gems;}, state:function(){return state;}, result:function(){return result;}, begin:begin, thief:thief, police:police };
+})();
+</script>
+</body>
+</html>
