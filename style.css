@@ -63,6 +63,19 @@ button{font-family:inherit;cursor:pointer;}
 .search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
 
 /* 카테고리 칩 */
+/* 전체/일반/전문가 토글(세그먼트) */
+.tiertog{position:relative;display:inline-flex;gap:.25rem;margin:1.1rem auto 0;padding:.25rem;
+  background:var(--surface);border:1px solid var(--border);border-radius:999px;}
+.tiertog button{border:none;background:none;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:700;
+  color:var(--muted);padding:.4rem 1.1rem;border-radius:999px;transition:.15s;}
+.tiertog button:hover{color:var(--accent);}
+.tiertog button.on{background:var(--accent);color:#fff;}
+
+/* PRO 배지(전문가 도구 카드) */
+.tool .protag{position:absolute;top:.6rem;left:.6rem;font-size:.6rem;font-weight:800;letter-spacing:.04em;
+  color:#fff;background:linear-gradient(135deg,#7c3aed,#2563eb);border-radius:5px;padding:.08rem .35rem;line-height:1.4;}
+.relcard .protag{display:none;}
+
 /* 카테고리 레일 — 헤더 아래에 고정(sticky)되어 500개 규모에서도 항상 접근 가능 */
 .chips{position:sticky;top:57px;z-index:20;background:var(--ground);
   padding:.7rem 1.4rem .7rem;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;

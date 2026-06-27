@@ -73,6 +73,11 @@
   <h1 data-i18n-html="hero.h1">필요한 도구,<br/>바로 여기</h1>
   <p data-i18n-html="hero.p">설치 없이 브라우저에서 바로 쓰는 무료 도구 모음.</p>
   <div class="search"><input id="q" type="text" data-i18n-ph="search.ph" placeholder="도구 검색…" aria-label="search"/></div>
+  <div class="tiertog" id="tiertog" role="group" aria-label="도구 범위">
+    <button type="button" data-tier="all" class="on" data-i18n="tier.all">전체</button>
+    <button type="button" data-tier="basic" data-i18n="tier.basic">일반</button>
+    <button type="button" data-tier="pro" data-i18n="tier.pro">전문가</button>
+  </div>
 </section>
 
 <section class="hubsec" id="favsec" style="display:none;">
@@ -160,7 +165,7 @@
       searchgrid=document.getElementById('searchgrid'),
       searchTitle=document.getElementById('searchTitle'),
       empty=document.getElementById('empty'),
-      q=document.getElementById('q'), activeCat='전체';
+      q=document.getElementById('q'), activeCat='전체', activeTier='all';
   var favsec=document.getElementById('favsec'), favgrid=document.getElementById('favgrid'),
       recentsec=document.getElementById('recentsec'), recentgrid=document.getElementById('recentgrid');
   var FAV_KEY='tools:favorites', RECENT_KEY='tools:recent', COLLAPSE_KEY='tools:collapsed', RECENT_MAX=8;
@@ -171,9 +176,13 @@
   function byKey(k){ for(var i=0;i<TOOLS.length;i++) if(TOOLS[i].key===k) return TOOLS[i]; return null; }
   function esc(s){ return String(s).replace(/"/g,'&quot;'); }
 
-  // 레지스트리 순서를 보존한 카테고리 목록 / 카테고리별 도구
-  function catList(){ var cs=[]; TOOLS.forEach(function(x){ if(cs.indexOf(x.cat)<0) cs.push(x.cat); }); return cs; }
-  function toolsIn(cat){ return TOOLS.filter(function(x){ return x.cat===cat; }); }
+  // 전문가/일반 구분: 전문 카테고리 또는 tool.tier==='pro'
+  var PRO_CATS=['GIS','데이터','개발자','개인정보'];
+  function tierOf(x){ return x.tier || (PRO_CATS.indexOf(x.cat)>=0?'pro':'basic'); }
+  function tierMatch(x){ return activeTier==='all' || tierOf(x)===activeTier; }
+  // 레지스트리 순서를 보존한 카테고리 목록 / 카테고리별 도구 (현재 tier 반영)
+  function catList(){ var cs=[]; TOOLS.forEach(function(x){ if(tierMatch(x) && cs.indexOf(x.cat)<0) cs.push(x.cat); }); return cs; }
+  function toolsIn(cat){ return TOOLS.filter(function(x){ return x.cat===cat && tierMatch(x); }); }
   function isCollapsed(cat){ return load(COLLAPSE_KEY).indexOf(cat)>=0; }
   function setCollapsed(cat,on){ var c=load(COLLAPSE_KEY), i=c.indexOf(cat);
     if(on && i<0) c.push(cat); if(!on && i>=0) c.splice(i,1); save(COLLAPSE_KEY,c); }
@@ -193,6 +202,7 @@
 
   function cardHtml(x){
     return '<a class="tool" href="'+x.h+'" data-key="'+x.key+'" data-cat="'+x.cat+'">'
+      +(tierOf(x)==='pro'?'<span class="protag">PRO</span>':'')
       +'<span class="ic '+x.chip+'">'+x.ic+'</span>'
       +'<div><h3>'+t('tool.'+x.key+'.t')+'</h3><p>'+t('tool.'+x.key+'.d')+'</p></div>'
       +'<span class="fav'+(isFav(x.key)?' on':'')+'" role="button" tabindex="0" data-k="'+x.key+'" aria-label="favorite">★</span>'
@@ -230,6 +240,7 @@
   function runSearch(){
     var s=q.value.trim().toLowerCase();
     var list=TOOLS.filter(function(x){
+      if(!tierMatch(x)) return false;
       if(activeCat!=='전체' && x.cat!==activeCat) return false;
       if(!s) return true;
       var hay=(x.k+' '+t('tool.'+x.key+'.t')+' '+t('tool.'+x.key+'.d')+' '+x.key).toLowerCase();
@@ -245,6 +256,7 @@
       var p=new URLSearchParams();
       if(q.value.trim()) p.set('q', q.value.trim());
       if(activeCat!=='전체') p.set('cat', activeCat);
+      if(activeTier!=='all') p.set('tier', activeTier);
       var qs=p.toString();
       history.replaceState(null, '', qs ? ('?'+qs) : location.pathname);
     }catch(e){}
@@ -287,6 +299,14 @@
     update();
     chipsBox.scrollIntoView({block:'start'});   // 선택 결과가 레일 바로 아래 보이도록
   });
+  // 전체/일반/전문가 토글 — 화면 전체 전환(즐겨찾기·검색 공유)
+  document.getElementById('tiertog').addEventListener('click', function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    activeTier=b.dataset.tier; activeCat='전체';
+    this.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x===b); });
+    try{ localStorage.setItem('tools:tier', activeTier); }catch(_){}
+    renderHub();
+  });
   // 섹션 헤더 클릭 = 접기/펼치기(상태 저장, 펼칠 때 지연 렌더)
   sectionsBox.addEventListener('click', function(e){
     var h=e.target.closest('.catsec-h'); if(!h) return;
@@ -315,8 +335,11 @@
   try{
     var sp=new URLSearchParams(location.search);
     var qp=sp.get('q'); if(qp){ q.value=qp; }
+    var tp=sp.get('tier') || localStorage.getItem('tools:tier');
+    if(tp && ['all','basic','pro'].indexOf(tp)>=0) activeTier=tp;
     var cp=sp.get('cat'); if(cp && catList().indexOf(cp)>=0){ activeCat=cp; }
   }catch(e){}
+  document.querySelectorAll('#tiertog button').forEach(function(x){ x.classList.toggle('on', x.dataset.tier===activeTier); });
   if(typeof t === 'function') renderHub();    // 초기 렌더(i18n 로드 후)
 </script>
 </body>
