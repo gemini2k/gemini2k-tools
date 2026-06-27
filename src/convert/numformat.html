@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>숫자 포맷 변환기 (천단위·만억 단위·반올림) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="숫자에 천 단위 콤마를 넣고, 한국식 만·억·조 단위, 반올림 자릿수, 통화·퍼센트 표기로 변환합니다. 큰 숫자 읽기 쉽게. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/numformat.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="숫자 포맷 변환기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="천단위 콤마·만억조 단위·반올림·통화 표기. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/numformat.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  input.in{width:100%;padding:.75rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-size:1.3rem;color:var(--text);font-family:inherit;margin-bottom:1rem;}
+  .item{border:1px solid var(--border);border-radius:11px;padding:.7rem .9rem;background:var(--ground);cursor:pointer;margin-bottom:.5rem;}
+  .item .l{font-size:.72rem;color:var(--muted);font-weight:700;} .item .v{font-size:1.2rem;margin-top:.2rem;word-break:break-all;font-weight:700;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"숫자 포맷 변환기","description":"천단위 콤마·만억조 단위·반올림·통화 표기로 숫자를 변환합니다.","url":"https://gemini2k.co.kr/numformat.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:640px;">
+  <h1>숫자 포맷 변환기</h1>
+  <p class="sub">큰 숫자를 천 단위 콤마, 한국식 만·억·조 단위, 통화·퍼센트 등으로 보기 좋게 바꿉니다. 줄을 클릭하면 복사돼요.</p>
+  <div class="card">
+    <input class="in" id="in" type="text" inputmode="decimal" value="1234567.89" placeholder="숫자 입력"/>
+    <div id="res"></div>
+    <div class="note">입력에서 숫자·소수점·부호만 인식합니다. 한글 단위는 만(10^4)·억(10^8)·조(10^12) 기준입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function korUnit(n){ if(!isFinite(n))return '-'; var neg=n<0; n=Math.abs(Math.round(n)); if(n===0)return '0';
+    var u=[['조',1e12],['억',1e8],['만',1e4],['',1]], out=''; u.forEach(function(p){ var q=Math.floor(n/p[1]); if(q>0){ out+=q.toLocaleString()+p[0]+' '; n-=q*p[1]; } }); return (neg?'-':'')+out.trim(); }
+  function render(){ var raw=$('in').value.replace(/[^0-9.\-]/g,''); var n=parseFloat(raw);
+    var items;
+    if(isNaN(n)){ items=[['안내','숫자를 입력하세요']]; }
+    else { items=[
+      ['천 단위 콤마', n.toLocaleString('en-US',{maximumFractionDigits:10})],
+      ['한국식 단위', korUnit(n)],
+      ['원화(₩)', '₩'+Math.round(n).toLocaleString()],
+      ['달러($)', '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})],
+      ['반올림(정수)', Math.round(n).toLocaleString()],
+      ['소수 2자리', n.toFixed(2)],
+      ['퍼센트', (n*100).toLocaleString('en-US',{maximumFractionDigits:4})+'%'],
+      ['지수 표기', n.toExponential(3)]
+    ]; }
+    $('res').innerHTML=items.map(function(it){ return '<div class="item" data-v="'+(''+it[1]).replace(/"/g,'&quot;')+'"><div class="l">'+it[0]+'</div><div class="v">'+it[1]+'</div></div>'; }).join('');
+  }
+  $('in').addEventListener('input',render); render();
+</script>
+</body>
+</html>

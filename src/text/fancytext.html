@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>꾸미기 글씨 생성기 (SNS 특수 글꼴 유니코드) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="인스타·트위터 프로필에 쓰는 굵게·기울임·동그라미·고딕 등 유니코드 특수 글씨로 텍스트를 변환합니다. 클릭 한 번 복사. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/fancytext.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="꾸미기 글씨 생성기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="SNS용 유니코드 특수 글꼴로 텍스트 변환·복사. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/fancytext.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  input.in{width:100%;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-size:1.05rem;color:var(--text);font-family:inherit;margin-bottom:1rem;}
+  .row{display:flex;align-items:center;gap:.6rem;border:1px solid var(--border);border-radius:11px;padding:.6rem .8rem;margin-bottom:.5rem;cursor:pointer;transition:.12s;}
+  .row:hover{background:var(--accent-soft);border-color:var(--accent);}
+  .row .lbl{font-size:.72rem;color:var(--muted);font-weight:700;min-width:70px;}
+  .row .val{flex:1;font-size:1.1rem;word-break:break-all;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"꾸미기 글씨 생성기","description":"SNS용 유니코드 특수 글꼴로 텍스트를 변환·복사합니다.","url":"https://gemini2k.co.kr/fancytext.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:680px;">
+  <h1>꾸미기 글씨 생성기</h1>
+  <p class="sub">입력한 글자를 SNS 프로필·닉네임에 쓰는 특수 유니코드 글꼴로 바꿔 줍니다. 줄을 클릭하면 복사돼요.</p>
+  <div class="card">
+    <input class="in" id="in" type="text" value="gemini2k" placeholder="영문·숫자를 입력하세요"/>
+    <div id="list"></div>
+    <div class="note">유니코드 문자라 대부분의 SNS·메신저에서 보입니다(일부 앱·폰트는 미지원). 영문 대소문자·숫자에 적용되며 한글은 원형 유지됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function mapper(upA,loA,d0){ return function(s){ return s.replace(/[A-Za-z0-9]/g,function(c){ var n=c.charCodeAt(0);
+    if(c>='A'&&c<='Z')return cp(upA+(n-65)); if(c>='a'&&c<='z')return cp(loA+(n-97)); if(c>='0'&&c<='9'&&d0)return cp(d0+(n-48)); return c; }); }; }
+  function cp(n){ return String.fromCodePoint(n); }
+  function circled(s){ return s.replace(/[A-Za-z0-9]/g,function(c){ var n=c.charCodeAt(0);
+    if(c>='A'&&c<='Z')return cp(0x24B6+(n-65)); if(c>='a'&&c<='z')return cp(0x24D0+(n-97)); if(c==='0')return '⓪'; if(c>='1'&&c<='9')return cp(0x2460+(n-49)); return c; }); }
+  function squared(s){ return s.replace(/[A-Za-z]/g,function(c){ var n=c.charCodeAt(0); if(c>='A'&&c<='Z')return cp(0x1F130+(n-65)); return c.toUpperCase()===c?c:cp(0x1F130+(c.toUpperCase().charCodeAt(0)-65)); }); }
+  function strike(s){ return s.split('').map(function(c){return c+'̶';}).join(''); }
+  function under(s){ return s.split('').map(function(c){return c+'̲';}).join(''); }
+  function wide(s){ return s.replace(/[!-~]/g,function(c){return cp(c.charCodeAt(0)-0x21+0xFF01);}).replace(/ /g,'　'); }
+  var STYLES=[
+    ['굵게', mapper(0x1D400,0x1D41A,0x1D7CE)],
+    ['기울임', mapper(0x1D434,0x1D44E)],
+    ['굵은 기울임', mapper(0x1D468,0x1D482)],
+    ['손글씨', mapper(0x1D49C,0x1D4B6)],
+    ['고딕(흑체)', mapper(0x1D5D4,0x1D5EE,0x1D7EC)],
+    ['모노스페이스', mapper(0x1D670,0x1D68A,0x1D7F6)],
+    ['더블스트럭', mapper(0x1D538,0x1D552,0x1D7D8)],
+    ['동그라미', circled],
+    ['네모', squared],
+    ['전각', wide],
+    ['취소선', strike],
+    ['밑줄', under]
+  ];
+  function render(){ var s=$('in').value||''; $('list').innerHTML=STYLES.map(function(st){
+    return '<div class="row" data-v="'+(''+st[1](s)).replace(/"/g,'&quot;')+'"><span class="lbl">'+st[0]+'</span><span class="val">'+(st[1](s)||'…')+'</span></div>'; }).join(''); }
+  $('in').addEventListener('input',render);
+  $('list').addEventListener('click',function(e){ var r=e.target.closest('.row'); if(r){ navigator.clipboard.writeText(r.dataset.v).then(function(){toast('복사됐습니다');}); } });
+  render();
+</script>
+</body>
+</html>

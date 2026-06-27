@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>한글 자모 분해·초성 추출기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="한글을 초성·중성·종성 자모로 분해하고 초성만 추출합니다. 타수(자판 입력 수) 계산, 자모 결합. 검색·정렬·게임 제작에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/hangul.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="한글 자모 분해·초성 추출기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="한글 초성·중성·종성 분해, 초성 추출, 타수 계산. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/hangul.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  textarea{width:100%;min-height:90px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-size:1.05rem;color:var(--text);font-family:inherit;resize:vertical;}
+  .res{display:grid;gap:.6rem;margin-top:1rem;}
+  .item{border:1px solid var(--border);border-radius:11px;padding:.7rem .9rem;background:var(--ground);cursor:pointer;}
+  .item .l{font-size:.72rem;color:var(--muted);font-weight:700;} .item .v{font-size:1.1rem;margin-top:.2rem;word-break:break-all;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"한글 자모 분해·초성 추출기","description":"한글을 초성·중성·종성으로 분해하고 초성 추출·타수 계산을 합니다.","url":"https://gemini2k.co.kr/hangul.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:680px;">
+  <h1>한글 자모 분해·초성 추출</h1>
+  <p class="sub">한글을 초성·중성·종성으로 나누고, 초성만 뽑거나 자모로 풀어 줍니다. 각 줄을 클릭하면 복사돼요.</p>
+  <div class="card">
+    <textarea id="in" placeholder="한글을 입력하세요...">빛의여행 gemini2k</textarea>
+    <div class="res" id="res"></div>
+    <div class="note">유니코드 한글 음절을 표준 자모(초성 19·중성 21·종성 28)로 분해합니다. ‘타수’는 두벌식 자판 입력 수 근사치입니다. 한글 외 문자는 그대로 둡니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var CHO='ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ'.split('');
+  var JUNG='ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ'.split('');
+  var JONG=['','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+  var KC=[1,2,1,1,2,1,1,1,2,1,2,1,1,2,1,1,1,1,1], KJ=[1,1,1,1,1,1,1,1,1,2,2,2,1,1,2,2,2,1,1,2,1], KG=[0,1,2,2,1,2,2,1,1,2,2,2,2,2,2,2,1,1,2,1,2,1,1,1,1,1,1,1];
+  function each(s,fn){ var o=''; for(var i=0;i<s.length;i++){ var c=s.charCodeAt(i); if(c>=0xAC00&&c<=0xD7A3){ var x=c-0xAC00; o+=fn(Math.floor(x/588),Math.floor((x%588)/28),x%28,s[i]); } else o+=s[i]; } return o; }
+  function render(){ var s=$('in').value;
+    var decomp=each(s,function(a,b,c){ return CHO[a]+JUNG[b]+(JONG[c]||''); });
+    var cho=each(s,function(a){ return CHO[a]; });
+    var taps=0; for(var i=0;i<s.length;i++){ var c=s.charCodeAt(i); if(c>=0xAC00&&c<=0xD7A3){ var x=c-0xAC00; taps+=KC[Math.floor(x/588)]+KJ[Math.floor((x%588)/28)]+KG[x%28]; } else taps+=1; }
+    var items=[['초성 추출(ㅊㅅ)',cho],['자모 분해',decomp],['타수(자판 입력 수)',String(taps)+'타'],['글자 수',String([].concat.apply([],s.split('')).length)+'자']];
+    $('res').innerHTML=items.map(function(it){ return '<div class="item" data-v="'+(''+it[1]).replace(/"/g,'&quot;')+'"><div class="l">'+it[0]+'</div><div class="v">'+(it[1]||'…')+'</div></div>'; }).join('');
+  }
+  $('in').addEventListener('input',render);
+  $('res').addEventListener('click',function(e){ var it=e.target.closest('.item'); if(it){ navigator.clipboard.writeText(it.dataset.v).then(function(){toast('복사됐습니다');}); } });
+  render();
+</script>
+</body>
+</html>

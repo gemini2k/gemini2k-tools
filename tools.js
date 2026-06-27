@@ -157,4 +157,12 @@ window.TOOLS = [
   { key:'xmlformat',h:'xmlformat.html',ic:'📐', chip:'c-green', cat:'개발자', k:'xml 포매터 정렬 압축 검증 포맷 rss svg beautify minify format 格式化 整形 xml정렬', related:['jsonyaml','json','sqlformat'] },
   { key:'cyberchef',h:'cyberchef.html',ic:'🔪', chip:'c-violet', cat:'개발자', k:'사이버셰프 cyberchef 암복호화 인코딩 디코딩 base64 hex 해시 jwt aes 정규식 변환 데이터 보안 cyber chef encode decode 加密 暗号 사이버셰프', related:['base64','hash','jwt'] },
   { key:'excalidraw',h:'excalidraw.html',ic:'✏️', chip:'c-cyan', cat:'시각화', k:'엑스칼리드로 excalidraw 화이트보드 다이어그램 손그림 와이어프레임 아키텍처 플로차트 그림 whiteboard draw 白板 ホワイトボード 엑스칼리드로', related:['diagram','mindmap','drawmap'] },
+  { key:'morse',h:'morse.html',ic:'📻', chip:'c-blue', cat:'텍스트', k:'모스부호 모스 변환 점선 신호 소리 morse code 摩尔斯 モールス 모스부호변환', related:['fancytext','base64','emoji'] },
+  { key:'fancytext',h:'fancytext.html',ic:'🔡', chip:'c-violet', cat:'텍스트', k:'꾸미기 글씨 특수문자 폰트 sns 인스타 닉네임 유니코드 fancy text font 花体字 装飾文字 특수글씨', related:['emoji','textflip','caseconv'] },
+  { key:'hangul',h:'hangul.html',ic:'한', chip:'c-rose', cat:'텍스트', k:'한글 자모 분해 초성 추출 중성 종성 타수 결합 hangul jamo decompose 韩文 ハングル 초성추출', related:['typing','lines','char'] },
+  { key:'textflip',h:'textflip.html',ic:'🙃', chip:'c-amber', cat:'텍스트', k:'텍스트 뒤집기 거꾸로 역순 상하반전 미러 flip reverse upside down 翻转 反転 거꾸로글씨', related:['fancytext','emoji','caseconv'] },
+  { key:'numformat',h:'numformat.html',ic:'🔢', chip:'c-green', cat:'변환기', k:'숫자 포맷 천단위 콤마 만 억 조 단위 통화 반올림 number format 数字格式 数値 천단위콤마', related:['numkor','num2en','radix'] },
+  { key:'num2en',h:'num2en.html',ic:'🔤', chip:'c-cyan', cat:'변환기', k:'숫자 영어 변환 금액 영문 표기 number to words english 数字英文 英語 숫자영어', related:['numkor','numformat','roman'] },
+  { key:'unicodeconv',h:'unicodeconv.html',ic:'🆎', chip:'c-violet', cat:'개발자', k:'유니코드 변환 코드포인트 이스케이프 utf-8 바이트 unicode escape codepoint 编码 文字コード 유니코드변환', related:['htmlentity','base64','unicodeconv'] },
+  { key:'dice',h:'dice.html',ic:'🎲', chip:'c-amber', cat:'생성기', k:'주사위 랜덤 숫자 굴리기 보드게임 추첨 무작위 dice random roll 骰子 サイコロ 주사위', related:['roulette','lotto','ladder'] },
 ];
