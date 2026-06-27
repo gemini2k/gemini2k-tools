@@ -8,13 +8,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
 <meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
-<title>건앤슬라임 3D FPS 게임 (슬라임 슈팅·웨이브·상점) — 빛의여행(gemini2k) 도구</title>
-<meta name="description" content="다가오는 슬라임을 총으로 처치하는 3D 1인칭 슈팅(FPS) 게임. 웨이브가 거듭될수록 강해지는 슬라임 3종(일반·빠른·탱커), 탄약·재장전, 웨이브 사이 골드 상점 업그레이드. WASD 이동·마우스 조준·클릭 발사, 모바일 터치 조작, 난이도 선택, 일시정지 지원. PC·모바일 무료."/>
+<title>건앤슬라임 3D FPS 게임 (슬라임 슈팅·무기·보스·웨이브) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="다가오는 슬라임을 총으로 처치하는 3D 1인칭 슈팅(FPS) 게임. 권총·샷건·기관총 3종 무기, 5웨이브마다 보스 슬라임, 슬라임 3종, 탄약·재장전, 골드 상점 업그레이드, 최고 기록 저장, 난이도 선택. WASD·마우스 조준·클릭 발사, 모바일 터치, 일시정지. PC·모바일 무료."/>
 <link rel="canonical" href="https://gemini2k.co.kr/slimefps.html"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
 <meta property="og:title" content="건앤슬라임 3D FPS 게임 — 빛의여행(gemini2k) 도구"/>
-<meta property="og:description" content="슬라임을 처치하는 3D FPS. 웨이브·슬라임 3종·탄약/재장전·골드 상점 업그레이드·난이도. PC·모바일 무료."/>
+<meta property="og:description" content="슬라임 처치 3D FPS. 무기 3종·보스·웨이브·상점 업그레이드·최고기록·난이도. PC·모바일 무료."/>
 <meta property="og:url" content="https://gemini2k.co.kr/slimefps.html"/>
 <meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
 <link rel="stylesheet" href="/fonts/pretendard.css"/>
@@ -27,33 +27,40 @@
 <style>
   .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
   .scores{display:flex;gap:.6rem;}
-  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:64px;}
-  .sbox .l{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.15rem;font-weight:800;color:var(--text);}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .7rem;text-align:center;min-width:60px;}
+  .sbox .l{font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.12rem;font-weight:800;color:var(--text);}
   .stage{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#0a0d18;}
   .view{width:100%;}
   .cross{position:absolute;left:50%;top:50%;width:26px;height:26px;transform:translate(-50%,-50%);pointer-events:none;z-index:3;}
   .cross::before,.cross::after{content:'';position:absolute;background:rgba(255,255,255,.85);box-shadow:0 0 2px rgba(0,0,0,.6);}
   .cross::before{left:50%;top:0;width:2px;height:100%;transform:translateX(-50%);}
   .cross::after{top:50%;left:0;height:2px;width:100%;transform:translateY(-50%);}
-  .hp{position:absolute;left:12px;bottom:12px;width:160px;height:14px;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.3);border-radius:8px;overflow:hidden;z-index:3;pointer-events:none;}
+  .hp{position:absolute;left:12px;bottom:12px;width:150px;height:14px;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.3);border-radius:8px;overflow:hidden;z-index:3;pointer-events:none;}
   .hp>i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);transition:width .2s;}
-  .ammo{position:absolute;right:12px;bottom:12px;color:#fff;font-weight:800;font-size:1rem;text-shadow:0 1px 3px #000;z-index:3;pointer-events:none;}
-  .ammo small{font-weight:600;color:#ffd86b;}
+  .ammo{position:absolute;right:12px;bottom:12px;color:#fff;font-weight:800;font-size:1rem;text-shadow:0 1px 3px #000;z-index:3;pointer-events:none;text-align:right;}
+  .ammo small{font-weight:600;color:#ffd86b;} .ammo .wn{display:block;font-size:.72rem;color:#bcd;}
+  .bossbar{position:absolute;left:50%;top:10px;transform:translateX(-50%);width:60%;max-width:340px;z-index:3;pointer-events:none;display:none;}
+  .bossbar .lab{color:#ff8a8a;font-size:.74rem;font-weight:800;text-shadow:0 1px 2px #000;margin-bottom:2px;text-align:center;}
+  .bossbar .bg{height:12px;background:rgba(0,0,0,.5);border:1px solid rgba(255,120,120,.6);border-radius:7px;overflow:hidden;}
+  .bossbar .fg{height:100%;width:100%;background:linear-gradient(90deg,#7c1d1d,#ef4444);transition:width .15s;}
   .vig{position:absolute;inset:0;pointer-events:none;z-index:2;box-shadow:inset 0 0 80px 20px rgba(220,30,30,0);transition:box-shadow .12s;}
   .vig.hurt{box-shadow:inset 0 0 80px 30px rgba(220,30,30,.65);}
   .hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(0,0,0,.55);color:#fff;font-size:.8rem;padding:.3rem .7rem;border-radius:8px;z-index:3;pointer-events:none;}
-  .banner{position:absolute;left:50%;top:30%;transform:translate(-50%,-50%);color:#ffd86b;font-weight:800;font-size:1.6rem;text-shadow:0 2px 6px #000;z-index:3;pointer-events:none;opacity:0;transition:opacity .3s;}
+  .banner{position:absolute;left:50%;top:30%;transform:translate(-50%,-50%);color:#ffd86b;font-weight:800;font-size:1.6rem;text-shadow:0 2px 6px #000;z-index:3;pointer-events:none;opacity:0;transition:opacity .3s;text-align:center;}
   .banner.show{opacity:1;}
   .over{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(8,12,30,.86);color:#fff;z-index:4;padding:1rem;}
   .over .big{font-size:1.5rem;font-weight:800;margin-bottom:.3rem;} .over .sm{font-size:.92rem;opacity:.9;margin-bottom:1rem;line-height:1.6;}
   .diff{display:flex;gap:.5rem;justify-content:center;margin-bottom:1rem;flex-wrap:wrap;}
   .diff button{padding:.45rem .9rem;border:1px solid rgba(255,255,255,.4);border-radius:9px;background:rgba(255,255,255,.1);color:#fff;font-family:inherit;font-weight:700;cursor:pointer;}
   .diff button.on{background:var(--accent);border-color:var(--accent);}
-  .shopgrid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;max-width:420px;margin:0 auto 1rem;}
-  .shopgrid button{padding:.6rem;border:1px solid rgba(255,255,255,.3);border-radius:10px;background:rgba(255,255,255,.08);color:#fff;font-family:inherit;cursor:pointer;text-align:left;font-size:.85rem;line-height:1.4;}
+  .shopgrid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;max-width:440px;margin:0 auto 1rem;}
+  .shopgrid button{padding:.55rem;border:1px solid rgba(255,255,255,.3);border-radius:10px;background:rgba(255,255,255,.08);color:#fff;font-family:inherit;cursor:pointer;text-align:left;font-size:.82rem;line-height:1.4;}
   .shopgrid button:hover{background:rgba(255,255,255,.18);} .shopgrid button:disabled{opacity:.4;cursor:not-allowed;}
   .shopgrid b{color:#ffd86b;}
-  .touch{display:flex;justify-content:space-between;align-items:flex-end;margin-top:1rem;gap:.6rem;}
+  .weapons{display:flex;gap:.4rem;justify-content:center;margin-top:.8rem;flex-wrap:wrap;}
+  .weapons button{padding:.4rem .7rem;border:1px solid var(--border);background:var(--surface);border-radius:9px;font-family:inherit;font-weight:700;color:var(--text);cursor:pointer;font-size:.85rem;}
+  .weapons button.on{background:var(--accent);color:#fff;border-color:var(--accent);} .weapons button.lock{opacity:.45;}
+  .touch{display:flex;justify-content:space-between;align-items:flex-end;margin-top:.7rem;gap:.6rem;}
   .dpad{display:grid;grid-template-columns:repeat(3,46px);grid-template-rows:repeat(2,46px);gap:.3rem;touch-action:none;}
   .dpad button{border:1px solid var(--border);background:var(--surface);border-radius:10px;font-size:1.05rem;color:var(--text);cursor:pointer;user-select:none;}
   .dpad button:active,.dpad button.on{background:var(--accent-soft);}
@@ -70,7 +77,7 @@
   "@context": "https://schema.org",
   "@type": "VideoGame",
   "name": "건앤슬라임 3D FPS",
-  "description": "다가오는 슬라임을 총으로 처치하는 3D 1인칭 슈팅(FPS) 게임. 웨이브, 슬라임 3종, 탄약·재장전, 골드 상점 업그레이드, 난이도 선택, 모바일 터치, 일시정지 지원.",
+  "description": "슬라임을 처치하는 3D 1인칭 슈팅 게임. 무기 3종(권총·샷건·기관총), 5웨이브마다 보스, 슬라임 3종, 탄약·재장전, 골드 상점 업그레이드, 최고 기록, 난이도, 모바일 터치, 일시정지 지원.",
   "url": "https://gemini2k.co.kr/slimefps.html",
   "applicationCategory": "GameApplication",
   "genre": "Shooter",
@@ -85,12 +92,12 @@
 <body>
 <div class="toolwrap" style="max-width:780px;">
   <h1>건앤슬라임 <span style="font-size:.9rem;color:var(--muted)">(3D FPS)</span></h1>
-  <p class="sub">웨이브가 거듭될수록 강해지는 슬라임을 처치하세요! 골드로 무기와 능력을 업그레이드하며 끝까지 살아남으세요.</p>
+  <p class="sub">무기를 바꿔가며 슬라임을 처치하고, 5웨이브마다 등장하는 보스를 쓰러뜨리세요! 골드로 업그레이드하며 최고 기록에 도전!</p>
 
   <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li><b>이동 W A S D</b>, <b>조준</b>은 화면 클릭(마우스, 해제는 ESC), <b>발사 = 클릭</b>, <b>재장전 = R</b></li>
-    <li>모바일: 왼쪽 <b>이동 버튼</b>, 화면 <b>드래그</b>로 조준, 오른쪽 <b>발사 버튼</b>·재장전</li>
-    <li>웨이브를 끝내면 <b>상점</b>에서 골드로 업그레이드! <b>Space/P</b> 또는 ⏸ 로 일시정지</li>
+    <li><b>이동 WASD</b>, <b>조준</b>은 화면 클릭(마우스·ESC 해제), <b>발사 = 클릭</b>, <b>재장전 R</b>, <b>무기 전환 1·2·3</b></li>
+    <li>모바일: 왼쪽 <b>이동</b>, 화면 <b>드래그</b> 조준, 오른쪽 <b>발사</b>·재장전, 아래 <b>무기 버튼</b></li>
+    <li>웨이브 사이 <b>상점</b>에서 골드로 업그레이드·무기 해제! <b>Space/P</b>로 일시정지</li>
   </ol></div></div>
 
   <div class="card">
@@ -99,6 +106,7 @@
         <div class="sbox"><div class="l">웨이브</div><div class="v" id="wave">0</div></div>
         <div class="sbox"><div class="l">처치</div><div class="v" id="kills">0</div></div>
         <div class="sbox"><div class="l">골드</div><div class="v" id="gold">0</div></div>
+        <div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div>
       </div>
       <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
     </div>
@@ -106,6 +114,7 @@
       <div class="view g3d-stage" id="view"></div>
       <div class="cross" id="cross" style="display:none"></div>
       <div class="vig" id="vig"></div>
+      <div class="bossbar" id="bossbar"><div class="lab" id="bossLab">👑 보스 슬라임</div><div class="bg"><div class="fg" id="bossFg"></div></div></div>
       <div class="hp" id="hpwrap" style="display:none"><i id="hp"></i></div>
       <div class="ammo" id="ammo" style="display:none"></div>
       <div class="banner" id="banner"></div>
@@ -129,11 +138,12 @@
         <button class="btn" id="nextWaveBtn" type="button">다음 웨이브 ▶</button>
       </div></div>
     </div>
+    <div class="weapons" id="weaponBar"></div>
     <div class="touch">
       <div class="dpad" id="dpad"><button class="du" data-d="u">▲</button><button class="dl" data-d="l">◀</button><button class="dd" data-d="d">▼</button><button class="dr" data-d="r">▶</button></div>
       <div class="rgrp"><button class="reloadBtn" id="reloadBtn" type="button">🔄 재장전(R)</button><button class="fire" id="fireBtn" type="button">발사</button></div>
     </div>
-    <div class="note">Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 효과음은 브라우저에서 합성됩니다. 데스크톱은 마우스 조준(포인터 잠금), 모바일은 드래그 조준을 지원합니다. 진행은 브라우저에서만 이루어집니다.</div>
+    <div class="note">Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 효과음은 브라우저에서 합성되고, 최고 기록은 이 기기에 저장됩니다. 데스크톱은 마우스 조준(포인터 잠금), 모바일은 드래그 조준을 지원합니다.</div>
   </div>
 </div>
 
@@ -144,56 +154,64 @@
 (function(){
   var $=function(id){return document.getElementById(id);};
   var T=Three3D.setup($('view'),{bg:0x0a0d18, fov:78, ratio:0.62, far:300});
-  if(!T){ ['cross','hpwrap','ammo','hint','dpad','reloadBtn','fireBtn','restart','gover','shop'].forEach(function(id){ var e=$(id); if(e)e.style.display='none'; }); return; }
+  if(!T){ ['cross','hpwrap','ammo','hint','dpad','reloadBtn','fireBtn','restart','gover','shop','weaponBar'].forEach(function(id){ var e=$(id); if(e)e.style.display='none'; }); return; }
   var THREE=T.THREE, scene=T.scene, camera=T.camera;
   scene.add(new THREE.AmbientLight(0x8893b8,0.9));
   var dl=new THREE.DirectionalLight(0xffffff,0.8); dl.position.set(20,40,10); scene.add(dl);
-  scene.fog=new THREE.Fog(0x0a0d18, 30, 92);
-  scene.add(camera);
+  scene.fog=new THREE.Fog(0x0a0d18, 30, 92); scene.add(camera);
 
   var ARENA=44, EYE=1.7;
-  // 업그레이드 가능한 능력치
-  var stats={maxHp:100, dmg:1, mag:12, moveSp:8};
+  var stats, weapons, cur, diffKey='normal';
   var DIFF={easy:{spd:0.8,spawn:0.85,dmg:0.7},normal:{spd:1,spawn:1,dmg:1},hard:{spd:1.25,spawn:1.2,dmg:1.35}};
-  var diffKey='normal';
   var yaw=0,pitch=0,px=0,pz=0,health=100,kills=0,gold=0,wave=0,state='ready';
-  var ammo=12,reloading=0, recoil=0, flashT=0, hurtCD=0;
-  var toSpawn=0, spawnedWave=0, killedWave=0, spawnTimer=0;
-  var slimes=[], tracers=[], keys={u:0,d:0,l:0,r:0};
+  var reloading=0,recoil=0,flashT=0,hurtCD=0,fireCD=0,holdFire=false;
+  var toSpawn=0,spawnedWave=0,spawnTimer=0, boss=null;
+  var slimes=[], tracers=[], parts=[], keys={u:0,d:0,l:0,r:0};
   var FWD=new THREE.Vector3(), tmp=new THREE.Vector3();
   var gun, flashMesh;
+  var best=loadBest();
 
-  // ===== 사운드(WebAudio 합성) =====
+  function loadBest(){ try{ return JSON.parse(localStorage.getItem('slimefps:best'))||{wave:0,kills:0,gold:0}; }catch(e){ return {wave:0,kills:0,gold:0}; } }
+  function saveBest(){ try{ localStorage.setItem('slimefps:best', JSON.stringify(best)); }catch(e){} }
+
+  // ===== 사운드 =====
   var actx=null;
   function initAudio(){ try{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){} }
-  function tone(freq,freq2,dur,type,vol){ if(!actx)return; try{ var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;
-    o.type=type||'square'; o.frequency.setValueAtTime(freq,t); if(freq2)o.frequency.exponentialRampToValueAtTime(freq2,t+dur);
-    g.gain.setValueAtTime(vol||0.15,t); g.gain.exponentialRampToValueAtTime(0.001,t+dur);
-    o.connect(g).connect(actx.destination); o.start(t); o.stop(t+dur+0.02);}catch(e){} }
-  function sShot(){ tone(220,60,0.09,'square',0.16); }
-  function sHit(){ tone(520,820,0.07,'square',0.12); }
-  function sKill(){ tone(300,90,0.18,'sawtooth',0.14); }
+  function tone(f,f2,dur,type,vol){ if(!actx)return; try{ var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;
+    o.type=type||'square'; o.frequency.setValueAtTime(f,t); if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+    g.gain.setValueAtTime(vol||0.15,t); g.gain.exponentialRampToValueAtTime(0.001,t+dur); o.connect(g).connect(actx.destination); o.start(t); o.stop(t+dur+0.02);}catch(e){} }
+  function sShot(){ tone(220,60,0.08,'square',0.15); }
+  function sShotgun(){ tone(150,40,0.16,'sawtooth',0.2); }
+  function sMg(){ tone(260,120,0.05,'square',0.1); }
+  function sHit(){ tone(520,820,0.06,'square',0.1); }
+  function sKill(){ tone(300,90,0.16,'sawtooth',0.13); }
+  function sBoss(){ tone(80,40,0.5,'sawtooth',0.22); }
   function sReload(){ tone(140,140,0.05,'square',0.12); setTimeout(function(){tone(200,200,0.05,'square',0.12);},140); }
   function sHurt(){ tone(120,50,0.18,'sawtooth',0.18); }
   function sEmpty(){ tone(90,80,0.05,'square',0.1); }
 
+  function defaultStats(){ return {maxHp:100,dmg:1,magBonus:0,moveSp:8}; }
+  function defaultWeapons(){ return {
+    pistol:{name:'권총',icon:'🔫',mag:12,reload:1.2,rate:0.16,pellets:1,spread:0,dmgMul:1,auto:false,unlocked:true,ammo:12,cost:0},
+    shotgun:{name:'샷건',icon:'💥',mag:6,reload:1.7,rate:0.7,pellets:8,spread:0.11,dmgMul:1.1,auto:false,unlocked:false,ammo:6,cost:300},
+    mg:{name:'기관총',icon:'⚡',mag:30,reload:2.0,rate:0.075,pellets:1,spread:0.03,dmgMul:0.6,auto:true,unlocked:false,ammo:30,cost:400}
+  }; }
+  var ORDER=['pistol','shotgun','mg'];
+  function effMag(w){ return w.mag+stats.magBonus; }
+
   function buildOnce(){
-    var grid=new THREE.GridHelper(ARENA*2, 36, 0x2a3a66, 0x18223f); scene.add(grid);
-    var gnd=new THREE.Mesh(new THREE.PlaneGeometry(ARENA*2,ARENA*2), new THREE.MeshLambertMaterial({color:0x12182e}));
-    gnd.rotation.x=-Math.PI/2; gnd.position.y=-0.01; scene.add(gnd);
+    var grid=new THREE.GridHelper(ARENA*2,36,0x2a3a66,0x18223f); scene.add(grid);
+    var gnd=new THREE.Mesh(new THREE.PlaneGeometry(ARENA*2,ARENA*2),new THREE.MeshLambertMaterial({color:0x12182e})); gnd.rotation.x=-Math.PI/2; gnd.position.y=-0.01; scene.add(gnd);
     var wm=new THREE.MeshLambertMaterial({color:0x26314f});
-    [[0,ARENA],[0,-ARENA],[ARENA,0],[-ARENA,0]].forEach(function(p,i){ var horiz=i<2;
-      var w=new THREE.Mesh(new THREE.BoxGeometry(horiz?ARENA*2:1.5,4,horiz?1.5:ARENA*2),wm); w.position.set(p[0],2,p[1]); scene.add(w); });
+    [[0,ARENA],[0,-ARENA],[ARENA,0],[-ARENA,0]].forEach(function(p,i){ var h=i<2; var w=new THREE.Mesh(new THREE.BoxGeometry(h?ARENA*2:1.5,4,h?1.5:ARENA*2),wm); w.position.set(p[0],2,p[1]); scene.add(w); });
     var cm=new THREE.MeshLambertMaterial({color:0x33406b});
     [[12,10],[-14,8],[8,-16],[-10,-12],[0,18],[18,-4]].forEach(function(c){ var b=new THREE.Mesh(new THREE.BoxGeometry(4,3,4),cm); b.position.set(c[0],1.5,c[1]); scene.add(b); });
-    // 총 뷰모델(카메라 자식)
     gun=new THREE.Group();
-    var body=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.18,0.5), new THREE.MeshStandardMaterial({color:0x2b3344,roughness:.6,metalness:.4}));
-    var barrel=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.08,0.5), new THREE.MeshStandardMaterial({color:0x14181f}));
-    barrel.position.set(0,0.02,-0.45); body.add(barrel);
-    var grip=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.24,0.14), new THREE.MeshStandardMaterial({color:0x1a2030})); grip.position.set(0,-0.18,0.12); body.add(grip);
+    var body=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.18,0.5),new THREE.MeshStandardMaterial({color:0x2b3344,roughness:.6,metalness:.4}));
+    var barrel=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.08,0.5),new THREE.MeshStandardMaterial({color:0x14181f})); barrel.position.set(0,0.02,-0.45); body.add(barrel);
+    var grip=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.24,0.14),new THREE.MeshStandardMaterial({color:0x1a2030})); grip.position.set(0,-0.18,0.12); body.add(grip);
     gun.add(body); gun.position.set(0.33,-0.30,-0.62); camera.add(gun);
-    flashMesh=new THREE.Mesh(new THREE.PlaneGeometry(0.4,0.4), new THREE.MeshBasicMaterial({color:0xffe08a,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthTest:false}));
+    flashMesh=new THREE.Mesh(new THREE.PlaneGeometry(0.4,0.4),new THREE.MeshBasicMaterial({color:0xffe08a,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthTest:false}));
     flashMesh.position.set(0,0.02,-0.95); flashMesh.visible=false; gun.add(flashMesh);
   }
 
@@ -204,109 +222,138 @@
   };
   function makeSlime(type){
     var d=TYPES[type]; var g=new THREE.Group();
-    var body=new THREE.Mesh(new THREE.SphereGeometry(1,18,14), new THREE.MeshStandardMaterial({color:d.col,roughness:.5,emissive:d.em,emissiveIntensity:.4}));
+    var body=new THREE.Mesh(new THREE.SphereGeometry(1,18,14),new THREE.MeshStandardMaterial({color:d.col,roughness:.5,emissive:d.em,emissiveIntensity:.4}));
     body.scale.set(d.sc,d.sc*0.8,d.sc); body.position.y=0.85*d.sc; g.add(body);
-    var em=new THREE.MeshBasicMaterial({color:0x0a0a0a});
-    var e1=new THREE.Mesh(new THREE.SphereGeometry(0.14*d.sc,8,8),em),e2=e1.clone();
+    var em=new THREE.MeshBasicMaterial({color:0x0a0a0a}); var e1=new THREE.Mesh(new THREE.SphereGeometry(0.14*d.sc,8,8),em),e2=e1.clone();
     e1.position.set(-0.32*d.sc,1.05*d.sc,0.78*d.sc); e2.position.set(0.32*d.sc,1.05*d.sc,0.78*d.sc); g.add(e1); g.add(e2);
-    g._body=body; g._hp=d.hp; g._type=type; g._phase=Math.random()*6; return g;
+    g._body=body; g._hp=d.hp; g._maxhp=d.hp; g._type=type; g._phase=Math.random()*6; g._col=d.col; return g;
   }
-  function pickType(){ var r=Math.random(); if(wave>=3 && r<0.18) return 'tank'; if(wave>=2 && r<0.45) return 'fast'; return 'normal'; }
+  function makeBoss(){
+    var g=new THREE.Group(); var sc=3.2;
+    var body=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),new THREE.MeshStandardMaterial({color:0x7c3aed,roughness:.4,emissive:0x3b1080,emissiveIntensity:.6}));
+    body.scale.set(sc,sc*0.85,sc); body.position.y=0.85*sc; g.add(body);
+    var crown=new THREE.Mesh(new THREE.ConeGeometry(0.5*sc,0.7*sc,5),new THREE.MeshStandardMaterial({color:0xffd24a,emissive:0x6b4a00,emissiveIntensity:.5})); crown.position.y=1.9*sc; g.add(crown);
+    var em=new THREE.MeshBasicMaterial({color:0xff3030}); var e1=new THREE.Mesh(new THREE.SphereGeometry(0.18*sc,10,10),em),e2=e1.clone();
+    e1.position.set(-0.34*sc,1.1*sc,0.8*sc); e2.position.set(0.34*sc,1.1*sc,0.8*sc); g.add(e1); g.add(e2);
+    g._body=body; g._boss=true; g._maxhp=40+wave*9; g._hp=g._maxhp; g._type='boss'; g._phase=0; g._col=0x7c3aed; return g;
+  }
+
+  function pickType(){ var r=Math.random(); if(wave>=3&&r<0.18) return 'tank'; if(wave>=2&&r<0.45) return 'fast'; return 'normal'; }
   function spawnSlime(type){
     var ang=Math.random()*Math.PI*2, r=ARENA*0.7+Math.random()*5; type=type||pickType();
     var s=makeSlime(type); s.position.set(Math.cos(ang)*r,0,Math.sin(ang)*r);
     s._spd=TYPES[type].sp*DIFF[diffKey].spd*(1+wave*0.03); scene.add(s); slimes.push(s); spawnedWave++;
   }
-  function clearSlimes(){ slimes.forEach(function(s){ scene.remove(s); }); slimes=[]; tracers.forEach(function(t){scene.remove(t.line);}); tracers=[]; }
+  function spawnBoss(){ boss=makeBoss(); var ang=Math.random()*6.28; boss.position.set(Math.cos(ang)*ARENA*0.7,0,Math.sin(ang)*ARENA*0.7);
+    boss._spd=1.1*DIFF[diffKey].spd; scene.add(boss); slimes.push(boss); spawnedWave++; sBoss();
+    $('bossLab').textContent='👑 보스 슬라임 (웨이브 '+wave+')'; $('bossbar').style.display='block'; $('bossFg').style.width='100%'; }
+  function clearSlimes(){ slimes.forEach(function(s){ scene.remove(s); }); slimes=[]; boss=null; $('bossbar').style.display='none';
+    tracers.forEach(function(t){scene.remove(t.line);}); tracers=[]; parts.forEach(function(pp){scene.remove(pp.m);}); parts=[]; }
 
   function forward(){ FWD.set(-Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),-Math.cos(yaw)*Math.cos(pitch)); return FWD; }
-  function reload(){ if(state!=='play'||reloading>0||ammo>=stats.mag) return; reloading=1.2; sReload(); updateAmmo(); }
+  function findTarget(dir){ var best2=null,bd=1e9; for(var i=0;i<slimes.length;i++){ var s=slimes[i]; tmp.set(s.position.x-px,(s.position.y+0.85)-EYE,s.position.z-pz);
+    var dist=tmp.length(); if(dist>75) continue; tmp.normalize(); var dot=dir.x*tmp.x+dir.y*tmp.y+dir.z*tmp.z, aimR=0.05+(1.2/Math.max(4,dist));
+    if(dot>1-aimR && dist<bd){ best2=s; bd=dist; } } return {s:best2,d:bd}; }
+  function jitter(f,sp){ if(!sp) return f.clone(); return new THREE.Vector3(f.x+(Math.random()-0.5)*sp, f.y+(Math.random()-0.5)*sp, f.z+(Math.random()-0.5)*sp).normalize(); }
   function shoot(){
-    if(state!=='play'||reloading>0) return;
-    if(ammo<=0){ sEmpty(); reload(); return; }
-    ammo--; updateAmmo(); recoil=0.05; flashT=0.06; if(flashMesh){flashMesh.visible=true;flashMesh.material.rotation=Math.random()*6;} sShot();
-    var f=forward().clone(), camPos=new THREE.Vector3(px,EYE,pz), best=null,bestDist=1e9;
-    for(var i=0;i<slimes.length;i++){ var s=slimes[i]; tmp.set(s.position.x-px,(s.position.y+0.85)-EYE,s.position.z-pz);
-      var dist=tmp.length(); if(dist>70) continue; tmp.normalize();
-      var dot=f.x*tmp.x+f.y*tmp.y+f.z*tmp.z, aimR=0.05+(1.2/Math.max(4,dist));
-      if(dot>1-aimR && dist<bestDist){ best=i; bestDist=dist; } }
-    addTracer(camPos, camPos.clone().add(f.clone().multiplyScalar(best!=null?bestDist:70)));
-    if(best!=null){ var s=slimes[best]; s._hp-=stats.dmg; flash(s); sHit();
-      if(s._hp<=0){ scene.remove(s); slimes.splice(best,1); kills++; killedWave++; gold+=TYPES[s._type].gold; sKill();
+    if(state!=='play'||reloading>0||fireCD>0) return; var w=weapons[cur];
+    if(w.ammo<=0){ sEmpty(); reload(); return; }
+    w.ammo--; updateAmmo(); fireCD=w.rate; recoil=w===weapons.shotgun?0.09:0.045; flashT=0.06; if(flashMesh){flashMesh.visible=true;flashMesh.material.rotation=Math.random()*6;}
+    (cur==='shotgun'?sShotgun:cur==='mg'?sMg:sShot)();
+    var f=forward(), camPos=new THREE.Vector3(px,EYE,pz), dmgMap=[];
+    for(var pdx=0;pdx<w.pellets;pdx++){ var dir=jitter(f,w.spread); var r=findTarget(dir);
+      if(pdx===0) addTracer(camPos, camPos.clone().add(dir.clone().multiplyScalar(r.s?r.d:75)));
+      if(r.s){ var e=null; for(var k=0;k<dmgMap.length;k++) if(dmgMap[k].s===r.s){e=dmgMap[k];break;} if(!e){e={s:r.s,dmg:0};dmgMap.push(e);} e.dmg+=stats.dmg*w.dmgMul; } }
+    for(var m=0;m<dmgMap.length;m++){ var s=dmgMap[m].s; s._hp-=dmgMap[m].dmg; flash(s); sHit();
+      if(s._boss) $('bossFg').style.width=Math.max(0,s._hp/s._maxhp*100)+'%';
+      if(s._hp<=0){ var idx=slimes.indexOf(s); if(idx>=0) slimes.splice(idx,1); scene.remove(s);
+        burst(s.position.x,(s.position.y||0)+0.8,s.position.z,s._col); kills++; gold+=(s._boss?500:TYPES[s._type].gold); sKill();
+        if(s._boss){ boss=null; $('bossbar').style.display='none'; banner('보스 처치! +500G'); }
         $('kills').textContent=kills; $('gold').textContent=gold; } }
-    if(ammo<=0) reload();
+    if(w.ammo<=0) reload();
   }
-  function flash(s){ if(s._body){ s._body.material.emissiveIntensity=1.3; setTimeout(function(){ try{s._body.material.emissiveIntensity=.4;}catch(e){} },90); } }
+  function reload(){ var w=weapons[cur]; if(state!=='play'||reloading>0||w.ammo>=effMag(w)) return; reloading=w.reload; sReload(); updateAmmo(); }
+  function flash(s){ if(s._body){ s._body.material.emissiveIntensity=1.3; setTimeout(function(){ try{s._body.material.emissiveIntensity=.45;}catch(e){} },80); } }
   function addTracer(a,b){ var line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),new THREE.LineBasicMaterial({color:0xfff080})); scene.add(line); tracers.push({line:line,t:0.05}); }
-  function updateAmmo(){ $('ammo').innerHTML = reloading>0 ? '재장전 중…' : ('🔫 '+ammo+' <small>/ '+stats.mag+'</small>'); }
-  function banner(txt){ var b=$('banner'); b.textContent=txt; b.classList.add('show'); clearTimeout(b._t); b._t=setTimeout(function(){b.classList.remove('show');},1400); }
+  function burst(x,y,z,col){ for(var i=0;i<6;i++){ var m=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.18,0.18),new THREE.MeshBasicMaterial({color:col}));
+    m.position.set(x,y,z); scene.add(m); parts.push({m:m,vx:(Math.random()-0.5)*6,vy:Math.random()*5+2,vz:(Math.random()-0.5)*6,t:0.6}); } }
+  function updateAmmo(){ var w=weapons[cur]; $('ammo').innerHTML='<span class="wn">'+w.icon+' '+w.name+'</span>'+(reloading>0?'재장전 중…':('🔫 '+w.ammo+' <small>/ '+effMag(w)+'</small>')); }
+  function banner(txt){ var b=$('banner'); b.textContent=txt; b.classList.add('show'); clearTimeout(b._t); b._t=setTimeout(function(){b.classList.remove('show');},1500); }
+  function renderWeaponBar(){ $('weaponBar').innerHTML=ORDER.map(function(id,i){ var w=weapons[id];
+    return '<button data-w="'+id+'" class="'+(id===cur?'on':'')+(w.unlocked?'':' lock')+'">'+(i+1)+' '+w.icon+' '+w.name+(w.unlocked?'':' 🔒')+'</button>'; }).join(''); }
+  function switchWeapon(id){ if(!weapons[id]||!weapons[id].unlocked||state!=='play') return; cur=id; reloading=0; fireCD=0.1; updateAmmo(); renderWeaponBar(); }
 
   T.start(function(dt){
     camera.rotation.order='YXZ'; camera.rotation.y=yaw; camera.rotation.x=pitch-recoil; camera.position.set(px,EYE,pz);
     if(gun) gun.position.z=-0.62+recoil*1.2;
-    if(recoil>0){ recoil=Math.max(0,recoil-dt*0.4); }
+    if(recoil>0) recoil=Math.max(0,recoil-dt*0.4);
     if(flashT>0){ flashT-=dt; if(flashT<=0&&flashMesh) flashMesh.visible=false; }
+    if(fireCD>0) fireCD-=dt;
     for(var i=tracers.length-1;i>=0;i--){ tracers[i].t-=dt; if(tracers[i].t<=0){ scene.remove(tracers[i].line); tracers.splice(i,1); } }
-    if(reloading>0){ reloading-=dt; if(reloading<=0){ reloading=0; ammo=stats.mag; updateAmmo(); } }
+    for(var j=parts.length-1;j>=0;j--){ var pp=parts[j]; pp.t-=dt; pp.vy-=12*dt; pp.m.position.x+=pp.vx*dt; pp.m.position.y+=pp.vy*dt; pp.m.position.z+=pp.vz*dt; pp.m.rotation.x+=dt*8;
+      if(pp.t<=0||pp.m.position.y<0){ scene.remove(pp.m); parts.splice(j,1); } }
+    if(reloading>0){ reloading-=dt; if(reloading<=0){ reloading=0; var w=weapons[cur]; w.ammo=effMag(w); updateAmmo(); } }
     if(hurtCD>0) hurtCD-=dt;
     if(state!=='play') return;
-    // 이동
+    if(holdFire && weapons[cur].auto) shoot();
     var mf={x:-Math.sin(yaw),z:-Math.cos(yaw)}, rt={x:Math.cos(yaw),z:-Math.sin(yaw)}, mx=0,mz=0;
     if(keys.u){mx+=mf.x;mz+=mf.z;} if(keys.d){mx-=mf.x;mz-=mf.z;} if(keys.r){mx+=rt.x;mz+=rt.z;} if(keys.l){mx-=rt.x;mz-=rt.z;}
     if(mx||mz){ var l=Math.hypot(mx,mz); mx/=l;mz/=l; var sp=stats.moveSp*dt; px+=mx*sp; pz+=mz*sp; var lim=ARENA-2; px=Math.max(-lim,Math.min(lim,px)); pz=Math.max(-lim,Math.min(lim,pz)); }
-    // 스폰(웨이브 한도까지)
     spawnTimer-=dt;
     if(slimes.length<6 && spawnedWave<toSpawn && spawnTimer<=0){ spawnSlime(); spawnTimer=0.6/DIFF[diffKey].spawn; }
-    // 슬라임
     for(var i=slimes.length-1;i>=0;i--){ var s=slimes[i]; var dx=px-s.position.x,dz=pz-s.position.z,d=Math.hypot(dx,dz)||1;
       s.position.x+=dx/d*s._spd*dt; s.position.z+=dz/d*s._spd*dt;
-      s.position.y=Math.abs(Math.sin((performance.now()/1000+s._phase)*4))*0.25;
+      var bob=(s._boss?0.4:0.25); s.position.y=Math.abs(Math.sin((performance.now()/1000+s._phase)*4))*bob;
       s.rotation.y=Math.atan2(dx,dz);
-      if(d<1.5 && hurtCD<=0){ var dmg=TYPES[s._type].dmg*DIFF[diffKey].dmg*dt*1.2; health-=dmg; hurtCD=0; hurtFx();
+      var near=s._boss?3.2:1.5;
+      if(d<near && hurtCD<=0){ var cd=(s._boss?40:TYPES[s._type].dmg)*DIFF[diffKey].dmg*dt*1.2; health-=cd; hurtFx();
         $('hp').style.width=Math.max(0,health)+'%'; if(health<=0){ lose(); return; } } }
-    // 웨이브 클리어
-    if(spawnedWave>=toSpawn && slimes.length===0){ openShop(); }
+    if(spawnedWave>=toSpawn && slimes.length===0) openShop();
   });
   function hurtFx(){ var v=$('vig'); v.classList.add('hurt'); clearTimeout(v._t); v._t=setTimeout(function(){v.classList.remove('hurt');},120); if(!hurtFx._s){ sHurt(); hurtFx._s=1; setTimeout(function(){hurtFx._s=0;},250); } }
 
-  // ===== 웨이브/상점 =====
-  function startWave(n){ wave=n; $('wave').textContent=n; toSpawn=4+n*2; spawnedWave=0; killedWave=0; spawnTimer=0;
-    state='play'; banner('WAVE '+n); }
-  var SHOP=[
-    {id:'heal',name:'체력 회복 +40',cost:60,apply:function(){ health=Math.min(stats.maxHp,health+40); $('hp').style.width=health+'%'; }},
-    {id:'maxhp',name:'최대 체력 +20',cost:120,apply:function(){ stats.maxHp+=20; health+=20; $('hp').style.width=Math.min(100,health/stats.maxHp*100)+'%'; }},
-    {id:'dmg',name:'데미지 +1',cost:150,apply:function(){ stats.dmg+=1; }},
-    {id:'mag',name:'장탄수 +4',cost:100,apply:function(){ stats.mag+=4; ammo=stats.mag; updateAmmo(); }},
-    {id:'speed',name:'이동속도 +1.5',cost:110,apply:function(){ stats.moveSp+=1.5; }},
-    {id:'refill',name:'탄약 완충',cost:30,apply:function(){ ammo=stats.mag; reloading=0; updateAmmo(); }}
-  ];
+  function startWave(n){ wave=n; $('wave').textContent=n; spawnedWave=0; spawnTimer=0; boss=null; $('bossbar').style.display='none';
+    if(n%5===0){ toSpawn=1+3; banner('⚠ 보스 웨이브 '+n+' ⚠'); state='play'; spawnBoss(); /* 미니언 3 */ }
+    else { toSpawn=4+n*2; banner('WAVE '+n); state='play'; } }
   function renderShop(){ $('shopGold').textContent=gold;
-    $('shopGrid').innerHTML=SHOP.map(function(it,i){ var lv = it.id==='dmg'?(' (현재 '+stats.dmg+')'):it.id==='mag'?(' (현재 '+stats.mag+')'):'';
-      return '<button data-i="'+i+'" '+(gold<it.cost?'disabled':'')+'>'+it.name+lv+'<br><b>'+it.cost+' G</b></button>'; }).join(''); }
-  function openShop(){ state='shop'; exitLock(); $('cross').style.display='none'; $('hint').style.display='none';
+    var items=[
+      {name:'체력 회복 +40',cost:60,apply:function(){ health=Math.min(stats.maxHp,health+40); $('hp').style.width=health/stats.maxHp*100+'%'; }},
+      {name:'최대 체력 +20',cost:120,apply:function(){ stats.maxHp+=20; health+=20; $('hp').style.width=health/stats.maxHp*100+'%'; }},
+      {name:'데미지 +1 (현재 '+stats.dmg+')',cost:150,apply:function(){ stats.dmg+=1; }},
+      {name:'장탄수 +3 (현재 +'+stats.magBonus+')',cost:100,apply:function(){ stats.magBonus+=3; ORDER.forEach(function(id){weapons[id].ammo=effMag(weapons[id]);}); updateAmmo(); }},
+      {name:'이동속도 +1.5',cost:110,apply:function(){ stats.moveSp+=1.5; }},
+      {name:'탄약 완충',cost:30,apply:function(){ var w=weapons[cur]; w.ammo=effMag(w); reloading=0; updateAmmo(); }}
+    ];
+    ORDER.forEach(function(id){ var w=weapons[id]; if(!w.unlocked) items.push({name:'무기 해제: '+w.icon+' '+w.name,cost:w.cost,apply:function(){ w.unlocked=true; w.ammo=effMag(w); renderWeaponBar(); }}); });
+    window._shopItems=items;
+    $('shopGrid').innerHTML=items.map(function(it,i){ return '<button data-i="'+i+'" '+(gold<it.cost?'disabled':'')+'>'+it.name+'<br><b>'+it.cost+' G</b></button>'; }).join(''); }
+  function openShop(){ state='shop'; exitLock(); $('cross').style.display='none'; $('hint').style.display='none'; $('bossbar').style.display='none';
     $('shopTitle').textContent='🛒 상점 — 웨이브 '+wave+' 클리어!'; renderShop(); $('shop').style.display='flex'; }
-  function nextWave(){ $('shop').style.display='none'; $('cross').style.display='block'; if(!isTouch&&!locked&&!('ontouchstart'in window))$('hint').style.display='block'; startWave(wave+1); }
+  function nextWave(){ $('shop').style.display='none'; $('cross').style.display='block'; if(!isTouch&&!locked)$('hint').style.display='block'; startWave(wave+1); }
 
-  function begin(){ initAudio(); clearSlimes();
-    stats={maxHp:100,dmg:1,mag:12,moveSp:8};
-    yaw=0;pitch=0;px=0;pz=0;health=100;kills=0;gold=0; ammo=stats.mag; reloading=0;
-    $('kills').textContent='0'; $('gold').textContent='0'; $('hp').style.width='100%'; updateAmmo();
+  function begin(){ initAudio(); clearSlimes(); stats=defaultStats(); weapons=defaultWeapons(); cur='pistol';
+    yaw=0;pitch=0;px=0;pz=0;health=100;kills=0;gold=0; reloading=0; fireCD=0; holdFire=false;
+    $('kills').textContent='0'; $('gold').textContent='0'; $('hp').style.width='100%'; $('best').textContent=best.wave; updateAmmo(); renderWeaponBar();
     $('gover').style.display='none'; $('shop').style.display='none'; $('cross').style.display='block'; $('hpwrap').style.display='block'; $('ammo').style.display='block';
     if(!isTouch&&!locked) $('hint').style.display='block';
     startWave(1);
   }
-  function win(){}
-  function lose(){ state='over'; exitLock(); $('goverBig').textContent='💀 게임 오버'; $('goverSm').textContent='웨이브 '+wave+' 도달 · 처치 '+kills+' · 골드 '+gold; $('diff').style.display='none'; $('goverBtn').textContent='다시 시작'; $('gover').style.display='flex'; $('cross').style.display='none'; $('ammo').style.display='none'; $('hint').style.display='none'; }
+  function lose(){ state='over'; exitLock(); holdFire=false;
+    if(wave>best.wave || (wave===best.wave&&kills>best.kills)){ best={wave:wave,kills:kills,gold:gold}; saveBest(); $('best').textContent=best.wave; }
+    $('goverBig').textContent='💀 게임 오버'; $('goverSm').textContent='웨이브 '+wave+' 도달 · 처치 '+kills+' · 골드 '+gold+'<br>🏆 최고 기록: 웨이브 '+best.wave+' (처치 '+best.kills+')';
+    $('diff').style.display='none'; $('goverBtn').textContent='다시 시작'; $('gover').style.display='flex'; $('cross').style.display='none'; $('ammo').style.display='none'; $('hint').style.display='none'; $('bossbar').style.display='none'; }
 
   // ===== 입력 =====
   var isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0, locked=false;
   function look(dx,dy,sc){ yaw-=dx*sc; pitch-=dy*sc; var lim=Math.PI/2-0.05; pitch=Math.max(-lim,Math.min(lim,pitch)); }
   function exitLock(){ if(document.exitPointerLock&&document.pointerLockElement) document.exitPointerLock(); }
   var KMAP={w:'u',a:'l',s:'d',d:'r',W:'u',A:'l',S:'d',D:'r',ArrowUp:'u',ArrowLeft:'l',ArrowDown:'d',ArrowRight:'r'};
-  document.addEventListener('keydown',function(e){ var k=KMAP[e.key]; if(k){ keys[k]=1; if(e.key.indexOf('Arrow')===0)e.preventDefault(); } else if(e.key==='r'||e.key==='R'){ reload(); } });
+  document.addEventListener('keydown',function(e){ var k=KMAP[e.key]; if(k){ keys[k]=1; if(e.key.indexOf('Arrow')===0)e.preventDefault(); }
+    else if(e.key==='r'||e.key==='R'){ reload(); } else if(e.key==='1'){ switchWeapon('pistol'); } else if(e.key==='2'){ switchWeapon('shotgun'); } else if(e.key==='3'){ switchWeapon('mg'); } });
   document.addEventListener('keyup',function(e){ var k=KMAP[e.key]; if(k) keys[k]=0; });
   document.addEventListener('pointerlockchange',function(){ locked=(document.pointerLockElement===T.dom); if(locked)$('hint').style.display='none'; else if(state==='play'&&!isTouch)$('hint').style.display='block'; });
-  T.dom.addEventListener('mousedown',function(){ if(state!=='play')return; if(locked){ shoot(); } else if(!isTouch){ if(T.dom.requestPointerLock)T.dom.requestPointerLock(); } });
+  T.dom.addEventListener('mousedown',function(){ if(state!=='play')return; if(locked){ if(weapons[cur].auto){ holdFire=true; } shoot(); } else if(!isTouch){ if(T.dom.requestPointerLock)T.dom.requestPointerLock(); } });
+  document.addEventListener('mouseup',function(){ holdFire=false; });
   document.addEventListener('mousemove',function(e){ if(locked&&state==='play') look(e.movementX||0,e.movementY||0,0.0022); });
   var drag=null;
   T.dom.addEventListener('touchstart',function(e){ if(state!=='play')return; drag={x:e.touches[0].clientX,y:e.touches[0].clientY}; },{passive:true});
@@ -315,21 +362,25 @@
   Array.prototype.forEach.call($('dpad').querySelectorAll('button'),function(b){ var d=b.dataset.d;
     function on(e){ e.preventDefault(); keys[d]=1; b.classList.add('on'); } function off(e){ e&&e.preventDefault(); keys[d]=0; b.classList.remove('on'); }
     b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off); });
-  $('fireBtn').addEventListener('pointerdown',function(e){ e.preventDefault(); shoot(); });
+  $('fireBtn').addEventListener('pointerdown',function(e){ e.preventDefault(); if(weapons[cur].auto)holdFire=true; shoot(); });
+  $('fireBtn').addEventListener('pointerup',function(){ holdFire=false; });
+  $('fireBtn').addEventListener('pointerleave',function(){ holdFire=false; });
   $('reloadBtn').addEventListener('pointerdown',function(e){ e.preventDefault(); reload(); });
-  $('diff').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; diffKey=b.dataset.k;
-    Array.prototype.forEach.call($('diff').children,function(x){x.classList.toggle('on',x===b);}); });
-  $('shopGrid').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b||b.disabled)return; var it=SHOP[+b.dataset.i];
+  $('weaponBar').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) switchWeapon(b.dataset.w); });
+  $('diff').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; diffKey=b.dataset.k; Array.prototype.forEach.call($('diff').children,function(x){x.classList.toggle('on',x===b);}); });
+  $('shopGrid').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b||b.disabled)return; var it=window._shopItems[+b.dataset.i];
     if(gold>=it.cost){ gold-=it.cost; $('gold').textContent=gold; it.apply(); sReload(); renderShop(); } });
   $('nextWaveBtn').addEventListener('click',function(e){ e.stopPropagation(); nextWave(); });
   $('goverBtn').addEventListener('click',function(e){ e.stopPropagation(); begin(); });
   $('restart').addEventListener('click',function(){ state='ready'; exitLock(); clearSlimes(); $('diff').style.display='flex'; $('goverBig').textContent='🔫 GUN & SLIME'; $('goverSm').textContent='난이도를 고르고 시작하세요!'; $('goverBtn').textContent='게임 시작'; $('gover').style.display='flex'; $('shop').style.display='none'; $('cross').style.display='none'; $('hpwrap').style.display='none'; $('ammo').style.display='none'; $('hint').style.display='none'; });
 
-  buildOnce();
-  window._dbg={ shoot:shoot, reload:reload, slimes:function(){return slimes;}, kills:function(){return kills;}, gold:function(){return gold;}, ammo:function(){return ammo;},
-    health:function(){return health;}, state:function(){return state;}, wave:function(){return wave;}, stats:function(){return stats;},
-    begin:begin, hurt:function(n){ health-=n; if(health<=0)lose(); }, openShop:openShop, nextWave:nextWave, buy:function(i){ var it=SHOP[i]; if(gold>=it.cost){gold-=it.cost;it.apply();renderShop();} },
-    addGold:function(n){ gold+=n; $('gold').textContent=gold; }, clearWave:function(){ spawnedWave=toSpawn; clearSlimes(); },
+  buildOnce(); stats=defaultStats(); weapons=defaultWeapons(); cur='pistol'; $('best').textContent=best.wave; renderWeaponBar();
+  window._dbg={ shoot:shoot, reload:reload, slimes:function(){return slimes;}, kills:function(){return kills;}, gold:function(){return gold;},
+    ammo:function(){return weapons[cur].ammo;}, cur:function(){return cur;}, weapons:function(){return weapons;}, stats:function(){return stats;},
+    health:function(){return health;}, state:function(){return state;}, wave:function(){return wave;}, boss:function(){return boss;}, best:function(){return best;},
+    begin:begin, hurt:function(n){ health-=n; if(health<=0)lose(); }, openShop:openShop, nextWave:nextWave, switchWeapon:switchWeapon,
+    addGold:function(n){ gold+=n; $('gold').textContent=gold; }, unlock:function(id){ weapons[id].unlocked=true; weapons[id].ammo=effMag(weapons[id]); renderWeaponBar(); },
+    startWaveN:function(n){ clearSlimes(); startWave(n); }, clearWave:function(){ spawnedWave=toSpawn; clearSlimes(); },
     spawnAhead:function(){ var f=forward(); var s=makeSlime('normal'); s.position.set(px+f.x*8,0,pz+f.z*8); s._spd=0; s._hp=1; scene.add(s); slimes.push(s); return s; } };
 })();
 </script>
