@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>3D 미로 찾기 게임 (공 굴리기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="3D로 즐기는 미로 찾기 게임. 공을 굴려 미로를 빠져나가 목표 지점에 도착하세요. 매번 새로 생성되는 미로, Three.js 3D 그래픽, 방향키·버튼·스와이프 조작, 일시정지 지원. PC·모바일 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/maze3d.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="3D 미로 찾기 게임 (공 굴리기) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="공을 굴려 미로를 빠져나가는 3D 미로 게임. 매번 새 미로, 방향키·버튼·스와이프, 일시정지. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/maze3d.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="/vendor/three-r134/three.min.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:72px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);}
+  .dpad{display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,56px);gap:.4rem;justify-content:center;margin-top:1rem;}
+  .dpad button{border:1px solid var(--border);background:var(--surface);border-radius:12px;font-size:1.3rem;color:var(--text);cursor:pointer;}
+  .dpad button:active{background:var(--accent-soft);}
+  .d-up{grid-column:2;grid-row:1;} .d-left{grid-column:1;grid-row:2;} .d-down{grid-column:2;grid-row:2;} .d-right{grid-column:3;grid-row:2;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "3D 미로 찾기 (공 굴리기)",
+  "description": "공을 굴려 미로를 빠져나가는 3D 미로 게임. 매번 새로 생성되는 미로, Three.js 3D 그래픽, 방향키·버튼·스와이프, 일시정지 지원.",
+  "url": "https://gemini2k.co.kr/maze3d.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Puzzle",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:560px;">
+  <h1>3D 미로 찾기</h1>
+  <p class="sub">공을 굴려 미로를 빠져나가 초록색 목표 지점에 도착하세요. 단계가 오를수록 미로가 커집니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li>방향키(↑↓←→), 아래 방향 버튼, 또는 화면 스와이프로 공을 굴립니다</li>
+    <li>벽은 통과할 수 없어요 — 길을 따라 초록 목표까지 가세요</li>
+    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지할 수 있어요</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="scores">
+        <div class="sbox"><div class="l">단계</div><div class="v" id="level">1</div></div>
+        <div class="sbox"><div class="l">이동</div><div class="v" id="moves">0</div></div>
+      </div>
+      <button class="btn btn-ghost" id="newgame" type="button">새 미로</button>
+    </div>
+    <div class="g3d-wrap">
+      <div class="g3d-stage" id="stage"></div>
+      <div class="g3d-over" id="gover" style="display:none;"><div><div class="big" id="goverBig">🎉 탈출 성공!</div><div class="sm" id="goverSm"></div><button class="btn" id="goverBtn" type="button">다음 미로</button></div></div>
+    </div>
+    <div class="dpad">
+      <button class="d-up" data-d="u" aria-label="위">▲</button>
+      <button class="d-left" data-d="l" aria-label="왼쪽">◀</button>
+      <button class="d-down" data-d="d" aria-label="아래">▼</button>
+      <button class="d-right" data-d="r" aria-label="오른쪽">▶</button>
+    </div>
+    <div class="note">미로는 매번 무작위로 생성됩니다. Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="game-core.js"></script>
+<script src="three-core.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var T=Three3D.setup($('stage'),{bg:0x0c1226, fov:55, ratio:1.0});
+  if(!T){ document.querySelector('.dpad').style.display='none'; $('newgame').style.display='none'; $('gover').style.display='none'; return; }
+  var THREE=T.THREE, scene=T.scene, camera=T.camera;
+  scene.add(new THREE.AmbientLight(0x99a6c4,0.85));
+  var dir=new THREE.DirectionalLight(0xffffff,0.6); dir.position.set(5,14,8); scene.add(dir);
+
+  var CELL=1, N=5, G, g, objs=[], ball, goalC, goalR, col, row, level=1, moves=0, over=false;
+  var moving=false, fromV=new THREE.Vector3(), toV=new THREE.Vector3(), mp=0;
+
+  function buildMaze(n){
+    var gg=2*n+1, m=[]; for(var r=0;r<gg;r++){ m.push([]); for(var c=0;c<gg;c++) m[r][c]=1; }
+    var stack=[[1,1]]; m[1][1]=0; var dirs=[[0,2],[0,-2],[2,0],[-2,0]];
+    while(stack.length){
+      var cur=stack[stack.length-1], r=cur[0], c=cur[1], opts=[];
+      dirs.forEach(function(d){ var nr=r+d[0], nc=c+d[1]; if(nr>0&&nr<gg-1&&nc>0&&nc<gg-1 && m[nr][nc]===1) opts.push([nr,nc,r+d[0]/2,c+d[1]/2]); });
+      if(opts.length){ var p=opts[(Math.random()*opts.length)|0]; m[p[2]][p[3]]=0; m[p[0]][p[1]]=0; stack.push([p[0],p[1]]); }
+      else stack.pop();
+    }
+    return {gg:gg, m:m};
+  }
+  function world(c,r,y){ return new THREE.Vector3((c-(G-1)/2)*CELL, y||0, (r-(G-1)/2)*CELL); }
+  function clearObjs(){ objs.forEach(function(o){ scene.remove(o); if(o.geometry)o.geometry.dispose(); if(o.material)o.material.dispose(); }); objs=[]; }
+
+  function build(){
+    clearObjs(); over=false; moving=false; moves=0; $('moves').textContent='0'; $('gover').style.display='none';
+    var mz=buildMaze(N); G=mz.gg; g=mz.m;
+    var ext=G*CELL;
+    var floor=new THREE.Mesh(new THREE.PlaneGeometry(ext,ext), new THREE.MeshLambertMaterial({color:0x1a2742}));
+    floor.rotation.x=-Math.PI/2; floor.position.y=-0.0; scene.add(floor); objs.push(floor);
+    var wallMat=new THREE.MeshLambertMaterial({color:0x3d5aa0});
+    var wallGeo=new THREE.BoxGeometry(CELL,CELL,CELL);
+    for(var r=0;r<G;r++)for(var c=0;c<G;c++){ if(g[r][c]===1){ var w=new THREE.Mesh(wallGeo, wallMat); var p=world(c,r,CELL/2); w.position.copy(p); scene.add(w); objs.push(w); } }
+    goalC=G-2; goalR=G-2;
+    var goal=new THREE.Mesh(new THREE.BoxGeometry(CELL*0.8,0.12,CELL*0.8), new THREE.MeshBasicMaterial({color:0x34d399})); goal.position.copy(world(goalC,goalR,0.07)); scene.add(goal); objs.push(goal);
+    col=1; row=1; ball=new THREE.Mesh(new THREE.SphereGeometry(0.33,20,16), new THREE.MeshStandardMaterial({color:0xfacc15,roughness:.4,metalness:.1})); ball.position.copy(world(col,row,0.34)); scene.add(ball); objs.push(ball);
+    // 카메라(위에서 비스듬히)
+    camera.position.set(0, ext*0.95, ext*0.78); camera.lookAt(0,0,0);
+    $('level').textContent=level;
+  }
+  function tryMove(dr,dc){
+    if(moving||over) return;
+    var wr=row+dr, wc=col+dc, nr=row+2*dr, nc=col+2*dc;
+    if(nr<0||nr>=G||nc<0||nc>=G) return; if(g[wr][wc]!==0) return;
+    row=nr; col=nc; moves++; $('moves').textContent=moves;
+    fromV.copy(ball.position); toV.copy(world(col,row,0.34)); mp=0; moving=true;
+  }
+  function win(){ over=true; level++; $('goverSm').textContent='단계 '+(level-1)+' · '+moves+'번 이동'; $('gover').style.display=''; if(N<10) N++; }
+
+  T.start(function(dt){
+    if(moving){ mp+=dt*6.5; if(mp>=1){ mp=1; moving=false; } ball.position.lerpVectors(fromV,toV,mp);
+      if(!moving && col===goalC && row===goalR) win(); }
+    if(ball){ ball.rotation.x+=dt*2; ball.rotation.z+=dt*1.4; }
+  });
+
+  function setDir(d){ if(over) return; var m={u:[-1,0],d:[1,0],l:[0,-1],r:[0,1]}[d]; if(m) tryMove(m[0],m[1]); }
+  document.querySelector('.dpad').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) setDir(b.dataset.d); });
+  document.addEventListener('keydown',function(e){ var d={ArrowUp:'u',ArrowDown:'d',ArrowLeft:'l',ArrowRight:'r'}[e.key]; if(d){ e.preventDefault(); setDir(d); } });
+  $('newgame').addEventListener('click', function(){ build(); });
+  $('goverBtn').addEventListener('click', function(e){ e.stopPropagation(); build(); });
+  $('gover').addEventListener('click', function(){ build(); });
+  var sx,sy;
+  T.dom.addEventListener('pointerdown',function(e){ sx=e.clientX; sy=e.clientY; });
+  T.dom.addEventListener('pointerup',function(e){ if(sx==null)return; var dx=e.clientX-sx, dy=e.clientY-sy;
+    if(Math.max(Math.abs(dx),Math.abs(dy))<18){ sx=null; return; }
+    setDir(Math.abs(dx)>Math.abs(dy)?(dx>0?'r':'l'):(dy>0?'d':'u')); sx=null; });
+  build();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>3D 큐브 런너 게임 (엔드리스 러너) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="3D로 즐기는 엔드리스 러너 게임. 차선을 좌우로 옮겨 다가오는 장애물을 피하며 멀리 달리세요. Three.js 3D 그래픽, 버튼·방향키·스와이프 조작, 일시정지 지원. PC·모바일 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/runner3d.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="3D 큐브 런너 게임 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="차선을 옮겨 장애물을 피하는 3D 엔드리스 러너. 버튼·방향키·스와이프, 일시정지. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/runner3d.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="/vendor/three-r134/three.min.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:72px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);}
+  .dpad{display:flex;gap:1rem;justify-content:center;margin-top:1rem;}
+  .dpad button{width:88px;height:56px;border:1px solid var(--border);background:var(--surface);border-radius:14px;font-size:1.5rem;color:var(--text);cursor:pointer;}
+  .dpad button:active{background:var(--accent-soft);}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "3D 큐브 런너",
+  "description": "차선을 옮겨 다가오는 장애물을 피하는 3D 엔드리스 러너 게임. Three.js 3D 그래픽, 버튼·방향키·스와이프 조작, 일시정지.",
+  "url": "https://gemini2k.co.kr/runner3d.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Action",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:560px;">
+  <h1>3D 큐브 런너</h1>
+  <p class="sub">좌우 차선을 옮겨 다가오는 장애물을 피하세요. 갈수록 빨라집니다!</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li>아래 ◀ ▶ 버튼, 방향키(←→), 또는 화면을 좌우로 스와이프/탭해 차선을 옮깁니다</li>
+    <li>장애물에 부딪히지 않고 최대한 멀리 가세요</li>
+    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지할 수 있어요</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="scores">
+        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div>
+      </div>
+    </div>
+    <div class="g3d-wrap">
+      <div class="g3d-stage" id="stage"></div>
+      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig">3D 큐브 런너</div><div class="sm" id="goverSm">탭하거나 버튼을 눌러 시작</div><button class="btn" id="goverBtn" type="button">시작</button></div></div>
+    </div>
+    <div class="dpad"><button id="left" type="button" aria-label="왼쪽">◀</button><button id="right" type="button" aria-label="오른쪽">▶</button></div>
+    <div class="note">Three.js 3D 그래픽을 사용합니다. 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만, 최고 기록만 이 기기에 저장됩니다.</div>
+  </div>
+</div>
+
+<script src="game-core.js"></script>
+<script src="three-core.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var T=Three3D.setup($('stage'),{bg:0x0b1020, fov:60, ratio:1.0});
+  if(!T){ $('left').style.display='none'; $('right').style.display='none'; $('gover').style.display='none'; return; }
+  var THREE=T.THREE, scene=T.scene, camera=T.camera;
+  scene.add(new THREE.AmbientLight(0x8aa0c0,0.8));
+  var dir=new THREE.DirectionalLight(0xffffff,0.65); dir.position.set(3,10,6); scene.add(dir);
+  scene.fog=new THREE.Fog(0x0b1020, 18, 46);
+  camera.position.set(0,5,11); camera.lookAt(0,0.6,0);
+
+  var LANES=[-2.2,0,2.2];
+  // 바닥
+  var ground=new THREE.Mesh(new THREE.PlaneGeometry(9,120), new THREE.MeshLambertMaterial({color:0x182747}));
+  ground.rotation.x=-Math.PI/2; ground.position.z=-40; scene.add(ground);
+  // 차선 구분선(긴 막대)
+  [-1.1,1.1].forEach(function(x){ var ln=new THREE.Mesh(new THREE.BoxGeometry(0.06,0.02,120), new THREE.MeshBasicMaterial({color:0x33507f})); ln.position.set(x,0.02,-40); scene.add(ln); });
+  // 속도감용 스트라이프(재활용)
+  var stripes=[]; for(var i=0;i<12;i++){ var s=new THREE.Mesh(new THREE.BoxGeometry(7,0.02,0.5), new THREE.MeshBasicMaterial({color:0x24385f})); s.position.set(0,0.015,-i*8); scene.add(s); stripes.push(s); }
+  // 플레이어
+  var player=new THREE.Mesh(new THREE.BoxGeometry(1.1,1.1,1.1), new THREE.MeshLambertMaterial({color:0x38bdf8}));
+  player.position.set(0,0.55,5); scene.add(player);
+  var COLORS=[0xf87171,0xfbbf24,0x34d399,0xa78bfa];
+  var obstacles=[], lane=1, score=0, speed=14, spawnT=0, over=true;
+  var best=+(localStorage.getItem('runner3d:best')||0); $('best').textContent=best;
+
+  function spawn(){
+    var l=Math.floor(Math.random()*3);
+    var m=new THREE.Mesh(new THREE.BoxGeometry(1.3,1.3,1.3), new THREE.MeshLambertMaterial({color:COLORS[Math.floor(Math.random()*4)]}));
+    m.position.set(LANES[l],0.65,-45); m.userData={lane:l,scored:false}; scene.add(m); obstacles.push(m);
+  }
+  function clearObs(){ obstacles.forEach(function(o){ scene.remove(o); o.geometry.dispose(); o.material.dispose(); }); obstacles=[]; }
+  function start(){ clearObs(); over=false; lane=1; score=0; speed=14; spawnT=0; player.position.x=0; $('score').textContent='0'; $('gover').style.display='none'; }
+  function gameOver(){ over=true; if(score>best){ best=score; localStorage.setItem('runner3d:best',best); $('best').textContent=best; }
+    $('goverBig').textContent='💥 충돌!'; $('goverSm').textContent='점수 '+score+' · 다시 도전!'; $('goverBtn').textContent='다시 시작'; $('gover').style.display=''; }
+  function move(d){ if(over){ start(); return; } lane=Math.max(0,Math.min(2,lane+d)); }
+
+  T.start(function(dt){
+    // 스트라이프 이동(항상)
+    for(var i=0;i<stripes.length;i++){ stripes[i].position.z += speed*dt; if(stripes[i].position.z>11) stripes[i].position.z -= 96; }
+    player.position.x += (LANES[lane]-player.position.x)*Math.min(1,dt*14);
+    if(over) return;
+    score += dt*10; $('score').textContent=Math.floor(score);
+    speed += dt*0.6;
+    spawnT += dt; if(spawnT > Math.max(0.5, 1.1 - score*0.002)){ spawnT=0; spawn(); }
+    for(var j=obstacles.length-1;j>=0;j--){ var o=obstacles[j]; o.position.z += speed*dt;
+      if(!o.userData.scored && o.position.z>player.position.z+1){ o.userData.scored=true; }
+      if(Math.abs(o.position.z-player.position.z)<1.05 && o.userData.lane===lane){ gameOver(); break; }
+      if(o.position.z>12){ scene.remove(o); o.geometry.dispose(); o.material.dispose(); obstacles.splice(j,1); }
+    }
+  });
+
+  $('left').addEventListener('click',function(){ move(-1); });
+  $('right').addEventListener('click',function(){ move(1); });
+  document.addEventListener('keydown',function(e){ if(e.key==='ArrowLeft'){e.preventDefault();move(-1);} if(e.key==='ArrowRight'){e.preventDefault();move(1);} });
+  $('goverBtn').addEventListener('click',function(e){ e.stopPropagation(); start(); });
+  $('gover').addEventListener('click', start);
+  var sx=null;
+  T.dom.addEventListener('pointerdown',function(e){ sx=e.clientX; });
+  T.dom.addEventListener('pointerup',function(e){ if(sx==null) return; var dx=e.clientX-sx;
+    if(over){ start(); sx=null; return; }
+    if(Math.abs(dx)>24) move(dx>0?1:-1);
+    else { var r=T.dom.getBoundingClientRect(); move((e.clientX-r.left)/r.width<0.5?-1:1); } sx=null; });
+})();
+</script>
+</body>
+</html>

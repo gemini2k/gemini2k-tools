@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>3D 타워 쌓기 게임 (Stack) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="브라우저에서 즐기는 3D 블록 타워 쌓기 게임. 움직이는 블록을 정확히 맞춰 쌓고 최대한 높이 올리세요. Three.js 3D 그래픽, 탭 한 번으로 조작, 일시정지 지원. PC·모바일 무료."/>
+<link rel="canonical" href="https://gemini2k.co.kr/stack3d.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="3D 타워 쌓기 게임 (Stack) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="움직이는 블록을 맞춰 높이 쌓는 3D 타워 게임. 탭 조작·일시정지. PC·모바일 무료."/>
+<meta property="og:url" content="https://gemini2k.co.kr/stack3d.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<script src="/vendor/three-r134/three.min.js"></script>
+<style>
+  .gbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;}
+  .scores{display:flex;gap:.6rem;}
+  .sbox{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.35rem .8rem;text-align:center;min-width:72px;}
+  .sbox .l{font-size:.64rem;font-weight:700;color:var(--muted);text-transform:uppercase;} .sbox .v{font-size:1.2rem;font-weight:800;color:var(--text);}
+  .drop-btn{display:block;width:100%;max-width:520px;margin:.9rem auto 0;padding:.85rem;border:none;border-radius:12px;background:var(--accent);color:#fff;font-family:inherit;font-size:1.05rem;font-weight:800;cursor:pointer;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "3D 타워 쌓기 (Stack)",
+  "description": "움직이는 블록을 맞춰 높이 쌓는 3D 타워 게임. Three.js 3D 그래픽, 탭 조작, 일시정지 지원.",
+  "url": "https://gemini2k.co.kr/stack3d.html",
+  "applicationCategory": "GameApplication",
+  "genre": "Puzzle",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:560px;">
+  <h1>3D 타워 쌓기</h1>
+  <p class="sub">움직이는 블록을 아래 블록에 정확히 맞춰 쌓으세요. 어긋난 부분은 잘려 나갑니다. 얼마나 높이 쌓을 수 있을까요?</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
+    <li>블록이 좌우로 움직일 때 <b>화면을 탭/클릭</b>하거나 아래 <b>[쌓기]</b> 버튼을 누릅니다</li>
+    <li>아래 블록과 겹친 부분만 남고 나머지는 잘립니다 — 정확할수록 오래 갑니다</li>
+    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지할 수 있어요</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="gbar">
+      <div class="scores">
+        <div class="sbox"><div class="l">높이</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div>
+      </div>
+    </div>
+    <div class="g3d-wrap">
+      <div class="g3d-stage" id="stage"></div>
+      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig">3D 타워 쌓기</div><div class="sm" id="goverSm">탭하거나 버튼을 눌러 시작</div><button class="btn" id="goverBtn" type="button">시작</button></div></div>
+    </div>
+    <button class="drop-btn" id="drop" type="button">⬇ 쌓기</button>
+    <div class="note">Three.js 3D 그래픽을 사용합니다. 3D를 지원하지 않는 환경에서는 안내 메시지가 표시됩니다. 모든 진행은 브라우저에서만 이루어지며 최고 기록만 이 기기에 저장됩니다.</div>
+  </div>
+</div>
+
+<script src="game-core.js"></script>
+<script src="three-core.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var stage=$('stage');
+  var T=Three3D.setup(stage,{bg:0x0e1430, fov:50, ratio:1.05});
+  if(!T){ $('drop').style.display='none'; $('gover').style.display='none'; return; }   // 미지원 → 안내만(에러 없음)
+  var THREE=T.THREE, scene=T.scene, camera=T.camera;
+  scene.add(new THREE.AmbientLight(0x99a6c4, 0.75));
+  var dir=new THREE.DirectionalLight(0xffffff, 0.7); dir.position.set(6,12,8); scene.add(dir);
+  camera.position.set(6,8,6);
+
+  var BH=0.62, RANGE=3.4, SPD=1.7;
+  var blocks=[], stackTop, level, moving, axis, score, over=true, t0=0;
+  var best=+(localStorage.getItem('stack3d:best')||0); $('best').textContent=best;
+
+  function colorFor(i){ var c=new THREE.Color(); c.setHSL((0.55 + i*0.035)%1, 0.55, 0.56); return c; }
+  function addBlock(x,z,w,d,baseY,i){
+    var mesh=new THREE.Mesh(new THREE.BoxGeometry(w,BH,d), new THREE.MeshLambertMaterial({color:colorFor(i)}));
+    mesh.position.set(x, baseY+BH/2, z); scene.add(mesh); blocks.push(mesh); return mesh;
+  }
+  function clearAll(){ blocks.forEach(function(b){ scene.remove(b); b.geometry.dispose(); b.material.dispose(); }); blocks=[]; }
+  function spawnMoving(){
+    axis = (level%2===0) ? 'x' : 'z';
+    moving=addBlock(stackTop.x, stackTop.z, stackTop.w, stackTop.d, stackTop.y, level+1);
+    moving.userData={ baseY: stackTop.y };
+    t0=performance.now();
+  }
+  function start(){
+    clearAll(); over=false; level=0; score=0; $('score').textContent='0'; $('gover').style.display='none';
+    stackTop={ x:0, z:0, w:3, d:3, y:0 };
+    addBlock(0,0,3,3,0,0);
+    camera.position.set(6,8,6);
+    spawnMoving();
+  }
+  function gameOver(){
+    over=true;
+    if(score>best){ best=score; localStorage.setItem('stack3d:best',best); $('best').textContent=best; }
+    $('goverBig').textContent='게임 오버'; $('goverSm').textContent='높이 '+score+' · 다시 도전!'; $('goverBtn').textContent='다시 시작';
+    $('gover').style.display='';
+  }
+  function drop(){
+    if(over||!moving) return;
+    var cur = axis==='x'?moving.position.x:moving.position.z;
+    var top = axis==='x'?stackTop.x:stackTop.z;
+    var delta=cur-top, size=axis==='x'?stackTop.w:stackTop.d, overlap=size-Math.abs(delta);
+    if(overlap<=0.05){ scene.remove(moving); gameOver(); return; }
+    var nx=stackTop.x, nz=stackTop.z, nw=stackTop.w, nd=stackTop.d, ctr=top+delta/2;
+    if(axis==='x'){ nw=overlap; nx=ctr; } else { nd=overlap; nz=ctr; }
+    scene.remove(moving); moving.geometry.dispose(); blocks.pop();
+    addBlock(nx,nz,nw,nd, stackTop.y, level+1);
+    stackTop={ x:nx, z:nz, w:nw, d:nd, y:stackTop.y+BH };
+    level++; score=level; $('score').textContent=score;
+    spawnMoving();
+  }
+  T.start(function(){
+    if(over||!moving) return;
+    var e=(performance.now()-t0)/1000, off=Math.sin(e*SPD)*RANGE;
+    if(axis==='x') moving.position.x=stackTop.x+off; else moving.position.z=stackTop.z+off;
+    var ty=stackTop.y;
+    camera.position.y += (ty+8 - camera.position.y)*0.05;
+    camera.lookAt(0, ty, 0);
+  });
+  // 조작: 탭/클릭/버튼 (Space/P 는 일시정지)
+  T.dom.addEventListener('pointerdown', function(){ if(over) start(); else drop(); });
+  $('drop').addEventListener('click', function(){ if(over) start(); else drop(); });
+  $('goverBtn').addEventListener('click', function(e){ e.stopPropagation(); start(); });
+  $('gover').addEventListener('click', start);
+})();
+</script>
+</body>
+</html>

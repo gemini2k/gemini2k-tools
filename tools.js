@@ -103,4 +103,7 @@ window.TOOLS = [
   { key:'wage',  h:'wage.html',       ic:'⏲️', chip:'c-amber',  cat:'계산기', k:'시급 월급 변환 주휴수당 알바 급여 일급 연봉 최저임금 hourly wage 时薪 時給 시급계산', related:['salary','loan','percent'] },
   { key:'currency',h:'currency.html', ic:'💱', chip:'c-cyan',   cat:'계산기', k:'환율 통화 변환 계산기 달러 엔 유로 외화 수동 환율 exchange rate currency 汇率 為替 환율계산', related:['vat','percent','datasize'] },
   { key:'dday',  h:'dday.html',       ic:'📆', chip:'c-rose',   cat:'시간', k:'디데이 dday d-day 기념일 100일 주년 시험 날짜 카운트 anniversary countdown 纪念日 記念日 디데이계산', related:['date','worldclock','timer'] },
+  { key:'stack3d',h:'stack3d.html',ic:'🧱', chip:'c-violet', cat:'게임', k:'3d 타워 쌓기 스택 블록 stack tower 입체 three.js 3D게임 입체게임 쌓기게임', related:['runner3d','maze3d','g2048'] },
+  { key:'runner3d',h:'runner3d.html',ic:'🏃', chip:'c-cyan', cat:'게임', k:'3d 러너 엔드리스 달리기 큐브 장애물 피하기 runner 입체 three.js 3D게임 달리기게임', related:['cardodge','stack3d','snake'] },
+  { key:'maze3d',h:'maze3d.html',ic:'🌐', chip:'c-green', cat:'게임', k:'3d 미로 찾기 공 굴리기 maze 입체 three.js 미로게임 3D게임 길찾기', related:['stack3d','runner3d','minesweeper'] },
 ];
