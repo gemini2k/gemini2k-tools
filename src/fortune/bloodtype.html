@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>혈액형 성격 (재미로 보는 ABO 성격·궁합) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="A·B·O·AB형 혈액형별 성격 특징과 혈액형 궁합을 재미로 알아봅니다. 과학적 근거가 없는 재미용 콘텐츠. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/bloodtype.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="혈액형 성격 (재미) — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="A·B·O·AB형 성격 특징과 궁합을 재미로. 과학적 근거 없는 재미용. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/bloodtype.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .picks{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1rem;}
+  .picks button{padding:1rem 0;border:1px solid var(--border);border-radius:14px;background:var(--surface);color:var(--text);font-family:inherit;font-size:1.4rem;font-weight:800;cursor:pointer;transition:.12s;}
+  .picks button:hover{border-color:var(--accent);background:var(--accent-soft);}
+  .picks button.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .res h2{font-size:1.4rem;margin:.4rem 0;}
+  .tags{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0;}
+  .tag{background:var(--accent-soft);color:var(--accent);border-radius:20px;padding:.25rem .7rem;font-size:.85rem;font-weight:700;}
+  .sec{margin:.9rem 0;font-size:.96rem;line-height:1.7;}
+  .sec b{color:var(--accent);}
+  .match{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin-top:.6rem;}
+  .mitem{background:var(--ground);border:1px solid var(--border);border-radius:10px;padding:.5rem .7rem;font-size:.9rem;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "혈액형 성격 (재미)",
+  "description": "A·B·O·AB형 혈액형별 성격과 궁합을 재미로 알아봅니다. 과학적 근거가 없는 재미용 콘텐츠. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/bloodtype.html",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:560px;">
+  <h1>혈액형 성격 <span style="font-size:.9rem;color:var(--muted)">(재미로 보기)</span></h1>
+  <p class="sub">혈액형을 고르면 흔히 말하는 성격 특징과 궁합을 보여 줍니다. 과학적 근거는 없는 재미용이에요!</p>
+
+  <div class="card">
+    <div class="picks" id="picks">
+      <button data-t="A" type="button">A형</button>
+      <button data-t="B" type="button">B형</button>
+      <button data-t="O" type="button">O형</button>
+      <button data-t="AB" type="button">AB형</button>
+    </div>
+    <div id="result" class="res hide">
+      <h2 id="rtitle"></h2>
+      <div class="tags" id="rtags"></div>
+      <div class="sec" id="rgood"></div>
+      <div class="sec" id="rweak"></div>
+      <div class="sec"><b>혈액형 궁합</b><div class="match" id="rmatch"></div></div>
+      <button class="btn btn-ghost" id="copy" type="button" style="margin-top:.8rem;">📋 결과 복사</button>
+    </div>
+    <div class="note">혈액형과 성격의 연관성은 <b>과학적으로 입증된 바가 없습니다</b>. 이 콘텐츠는 순수하게 <b>재미·오락용</b>이며, 사람을 혈액형으로 판단하지 말아 주세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  var DATA={
+    A:{title:'A형 — 섬세한 모범생',tags:['신중함','배려심','책임감','완벽주의'],
+      good:'계획적이고 꼼꼼하며 주변을 잘 챙깁니다. 약속을 잘 지키고 맡은 일은 끝까지 해내는 성실파.',
+      weak:'생각이 많아 결정이 늦거나 스트레스를 속으로 쌓아 두기도 해요. 가끔은 마음을 편히!',
+      match:[['O형','💚 편안하게 챙겨주는 조합'],['AB형','💙 서로의 빈틈을 채움'],['A형','🤝 비슷해서 안정적'],['B형','✨ 다른 매력에 끌림']]},
+    B:{title:'B형 — 자유로운 모험가',tags:['솔직함','열정','창의력','마이웨이'],
+      good:'호기심 많고 즉흥적이며 에너지가 넘칩니다. 좋아하는 일엔 누구보다 깊이 몰입하는 타입.',
+      weak:'관심사가 빨리 바뀌고 마이페이스라 오해받기도. 주변 배려를 조금 더하면 완벽!',
+      match:[['AB형','💜 통하는 자유로움'],['O형','🧡 시원시원 잘 맞음'],['B형','😆 함께 즉흥 여행'],['A형','🌷 안정과 자유의 균형']]},
+    O:{title:'O형 — 시원한 리더',tags:['사교성','추진력','의리','현실감각'],
+      good:'활달하고 사람을 잘 이끌며 목표 지향적입니다. 정 많고 화끈해 주변에 사람이 모이는 타입.',
+      weak:'승부욕이 강하고 가끔 욱하기도. 솔직함이 지나치지 않게 한 박자 쉬어가면 좋아요.',
+      match:[['A형','💚 챙김받는 든든함'],['B형','🧡 죽이 잘 맞음'],['AB형','💙 신선한 자극'],['O형','🔥 화끈한 시너지']]},
+    AB:{title:'AB형 — 신비로운 천재형',tags:['이성적','독창성','쿨함','다재다능'],
+      good:'합리적이면서 감각적이고, 한 사람 안에 여러 매력이 있습니다. 아이디어와 분석력이 뛰어난 타입.',
+      weak:'속을 잘 안 보여 차가워 보이거나 변덕스럽게 느껴질 수 있어요. 마음을 조금 더 표현해 보세요.',
+      match:[['B형','💜 자유로운 교감'],['A형','💙 안정적 보완'],['O형','✨ 활력을 받음'],['AB형','🌀 묘하게 통함']]}
+  };
+  function show(t){
+    Array.prototype.forEach.call($('picks').children,function(b){ b.classList.toggle('on',b.dataset.t===t); });
+    var d=DATA[t]; $('result').classList.remove('hide');
+    $('rtitle').textContent=d.title;
+    $('rtags').innerHTML=d.tags.map(function(x){return '<span class="tag">#'+x+'</span>';}).join('');
+    $('rgood').innerHTML='<b>이런 점이 좋아요</b><br>'+d.good;
+    $('rweak').innerHTML='<b>이런 점은 주의</b><br>'+d.weak;
+    $('rmatch').innerHTML=d.match.map(function(m){return '<div class="mitem"><b>'+m[0]+'</b><br>'+m[1]+'</div>';}).join('');
+    window._t=t; window._title=d.title;
+  }
+  $('picks').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) show(b.dataset.t); });
+  $('copy').addEventListener('click',function(){ navigator.clipboard.writeText((window._title||'')+' (재미로 보는 혈액형 성격 · gemini2k.co.kr/bloodtype)').then(function(){toast('복사됐습니다');}); });
+</script>
+</body>
+</html>

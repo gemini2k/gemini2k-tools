@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>MBTI 간이 검사 (16문항 성격유형 테스트) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="16문항으로 빠르게 알아보는 MBTI 성격유형 간이 테스트. 4가지 축(E/I·S/N·T/F·J/P) 점수와 유형별 설명·강점·잘 맞는 유형까지. 재미·참고용. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/mbti.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="MBTI 간이 검사 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="16문항 MBTI 성격유형 간이 테스트. 축 점수·유형 설명·궁합. 재미·참고용. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/mbti.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .prog{height:8px;background:var(--accent-soft);border-radius:5px;overflow:hidden;margin:.4rem 0 1rem;}
+  .prog>i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s;}
+  .q{font-size:1.1rem;font-weight:700;margin:.6rem 0 1rem;line-height:1.5;}
+  .qnum{font-size:.8rem;color:var(--muted);font-weight:700;}
+  .opt{display:block;width:100%;text-align:left;padding:.85rem 1rem;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font-family:inherit;font-size:1rem;cursor:pointer;margin-bottom:.6rem;transition:.12s;}
+  .opt:hover{border-color:var(--accent);background:var(--accent-soft);}
+  .nav{display:flex;justify-content:space-between;margin-top:.4rem;}
+  .res .type{text-align:center;font-size:3rem;font-weight:800;color:var(--accent);letter-spacing:.1em;}
+  .res .nick{text-align:center;font-size:1.2rem;font-weight:700;margin-bottom:.3rem;}
+  .res .desc{font-size:.98rem;line-height:1.7;margin:1rem 0;}
+  .bars{margin:1rem 0;}
+  .axis{margin-bottom:.7rem;} .axis .lab{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:.2rem;}
+  .axis .track{height:14px;background:var(--ground);border:1px solid var(--border);border-radius:7px;overflow:hidden;position:relative;}
+  .axis .fill{height:100%;background:var(--accent);}
+  .good{background:var(--ground);border:1px solid var(--border);border-radius:11px;padding:.7rem .9rem;font-size:.92rem;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "MBTI 간이 검사",
+  "description": "16문항으로 알아보는 MBTI 성격유형 간이 테스트. 축 점수·유형 설명·궁합. 재미·참고용. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/mbti.html",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:560px;">
+  <h1>MBTI 간이 검사</h1>
+  <p class="sub">16개의 질문에 직관적으로 답하면 성격유형을 알려 드립니다. 재미·참고용 간이 검사예요.</p>
+
+  <div class="card">
+    <div id="quiz">
+      <div class="prog"><i id="prog"></i></div>
+      <div class="qnum" id="qnum"></div>
+      <div class="q" id="qtext"></div>
+      <button class="opt" id="optA" type="button"></button>
+      <button class="opt" id="optB" type="button"></button>
+      <div class="nav"><button class="btn btn-ghost" id="prev" type="button">← 이전</button><span></span></div>
+    </div>
+
+    <div id="result" class="res hide">
+      <div class="type" id="rtype"></div>
+      <div class="nick" id="rnick"></div>
+      <div class="desc" id="rdesc"></div>
+      <div class="bars" id="rbars"></div>
+      <div class="good" id="rgood"></div>
+      <div style="display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap;">
+        <button class="btn" id="again" type="button">다시 하기</button>
+        <button class="btn btn-ghost" id="copy" type="button">📋 결과 복사</button>
+      </div>
+    </div>
+    <div class="note">실제 MBTI(MBTI®)는 공인 검사로 진행해야 정확합니다. 이 검사는 가벼운 자기 이해를 위한 <b>간이·재미용</b>이며 의학적·심리학적 진단이 아닙니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  // 문항: dim축, a선택지→a극, b선택지→b극
+  var Q=[
+    {d:'EI',q:'주말에 에너지가 더 채워지는 쪽은?',a:['사람들과 어울려 활동',  'E'],b:['혼자 또는 소수와 휴식','I']},
+    {d:'EI',q:'처음 만난 모임에서 나는?',a:['먼저 말을 거는 편','E'],b:['상대가 다가오길 기다리는 편','I']},
+    {d:'EI',q:'생각은 주로?',a:['말하면서 정리된다','E'],b:['속으로 정리한 뒤 말한다','I']},
+    {d:'EI',q:'연락은?',a:['자주 주고받는 게 좋다','E'],b:['필요할 때만으로 충분','I']},
+    {d:'SN',q:'설명을 들을 때 끌리는 것은?',a:['구체적인 사실과 예시','S'],b:['전체 의미와 가능성','N']},
+    {d:'SN',q:'나는 보통?',a:['현재의 현실에 집중','S'],b:['미래의 상상에 잘 빠짐','N']},
+    {d:'SN',q:'새 일을 시작할 때?',a:['검증된 방법을 따른다','S'],b:['새로운 방식을 시도한다','N']},
+    {d:'SN',q:'기억에 남는 것은?',a:['실제 겪은 디테일','S'],b:['그때 떠오른 아이디어','N']},
+    {d:'TF',q:'결정할 때 더 중요한 것은?',a:['논리와 객관적 기준','T'],b:['사람의 감정과 관계','F']},
+    {d:'TF',q:'친구가 고민을 털어놓으면?',a:['해결책을 함께 찾는다','T'],b:['먼저 공감하고 위로한다','F']},
+    {d:'TF',q:'피드백을 줄 때?',a:['솔직하게 사실대로','T'],b:['상처받지 않게 부드럽게','F']},
+    {d:'TF',q:'옳고 그름을 따질 때?',a:['원칙이 우선','T'],b:['상황과 사정도 고려','F']},
+    {d:'JP',q:'여행 스타일은?',a:['미리 계획을 짠다','J'],b:['즉흥적으로 움직인다','P']},
+    {d:'JP',q:'할 일이 있으면?',a:['미리미리 끝낸다','J'],b:['마감 직전에 몰입한다','P']},
+    {d:'JP',q:'내 공간·일정은?',a:['정돈되고 예측 가능하게','J'],b:['유연하고 자유롭게','P']},
+    {d:'JP',q:'계획이 바뀌면?',a:['조금 스트레스받는다','J'],b:['오히려 즐겁다','P']}
+  ];
+  var TYPES={
+    INTJ:['전략가','독립적이고 통찰력 있는 계획가. 큰 그림을 그리고 목표를 향해 묵묵히 나아갑니다.','ENFP·ENTP'],
+    INTP:['논리술사','호기심 많은 분석가. 원리를 파고들고 아이디어로 세상을 이해합니다.','ENTJ·ESTJ'],
+    ENTJ:['지도자','결단력 있는 리더. 비전을 제시하고 사람들을 이끌어 성과를 만듭니다.','INTP·INFP'],
+    ENTP:['변론가','재치 있는 발명가. 토론과 새로운 시도를 즐기는 아이디어 뱅크.','INFJ·INTJ'],
+    INFJ:['옹호자','조용하지만 깊은 신념의 이상주의자. 사람의 마음을 잘 읽습니다.','ENFP·ENTP'],
+    INFP:['중재자','따뜻하고 가치 중심적인 몽상가. 진정성과 의미를 소중히 여깁니다.','ENFJ·ENTJ'],
+    ENFJ:['선도자','카리스마 있는 격려자. 사람들의 성장을 돕고 분위기를 이끕니다.','INFP·ISFP'],
+    ENFP:['활동가','열정 가득한 자유로운 영혼. 사람과 가능성에 늘 설렙니다.','INTJ·INFJ'],
+    ISTJ:['현실주의자','성실하고 책임감 강한 관리자. 약속과 원칙을 지킵니다.','ESFP·ESTP'],
+    ISFJ:['수호자','헌신적이고 다정한 보호자. 묵묵히 주변을 챙깁니다.','ESFP·ESTP'],
+    ESTJ:['경영자','체계적이고 추진력 있는 조직가. 질서와 효율을 중시합니다.','ISTP·ISFP'],
+    ESFJ:['집정관','사교적이고 배려 깊은 조력자. 사람들을 잘 돌봅니다.','ISFP·ISTP'],
+    ISTP:['장인','과묵한 문제 해결사. 손재주와 실용적 분석에 능합니다.','ESFJ·ESTJ'],
+    ISFP:['모험가','감성적이고 자유로운 예술가. 지금 이 순간을 즐깁니다.','ENFJ·ESFJ'],
+    ESTP:['사업가','대담하고 활동적인 행동파. 위기 상황에 강합니다.','ISFJ·ISTJ'],
+    ESFP:['연예인','분위기 메이커. 사람들과 즐거운 순간을 만드는 데 천재적.','ISFJ·ISTJ']
+  };
+  var idx=0, ans=new Array(Q.length).fill(null);
+  function show(){
+    var q=Q[idx]; $('qnum').textContent=(idx+1)+' / '+Q.length;
+    $('prog').style.width=Math.round(idx/Q.length*100)+'%';
+    $('qtext').textContent=q.q; $('optA').textContent=q.a[0]; $('optB').textContent=q.b[0];
+    $('prev').style.visibility=idx>0?'visible':'hidden';
+  }
+  function pick(which){ ans[idx]=which; if(idx<Q.length-1){ idx++; show(); } else finish(); }
+  function finish(){
+    var sc={E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+    Q.forEach(function(q,i){ var pole = ans[i]==='a'?q.a[1]:q.b[1]; sc[pole]++; });
+    var type=(sc.E>=sc.I?'E':'I')+(sc.S>=sc.N?'S':'N')+(sc.T>=sc.F?'T':'F')+(sc.J>=sc.P?'J':'P');
+    var info=TYPES[type];
+    $('quiz').classList.add('hide'); $('result').classList.remove('hide');
+    $('rtype').textContent=type; $('rnick').textContent='“'+info[0]+'”'; $('rdesc').textContent=info[1];
+    $('rbars').innerHTML=[['E','I',sc.E,sc.I],['S','N',sc.S,sc.N],['T','F',sc.T,sc.F],['J','P',sc.J,sc.P]].map(function(a){
+      var tot=a[2]+a[3], pct=Math.round(a[2]/tot*100);
+      return '<div class="axis"><div class="lab"><span>'+a[0]+' '+a[2]+'</span><span>'+a[3]+' '+a[1]+'</span></div><div class="track"><div class="fill" style="width:'+pct+'%"></div></div></div>';
+    }).join('');
+    $('rgood').innerHTML='💞 <b>잘 맞는 유형:</b> '+info[2];
+    window._result=type+' ('+info[0]+') · 잘 맞는 유형 '+info[2];
+  }
+  function restart(){ idx=0; ans.fill(null); $('result').classList.add('hide'); $('quiz').classList.remove('hide'); show(); }
+  $('optA').addEventListener('click',function(){ pick('a'); });
+  $('optB').addEventListener('click',function(){ pick('b'); });
+  $('prev').addEventListener('click',function(){ if(idx>0){ idx--; show(); } });
+  $('again').addEventListener('click',restart);
+  $('copy').addEventListener('click',function(){ navigator.clipboard.writeText('내 MBTI 결과: '+window._result+' (gemini2k.co.kr/mbti)').then(function(){toast('복사됐습니다');}); });
+  show();
+</script>
+</body>
+</html>

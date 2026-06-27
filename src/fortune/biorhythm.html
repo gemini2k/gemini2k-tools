@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
+<meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>바이오리듬 계산기 (신체·감성·지성 곡선) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="생년월일로 오늘의 바이오리듬(신체 23일·감성 28일·지성 33일) 곡선과 수치를 계산합니다. 컨디션 흐름을 그래프로 확인. 재미·참고용. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/biorhythm.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
+<meta property="og:title" content="바이오리듬 계산기 — 빛의여행(gemini2k) 도구"/>
+<meta property="og:description" content="생년월일로 신체·감성·지성 바이오리듬 곡선과 수치 계산. 재미·참고용. 브라우저에서만."/>
+<meta property="og:url" content="https://gemini2k.co.kr/biorhythm.html"/>
+<meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="tools.js"></script>
+<style>
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem;}
+  .fld label{font-weight:700;font-size:.85rem;color:var(--muted);display:block;margin-bottom:.35rem;}
+  .fld input{width:100%;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:1rem;}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:1rem 0;}
+  .bcard{border:1px solid var(--border);border-radius:12px;padding:.7rem;text-align:center;}
+  .bcard .ic{font-size:1.5rem;} .bcard .l{font-size:.74rem;color:var(--muted);font-weight:700;} .bcard .v{font-size:1.3rem;font-weight:800;}
+  .chartwrap{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface);}
+  svg{display:block;width:100%;height:auto;}
+  .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "바이오리듬 계산기",
+  "description": "생년월일로 신체·감성·지성 바이오리듬 곡선과 수치를 계산합니다. 재미·참고용. 업로드 없이 브라우저에서만 처리.",
+  "url": "https://gemini2k.co.kr/biorhythm.html",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+  "publisher": { "@type": "Organization", "name": "빛의여행(gemini2k) 도구", "url": "https://gemini2k.co.kr/" }
+}
+</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:620px;">
+  <h1>바이오리듬 계산기</h1>
+  <p class="sub">생년월일 기준으로 오늘의 신체·감성·지성 리듬을 곡선으로 보여 줍니다.</p>
+
+  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
+    <li>생년월일과 기준일(기본: 오늘)을 입력합니다</li>
+    <li>세 가지 리듬 수치(%)와 ±15일 곡선을 확인합니다</li>
+    <li>+는 활동에 좋은 고조기, −는 휴식이 필요한 저조기, 0 근처는 전환일입니다</li>
+  </ol></div></div>
+
+  <div class="card">
+    <div class="row">
+      <div class="fld"><label for="birth">생년월일</label><input id="birth" type="date"/></div>
+      <div class="fld"><label for="base">기준일</label><input id="base" type="date"/></div>
+    </div>
+    <div class="cards">
+      <div class="bcard"><div class="ic">💪</div><div class="l">신체 (23일)</div><div class="v" id="vP" style="color:#ef4444">-</div></div>
+      <div class="bcard"><div class="ic">💗</div><div class="l">감성 (28일)</div><div class="v" id="vE" style="color:#22c55e">-</div></div>
+      <div class="bcard"><div class="ic">🧠</div><div class="l">지성 (33일)</div><div class="v" id="vI" style="color:#3b82f6">-</div></div>
+    </div>
+    <div class="chartwrap"><svg id="chart" viewBox="0 0 620 260" preserveAspectRatio="xMidYMid meet"></svg></div>
+    <div class="note">바이오리듬은 출생일로부터의 경과일을 주기(신체 23·감성 28·지성 33일)로 나눠 사인 곡선으로 나타낸 것으로, 과학적으로 입증된 이론은 아닙니다. <b>재미·참고용</b>으로 즐겨 주세요. 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function parse(v){ if(!v)return null; var p=v.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); }
+  function calc(){
+    var b=parse($('birth').value), base=parse($('base').value); if(!b||!base) return;
+    var days=Math.round((base-b)/86400000);
+    var P=Math.sin(2*Math.PI*days/23), E=Math.sin(2*Math.PI*days/28), I=Math.sin(2*Math.PI*days/33);
+    $('vP').textContent=Math.round(P*100)+'%'; $('vE').textContent=Math.round(E*100)+'%'; $('vI').textContent=Math.round(I*100)+'%';
+    drawChart(days);
+  }
+  function drawChart(days){
+    var W=620,H=260,pad=24, cx=W/2, midY=H/2, amp=(H-pad*2)/2, span=15;
+    var s='<rect width="'+W+'" height="'+H+'" fill="transparent"/>';
+    // 격자/0선
+    s+='<line x1="0" y1="'+midY+'" x2="'+W+'" y2="'+midY+'" stroke="var(--border)"/>';
+    s+='<line x1="'+cx+'" y1="0" x2="'+cx+'" y2="'+H+'" stroke="var(--accent)" stroke-dasharray="4 4" opacity="0.6"/>';
+    s+='<text x="'+(cx+4)+'" y="14" font-size="11" fill="var(--muted)">오늘</text>';
+    function path(period,color){ var d=''; for(var k=-span;k<=span;k++){ var x=cx+(k/span)*(W/2-pad); var y=midY-Math.sin(2*Math.PI*(days+k)/period)*amp; d+=(k===-span?'M':'L')+x.toFixed(1)+' '+y.toFixed(1)+' '; }
+      return '<path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="2.5"/>'; }
+    s+=path(23,'#ef4444')+path(28,'#22c55e')+path(33,'#3b82f6');
+    // 오늘 점
+    [['#ef4444',23],['#22c55e',28],['#3b82f6',33]].forEach(function(c){ var y=midY-Math.sin(2*Math.PI*days/c[1])*amp; s+='<circle cx="'+cx+'" cy="'+y.toFixed(1)+'" r="4" fill="'+c[0]+'"/>'; });
+    $('chart').innerHTML=s;
+  }
+  (function(){ var t=new Date(),pad=function(n){return(n<10?'0':'')+n;}; $('base').value=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate()); $('birth').value='1995-03-10'; })();
+  ['birth','base'].forEach(function(id){ $(id).addEventListener('change',calc); $(id).addEventListener('input',calc); });
+  calc();
+</script>
+</body>
+</html>

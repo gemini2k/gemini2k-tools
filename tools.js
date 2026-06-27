@@ -144,4 +144,8 @@ window.TOOLS = [
   { key:'dutchpay',h:'dutchpay.html',ic:'🧮', chip:'c-blue', cat:'계산기', k:'더치페이 n빵 엔빵 나누기 1인당 회식 정산 split bill 摊分 割り勘 더치페이 정산', related:['percent','vat','salary'] },
   { key:'discount',h:'discount.html',ic:'🏷️', chip:'c-amber', cat:'계산기', k:'할인 계산 할인율 세일 정가 할인가 쿠폰 쇼핑 discount sale 折扣 割引 할인계산기 세일계산', related:['percent','vat','currency'] },
   { key:'savings',h:'savings.html',ic:'🐷', chip:'c-green', cat:'계산기', k:'적금 예금 이자 계산 만기 단리 복리 이자소득세 저축 savings deposit interest 存款 利息 적금계산기 예금이자', related:['loan','salary','vat'] },
+  { key:'mbti',h:'mbti.html',ic:'🧩', chip:'c-violet', cat:'심리·운세', k:'mbti 성격 유형 검사 테스트 16personalities 심리 personality test 性格 性格診断 엠비티아이 성격검사', related:['bloodtype','biorhythm','namematch'] },
+  { key:'bloodtype',h:'bloodtype.html',ic:'🩸', chip:'c-rose', cat:'심리·운세', k:'혈액형 성격 abo a형 b형 o형 ab형 궁합 재미 blood type 血型 血液型 혈액형성격', related:['mbti','namematch','biorhythm'] },
+  { key:'biorhythm',h:'biorhythm.html',ic:'📈', chip:'c-green', cat:'심리·운세', k:'바이오리듬 신체 감성 지성 컨디션 곡선 리듬 biorhythm 生物节律 バイオリズム 바이오리듬', related:['mbti','agecalc','bloodtype'] },
+  { key:'namematch',h:'namematch.html',ic:'💕', chip:'c-amber', cat:'심리·운세', k:'이름 궁합 테스트 사랑 연애 커플 재미 획수 name compatibility 姓名配对 相性 이름궁합', related:['bloodtype','mbti','agecalc'] },
 ];
