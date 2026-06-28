@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>전자 서명 패드 (사인 그려서 PNG 저장) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="마우스·터치로 서명(사인)을 그려 투명 배경 PNG로 저장합니다. 펜 색·굵기 조절, 다시 그리기. 문서·계약서 서명 이미지에. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/signature.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="전자 서명 패드 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="사인을 그려 투명 PNG로 저장. 펜 색·굵기. 브라우저에서만, 전송 없음."/><meta property="og:url" content="https://gemini2k.co.kr/signature.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .pad{border:2px dashed var(--border);border-radius:12px;background:#fff;touch-action:none;width:100%;display:block;cursor:crosshair;}
+  .opts{display:flex;gap:1rem;align-items:center;margin:.8rem 0;font-size:.9rem;flex-wrap:wrap;}.opts label{display:inline-flex;gap:.4rem;align-items:center;font-weight:600;}
+  .opts input[type=color]{width:42px;height:34px;padding:0;border:1px solid var(--border);border-radius:8px;background:none;}
+  .actions{display:flex;gap:.6rem;flex-wrap:wrap;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"전자 서명 패드","description":"서명을 그려 투명 배경 PNG로 저장합니다(signature_pad).","url":"https://gemini2k.co.kr/signature.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:680px;">
+  <h1>전자 서명 패드</h1>
+  <p class="sub">아래 영역에 마우스나 손가락으로 서명하고 투명 배경 PNG로 저장하세요.</p>
+  <div class="card">
+    <div class="opts"><label>펜 색<input id="color" type="color" value="#111111"/></label><label>굵기 <input id="w" type="range" min="1" max="6" value="2.5" step="0.5"/></label><label><input type="checkbox" id="bg"/> 흰 배경 포함</label></div>
+    <canvas class="pad" id="pad" width="640" height="260"></canvas>
+    <div class="actions" style="margin-top:.7rem;"><button class="btn" id="dl" type="button">⬇️ PNG 저장</button><button class="btn btn-ghost" id="undo" type="button">↶ 실행취소</button><button class="btn btn-ghost" id="clear" type="button">지우기</button></div>
+    <div class="note">오픈소스 <b>signature_pad</b>(MIT, <a href="https://github.com/szimek/signature_pad" target="_blank" rel="noopener">szimek/signature_pad</a>)을 자체 호스팅합니다. 기본은 투명 배경으로 저장되며, 서명 이미지는 서버로 전송되지 않습니다.</div>
+  </div>
+</div>
+<script src="/vendor/signature_pad-4/signature_pad.umd.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var cv=$('pad');
+  function fit(){ var ratio=Math.max(1,window.devicePixelRatio||1); var w=cv.offsetWidth||640; cv.width=w*ratio; cv.height=260*ratio; cv.getContext('2d').scale(ratio,ratio); }
+  var pad;
+  function init(){ fit(); pad=new SignaturePad(cv,{penColor:$('color').value, minWidth:+$('w').value*0.6, maxWidth:+$('w').value*1.4, backgroundColor:'rgba(0,0,0,0)'}); }
+  init();
+  $('color').addEventListener('input',function(){ pad.penColor=$('color').value; });
+  $('w').addEventListener('input',function(){ pad.minWidth=+$('w').value*0.6; pad.maxWidth=+$('w').value*1.4; });
+  $('clear').addEventListener('click',function(){ pad.clear(); });
+  $('undo').addEventListener('click',function(){ var d=pad.toData(); if(d.length){ d.pop(); pad.fromData(d); } });
+  $('dl').addEventListener('click',function(){ if(pad.isEmpty()){toast('먼저 서명해 주세요');return;}
+    var url; if($('bg').checked){ var tmp=document.createElement('canvas');tmp.width=cv.width;tmp.height=cv.height;var x=tmp.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,tmp.width,tmp.height);x.drawImage(cv,0,0);url=tmp.toDataURL('image/png'); }
+    else url=pad.toDataURL('image/png');
+    var a=document.createElement('a');a.href=url;a.download='signature.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},100); });
+</script>
+</body>
+</html>

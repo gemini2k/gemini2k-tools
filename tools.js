@@ -203,4 +203,12 @@ window.TOOLS = [
   { key:'steps',h:'steps.html',ic:'🚶', chip:'c-green', cat:'건강', k:'걸음 수 거리 칼로리 만보 보폭 소모 steps calories distance 步数 歩数 걸음수칼로리', related:['calorie','pace','water'] },
   { key:'pace',h:'pace.html',ic:'🏃', chip:'c-amber', cat:'건강', k:'러닝 페이스 마라톤 기록 속도 달리기 분km running pace 配速 ペース 러닝페이스', related:['steps','calorie','heartrate'] },
   { key:'cooking',h:'cooking.html',ic:'🥄', chip:'c-cyan', cat:'변환기', k:'요리 계량 변환 컵 큰술 작은술 ml g 레시피 cooking measure cup tbsp 量勺 計量 요리계량', related:['unit','numformat','sizeconv'] },
+  { key:'mermaid',h:'mermaid.html',ic:'📊', chip:'c-violet', cat:'시각화', k:'mermaid 다이어그램 순서도 플로차트 시퀀스 간트 텍스트 diagram flowchart 流程图 図 머메이드', related:['diagram','mindmap','codehl'] },
+  { key:'matheditor',h:'matheditor.html',ic:'🧮', chip:'c-blue', cat:'시각화', k:'수식 편집기 latex 수학식 방정식 katex 공식 렌더 math equation 公式 数式 수식편집', related:['mermaid','chartjs','codehl'] },
+  { key:'codehl',h:'codehl.html',ic:'🌈', chip:'c-green', cat:'개발자', k:'코드 하이라이트 신택스 색칠 highlight 블로그 코드 syntax highlight 代码高亮 코드강조', related:['codebeautify','md','json'] },
+  { key:'codebeautify',h:'codebeautify.html',ic:'🧹', chip:'c-cyan', cat:'개발자', k:'코드 정리 포매터 beautify minify html css js 정렬 압축 format 美化 整形 코드정리', related:['sqlformat','xmlformat','jsonyaml'] },
+  { key:'html2md',h:'html2md.html',ic:'📝', chip:'c-amber', cat:'개발자', k:'html 마크다운 변환 turndown markdown 블로그 이전 convert 转换 변환', related:['md','mdtable','codehl'] },
+  { key:'jsonedit',h:'jsonedit.html',ic:'🗂️', chip:'c-blue', cat:'개발자', k:'json 에디터 트리 편집 시각 편집 검증 jsoneditor tree editor 编辑器 エディタ json편집', related:['json','jsonpath','json2ts'] },
+  { key:'signature',h:'signature.html',ic:'✍️', chip:'c-rose', cat:'생성기', k:'전자 서명 사인 서명패드 signature pad sign 签名 サイン 전자서명', related:['favicon','placeholder','ogimage'] },
+  { key:'chartjs',h:'chartjs.html',ic:'📈', chip:'c-green', cat:'시각화', k:'차트 그래프 chartjs 막대 선 원 도넛 레이더 인터랙티브 chart graph 图表 グラフ 차트', related:['chartmaker','stats','regression'] },
 ];

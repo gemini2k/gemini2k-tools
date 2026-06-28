@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>인터랙티브 차트 메이커 (Chart.js) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="데이터를 입력하면 막대·선·원·도넛·레이더·극좌표 차트를 인터랙티브(툴팁·범례)로 그려 PNG로 저장합니다. Chart.js 기반 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/chartjs.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="인터랙티브 차트 메이커 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="막대·선·원·도넛·레이더 인터랙티브 차트 생성·PNG 저장(Chart.js). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/chartjs.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  textarea{width:100%;min-height:120px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.88rem;color:var(--text);resize:vertical;}
+  .opts{display:flex;gap:1rem;align-items:center;margin:.8rem 0;font-size:.9rem;flex-wrap:wrap;}.opts label{display:inline-flex;gap:.4rem;align-items:center;font-weight:600;}.opts select,.opts input{padding:.45rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .cvwrap{border:1px solid var(--border);border-radius:11px;background:#fff;padding:1rem;}
+  .actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.7rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"인터랙티브 차트 메이커","description":"막대·선·원·도넛·레이더 차트를 인터랙티브로 그립니다(Chart.js).","url":"https://gemini2k.co.kr/chartjs.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1>인터랙티브 차트 메이커</h1>
+  <p class="sub">데이터를 입력하면 툴팁·범례가 있는 인터랙티브 차트를 그려 줍니다. PNG로 저장하세요.</p>
+  <div class="card">
+    <label style="font-weight:700;font-size:.85rem;">데이터 (라벨,값 — 한 줄에 하나)</label>
+    <textarea id="in">1월,120
+2월,200
+3월,150
+4월,280
+5월,230</textarea>
+    <div class="opts">
+      <label>종류 <select id="type"><option value="bar">막대</option><option value="line">선</option><option value="pie">원</option><option value="doughnut">도넛</option><option value="radar">레이더</option><option value="polarArea">극좌표</option></select></label>
+      <label>제목 <input id="title" type="text" value="월별 데이터" style="width:140px"/></label>
+    </div>
+    <div class="cvwrap"><canvas id="cv" height="300"></canvas></div>
+    <div class="actions"><button class="btn btn-ghost" id="png" type="button">⬇️ PNG 저장</button></div>
+    <div class="note">오픈소스 <b>Chart.js</b>(MIT, <a href="https://github.com/chartjs/Chart.js" target="_blank" rel="noopener">chartjs/Chart.js</a>)를 자체 호스팅합니다. 마우스를 올리면 값이 표시됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/chartjs-4/chart.umd.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var COL=['#5B5BF5','#15C39A','#F59E0B','#EF4444','#A855F7','#3D7BF0','#EC4899','#10B981','#F97316','#14B8A6'];
+  var chart=null;
+  function parse(){ var labels=[],data=[]; $('in').value.split(/\r?\n/).forEach(function(l){ l=l.trim(); if(!l)return; var p=l.split(/[,\t]/); labels.push((p[0]||'').trim()); data.push(parseFloat(p[1])||0); }); return {labels:labels,data:data}; }
+  function render(){ var d=parse(), type=$('type').value;
+    if(chart)chart.destroy();
+    var multi=(type==='pie'||type==='doughnut'||type==='polarArea');
+    chart=new Chart($('cv'),{ type:type, data:{ labels:d.labels, datasets:[{ label:$('title').value, data:d.data,
+      backgroundColor: multi? d.data.map(function(_,i){return COL[i%COL.length];}) : (type==='line'?'rgba(91,91,245,.15)':COL[0]),
+      borderColor: type==='line'?COL[0]:(multi?'#fff':COL[0]), borderWidth: type==='line'?2:1, fill:type==='line', tension:.3 }] },
+      options:{ responsive:true, plugins:{ legend:{display:multi||type==='radar'}, title:{display:!!$('title').value,text:$('title').value} } } });
+  }
+  ['in','type','title'].forEach(function(id){$(id).addEventListener('input',render);$(id).addEventListener('change',render);});
+  $('png').addEventListener('click',function(){ var tmp=document.createElement('canvas');tmp.width=$('cv').width;tmp.height=$('cv').height;var x=tmp.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,tmp.width,tmp.height);x.drawImage($('cv'),0,0);
+    var a=document.createElement('a');a.href=tmp.toDataURL('image/png');a.download='chart.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},100); });
+  render();
+</script>
+</body>
+</html>
