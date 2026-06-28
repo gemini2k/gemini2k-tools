@@ -211,4 +211,12 @@ window.TOOLS = [
   { key:'jsonedit',h:'jsonedit.html',ic:'🗂️', chip:'c-blue', cat:'개발자', k:'json 에디터 트리 편집 시각 편집 검증 jsoneditor tree editor 编辑器 エディタ json편집', related:['json','jsonpath','json2ts'] },
   { key:'signature',h:'signature.html',ic:'✍️', chip:'c-rose', cat:'생성기', k:'전자 서명 사인 서명패드 signature pad sign 签名 サイン 전자서명', related:['favicon','placeholder','ogimage'] },
   { key:'chartjs',h:'chartjs.html',ic:'📈', chip:'c-green', cat:'시각화', k:'차트 그래프 chartjs 막대 선 원 도넛 레이더 인터랙티브 chart graph 图表 グラフ 차트', related:['chartmaker','stats','regression'] },
+  { key:'qrstyle',h:'qrstyle.html',ic:'🔳', chip:'c-violet', cat:'생성기', k:'디자인 qr 로고 스타일 색 모양 예쁜 qr code styling logo 二维码 美化 디자인qr', related:['qr','qrdecode','barcode'] },
+  { key:'bcrypt',h:'bcrypt.html',ic:'🔑', chip:'c-blue', cat:'개인정보', k:'bcrypt 해시 비밀번호 검증 cost 라운드 hash verify 加密 ハッシュ 비크립트', related:['hash','pwcheck','hmac'] },
+  { key:'mathcalc',h:'mathcalc.html',ic:'🧮', chip:'c-green', cat:'계산기', k:'공학용 계산기 수식 함수 삼각 로그 단위변환 행렬 mathjs scientific calculator 计算器 関数電卓 공학계산기', related:['matheditor','radix','angle'] },
+  { key:'htmlpdf',h:'htmlpdf.html',ic:'📄', chip:'c-rose', cat:'PDF', k:'html pdf 변환 글 문서 한글 생성 저장 jspdf html to pdf 转pdf PDF変換 html을pdf', related:['img2pdf','pdf2txt','pmerge'] },
+  { key:'waveform',h:'waveform.html',ic:'🎵', chip:'c-cyan', cat:'시각화', k:'오디오 파형 음원 재생 wavesurfer waveform audio 波形 波形 오디오파형', related:['chartjs','imgfilter','abcmusic'] },
+  { key:'epubreader',h:'epubreader.html',ic:'📖', chip:'c-amber', cat:'문서', k:'epub 뷰어 전자책 읽기 reader ebook 电子书 電子書籍 이펍뷰어', related:['pdf2txt','docx2txt','htmlpdf'] },
+  { key:'abcmusic',h:'abcmusic.html',ic:'🎼', chip:'c-violet', cat:'시각화', k:'abc 악보 음악 표기 연주 멜로디 sheet music notation 乐谱 楽譜 악보에디터', related:['waveform','mermaid','matheditor'] },
+  { key:'gzip',h:'gzip.html',ic:'🗜️', chip:'c-blue', cat:'개발자', k:'gzip 압축 해제 deflate pako base64 텍스트 compress 压缩 圧縮 gzip압축', related:['base64','datasize','hash'] },
 ];

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>텍스트 gzip 압축·해제 (Base64) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="텍스트를 gzip/deflate로 압축해 Base64로 만들고, 다시 원래 텍스트로 해제합니다. 압축률 표시. 개발·전송 최적화에. pako 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/gzip.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="텍스트 gzip 압축·해제 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="텍스트 gzip/deflate 압축→Base64, 해제, 압축률(pako). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/gzip.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:.7rem;}.seg button{padding:.5rem .9rem;border:0;background:var(--surface);color:var(--text);font-family:inherit;font-weight:700;cursor:pointer;}.seg button.on{background:var(--accent);color:#fff;}
+  textarea{width:100%;min-height:120px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.86rem;color:var(--text);resize:vertical;}
+  .opts{margin:.6rem 0;font-size:.9rem;}.opts label{display:inline-flex;gap:.4rem;align-items:center;font-weight:600;margin-right:1rem;}.opts select{padding:.4rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .actions{display:flex;gap:.6rem;flex-wrap:wrap;}.arrow{text-align:center;color:var(--muted);font-size:1.3rem;}.meta{font-size:.84rem;color:var(--muted);margin:.4rem 0;}
+  .out{width:100%;min-height:100px;border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-all;overflow:auto;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"텍스트 gzip 압축·해제","description":"텍스트를 gzip/deflate로 압축(Base64)하고 해제합니다(pako).","url":"https://gemini2k.co.kr/gzip.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1>텍스트 gzip 압축·해제</h1>
+  <p class="sub">텍스트를 gzip/deflate로 압축해 Base64 문자열로 만들고, 반대로 해제합니다.</p>
+  <div class="card">
+    <div class="seg" id="seg"><button data-d="c" class="on" type="button">압축</button><button data-d="d" type="button">해제</button></div>
+    <div class="opts"><label>알고리즘 <select id="algo"><option value="gzip">gzip</option><option value="deflate">deflate</option></select></label></div>
+    <textarea id="in">안녕하세요! 이 텍스트를 gzip으로 압축해 봅니다. gzip gzip gzip 반복 반복 반복.</textarea>
+    <div class="actions"><button class="btn" id="copy" type="button">📋 복사</button></div>
+    <div class="meta" id="meta"></div>
+    <div class="arrow">↓</div>
+    <div class="out" id="out"></div>
+    <div class="note">오픈소스 <b>pako</b>(MIT/Zlib, <a href="https://github.com/nodeca/pako" target="_blank" rel="noopener">nodeca/pako</a>)를 자체 호스팅합니다. 압축 결과는 Base64로 표시됩니다(바이너리를 텍스트로 안전하게 전달). 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/pako-2.1/pako.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var dir='c';
+  function b64enc(u8){ var s=''; for(var i=0;i<u8.length;i++)s+=String.fromCharCode(u8[i]); return btoa(s); }
+  function b64dec(b){ var s=atob(b.trim()); var u8=new Uint8Array(s.length); for(var i=0;i<s.length;i++)u8[i]=s.charCodeAt(i); return u8; }
+  function run(){ var t=$('in').value, algo=$('algo').value; $('meta').textContent='';
+    try{ if(dir==='c'){ var inB=new TextEncoder().encode(t); var comp=algo==='gzip'?pako.gzip(inB):pako.deflate(inB); var out=b64enc(comp);
+        $('out').textContent=out; window._o=out; var ratio=inB.length? Math.round((1-comp.length/inB.length)*100):0;
+        $('meta').textContent='원본 '+inB.length+'B → 압축 '+comp.length+'B (Base64 '+out.length+'자) · '+ratio+'% 절감'; }
+      else { var u8=b64dec(t); var dec=algo==='gzip'?pako.ungzip(u8):pako.inflate(u8); var txt=new TextDecoder().decode(dec); $('out').textContent=txt; window._o=txt; }
+    }catch(e){ $('out').textContent='⚠️ '+e.message; window._o=''; }
+  }
+  $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;dir=b.dataset.d;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});run();});
+  ['in','algo'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast('복사됐습니다');});});
+  run();
+</script>
+</body>
+</html>

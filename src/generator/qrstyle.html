@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>디자인 QR코드 생성기 (로고·색·모양) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="가운데 로고를 넣고 점·모서리 모양과 색을 바꾼 예쁜 디자인 QR코드를 만들어 PNG로 저장합니다. qr-code-styling 기반 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/qrstyle.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="디자인 QR코드 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="로고·색·모양을 넣은 디자인 QR 생성·PNG 저장. 자체호스팅. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/qrstyle.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem 1rem;margin-bottom:1rem;}
+  .grid label{display:flex;flex-direction:column;gap:.25rem;font-size:.78rem;font-weight:700;color:var(--muted);}
+  .grid input[type=text],.grid select{padding:.5rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .grid input[type=color]{width:46px;height:36px;padding:0;border:1px solid var(--border);border-radius:8px;background:none;}
+  .qrwrap{text-align:center;background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem;}
+  .actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"디자인 QR코드 생성기","description":"로고·색·모양을 넣은 디자인 QR코드를 생성합니다(qr-code-styling).","url":"https://gemini2k.co.kr/qrstyle.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:680px;">
+  <h1>디자인 QR코드 생성기</h1>
+  <p class="sub">색·점 모양·가운데 로고를 넣어 개성 있는 QR코드를 만들고 PNG로 저장합니다.</p>
+  <div class="card">
+    <div class="grid">
+      <label style="grid-column:1/3;">내용(URL·텍스트)<input id="data" type="text" value="https://gemini2k.co.kr"/></label>
+      <label>점 색<input id="fg" type="color" value="#5B5BF5"/></label>
+      <label>배경색<input id="bg" type="color" value="#ffffff"/></label>
+      <label>점 모양<select id="dots"><option value="rounded">둥근</option><option value="dots">도트</option><option value="square">사각</option><option value="classy">클래시</option><option value="extra-rounded">아주둥근</option></select></label>
+      <label>모서리 모양<select id="corner"><option value="extra-rounded">둥근</option><option value="dot">도트</option><option value="square">사각</option></select></label>
+      <label style="grid-column:1/3;">가운데 로고(선택)<input id="logo" type="file" accept="image/*"/></label>
+    </div>
+    <div class="qrwrap"><div id="qr"></div></div>
+    <div class="actions"><button class="btn" id="png" type="button">⬇️ PNG 다운로드</button><button class="btn btn-ghost" id="svg" type="button">⬇️ SVG</button></div>
+    <div class="note">오픈소스 <b>qr-code-styling</b>(MIT, <a href="https://github.com/kozakdenys/qr-code-styling" target="_blank" rel="noopener">kozakdenys/qr-code-styling</a>)을 자체 호스팅합니다. 로고가 너무 크면 인식률이 떨어질 수 있어요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/qrstyling-1.6/qr-code-styling.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var logoData=null, qr=null;
+  function build(){ var opt={ width:280,height:280,data:$('data').value||' ',margin:8,
+    dotsOptions:{color:$('fg').value,type:$('dots').value}, backgroundOptions:{color:$('bg').value},
+    cornersSquareOptions:{type:$('corner').value,color:$('fg').value} };
+    if(logoData){ opt.image=logoData; opt.imageOptions={crossOrigin:'anonymous',margin:4,imageSize:0.32}; }
+    if(!qr){ qr=new QRCodeStyling(opt); $('qr').innerHTML=''; qr.append($('qr')); } else qr.update(opt);
+  }
+  ['data','fg','bg','dots','corner'].forEach(function(id){$(id).addEventListener('input',build);$(id).addEventListener('change',build);});
+  $('logo').addEventListener('change',function(e){ var f=e.target.files[0]; if(!f){logoData=null;build();return;} var r=new FileReader(); r.onload=function(){logoData=r.result;build();}; r.readAsDataURL(f); });
+  $('png').addEventListener('click',function(){ if(qr)qr.download({name:'qr',extension:'png'}); });
+  $('svg').addEventListener('click',function(){ if(qr)qr.download({name:'qr',extension:'svg'}); });
+  build();
+</script>
+</body>
+</html>

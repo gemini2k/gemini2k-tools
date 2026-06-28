@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>EPUB 뷰어 (전자책 읽기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="EPUB 전자책 파일을 올려 브라우저에서 바로 읽습니다. 페이지 넘김, 목차 이동. 앱 설치 없이. epub.js 자체 호스팅. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/epubreader.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="EPUB 뷰어 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="EPUB 전자책을 브라우저에서 읽기(목차·페이지). 자체호스팅. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/epubreader.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .drop{border:2px dashed var(--border);border-radius:14px;padding:1.6rem 1rem;text-align:center;color:var(--muted);cursor:pointer;}.drop:hover{border-color:var(--accent);color:var(--accent);}
+  .reader{border:1px solid var(--border);border-radius:12px;background:#fff;margin-top:1rem;}
+  #viewer{height:560px;}
+  .nav{display:flex;justify-content:space-between;align-items:center;gap:.6rem;margin-top:.6rem;}
+  .nav button{padding:.5rem .9rem;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;font-weight:700;cursor:pointer;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"EPUB 뷰어","description":"EPUB 전자책을 브라우저에서 읽습니다(epub.js).","url":"https://gemini2k.co.kr/epubreader.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/BSD-2-Clause","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:820px;">
+  <h1>EPUB 뷰어</h1>
+  <p class="sub">EPUB 전자책 파일을 올리면 설치 없이 바로 읽을 수 있어요.</p>
+  <div class="card" style="max-width:none;">
+    <div class="drop" id="drop"><div style="font-size:1.8rem">📖</div><div><strong>EPUB 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.epub</div></div>
+    <input type="file" id="file" accept=".epub,application/epub+zip" class="hide"/>
+    <div class="reader hide" id="reader"><div id="viewer"></div></div>
+    <div class="nav hide" id="nav"><button id="prev" type="button">← 이전</button><span id="title" style="font-size:.85rem;color:var(--muted)"></span><button id="next" type="button">다음 →</button></div>
+    <div class="note">오픈소스 <b>epub.js</b>(BSD-2, <a href="https://github.com/futurepress/epub.js" target="_blank" rel="noopener">futurepress/epub.js</a>)와 JSZip을 자체 호스팅합니다. 책 파일은 서버로 전송되지 않고 브라우저에서만 열립니다. 좌우 화살표 키로도 넘길 수 있어요.</div>
+  </div>
+</div>
+<script src="/vendor/jszip-3.10.1/jszip.min.js"></script>
+<script src="/vendor/epubjs-0.3/epub.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var book=null, rendition=null;
+  function load(f){ if(!f)return; var fr=new FileReader();
+    fr.onload=function(e){ try{ if(rendition)rendition.destroy();
+      book=ePub(e.target.result); $('reader').classList.remove('hide'); $('nav').classList.remove('hide');
+      rendition=book.renderTo('viewer',{width:'100%',height:560,spread:'none'}); rendition.display();
+      book.loaded.metadata.then(function(m){ $('title').textContent=(m.title||'')+(m.creator?' · '+m.creator:''); });
+    }catch(err){ $('title').textContent='파일을 열 수 없습니다.'; } };
+    fr.readAsArrayBuffer(f);
+  }
+  $('drop').addEventListener('click',function(){$('file').click();});
+  $('file').addEventListener('change',function(e){if(e.target.files[0])load(e.target.files[0]);});
+  ['dragover','dragenter'].forEach(function(ev){$('drop').addEventListener(ev,function(e){e.preventDefault();});});
+  $('drop').addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files[0])load(e.dataTransfer.files[0]);});
+  $('prev').addEventListener('click',function(){if(rendition)rendition.prev();});
+  $('next').addEventListener('click',function(){if(rendition)rendition.next();});
+  document.addEventListener('keydown',function(e){ if(!rendition)return; if(e.key==='ArrowLeft')rendition.prev(); else if(e.key==='ArrowRight')rendition.next(); });
+</script>
+</body>
+</html>

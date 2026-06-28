@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>bcrypt 해시 생성·검증기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="비밀번호를 bcrypt 해시로 만들고, 해시와 평문이 일치하는지 검증합니다. cost(라운드) 조절. 개발용. bcryptjs 자체 호스팅. 입력은 전송·저장되지 않습니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/bcrypt.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="bcrypt 해시 생성·검증기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="bcrypt 해시 생성·검증, cost 조절(bcryptjs). 전송 없음. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/bcrypt.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .fld{margin-bottom:1rem;}.fld label{font-weight:700;font-size:.85rem;color:var(--muted);display:block;margin-bottom:.35rem;}
+  .fld input{width:100%;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:ui-monospace,monospace;font-size:1rem;}
+  .out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.9rem;word-break:break-all;min-height:1.4em;}
+  .actions{display:flex;gap:.6rem;flex-wrap:wrap;margin:.6rem 0;}
+  .verdict{font-weight:800;font-size:1.1rem;min-height:1.4em;margin:.5rem 0;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  hr{border:0;border-top:1px solid var(--border);margin:1.4rem 0;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"bcrypt 해시 생성·검증기","description":"bcrypt 해시를 생성하고 평문과 일치 여부를 검증합니다(bcryptjs).","url":"https://gemini2k.co.kr/bcrypt.html","applicationCategory":"SecurityApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:620px;">
+  <h1>bcrypt 해시 생성·검증</h1>
+  <p class="sub">비밀번호를 bcrypt 해시로 만들고, 해시와 평문이 맞는지 확인합니다. 입력은 전송·저장되지 않습니다.</p>
+  <div class="card">
+    <div class="fld"><label>평문 비밀번호</label><input id="pw" type="text" value="hunter2"/></div>
+    <div class="fld"><label>Cost (라운드, 4~14)</label><input id="rounds" type="number" min="4" max="14" value="10"/></div>
+    <div class="actions"><button class="btn" id="gen" type="button">🔒 해시 생성</button><button class="btn btn-ghost" id="copy" type="button">📋 복사</button></div>
+    <div class="out" id="hash"></div>
+    <hr/>
+    <div class="fld"><label>검증할 해시</label><input id="vhash" type="text" placeholder="$2a$10$..."/></div>
+    <div class="fld"><label>평문</label><input id="vpw" type="text" value="hunter2"/></div>
+    <div class="actions"><button class="btn" id="verify" type="button">✔ 검증</button></div>
+    <div class="verdict" id="verdict"></div>
+    <div class="note">오픈소스 <b>bcryptjs</b>(MIT, <a href="https://github.com/dcodeIO/bcrypt.js" target="_blank" rel="noopener">dcodeIO/bcrypt.js</a>)를 자체 호스팅합니다. cost가 높을수록 안전하지만 느립니다(웹 권장 10~12). 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/bcryptjs-2.4/bcrypt.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var B=window.bcrypt||(window.dcodeIO&&window.dcodeIO.bcrypt);
+  $('gen').addEventListener('click',function(){ try{ var r=Math.max(4,Math.min(14,parseInt($('rounds').value,10)||10)); var h=B.hashSync($('pw').value, r); $('hash').textContent=h; window._h=h; }catch(e){ $('hash').textContent='오류: '+e.message; } });
+  $('copy').addEventListener('click',function(){ if(window._h)navigator.clipboard.writeText(window._h).then(function(){toast('복사됐습니다');}); });
+  $('verify').addEventListener('click',function(){ try{ var ok=B.compareSync($('vpw').value, $('vhash').value.trim()); $('verdict').textContent=ok?'✅ 일치합니다':'❌ 일치하지 않습니다'; $('verdict').style.color=ok?'#16a34a':'#ef4444'; }catch(e){ $('verdict').textContent='⚠️ 해시 형식 오류'; $('verdict').style.color='#e0563b'; } });
+  $('gen').click();
+</script>
+</body>
+</html>
