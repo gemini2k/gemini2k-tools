@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>워드클라우드 생성기 (단어 빈도 시각화) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="글을 붙여넣으면 자주 나온 단어를 크게 그리는 워드클라우드를 만들어 PNG로 저장합니다. 불용어 제외, 색·모양 선택. wordcloud2 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/wordcloud.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="워드클라우드 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="단어 빈도 워드클라우드 생성·PNG 저장(wordcloud2). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/wordcloud.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  textarea{width:100%;min-height:120px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:inherit;font-size:.95rem;color:var(--text);resize:vertical;}
+  .opts{display:flex;gap:1rem;align-items:center;margin:.8rem 0;font-size:.9rem;flex-wrap:wrap;}.opts label{display:inline-flex;gap:.4rem;align-items:center;font-weight:600;}.opts select{padding:.4rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .cvwrap{text-align:center;border:1px solid var(--border);border-radius:11px;background:#fff;}canvas{max-width:100%;height:auto;}
+  .actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.7rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"워드클라우드 생성기","description":"단어 빈도를 워드클라우드로 시각화합니다(wordcloud2).","url":"https://gemini2k.co.kr/wordcloud.html","applicationCategory":"MultimediaApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1>워드클라우드 생성기</h1>
+  <p class="sub">글을 넣으면 자주 나온 단어를 크게 그려 워드클라우드를 만들어 줍니다.</p>
+  <div class="card">
+    <textarea id="in">워드클라우드는 자주 나오는 단어를 크게 보여줍니다. 단어 단어 단어 빈도 빈도 시각화 시각화 시각화 분석 텍스트 텍스트 클라우드 클라우드 클라우드 클라우드</textarea>
+    <div class="opts"><label>색 <select id="color"><option value="random-dark">진한색</option><option value="random-light">연한색</option></select></label><label>최소 글자수 <select id="min"><option>1</option><option selected>2</option><option>3</option></select></label></div>
+    <div class="cvwrap"><canvas id="cv" width="700" height="400"></canvas></div>
+    <div class="actions"><button class="btn" id="gen" type="button">☁️ 생성</button><button class="btn btn-ghost" id="png" type="button">⬇️ PNG</button></div>
+    <div class="note">오픈소스 <b>wordcloud2.js</b>(MIT, <a href="https://github.com/timdream/wordcloud2.js" target="_blank" rel="noopener">timdream/wordcloud2.js</a>)를 자체 호스팅합니다. 단어는 공백·문장부호로 나누며 흔한 조사 일부를 제외합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/wordcloud2-1.2/wordcloud2.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var STOP={'은':1,'는':1,'이':1,'가':1,'을':1,'를':1,'의':1,'에':1,'와':1,'과':1,'도':1,'the':1,'a':1,'and':1,'of':1,'to':1};
+  function gen(){ var min=+$('min').value; var toks=$('in').value.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+    var map={}; toks.forEach(function(w){ if(w.length<min||STOP[w.toLowerCase()])return; map[w]=(map[w]||0)+1; });
+    var list=Object.keys(map).map(function(k){return [k,map[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,120);
+    if(!list.length){toast('단어가 부족해요');return;}
+    var max=list[0][1];
+    WordCloud($('cv'),{ list:list, weightFactor:function(s){return Math.max(12, s/max*64);}, color:$('color').value, backgroundColor:'#fff', rotateRatio:0.5, gridSize:6, fontFamily:'Pretendard,sans-serif' });
+  }
+  $('gen').addEventListener('click',gen);
+  $('png').addEventListener('click',function(){var a=document.createElement('a');a.href=$('cv').toDataURL('image/png');a.download='wordcloud.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},100);});
+  gen();
+</script>
+</body>
+</html>

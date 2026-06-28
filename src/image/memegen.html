@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>밈 생성기 (사진에 글자·짤방 만들기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="사진에 위·아래 자막이나 텍스트를 얹어 밈(짤방)을 만듭니다. 글자 끌어서 이동·크기·색 조절, PNG 저장. fabric.js 자체 호스팅. 업로드 없이 브라우저에서만 처리되어 안전합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/memegen.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="밈 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="사진에 자막·텍스트 얹어 밈 만들기·PNG 저장(fabric.js). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/memegen.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  .drop{border:2px dashed var(--border);border-radius:14px;padding:1.4rem 1rem;text-align:center;color:var(--muted);cursor:pointer;}.drop:hover{border-color:var(--accent);color:var(--accent);}
+  .bar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.8rem 0;}.bar button{padding:.45rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-family:inherit;font-weight:600;cursor:pointer;font-size:.85rem;}
+  .bar input[type=color]{width:40px;height:32px;padding:0;border:1px solid var(--border);border-radius:7px;background:none;}
+  .cvwrap{text-align:center;border:1px solid var(--border);border-radius:11px;background:#222;overflow:auto;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+  .hide{display:none;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"밈 생성기","description":"사진에 텍스트를 얹어 밈(짤방)을 만듭니다(fabric.js).","url":"https://gemini2k.co.kr/memegen.html","applicationCategory":"MultimediaApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:720px;">
+  <h1>밈 생성기</h1>
+  <p class="sub">사진을 올리고 글자를 얹어 짤방을 만드세요. 글자는 드래그로 이동·크기 조절돼요.</p>
+  <div class="card">
+    <div class="drop" id="drop"><div style="font-size:1.8rem">🖼️+🔤</div><div><strong>사진을 끌어다 놓거나 클릭</strong></div></div>
+    <input type="file" id="file" accept="image/*" class="hide"/>
+    <div class="bar hide" id="bar">
+      <button id="addTop" type="button">＋ 위 자막</button><button id="addBottom" type="button">＋ 아래 자막</button><button id="addText" type="button">＋ 텍스트</button>
+      <input id="color" type="color" value="#ffffff" title="글자색"/><button id="del" type="button">🗑 삭제</button><button class="btn" id="png" type="button">⬇️ PNG</button>
+    </div>
+    <div class="cvwrap"><canvas id="cv" width="600" height="400"></canvas></div>
+    <div class="note">오픈소스 <b>fabric.js</b>(MIT, <a href="https://github.com/fabricjs/fabric.js" target="_blank" rel="noopener">fabricjs/fabric.js</a>)를 자체 호스팅합니다. 자막은 흰 글자+검은 테두리(밈 스타일)로 추가되며 더블클릭해 수정합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/fabric-5/fabric.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var cv=new fabric.Canvas('cv',{backgroundColor:'#222'});
+  function read(f){ if(!f||!/^image\//.test(f.type))return; var u=URL.createObjectURL(f); fabric.Image.fromURL(u,function(img){
+    var maxW=600; var sc=Math.min(1,maxW/img.width); cv.setWidth(img.width*sc); cv.setHeight(img.height*sc);
+    img.set({selectable:false,evented:false}); img.scale(sc); cv.clear(); cv.backgroundColor='#222'; cv.add(img); cv.sendToBack(img); cv.renderAll(); $('bar').classList.remove('hide'); URL.revokeObjectURL(u);
+  }); }
+  function addText(txt,y){ var t=new fabric.Textbox(txt,{ left:cv.getWidth()/2, top:y, originX:'center', width:cv.getWidth()*0.9, textAlign:'center',
+    fontFamily:'Pretendard, Impact, sans-serif', fontWeight:'800', fontSize:Math.round(cv.getHeight()/10), fill:$('color').value, stroke:'#000', strokeWidth:2, paintFirst:'stroke' });
+    cv.add(t); cv.setActiveObject(t); cv.renderAll(); }
+  $('drop').addEventListener('click',function(){$('file').click();});
+  $('file').addEventListener('change',function(e){if(e.target.files[0])read(e.target.files[0]);});
+  ['dragover','dragenter'].forEach(function(ev){$('drop').addEventListener(ev,function(e){e.preventDefault();});});
+  $('drop').addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files[0])read(e.dataTransfer.files[0]);});
+  $('addTop').addEventListener('click',function(){addText('위 자막',20);});
+  $('addBottom').addEventListener('click',function(){addText('아래 자막',cv.getHeight()-Math.round(cv.getHeight()/10)-24);});
+  $('addText').addEventListener('click',function(){addText('텍스트',cv.getHeight()/2);});
+  $('color').addEventListener('input',function(){var o=cv.getActiveObject();if(o&&o.set){o.set('fill',$('color').value);cv.renderAll();}});
+  $('del').addEventListener('click',function(){var o=cv.getActiveObject();if(o&&o.type!=='image'){cv.remove(o);cv.renderAll();}});
+  $('png').addEventListener('click',function(){ cv.discardActiveObject(); cv.renderAll(); var a=document.createElement('a'); a.href=cv.toDataURL({format:'png'}); a.download='meme.png'; document.body.appendChild(a); a.click(); setTimeout(function(){a.remove();},100); });
+</script>
+</body>
+</html>

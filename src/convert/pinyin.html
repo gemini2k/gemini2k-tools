@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>중국어 병음(핀인) 변환기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="중국어(한자)를 병음(핀인)으로 변환합니다. 성조 기호·숫자·생략 표기, 한자별 위 병음 표시. 중국어 학습·발음에. pinyin-pro 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/pinyin.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="중국어 병음 변환기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="한자→병음(핀인) 변환, 성조 기호·숫자(pinyin-pro). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/pinyin.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>
+  textarea{width:100%;min-height:90px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-size:1.2rem;color:var(--text);font-family:inherit;resize:vertical;}
+  .opts{display:flex;gap:1rem;align-items:center;margin:.8rem 0;font-size:.9rem;flex-wrap:wrap;}.opts label{display:inline-flex;gap:.4rem;align-items:center;font-weight:600;}.opts select{padding:.4rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+  .out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.9rem;font-size:1.2rem;min-height:1.6em;line-height:2.2;}
+  .out ruby rt{font-size:.7rem;color:var(--accent);}
+  .actions{margin-top:.7rem;}
+  .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"중국어 병음 변환기","description":"중국어 한자를 병음(핀인)으로 변환합니다(pinyin-pro).","url":"https://gemini2k.co.kr/pinyin.html","applicationCategory":"EducationalApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:640px;">
+  <h1>중국어 병음(핀인) 변환기</h1>
+  <p class="sub">중국어 한자를 입력하면 병음으로 바꿔 줍니다. 한자 위에 병음을 달아 볼 수도 있어요.</p>
+  <div class="card">
+    <textarea id="in">你好，世界！欢迎使用拼音转换器。</textarea>
+    <div class="opts"><label>성조 <select id="tone"><option value="symbol">기호(nǐ)</option><option value="num">숫자(ni3)</option><option value="none">없음(ni)</option></select></label><label><input type="checkbox" id="ruby" checked/> 한자 위 병음</label></div>
+    <div class="out" id="out"></div>
+    <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 병음 복사</button></div>
+    <div class="note">오픈소스 <b>pinyin-pro</b>(MIT, <a href="https://github.com/zh-lx/pinyin-pro" target="_blank" rel="noopener">zh-lx/pinyin-pro</a>)를 자체 호스팅합니다. 다음자(多音字)는 문맥에 따라 다를 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/pinyinpro-3/pinyin-pro.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var P=window.pinyinPro||window.pinyin_pro||window['pinyin-pro'];
+  function run(){ var t=$('in').value, tone=$('tone').value;
+    try{ var flat=P.pinyin(t,{toneType:tone}); window._o=flat;
+      if($('ruby').checked){ var arr=P.pinyin(t,{toneType:tone,type:'array'}); var chars=[...t]; var h='';
+        for(var i=0;i<chars.length;i++){ var py=arr[i]; if(py&&/[一-鿿]/.test(chars[i])) h+='<ruby>'+chars[i]+'<rt>'+py+'</rt></ruby>'; else h+=chars[i]==='\n'?'<br>':chars[i]; }
+        $('out').innerHTML=h; }
+      else $('out').textContent=flat;
+    }catch(e){ $('out').textContent='변환 오류'; }
+  }
+  ['in','tone','ruby'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast('복사됐습니다');});});
+  run();
+</script>
+</body>
+</html>

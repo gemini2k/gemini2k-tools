@@ -219,4 +219,12 @@ window.TOOLS = [
   { key:'epubreader',h:'epubreader.html',ic:'📖', chip:'c-amber', cat:'문서', k:'epub 뷰어 전자책 읽기 reader ebook 电子书 電子書籍 이펍뷰어', related:['pdf2txt','docx2txt','htmlpdf'] },
   { key:'abcmusic',h:'abcmusic.html',ic:'🎼', chip:'c-violet', cat:'시각화', k:'abc 악보 음악 표기 연주 멜로디 sheet music notation 乐谱 楽譜 악보에디터', related:['waveform','mermaid','matheditor'] },
   { key:'gzip',h:'gzip.html',ic:'🗜️', chip:'c-blue', cat:'개발자', k:'gzip 압축 해제 deflate pako base64 텍스트 compress 压缩 圧縮 gzip압축', related:['base64','datasize','hash'] },
+  { key:'wordcloud',h:'wordcloud.html',ic:'☁️', chip:'c-cyan', cat:'시각화', k:'워드클라우드 단어 구름 빈도 시각화 word cloud 词云 ワードクラウド 워드클라우드', related:['wordfreq','chartjs','colorname'] },
+  { key:'wanakana',h:'wanakana.html',ic:'🇯🇵', chip:'c-rose', cat:'변환기', k:'일본어 히라가나 가타카나 로마자 변환 가나 일본어공부 japanese kana 假名 仮名 일본어변환', related:['pinyin','romanize','hangul'] },
+  { key:'pinyin',h:'pinyin.html',ic:'🇨🇳', chip:'c-amber', cat:'변환기', k:'중국어 병음 핀인 발음 성조 변환 중국어공부 pinyin chinese 拼音 ピンイン 중국어병음', related:['wanakana','romanize','unicodeconv'] },
+  { key:'sqlplay',h:'sqlplay.html',ic:'🗄️', chip:'c-blue', cat:'개발자', k:'sql 연습 sqlite 실행 쿼리 데이터베이스 db playground sql.js 数据库 SQL練習 sql연습', related:['sqlformat','csv2sql','jsonpath'] },
+  { key:'wifiqr',h:'wifiqr.html',ic:'📶', chip:'c-green', cat:'생성기', k:'와이파이 qr wifi 비밀번호 자동연결 매장 ssid wifi qr 无线 WiFi 와이파이큐알', related:['qr','qrstyle','vcardqr'] },
+  { key:'vcardqr',h:'vcardqr.html',ic:'📇', chip:'c-violet', cat:'생성기', k:'연락처 명함 vcard qr 전화 이메일 주소록 contact card 名片 連絡先 명함큐알', related:['qr','wifiqr','qrstyle'] },
+  { key:'memegen',h:'memegen.html',ic:'😂', chip:'c-amber', cat:'이미지', k:'밈 짤방 자막 사진 글자 meme generator caption 表情包 ミーム 밈생성', related:['imgframe','imgwatermark','ogimage'] },
+  { key:'gifmaker',h:'gifmaker.html',ic:'🎬', chip:'c-rose', cat:'이미지', k:'gif 움짤 만들기 이미지 애니메이션 gif maker animation 动图 GIF作成 움짤만들기', related:['imgmerge','pixelate','imgfilter'] },
 ];
