@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>CSS 박스 그림자 생성기 (box-shadow) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="슬라이더로 그림자의 위치·번짐·색을 조절해 CSS box-shadow 코드를 만듭니다. 다중 그림자·내부 그림자 지원, 실시간 미리보기. 웹 디자인에. 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/boxshadow.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="CSS 박스 그림자 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="box-shadow 코드 생성 + 실시간 미리보기. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/boxshadow.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}@media(max-width:640px){.grid{grid-template-columns:1fr;}}
+.ctrl label{display:block;font-size:.85rem;font-weight:600;margin:.5rem 0 .15rem;}.ctrl input[type=range]{width:100%;}
+.stage{display:flex;align-items:center;justify-content:center;background:repeating-conic-gradient(#eee 0% 25%,#fff 0% 50%) 50%/20px 20px;border-radius:11px;min-height:240px;}
+.box{width:120px;height:120px;border-radius:14px;background:#3b82f6;}
+.out{margin-top:.7rem;border:1px solid var(--border);border-radius:10px;background:var(--ground);padding:.7rem;font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);word-break:break-all;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DesignApplication","name":"CSS 박스 그림자 생성기","description":"CSS box-shadow 코드를 슬라이더로 만들고 미리봅니다.","url":"https://gemini2k.co.kr/boxshadow.html","applicationCategory":"DesignApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:780px;">
+  <h1 data-i18n="b_boxshadow_title">CSS 박스 그림자 생성기</h1>
+  <p class="sub" data-i18n-html="b_boxshadow_sub">슬라이더로 그림자를 조절하면 CSS <code>box-shadow</code> 코드가 만들어집니다.</p>
+  <div class="card">
+    <div class="grid">
+      <div class="ctrl">
+        <label><span data-i18n="b_boxshadow_label_x">가로 위치 (x):</span> <span id="xv">0</span>px</label><input type="range" id="x" min="-50" max="50" value="0">
+        <label><span data-i18n="b_boxshadow_label_y">세로 위치 (y):</span> <span id="yv">10</span>px</label><input type="range" id="y" min="-50" max="50" value="10">
+        <label><span data-i18n="b_boxshadow_label_blur">흐림 (blur):</span> <span id="bv">25</span>px</label><input type="range" id="blur" min="0" max="100" value="25">
+        <label><span data-i18n="b_boxshadow_label_spread">번짐 (spread):</span> <span id="sv">0</span>px</label><input type="range" id="spread" min="-30" max="50" value="0">
+        <label><span data-i18n="b_boxshadow_label_opacity">불투명도:</span> <span id="ov">25</span>%</label><input type="range" id="op" min="0" max="100" value="25">
+        <label><span data-i18n="b_boxshadow_label_color">그림자 색</span> <input type="color" id="color" value="#1e3a8a" style="width:46px;height:30px;vertical-align:middle;border:1px solid var(--border);border-radius:6px;"></label>
+        <label><span data-i18n="b_boxshadow_label_boxcolor">박스 색</span> <input type="color" id="boxc" value="#3b82f6" style="width:46px;height:30px;vertical-align:middle;border:1px solid var(--border);border-radius:6px;"></label>
+        <label style="margin-top:.6rem;"><input type="checkbox" id="inset"> <span data-i18n="b_boxshadow_label_inset">내부 그림자(inset)</span></label>
+      </div>
+      <div><div class="stage"><div class="box" id="box"></div></div></div>
+    </div>
+    <div class="out" id="out"></div>
+    <button class="btn btn-ghost" id="copy" type="button" style="margin-top:.5rem;" data-i18n="b_boxshadow_btn_copy">📋 복사</button>
+    <div class="note" data-i18n="b_boxshadow_note">결과 코드를 복사해 CSS에 붙여넣으세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function hexA(hex,a){ var n=parseInt(hex.slice(1),16); return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')'; }
+  function run(){ ['x','y','blur','spread','op'].forEach(function(id){var m={x:'xv',y:'yv',blur:'bv',spread:'sv',op:'ov'};$(m[id]).textContent=$(id).value;});
+    var shadow=($('inset').checked?'inset ':'')+$('x').value+'px '+$('y').value+'px '+$('blur').value+'px '+$('spread').value+'px '+hexA($('color').value,(+$('op').value/100).toFixed(2));
+    $('box').style.boxShadow=shadow; $('box').style.background=$('boxc').value;
+    $('out').textContent='box-shadow: '+shadow+';'; window._o=$('out').textContent; }
+  ['x','y','blur','spread','op','color','boxc','inset'].forEach(function(id){$(id).addEventListener('input',run);});
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_boxshadow_toast_copied'));});});
+  run();
+</script>
+</body>
+</html>

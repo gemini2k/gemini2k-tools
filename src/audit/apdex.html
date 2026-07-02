@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>Apdex 성능지수 계산기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="만족·허용·불만 건수를 입력하면 애플리케이션 성능 지수(Apdex)와 등급을 계산합니다. 사용자 체감 성능 KPI 산출에. 모든 계산은 브라우저에서 이루어집니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/apdex.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="Apdex 성능지수 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="Apdex 성능지수·등급 계산. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/apdex.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Apdex 성능지수 계산기","description":"만족·허용·불만 건수를 입력하면 애플리케이션 성능 지수(Apdex)와 등급을 계산합니다. 사용자 체감 성능 KPI 산출에. 모든 계산은 브라우저에서 이루어집니다.","url":"https://gemini2k.co.kr/apdex.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_apdex_title">Apdex 성능지수 계산기</h1>
+  <p class="sub" data-i18n="b_apdex_sub">만족·허용·불만 건수로 Apdex 점수와 등급을 산출합니다.</p>
+  <div class="card" style="max-width:none;">
+    <div class="frm"><label><span data-i18n="b_apdex_label_s">만족 건수 (≤T)</span><input type="number" id="s" value="850" min="0"></label><label><span data-i18n="b_apdex_label_t">허용 건수 (T~4T)</span><input type="number" id="t" value="120" min="0"></label><label><span data-i18n="b_apdex_label_f">불만 건수 (&gt;4T)</span><input type="number" id="f" value="30" min="0"></label></div><div class="res" id="res"></div>
+    <div class="note" data-i18n="b_apdex_note">Apdex = (만족 + 허용÷2) ÷ 전체. 만족=임계 T 이하 응답, 허용=T~4T, 불만=4T 초과. 등급: 0.94↑ 우수 · 0.85↑ 양호 · 0.70↑ 보통 · 0.50↑ 미흡 · 그 미만 불량.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};function run(){var s=+$("s").value||0,tmp=+$("t").value||0,f=+$("f").value||0,n=s+tmp+f;if(!n){$("res").innerHTML="<div class=\"big\">-</div>";return;}var ap=(s+tmp/2)/n;var grade=ap>=0.94?t('b_apdex_grade_excellent'):ap>=0.85?t('b_apdex_grade_good'):ap>=0.7?t('b_apdex_grade_fair'):ap>=0.5?t('b_apdex_grade_poor'):t('b_apdex_grade_unacceptable');var c=ap>=0.85?"var(--ok)":ap>=0.5?"#d97706":"#dc2626";$("res").innerHTML="<div class=\"big\" style=\"color:"+c+"\">"+ap.toFixed(3)+" <span style=\"font-size:.95rem;font-weight:700\">"+grade+"</span></div><table><tr><td>"+t('b_apdex_total')+"</td><td><b>"+n+"</b></td></tr><tr><td>"+t('b_apdex_ratio_s')+"</td><td><b>"+(s/n*100).toFixed(1)+"%</b></td></tr><tr><td>"+t('b_apdex_ratio_t')+"</td><td><b>"+(tmp/n*100).toFixed(1)+"%</b></td></tr><tr><td>"+t('b_apdex_ratio_f')+"</td><td><b>"+(f/n*100).toFixed(1)+"%</b></td></tr></table><div style=\"margin-top:.5rem;height:10px;background:var(--border);border-radius:5px;overflow:hidden\"><span style=\"display:block;height:100%;width:"+(ap*100).toFixed(1)+"%;background:"+c+"\"></span></div>";}["s","t","f"].forEach(function(i){$(i).addEventListener("input",run);});window.onI18n=run;run();
+</script>
+</body>
+</html>

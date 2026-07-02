@@ -8,7 +8,8 @@
     var paused = false;
     var bar = document.createElement('div'); bar.className = 'gc-bar';
     var pb = document.createElement('button'); pb.type = 'button'; pb.className = 'gc-btn'; pb.id = 'gcPause';
-    pb.textContent = '⏸ 일시정지';
+    var L = function(k, d){ return (window.t && window.curLang) ? (window.t(k) !== k ? window.t(k) : d) : d; };
+    pb.textContent = '⏸ ' + L('gc.pause', '일시정지');
     bar.appendChild(pb);
     var mount = cfg.mount || document.querySelector('.toolwrap .card') || document.querySelector('.toolwrap') || document.body;
     mount.appendChild(bar);
@@ -16,7 +17,7 @@
     function apply(v){
       if (v === paused) return;
       paused = v;
-      pb.textContent = v ? '▶ 계속하기' : '⏸ 일시정지';
+      pb.textContent = v ? ('▶ ' + L('gc.resume', '계속하기')) : ('⏸ ' + L('gc.pause', '일시정지'));
       pb.classList.toggle('on', v);
       try { if (v) { cfg.onPause && cfg.onPause(); } else { cfg.onResume && cfg.onResume(); } } catch(e){}
     }

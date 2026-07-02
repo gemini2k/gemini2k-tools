@@ -56,7 +56,7 @@
 </head>
 <body>
 <header class="top"><div class="top-in">
-  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg> 빛의여행(gemini2k) 도구</a>
+  <a class="logo" href="index.html"><svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M25.5 3.6 L26.5 6.5 L29.4 7.5 L26.5 8.5 L25.5 11.4 L24.5 8.5 L21.6 7.5 L24.5 6.5 Z" fill="#fff"/><text x="15.5" y="22.2" text-anchor="middle" font-family="'Pretendard Variable',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg><span class="logo-t"> 빛의여행(gemini2k) 도구</span></a>
   <nav>
     <button id="themeBtn" class="theme-btn" type="button" aria-label="theme">🌙</button>
     <select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">
@@ -69,14 +69,19 @@
 </div></header>
 
 <section class="hero">
-  <div class="ey" data-i18n="hero.ey">무료 도구</div>
-  <h1 data-i18n-html="hero.h1">필요한 도구,<br/>바로 여기</h1>
-  <p data-i18n-html="hero.p">설치 없이 브라우저에서 바로 쓰는 무료 도구 모음.</p>
-  <div class="search"><input id="q" type="text" data-i18n-ph="search.ph" placeholder="도구 검색…" aria-label="search"/></div>
-  <div class="tiertog" id="tiertog" role="group" aria-label="도구 범위">
-    <button type="button" data-tier="all" class="on" data-i18n="tier.all">전체</button>
-    <button type="button" data-tier="basic" data-i18n="tier.basic">일반</button>
-    <button type="button" data-tier="pro" data-i18n="tier.pro">전문가</button>
+  <div class="herotop">
+    <span class="ey" data-i18n="hero.ey">PROFESSIONAL TOOLKIT</span>
+    <div class="hcount" id="hcount"></div>
+  </div>
+  <h1 data-i18n-html="hero.h1">필요한 도구, 전문가 수준으로</h1>
+  <p data-i18n-html="hero.p">설치·업로드 없이 브라우저에서 바로 실행되는 전문 도구 모음.</p>
+  <div class="herobar">
+    <div class="search"><svg class="search-ic" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg><input id="q" type="text" data-i18n-ph="search.ph" placeholder="도구 검색…" aria-label="search"/></div>
+    <div class="tiertog" id="tiertog" role="group" aria-label="도구 범위">
+      <button type="button" data-tier="all" class="on" data-i18n="tier.all">전체</button>
+      <button type="button" data-tier="basic" data-i18n="tier.basic">일반</button>
+      <button type="button" data-tier="pro" data-i18n="tier.pro">전문가</button>
+    </div>
   </div>
 </section>
 
@@ -207,6 +212,7 @@
   function cardHtml(x){
     return '<a class="tool" href="'+x.h+'" data-key="'+x.key+'" data-cat="'+x.cat+'">'
       +(tierOf(x)==='pro'?'<span class="protag">PRO</span>':'')
+      +(x.oss?'<span class="osstag" title="'+t('hub.ossTip')+'">OSS</span>':'')
       +'<span class="ic '+x.chip+'">'+x.ic+'</span>'
       +'<div><h3>'+t('tool.'+x.key+'.t')+'</h3><p>'+t('tool.'+x.key+'.d')+'</p></div>'
       +'<span class="fav'+(isFav(x.key)?' on':'')+'" role="button" tabindex="0" data-k="'+x.key+'" aria-label="favorite">★</span>'
@@ -295,6 +301,8 @@
   }
 
   function renderHub(){
+    var n=TOOLS.filter(tierMatch).length;
+    var hc=document.getElementById('hcount'); if(hc) hc.innerHTML='🧰 '+t('hero.count').replace('{n}','<b>'+n+'</b>');
     renderChips();
     buildSections();
     document.getElementById('favTitle').textContent = t('hub.fav');
@@ -303,7 +311,7 @@
     update();
   }
   window.onI18n = renderHub;                 // 언어 전환 시 재렌더(activeCat·검색어·접힘 상태 보존)
-  document.getElementById('langsel').addEventListener('change', function(e){ setLang(e.target.value); });
+  document.getElementById('langsel').addEventListener('change', function(e){ (window.navLang||setLang)(e.target.value); });
   var _debT; q.addEventListener('input', function(){ clearTimeout(_debT); _debT=setTimeout(update,120); });
   chipsBox.addEventListener('click', function(e){
     var b=e.target.closest('.chip'); if(!b) return;
@@ -323,9 +331,7 @@
   // 섹션 헤더 클릭 = 접기/펼치기(상태 저장, 펼칠 때 지연 렌더)
   sectionsBox.addEventListener('click', function(e){
     var more=e.target.closest('.morebtn');
-    if(more){ activeCat=more.dataset.cat;
-      chipsBox.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('on', c.dataset.cat===activeCat); });
-      update(); chipsBox.scrollIntoView({block:'start'}); return; }
+    if(more){ var msec=more.closest('.catsec'); renderSectionCards(msec, true); return; }   // 해당 그룹만 펼치고 나머지는 그대로
     var h=e.target.closest('.catsec-h'); if(!h) return;
     var sec=h.closest('.catsec'), nowCol=!sec.classList.contains('collapsed');
     sec.classList.toggle('collapsed', nowCol);

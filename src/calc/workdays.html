@@ -59,42 +59,42 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>영업일(근무일수) 계산기</h1>
-  <p class="sub">두 날짜 사이의 영업일을 세거나, 기준일에서 영업일만큼 앞뒤로 이동한 날짜를 구합니다. 주말은 제외하고, 공휴일을 직접 추가할 수 있습니다.</p>
+  <h1 data-i18n="b_workdays_h1">영업일(근무일수) 계산기</h1>
+  <p class="sub" data-i18n="b_workdays_sub">두 날짜 사이의 영업일을 세거나, 기준일에서 영업일만큼 앞뒤로 이동한 날짜를 구합니다. 주말은 제외하고, 공휴일을 직접 추가할 수 있습니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>‘기간 계산’(두 날짜 사이) 또는 ‘영업일 더하기/빼기’ 탭을 고릅니다</li>
-    <li>날짜와 값을 입력합니다 (주말은 자동 제외)</li>
-    <li>공휴일이 있으면 아래 칸에 한 줄에 하나씩(YYYY-MM-DD) 넣으면 함께 제외됩니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_workdays_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_workdays_howto_1">'기간 계산'(두 날짜 사이) 또는 '영업일 더하기/빼기' 탭을 고릅니다</li>
+    <li data-i18n="b_workdays_howto_2">날짜와 값을 입력합니다 (주말은 자동 제외)</li>
+    <li data-i18n="b_workdays_howto_3">공휴일이 있으면 아래 칸에 한 줄에 하나씩(YYYY-MM-DD) 넣으면 함께 제외됩니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="seg">
-      <button id="mRange" class="on" type="button">기간 계산</button>
-      <button id="mAdd" type="button">영업일 더하기/빼기</button>
+      <button id="mRange" class="on" type="button" data-i18n="b_workdays_btn_range">기간 계산</button>
+      <button id="mAdd" type="button" data-i18n="b_workdays_btn_add">영업일 더하기/빼기</button>
     </div>
 
     <div id="paneRange">
       <div class="frow">
-        <div class="fld"><label for="d1">시작일</label><input id="d1" type="date"/></div>
-        <div class="fld"><label for="d2">종료일</label><input id="d2" type="date"/></div>
+        <div class="fld"><label for="d1" data-i18n="b_workdays_lbl_start">시작일</label><input id="d1" type="date"/></div>
+        <div class="fld"><label for="d2" data-i18n="b_workdays_lbl_end">종료일</label><input id="d2" type="date"/></div>
       </div>
     </div>
     <div id="paneAdd" class="hide">
       <div class="frow">
-        <div class="fld"><label for="base">기준일</label><input id="base" type="date"/></div>
-        <div class="fld"><label for="n">영업일 (음수=이전)</label><input id="n" type="number" value="10"/></div>
+        <div class="fld"><label for="base" data-i18n="b_workdays_lbl_base">기준일</label><input id="base" type="date"/></div>
+        <div class="fld"><label for="n" data-i18n="b_workdays_lbl_n">영업일 (음수=이전)</label><input id="n" type="number" value="10"/></div>
       </div>
     </div>
 
     <div class="chk">
-      <label><input type="checkbox" id="incStart" checked/> 시작일 포함</label>
+      <label><input type="checkbox" id="incStart" checked/> <span data-i18n="b_workdays_chk_incstart">시작일 포함</span></label>
     </div>
-    <label for="holi">공휴일 제외 (한 줄에 하나, YYYY-MM-DD)</label>
+    <label for="holi" data-i18n="b_workdays_lbl_holi">공휴일 제외 (한 줄에 하나, YYYY-MM-DD)</label>
     <textarea id="holi" class="holi" placeholder="2026-01-01&#10;2026-03-01"></textarea>
 
     <div class="reslist" id="result"></div>
-    <div class="note">주말(토·일)은 항상 제외합니다. 공휴일은 입력한 날짜만 제외하며 자동 반영되지 않으니 필요한 날짜를 직접 넣으세요. ‘기간 계산’은 시작일·종료일 사이의 영업일을, ‘더하기/빼기’는 기준일에서 영업일만큼 이동한 날짜를 구합니다.</div>
+    <div class="note" data-i18n="b_workdays_note">주말(토·일)은 항상 제외합니다. 공휴일은 입력한 날짜만 제외하며 자동 반영되지 않으니 필요한 날짜를 직접 넣으세요. '기간 계산'은 시작일·종료일 사이의 영업일을, '더하기/빼기'는 기준일에서 영업일만큼 이동한 날짜를 구합니다.</div>
   </div>
 </div>
 
@@ -106,14 +106,13 @@
   function parse(s){ if(!s) return null; var p=s.split('-'); var d=new Date(+p[0],+p[1]-1,+p[2]); return isNaN(d)?null:d; }
   function holiSet(){ var set={}; $('holi').value.split(/\r?\n/).forEach(function(l){ l=l.trim(); if(/^\d{4}-\d{1,2}-\d{1,2}$/.test(l)){ var p=l.split('-'); set[(+p[0])+'-'+(+p[1])+'-'+(+p[2])]=1; } }); return set; }
   function isWork(d, holi){ var w=d.getDay(); if(w===0||w===6) return false; if(holi[d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()]) return false; return true; }
-  var WD=['일','월','화','수','목','금','토'];
 
   function calc(){
     var holi=holiSet();
     if(mode==='range'){
       var a=parse($('d1').value), b=parse($('d2').value);
       if(!a||!b){ $('result').innerHTML=''; return; }
-      if(a>b){ var t=a;a=b;b=t; }
+      if(a>b){ var tmp=a;a=b;b=tmp; }
       var cur=new Date(a), total=0, work=0, wknd=0, hol=0;
       var startInc=$('incStart').checked;
       while(cur<=b){
@@ -126,20 +125,22 @@
         }
         cur.setDate(cur.getDate()+1);
       }
+      var dayUnit=t('b_workdays_unit_day');
       $('result').innerHTML =
-        '<div class="rrow main"><span class="k">영업일(평일−공휴일)</span><span class="v">'+work+'일</span></div>'+
-        '<div class="rrow"><span class="k">전체 일수</span><span class="v">'+total+'일</span></div>'+
-        '<div class="rrow"><span class="k">주말</span><span class="v">'+wknd+'일</span></div>'+
-        '<div class="rrow"><span class="k">공휴일 제외</span><span class="v">'+hol+'일</span></div>';
+        '<div class="rrow main"><span class="k">'+t('b_workdays_res_workdays')+'</span><span class="v">'+work+dayUnit+'</span></div>'+
+        '<div class="rrow"><span class="k">'+t('b_workdays_res_total')+'</span><span class="v">'+total+dayUnit+'</span></div>'+
+        '<div class="rrow"><span class="k">'+t('b_workdays_res_weekend')+'</span><span class="v">'+wknd+dayUnit+'</span></div>'+
+        '<div class="rrow"><span class="k">'+t('b_workdays_res_holiday')+'</span><span class="v">'+hol+dayUnit+'</span></div>';
     } else {
       var base=parse($('base').value), n=parseInt($('n').value)||0;
       if(!base){ $('result').innerHTML=''; return; }
       var step=n>=0?1:-1, remain=Math.abs(n), d=new Date(base);
       while(remain>0){ d.setDate(d.getDate()+step); if(isWork(d,holi)) remain--; }
+      var WD=t('b_workdays_weekdays').split(',');
       $('result').innerHTML =
-        '<div class="rrow main"><span class="k">결과 날짜</span><span class="v">'+ymd(d)+' ('+WD[d.getDay()]+')</span></div>'+
-        '<div class="rrow"><span class="k">기준일</span><span class="v">'+ymd(base)+'</span></div>'+
-        '<div class="rrow"><span class="k">이동</span><span class="v">영업일 '+(n>=0?'+':'')+n+'</span></div>';
+        '<div class="rrow main"><span class="k">'+t('b_workdays_res_result_date')+'</span><span class="v">'+ymd(d)+' ('+WD[d.getDay()]+')</span></div>'+
+        '<div class="rrow"><span class="k">'+t('b_workdays_res_base_date')+'</span><span class="v">'+ymd(base)+'</span></div>'+
+        '<div class="rrow"><span class="k">'+t('b_workdays_res_move')+'</span><span class="v">'+t('b_workdays_unit_workday')+' '+(n>=0?'+':'')+n+'</span></div>';
     }
   }
   function setMode(m){ mode=m; $('mRange').classList.toggle('on',m==='range'); $('mAdd').classList.toggle('on',m==='add');
@@ -147,6 +148,8 @@
   $('mRange').addEventListener('click',function(){setMode('range');});
   $('mAdd').addEventListener('click',function(){setMode('add');});
   ['d1','d2','base','n','holi','incStart'].forEach(function(id){ $(id).addEventListener('input',calc); });
+
+  window.onI18n = calc;
 
   // 기본값: 오늘 / +30일
   (function(){ var now=new Date(); var t=now.toISOString().slice(0,10); $('d1').value=t; $('base').value=t;

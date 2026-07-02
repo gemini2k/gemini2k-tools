@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>분수 계산기 (약분·통분·사칙연산) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="분수의 덧셈·뺄셈·곱셈·나눗셈을 계산하고 기약분수·대분수·소수로 보여 줍니다. 약분·통분 과정까지. 수학 학습에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/fraction.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="분수 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="분수 사칙연산 + 기약분수·대분수·소수 변환. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/fraction.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.calc{display:flex;gap:.5rem;align-items:center;justify-content:center;flex-wrap:wrap;margin:.5rem 0 1rem;}
+.fr{display:inline-flex;flex-direction:column;align-items:center;}.fr input{width:64px;padding:.4rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);text-align:center;font-size:1.1rem;}
+.fr .bar{width:64px;height:2px;background:var(--text);margin:.25rem 0;}
+.op{font-size:1.6rem;font-weight:700;}.op select{font-size:1.3rem;padding:.3rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);}
+.res{text-align:center;border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1.1rem;}
+.res .main{font-size:2rem;font-weight:800;color:var(--accent);}.res .sub{color:var(--muted);font-size:.92rem;margin-top:.4rem;line-height:1.7;}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .15rem;}.frac .b{border-top:2px solid currentColor;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"분수 계산기","description":"분수의 사칙연산과 기약분수·대분수·소수 변환을 계산합니다.","url":"https://gemini2k.co.kr/fraction.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:560px;">
+  <h1 data-i18n="b_fraction_h1">분수 계산기</h1>
+  <p class="sub" data-i18n="b_fraction_sub">두 분수의 사칙연산 결과를 기약분수·대분수·소수로 보여 줍니다.</p>
+  <div class="card">
+    <div class="calc">
+      <div class="fr"><input type="number" id="n1" value="1"/><div class="bar"></div><input type="number" id="d1" value="2"/></div>
+      <div class="op"><select id="op"><option value="+">+</option><option value="-">−</option><option value="*">×</option><option value="/">÷</option></select></div>
+      <div class="fr"><input type="number" id="n2" value="1"/><div class="bar"></div><input type="number" id="d2" value="3"/></div>
+      <div class="op">=</div>
+    </div>
+    <div class="res"><div class="main" id="main"></div><div class="sub" id="sub"></div></div>
+    <div class="note" data-i18n="b_fraction_note">분모는 0이 될 수 없습니다. 결과는 정수 분자/분모로 정확히 계산해 기약분수로 약분합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=b;b=a%b;a=t;}return a||1;}
+  function fracHTML(n,d){return '<span class="frac"><span>'+n+'</span><span class="b">'+d+'</span></span>';}
+  function run(){
+    var n1=+$('n1').value,d1=+$('d1').value,n2=+$('n2').value,d2=+$('d2').value,op=$('op').value;
+    if(d1===0||d2===0){$('main').textContent=t('b_fraction_err_denom');$('sub').textContent='';return;}
+    var n,d;
+    if(op==='+'){n=n1*d2+n2*d1;d=d1*d2;}
+    else if(op==='-'){n=n1*d2-n2*d1;d=d1*d2;}
+    else if(op==='*'){n=n1*n2;d=d1*d2;}
+    else{ if(n2===0){$('main').textContent=t('b_fraction_err_zero');$('sub').textContent='';return;} n=n1*d2;d=d1*n2;}
+    if(d<0){n=-n;d=-d;}
+    var g=gcd(n,d),sn=n/g,sd=d/g;
+    var main = sd===1 ? (''+sn) : fracHTML(sn,sd);
+    $('main').innerHTML=main;
+    var parts=[];
+    if(sd!==1){ var whole=Math.trunc(sn/sd), rem=Math.abs(sn%sd);
+      if(whole!==0&&rem!==0)parts.push(t('b_fraction_mixed')+whole+' '+'<span class="frac"><span>'+rem+'</span><span class="b">'+sd+'</span></span>'); }
+    parts.push(t('b_fraction_decimal')+(sn/sd).toFixed(6).replace(/0+$/,'').replace(/\.$/,''));
+    parts.push(t('b_fraction_before')+fracHTML(n,d));
+    $('sub').innerHTML=parts.join('<br>');
+  }
+  window.onI18n=run;
+  ['n1','d1','n2','d2','op'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
+  run();
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>인증서(PEM) 분석기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="X.509 인증서(PEM)를 붙여넣으면 발급대상·발급자·유효기간·만료일·일련번호·서명알고리즘을 분석합니다. node-forge 자체 호스팅."/>
+<link rel="canonical" href="https://gemini2k.co.kr/certparse.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="인증서(PEM) 분석기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="X.509 인증서(PEM)를 붙여넣으면 발급대상·발급자·유효기간·만료일·일련번호·서명알고리즘을 분석합니다. node-forge 자체 호스팅."/><meta property="og:url" content="https://gemini2k.co.kr/certparse.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"인증서(PEM) 분석기","description":"X.509 인증서(PEM)를 붙여넣으면 발급대상·발급자·유효기간·만료일·일련번호·서명알고리즘을 분석합니다. node-forge 자체 호스팅.","url":"https://gemini2k.co.kr/certparse.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_certparse_title">인증서(PEM) 분석기</h1>
+  <p class="sub" data-i18n="b_certparse_sub">X.509 인증서의 발급자·유효기간·만료일을 확인합니다.</p>
+  <div class="card" style="max-width:none;">
+    <div class="frm"><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_certparse_sample_btn">예시 인증서 생성</button></div><textarea class="in" id="in" spellcheck="false" placeholder="-----BEGIN CERTIFICATE-----"></textarea><div class="err" id="err"></div><div class="res" id="res" style="margin-top:.6rem"></div>
+    <div class="note" data-i18n-html="b_certparse_note">오픈소스 <b>node-forge</b>(BSD, <a href="https://github.com/digitalbazaar/forge" target="_blank" rel="noopener">digitalbazaar/forge</a>)를 자체 호스팅합니다. 인증서는 전송되지 않고 브라우저에서만 분석됩니다.</div>
+  </div>
+</div>
+<script src="/vendor/forge-1/forge.min.js"></script><script src="audit-kit.js"></script><script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};
+  function dn(a){return a.map(function(x){return x.shortName+'='+x.value;}).join(', ');}
+  function run(){$('err').textContent='';var pem=$('in').value.trim();if(!pem){$('res').innerHTML='';return;}
+    try{var c=forge.pki.certificateFromPem(pem);var na=c.validity.notAfter,nb=c.validity.notBefore;
+      var days=Math.ceil((na-new Date())/86400000);var bits=c.publicKey&&c.publicKey.n?c.publicKey.n.bitLength():'-';
+      $('res').innerHTML='<table>'+
+      '<tr><td>'+t('b_certparse_field_subject')+'</td><td><b>'+dn(c.subject.attributes)+'</b></td></tr>'+
+      '<tr><td>'+t('b_certparse_field_issuer')+'</td><td>'+dn(c.issuer.attributes)+'</td></tr>'+
+      '<tr><td>'+t('b_certparse_field_validity')+'</td><td>'+nb.toISOString().slice(0,10)+' ~ '+na.toISOString().slice(0,10)+'</td></tr>'+
+      '<tr><td>'+t('b_certparse_field_expires_in')+'</td><td><b style="color:'+(days<0?'#dc2626':days<30?'#d97706':'#16a34a')+'">'+(days<0?t('b_certparse_expired'):'D-'+days)+'</b></td></tr>'+
+      '<tr><td>'+t('b_certparse_field_serial')+'</td><td style="font-family:ui-monospace,monospace;font-size:.8rem">'+c.serialNumber+'</td></tr>'+
+      '<tr><td>'+t('b_certparse_field_sigalg')+'</td><td>'+(forge.pki.oids[c.signatureOid]||c.signatureOid)+'</td></tr>'+
+      '<tr><td>'+t('b_certparse_field_pubkey')+'</td><td>'+bits+' bit</td></tr></table>';
+    }catch(e){$('res').innerHTML='';$('err').textContent=t('b_certparse_parse_error')+' '+e.message;}}
+  window.onI18n=run;
+  $('sample').addEventListener('click',function(){
+    var keys=forge.pki.rsa.generateKeyPair(512);var c=forge.pki.createCertificate();
+    c.publicKey=keys.publicKey;c.serialNumber='01'+Date.now();c.validity.notBefore=new Date();
+    c.validity.notAfter=new Date();c.validity.notAfter.setFullYear(c.validity.notBefore.getFullYear()+1);
+    var attrs=[{name:'commonName',value:'gemini2k.co.kr'},{name:'organizationName',value:'gemini2k'},{shortName:'C',value:'KR'}];
+    c.setSubject(attrs);c.setIssuer(attrs);c.sign(keys.privateKey,forge.md.sha256.create());
+    $('in').value=forge.pki.certificateToPem(c);run();});
+  $('in').addEventListener('input',run);
+</script>
+</body>
+</html>

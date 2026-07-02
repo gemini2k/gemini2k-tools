@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>캘린더 일정(ICS) 생성기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="제목·일시·장소로 캘린더 일정 파일(.ics)을 만들어 구글·아웃룩·애플 캘린더에 바로 추가합니다. 초대장 첨부에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/icsgen.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="캘린더 일정(ICS) 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="일정 정보로 .ics 파일 생성(구글·아웃룩·애플 캘린더). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/icsgen.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.field{margin-bottom:.75rem;}.field label{display:block;font-weight:700;font-size:.85rem;margin-bottom:.3rem;}
+.field input,.field textarea,.field select{width:100%;padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.field textarea{min-height:70px;resize:vertical;}.two{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}@media(max-width:560px){.two{grid-template-columns:1fr;}}
+.chk{display:flex;align-items:center;gap:.4rem;font-weight:600;font-size:.9rem;}
+.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.4rem;}
+.out{margin-top:.8rem;border:1px solid var(--border);border-radius:10px;background:var(--ground);padding:.7rem;font-family:ui-monospace,monospace;font-size:.78rem;color:var(--text);white-space:pre-wrap;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"캘린더 일정(ICS) 생성기","description":"일정 정보로 캘린더 파일(.ics)을 생성합니다.","url":"https://gemini2k.co.kr/icsgen.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:640px;">
+  <h1 data-i18n="b_icsgen_title">캘린더 일정(ICS) 생성기</h1>
+  <p class="sub" data-i18n-html="b_icsgen_sub">일정을 입력하면 <code>.ics</code> 파일을 만들어 줍니다. 구글·아웃룩·애플 캘린더에서 열면 바로 추가됩니다.</p>
+  <div class="card">
+    <div class="field"><label data-i18n="b_icsgen_lbl_title">제목</label><input type="text" id="title" value="팀 회의"/></div>
+    <div class="field"><label data-i18n="b_icsgen_lbl_loc">장소</label><input type="text" id="loc" value="회의실 A"/></div>
+    <div class="field"><label class="chk"><input type="checkbox" id="allday"/> <span data-i18n="b_icsgen_allday">종일 일정</span></label></div>
+    <div class="two"><div class="field"><label data-i18n="b_icsgen_lbl_start">시작</label><input type="datetime-local" id="start"/></div>
+      <div class="field"><label data-i18n="b_icsgen_lbl_end">종료</label><input type="datetime-local" id="end"/></div></div>
+    <div class="field"><label data-i18n="b_icsgen_lbl_desc">설명</label><textarea id="desc"></textarea></div>
+    <div class="field"><label data-i18n="b_icsgen_lbl_alarm">알림</label><select id="alarm">
+      <option value="" data-i18n="b_icsgen_alarm_none">없음</option>
+      <option value="0" data-i18n="b_icsgen_alarm_at">시작 시각</option>
+      <option value="10" data-i18n="b_icsgen_alarm_10m">10분 전</option>
+      <option value="30" data-i18n="b_icsgen_alarm_30m">30분 전</option>
+      <option value="60" data-i18n="b_icsgen_alarm_1h">1시간 전</option>
+      <option value="1440" data-i18n="b_icsgen_alarm_1d">1일 전</option>
+    </select></div>
+    <div class="actions">
+      <button class="btn" id="dl" type="button" data-i18n="b_icsgen_btn_dl">📅 .ics 내려받기</button>
+      <button class="btn btn-ghost" id="copy" type="button" data-i18n="b_icsgen_btn_copy">📋 복사</button>
+    </div>
+    <div class="out" id="out"></div>
+    <div class="note" data-i18n="b_icsgen_note">RFC 5545(iCalendar) 형식으로 생성합니다. 시간은 입력한 로컬 시각 기준입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function pad(n){return (n<10?'0':'')+n;}
+  function fmt(dt,dateOnly){ var d=new Date(dt); if(isNaN(d))return '';
+    var s=d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
+    if(dateOnly)return s; return s+'T'+pad(d.getHours())+pad(d.getMinutes())+pad(d.getSeconds()); }
+  function esc(s){return String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');}
+  function uid(){ return 'g2k-'+Math.abs((''+$('title').value+$('start').value).split('').reduce(function(a,c){return (a*31+c.charCodeAt(0))|0;},7))+'@gemini2k.co.kr'; }
+  function build(){ var allday=$('allday').checked;
+    var dts=allday?fmt($('start').value,true):fmt($('start').value);
+    var dte=allday?fmt($('end').value||$('start').value,true):fmt($('end').value);
+    var lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//gemini2k//ICS//KO','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:'+uid()];
+    lines.push('SUMMARY:'+esc($('title').value));
+    if(allday){ lines.push('DTSTART;VALUE=DATE:'+dts); if(dte)lines.push('DTEND;VALUE=DATE:'+dte); }
+    else { if(dts)lines.push('DTSTART:'+dts); if(dte)lines.push('DTEND:'+dte); }
+    if($('loc').value)lines.push('LOCATION:'+esc($('loc').value));
+    if($('desc').value)lines.push('DESCRIPTION:'+esc($('desc').value));
+    var al=$('alarm').value;
+    if(al!==''){ lines.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+esc($('title').value),'TRIGGER:-PT'+al+'M','END:VALARM'); }
+    lines.push('END:VEVENT','END:VCALENDAR');
+    return lines.join('\r\n'); }
+  function run(){ $('out').textContent=build(); }
+  ['title','loc','allday','start','end','desc','alarm'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
+  $('dl').addEventListener('click',function(){ var blob=new Blob([build()],{type:'text/calendar'}); var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);a.download=($('title').value||'event')+'.ics';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); });
+  $('copy').addEventListener('click',function(){navigator.clipboard.writeText(build()).then(function(){toast(t('b_icsgen_toast_copied'));});});
+  // default times
+  (function(){ var now=new Date(); now.setMinutes(0,0,0); now.setHours(now.getHours()+1);
+    var s=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':00';
+    var e2=new Date(now.getTime()+3600000);
+    var e=e2.getFullYear()+'-'+pad(e2.getMonth()+1)+'-'+pad(e2.getDate())+'T'+pad(e2.getHours())+':00';
+    $('start').value=s; $('end').value=e;
+    // set default textarea content via i18n
+    if(!$('desc').value) $('desc').value=t('b_icsgen_desc_default');
+    run(); })();
+  window.onI18n=function(){
+    if($('desc').value===''||$('desc').value===t('b_icsgen_desc_default')||true){
+      // keep user edits; only re-render output
+    }
+    run();
+  };
+</script>
+</body>
+</html>

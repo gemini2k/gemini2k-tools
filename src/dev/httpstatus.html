@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>HTTP 상태 코드 사전 (200·404·500 의미) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="HTTP 상태 코드(200·301·404·500 등)의 의미와 한국어 설명을 검색합니다. 카테고리별 정리. API·웹 개발 참고에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/httpstatus.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="HTTP 상태 코드 사전 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="HTTP 상태 코드 의미·설명 검색(200·404·500 등). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/httpstatus.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem;}
+input[type=text]{flex:1;min-width:200px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);color:var(--text);font-size:1rem;}
+select{padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);color:var(--text);}
+.item{display:flex;gap:.8rem;align-items:flex-start;padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;margin-bottom:.5rem;cursor:pointer;}
+.item:hover{border-color:var(--accent);}
+.code{font-weight:800;font-size:1.1rem;font-family:ui-monospace,monospace;min-width:48px;}
+.c1{color:#0891b2;}.c2{color:#16a34a;}.c3{color:#d97706;}.c4{color:#dc2626;}.c5{color:#9333ea;}
+.nm{font-weight:700;}.ds{font-size:.86rem;color:var(--muted);margin-top:.15rem;line-height:1.6;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"HTTP 상태 코드 사전","description":"HTTP 상태 코드의 의미와 설명을 검색합니다.","url":"https://gemini2k.co.kr/httpstatus.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:720px;">
+  <h1 data-i18n="b_httpstatus_title">HTTP 상태 코드 사전</h1>
+  <p class="sub" data-i18n="b_httpstatus_sub">HTTP 상태 코드의 의미를 한국어 설명과 함께 검색합니다.</p>
+  <div class="card">
+    <div class="row"><input type="text" id="q" data-i18n-ph="b_httpstatus_search_ph" placeholder="코드나 이름으로 검색 (예: 404, redirect, 권한)">
+      <select id="cat">
+        <option value="" data-i18n="b_httpstatus_cat_all">전체</option>
+        <option value="1" data-i18n="b_httpstatus_cat_1xx">1xx 정보</option>
+        <option value="2" data-i18n="b_httpstatus_cat_2xx">2xx 성공</option>
+        <option value="3" data-i18n="b_httpstatus_cat_3xx">3xx 리다이렉트</option>
+        <option value="4" data-i18n="b_httpstatus_cat_4xx">4xx 클라이언트 오류</option>
+        <option value="5" data-i18n="b_httpstatus_cat_5xx">5xx 서버 오류</option>
+      </select></div>
+    <div id="list"></div>
+    <div class="note" data-i18n="b_httpstatus_note">클릭하면 코드가 복사됩니다. 자주 쓰이는 표준 상태 코드를 정리했습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var DATA=[
+    [100,'Continue',function(){return t('b_httpstatus_d_100');}],
+    [101,'Switching Protocols',function(){return t('b_httpstatus_d_101');}],
+    [103,'Early Hints',function(){return t('b_httpstatus_d_103');}],
+    [200,'OK',function(){return t('b_httpstatus_d_200');}],
+    [201,'Created',function(){return t('b_httpstatus_d_201');}],
+    [202,'Accepted',function(){return t('b_httpstatus_d_202');}],
+    [204,'No Content',function(){return t('b_httpstatus_d_204');}],
+    [206,'Partial Content',function(){return t('b_httpstatus_d_206');}],
+    [301,'Moved Permanently',function(){return t('b_httpstatus_d_301');}],
+    [302,'Found',function(){return t('b_httpstatus_d_302');}],
+    [304,'Not Modified',function(){return t('b_httpstatus_d_304');}],
+    [307,'Temporary Redirect',function(){return t('b_httpstatus_d_307');}],
+    [308,'Permanent Redirect',function(){return t('b_httpstatus_d_308');}],
+    [400,'Bad Request',function(){return t('b_httpstatus_d_400');}],
+    [401,'Unauthorized',function(){return t('b_httpstatus_d_401');}],
+    [403,'Forbidden',function(){return t('b_httpstatus_d_403');}],
+    [404,'Not Found',function(){return t('b_httpstatus_d_404');}],
+    [405,'Method Not Allowed',function(){return t('b_httpstatus_d_405');}],
+    [408,'Request Timeout',function(){return t('b_httpstatus_d_408');}],
+    [409,'Conflict',function(){return t('b_httpstatus_d_409');}],
+    [410,'Gone',function(){return t('b_httpstatus_d_410');}],
+    [413,'Payload Too Large',function(){return t('b_httpstatus_d_413');}],
+    [415,'Unsupported Media Type',function(){return t('b_httpstatus_d_415');}],
+    [418,'I\'m a teapot',function(){return t('b_httpstatus_d_418');}],
+    [422,'Unprocessable Entity',function(){return t('b_httpstatus_d_422');}],
+    [429,'Too Many Requests',function(){return t('b_httpstatus_d_429');}],
+    [500,'Internal Server Error',function(){return t('b_httpstatus_d_500');}],
+    [501,'Not Implemented',function(){return t('b_httpstatus_d_501');}],
+    [502,'Bad Gateway',function(){return t('b_httpstatus_d_502');}],
+    [503,'Service Unavailable',function(){return t('b_httpstatus_d_503');}],
+    [504,'Gateway Timeout',function(){return t('b_httpstatus_d_504');}],
+    [505,'HTTP Version Not Supported',function(){return t('b_httpstatus_d_505');}]
+  ];
+  function render(){ var q=$('q').value.trim().toLowerCase(), cat=$('cat').value, host=$('list'); host.innerHTML='';
+    var rows=DATA.filter(function(d){ if(cat&&String(d[0])[0]!==cat)return false;
+      var desc=d[2]();
+      if(!q)return true; return String(d[0]).indexOf(q)>=0||d[1].toLowerCase().indexOf(q)>=0||desc.toLowerCase().indexOf(q)>=0; });
+    if(!rows.length){host.innerHTML='<div class="ds">'+t('b_httpstatus_no_result')+'</div>';return;}
+    rows.forEach(function(d){ var div=document.createElement('div'); div.className='item';
+      div.innerHTML='<span class="code c'+String(d[0])[0]+'">'+d[0]+'</span><div><div class="nm">'+d[1]+'</div><div class="ds">'+d[2]()+'</div></div>';
+      div.addEventListener('click',function(){navigator.clipboard.writeText(String(d[0])).then(function(){toast(d[0]+' '+t('b_httpstatus_copied'));});});
+      host.appendChild(div); }); }
+  window.onI18n=render;
+  ['q','cat'].forEach(function(id){$(id).addEventListener('input',render);$(id).addEventListener('change',render);});
+  render();
+</script>
+</body>
+</html>

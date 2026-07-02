@@ -30,12 +30,12 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:680px;">
-  <h1>꾸미기 글씨 생성기</h1>
-  <p class="sub">입력한 글자를 SNS 프로필·닉네임에 쓰는 특수 유니코드 글꼴로 바꿔 줍니다. 줄을 클릭하면 복사돼요.</p>
+  <h1 data-i18n="b_fancytext_title">꾸미기 글씨 생성기</h1>
+  <p class="sub" data-i18n="b_fancytext_sub">입력한 글자를 SNS 프로필·닉네임에 쓰는 특수 유니코드 글꼴로 바꿔 줍니다. 줄을 클릭하면 복사돼요.</p>
   <div class="card">
-    <input class="in" id="in" type="text" value="gemini2k" placeholder="영문·숫자를 입력하세요"/>
+    <input class="in" id="in" type="text" value="gemini2k" data-i18n-ph="b_fancytext_placeholder" placeholder="영문·숫자를 입력하세요"/>
     <div id="list"></div>
-    <div class="note">유니코드 문자라 대부분의 SNS·메신저에서 보입니다(일부 앱·폰트는 미지원). 영문 대소문자·숫자에 적용되며 한글은 원형 유지됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_fancytext_note">유니코드 문자라 대부분의 SNS·메신저에서 보입니다(일부 앱·폰트는 미지원). 영문 대소문자·숫자에 적용되며 한글은 원형 유지됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -52,23 +52,38 @@
   function under(s){ return s.split('').map(function(c){return c+'̲';}).join(''); }
   function wide(s){ return s.replace(/[!-~]/g,function(c){return cp(c.charCodeAt(0)-0x21+0xFF01);}).replace(/ /g,'　'); }
   var STYLES=[
-    ['굵게', mapper(0x1D400,0x1D41A,0x1D7CE)],
-    ['기울임', mapper(0x1D434,0x1D44E)],
-    ['굵은 기울임', mapper(0x1D468,0x1D482)],
-    ['손글씨', mapper(0x1D49C,0x1D4B6)],
-    ['고딕(흑체)', mapper(0x1D5D4,0x1D5EE,0x1D7EC)],
-    ['모노스페이스', mapper(0x1D670,0x1D68A,0x1D7F6)],
-    ['더블스트럭', mapper(0x1D538,0x1D552,0x1D7D8)],
-    ['동그라미', circled],
-    ['네모', squared],
-    ['전각', wide],
-    ['취소선', strike],
-    ['밑줄', under]
+    [t('b_fancytext_style_bold'), mapper(0x1D400,0x1D41A,0x1D7CE)],
+    [t('b_fancytext_style_italic'), mapper(0x1D434,0x1D44E)],
+    [t('b_fancytext_style_bold_italic'), mapper(0x1D468,0x1D482)],
+    [t('b_fancytext_style_script'), mapper(0x1D49C,0x1D4B6)],
+    [t('b_fancytext_style_gothic'), mapper(0x1D5D4,0x1D5EE,0x1D7EC)],
+    [t('b_fancytext_style_mono'), mapper(0x1D670,0x1D68A,0x1D7F6)],
+    [t('b_fancytext_style_doublestruck'), mapper(0x1D538,0x1D552,0x1D7D8)],
+    [t('b_fancytext_style_circled'), circled],
+    [t('b_fancytext_style_squared'), squared],
+    [t('b_fancytext_style_fullwidth'), wide],
+    [t('b_fancytext_style_strikethrough'), strike],
+    [t('b_fancytext_style_underline'), under]
   ];
   function render(){ var s=$('in').value||''; $('list').innerHTML=STYLES.map(function(st){
     return '<div class="row" data-v="'+(''+st[1](s)).replace(/"/g,'&quot;')+'"><span class="lbl">'+st[0]+'</span><span class="val">'+(st[1](s)||'…')+'</span></div>'; }).join(''); }
   $('in').addEventListener('input',render);
-  $('list').addEventListener('click',function(e){ var r=e.target.closest('.row'); if(r){ navigator.clipboard.writeText(r.dataset.v).then(function(){toast('복사됐습니다');}); } });
+  $('list').addEventListener('click',function(e){ var r=e.target.closest('.row'); if(r){ navigator.clipboard.writeText(r.dataset.v).then(function(){toast(t('b_fancytext_copied'));}); } });
+  window.onI18n=function(){
+    STYLES[0][0]=t('b_fancytext_style_bold');
+    STYLES[1][0]=t('b_fancytext_style_italic');
+    STYLES[2][0]=t('b_fancytext_style_bold_italic');
+    STYLES[3][0]=t('b_fancytext_style_script');
+    STYLES[4][0]=t('b_fancytext_style_gothic');
+    STYLES[5][0]=t('b_fancytext_style_mono');
+    STYLES[6][0]=t('b_fancytext_style_doublestruck');
+    STYLES[7][0]=t('b_fancytext_style_circled');
+    STYLES[8][0]=t('b_fancytext_style_squared');
+    STYLES[9][0]=t('b_fancytext_style_fullwidth');
+    STYLES[10][0]=t('b_fancytext_style_strikethrough');
+    STYLES[11][0]=t('b_fancytext_style_underline');
+    render();
+  };
   render();
 </script>
 </body>

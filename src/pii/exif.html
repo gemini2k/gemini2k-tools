@@ -67,28 +67,28 @@
 <body>
 
 <div class="toolwrap">
-  <h1>사진 EXIF·위치정보 제거</h1>
-  <p class="sub">사진에 숨은 GPS 위치·촬영일시·카메라 정보를 확인하고 깨끗하게 지워 내려받습니다. SNS·중고거래 전에 점검하세요.</p>
+  <h1 data-i18n="b_exif_title">사진 EXIF·위치정보 제거</h1>
+  <p class="sub" data-i18n="b_exif_sub">사진에 숨은 GPS 위치·촬영일시·카메라 정보를 확인하고 깨끗하게 지워 내려받습니다. SNS·중고거래 전에 점검하세요.</p>
 
   <div class="card">
     <div class="drop" id="drop">
       <div class="big">🖼️</div>
-      <div>사진을 끌어다 놓거나 클릭해서 선택</div>
-      <div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG (여러 장은 한 장씩)</div>
+      <div data-i18n="b_exif_drop_label">사진을 끌어다 놓거나 클릭해서 선택</div>
+      <div style="font-size:.82rem;margin-top:.3rem;" data-i18n="b_exif_drop_hint">JPG · PNG (여러 장은 한 장씩)</div>
       <input id="file" type="file" accept="image/*" hidden/>
     </div>
 
     <div id="result" style="display:none;">
       <div id="flag"></div>
       <div class="meta" id="meta"></div>
-      <div class="prev"><img id="prev" alt="미리보기"/></div>
+      <div class="prev"><img id="prev" data-i18n-ph="b_exif_preview_alt" alt="미리보기"/></div>
       <div class="row" style="margin-top:1.1rem;">
-        <button class="btn" id="download">🧹 EXIF 제거하고 저장</button>
-        <button class="btn btn-ghost" id="reset">다른 사진</button>
+        <button class="btn" id="download" data-i18n="b_exif_btn_download">🧹 EXIF 제거하고 저장</button>
+        <button class="btn btn-ghost" id="reset" data-i18n="b_exif_btn_reset">다른 사진</button>
       </div>
     </div>
 
-    <div class="note">
+    <div class="note" data-i18n-html="b_exif_note">
       EXIF는 사진 파일에 자동으로 기록되는 정보로, 스마트폰 사진에는 <strong>촬영 위치(GPS)·시각·기기 모델</strong>이 담길 수 있습니다. 이 도구는 사진을 다시 그려 저장(재인코딩)하는 방식으로 EXIF를 제거합니다. PNG에는 보통 EXIF가 없습니다. 모든 처리는 브라우저에서만 이루어지며 사진은 서버로 전송되지 않습니다.
     </div>
   </div>
@@ -139,7 +139,7 @@
   }
 
   function handle(file){
-    if(!file || !/^image\//.test(file.type)){ toast('이미지 파일을 선택하세요'); return; }
+    if(!file || !/^image\//.test(file.type)){ toast(t('b_exif_err_not_image')); return; }
     curFile = file;
     var fr = new FileReader();
     fr.onload = function(){
@@ -147,19 +147,19 @@
       try{ info = parseExif(fr.result); }catch(e){ info = null; }
       var hasAny = info && (info.hasGPS || info.dateTime || info.make || info.model);
       if(info && info.hasGPS){
-        $('flag').innerHTML = '<div class="warn">⚠️ 이 사진에는 위치정보(GPS)가 들어 있습니다. 제거 후 올리는 것을 권합니다.</div>';
+        $('flag').innerHTML = '<div class="warn">⚠️ ' + t('b_exif_warn_gps') + '</div>';
       } else if(hasAny){
-        $('flag').innerHTML = '<div class="warn">이 사진에는 EXIF 정보가 들어 있습니다. (GPS는 감지되지 않음)</div>';
+        $('flag').innerHTML = '<div class="warn">' + t('b_exif_warn_exif_no_gps') + '</div>';
       } else {
-        $('flag').innerHTML = '<div class="safe">감지된 EXIF 정보가 없습니다. (그래도 재저장하면 깔끔합니다)</div>';
+        $('flag').innerHTML = '<div class="safe">' + t('b_exif_safe_no_exif') + '</div>';
       }
       var rows = [];
       if(info){
-        rows.push(['위치정보(GPS)', info.hasGPS ? '있음' : '없음/미감지']);
-        if(info.dateTime) rows.push(['촬영일시', info.dateTime]);
-        if(info.make || info.model) rows.push(['카메라', [info.make, info.model].filter(Boolean).join(' ')]);
+        rows.push([t('b_exif_meta_gps'), info.hasGPS ? t('b_exif_val_yes') : t('b_exif_val_none')]);
+        if(info.dateTime) rows.push([t('b_exif_meta_datetime'), info.dateTime]);
+        if(info.make || info.model) rows.push([t('b_exif_meta_camera'), [info.make, info.model].filter(Boolean).join(' ')]);
       }
-      rows.push(['파일', file.name + ' · ' + Math.round(file.size/1024).toLocaleString() + ' KB']);
+      rows.push([t('b_exif_meta_file'), file.name + ' · ' + Math.round(file.size/1024).toLocaleString() + ' KB']);
       $('meta').innerHTML = rows.map(function(r){ return '<div class="mrow"><span class="k">'+r[0]+'</span><span class="v">'+r[1]+'</span></div>'; }).join('');
     };
     fr.readAsArrayBuffer(file);
@@ -179,14 +179,14 @@
       cv.getContext('2d').drawImage(img, 0, 0);
       var isPng = /png/.test(curFile.type);
       cv.toBlob(function(blob){
-        if(!blob){ toast('변환 실패'); return; }
+        if(!blob){ toast(t('b_exif_err_convert')); return; }
         var a = document.createElement('a');
         var base = curFile.name.replace(/\.[^.]+$/, '');
         a.href = URL.createObjectURL(blob);
         a.download = base + '_clean.' + (isPng ? 'png' : 'jpg');
         a.click();
         setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
-        toast('EXIF를 제거해 저장했습니다');
+        toast(t('b_exif_toast_saved'));
       }, isPng ? 'image/png' : 'image/jpeg', 0.92);
     };
     img.src = URL.createObjectURL(curFile);

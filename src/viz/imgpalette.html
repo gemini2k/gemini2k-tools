@@ -53,21 +53,21 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:720px;">
-  <h1>이미지 색상 추출기</h1>
-  <p class="sub">이미지를 올리면 대표 색 팔레트를 뽑아 줍니다. 색을 클릭하면 HEX가 복사됩니다.</p>
+  <h1 data-i18n="b_imgpalette_title">이미지 색상 추출기</h1>
+  <p class="sub" data-i18n="b_imgpalette_sub">이미지를 올리면 대표 색 팔레트를 뽑아 줍니다. 색을 클릭하면 HEX가 복사됩니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>이미지를 끌어다 놓거나 클릭해 올립니다</li>
-    <li>주요 색 8개가 자동 추출됩니다</li>
-    <li>색을 클릭하면 HEX 코드가 복사됩니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_imgpalette_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_imgpalette_howto_1">이미지를 끌어다 놓거나 클릭해 올립니다</li>
+    <li data-i18n="b_imgpalette_howto_2">주요 색 8개가 자동 추출됩니다</li>
+    <li data-i18n="b_imgpalette_howto_3">색을 클릭하면 HEX 코드가 복사됩니다</li>
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">🎨</div><div><strong>이미지를 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG · WebP</div></div>
+    <div class="drop" id="drop"><div class="big">🎨</div><div><strong data-i18n="b_imgpalette_drop_label">이미지를 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;" data-i18n="b_imgpalette_drop_formats">JPG · PNG · WebP</div></div>
     <input type="file" id="file" accept="image/*" class="hide"/>
-    <div class="preview hide" id="pv"><img id="img" alt="미리보기"/></div>
+    <div class="preview hide" id="pv"><img id="img" data-i18n-ph="b_imgpalette_img_alt" alt="미리보기"/></div>
     <div class="pal" id="pal"></div>
-    <div class="note">이미지를 축소해 픽셀 색을 모은 뒤 비슷한 색끼리 묶어 빈도가 높은 대표 색을 추출합니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
+    <div class="note" data-i18n="b_imgpalette_note">이미지를 축소해 픽셀 색을 모은 뒤 비슷한 색끼리 묶어 빈도가 높은 대표 색을 추출합니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
   </div>
 </div>
 
@@ -80,7 +80,7 @@
     var W=80, H=Math.max(1,Math.round(80*img.naturalHeight/img.naturalWidth))||80;
     var cv=document.createElement('canvas'); cv.width=W; cv.height=H; var x=cv.getContext('2d');
     x.drawImage(img,0,0,W,H); var data;
-    try{ data=x.getImageData(0,0,W,H).data; }catch(e){ $('pal').innerHTML='<p style="color:var(--muted);font-size:.85rem">이 이미지는 보안 정책으로 분석할 수 없습니다.</p>'; return; }
+    try{ data=x.getImageData(0,0,W,H).data; }catch(e){ $('pal').innerHTML='<p style="color:var(--muted);font-size:.85rem">'+t('b_imgpalette_err_cors')+'</p>'; return; }
     var buckets={};
     for(var i=0;i<data.length;i+=4){ var a=data[i+3]; if(a<125) continue;
       var r=data[i],g=data[i+1],b=data[i+2];
@@ -100,7 +100,7 @@
   ['dragover','dragenter'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.add('over');}); });
   ['dragleave','drop'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.remove('over');}); });
   $('drop').addEventListener('drop',function(e){ if(e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]); });
-  $('pal').addEventListener('click',function(e){ var s=e.target.closest('.sw'); if(s){ navigator.clipboard.writeText(s.dataset.c).then(function(){toast(s.dataset.c+' 복사됨');}); } });
+  $('pal').addEventListener('click',function(e){ var s=e.target.closest('.sw'); if(s){ navigator.clipboard.writeText(s.dataset.c).then(function(){toast(s.dataset.c+' '+t('b_imgpalette_copied'));}); } });
 </script>
 </body>
 </html>

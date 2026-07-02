@@ -55,29 +55,29 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:820px;">
-  <h1>이미지 모자이크·블러</h1>
-  <p class="sub">사진에서 얼굴·이름·전화번호 같은 민감한 부분을 드래그로 칠해 가립니다. 가린 영역은 되돌릴 수 없게 픽셀이 합쳐집니다.</p>
+  <h1 data-i18n="b_imgmosaic_title">이미지 모자이크·블러</h1>
+  <p class="sub" data-i18n="b_imgmosaic_sub">사진에서 얼굴·이름·전화번호 같은 민감한 부분을 드래그로 칠해 가립니다. 가린 영역은 되돌릴 수 없게 픽셀이 합쳐집니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>이미지를 끌어다 놓거나 클릭해 올립니다</li>
-    <li>가릴 부분을 <b>마우스로 드래그</b>해 사각형으로 칠합니다 (여러 번 가능)</li>
-    <li>모자이크/블러와 강도를 고른 뒤 ‘PNG 다운로드’</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_imgmosaic_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_imgmosaic_howto_1">이미지를 끌어다 놓거나 클릭해 올립니다</li>
+    <li data-i18n="b_imgmosaic_howto_2">가릴 부분을 <b>마우스로 드래그</b>해 사각형으로 칠합니다 (여러 번 가능)</li>
+    <li data-i18n="b_imgmosaic_howto_3">모자이크/블러와 강도를 고른 뒤 'PNG 다운로드'</li>
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">🔲</div><div><strong>이미지를 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG · WebP</div></div>
+    <div class="drop" id="drop"><div class="big">🔲</div><div><strong data-i18n="b_imgmosaic_drop_main">이미지를 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG · WebP</div></div>
     <input type="file" id="file" accept="image/*" class="hide"/>
     <div class="opts hide" id="opts">
-      <label>방식 <select id="mode"><option value="mosaic">모자이크</option><option value="blur">블러</option><option value="black">검정 칠</option></select></label>
-      <label>강도 <input id="strength" type="range" min="5" max="40" value="14"/></label>
+      <label><span data-i18n="b_imgmosaic_label_mode">방식</span> <select id="mode"><option value="mosaic" data-i18n="b_imgmosaic_opt_mosaic">모자이크</option><option value="blur" data-i18n="b_imgmosaic_opt_blur">블러</option><option value="black" data-i18n="b_imgmosaic_opt_black">검정 칠</option></select></label>
+      <label><span data-i18n="b_imgmosaic_label_strength">강도</span> <input id="strength" type="range" min="5" max="40" value="14"/></label>
     </div>
     <div class="actions hide" id="actions">
-      <button class="btn" id="dl" type="button">⬇️ PNG 다운로드</button>
-      <button class="btn btn-ghost" id="undo" type="button">↶ 실행취소</button>
-      <button class="btn btn-ghost" id="reset" type="button">처음으로</button>
+      <button class="btn" id="dl" type="button" data-i18n="b_imgmosaic_btn_dl">⬇️ PNG 다운로드</button>
+      <button class="btn btn-ghost" id="undo" type="button" data-i18n="b_imgmosaic_btn_undo">↶ 실행취소</button>
+      <button class="btn btn-ghost" id="reset" type="button" data-i18n="b_imgmosaic_btn_reset">처음으로</button>
     </div>
     <div class="cvwrap hide" id="cvwrap"><canvas id="cv"></canvas></div>
-    <div class="note">드래그로 칠한 영역만 즉시 가려집니다. ‘검정 칠’은 가장 안전하게 정보를 제거합니다(모자이크·블러는 강도를 충분히 높이세요). 모든 처리는 브라우저에서만 이루어지며 원본 이미지는 서버로 전송되지 않습니다.</div>
+    <div class="note" data-i18n="b_imgmosaic_note">드래그로 칠한 영역만 즉시 가려집니다. '검정 칠'은 가장 안전하게 정보를 제거합니다(모자이크·블러는 강도를 충분히 높이세요). 모든 처리는 브라우저에서만 이루어지며 원본 이미지는 서버로 전송되지 않습니다.</div>
   </div>
 </div>
 

@@ -62,24 +62,24 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>부가세(VAT) 계산기</h1>
-  <p class="sub">공급가액에서 부가세를 더하거나, 합계에서 부가세를 거꾸로 뽑아냅니다. 세금계산서·영수증 작성에 쓰세요.</p>
+  <h1 data-i18n="b_vat_h1">부가세(VAT) 계산기</h1>
+  <p class="sub" data-i18n="b_vat_sub">공급가액에서 부가세를 더하거나, 합계에서 부가세를 거꾸로 뽑아냅니다. 세금계산서·영수증 작성에 쓰세요.</p>
 
   <div class="card">
     <div class="seg">
-      <button id="mAdd" class="on" type="button">공급가액 → 합계 (부가세 더하기)</button>
-      <button id="mSub" type="button">합계 → 공급가액 (부가세 빼기)</button>
+      <button id="mAdd" class="on" type="button" data-i18n="b_vat_mode_add">공급가액 → 합계 (부가세 더하기)</button>
+      <button id="mSub" type="button" data-i18n="b_vat_mode_sub">합계 → 공급가액 (부가세 빼기)</button>
     </div>
-    <div class="rate"><span>세율</span><input id="rate" type="number" value="10" min="0" max="100" step="0.1"/><span>%</span></div>
-    <div class="inrow"><input id="amt" class="amt" type="text" inputmode="numeric" value="100,000" aria-label="금액"/><span class="won">원</span></div>
+    <div class="rate"><span data-i18n="b_vat_rate_label">세율</span><input id="rate" type="number" value="10" min="0" max="100" step="0.1"/><span>%</span></div>
+    <div class="inrow"><input id="amt" class="amt" type="text" inputmode="numeric" value="100,000" aria-label="금액"/><span class="won" data-i18n="b_vat_amt_unit">원</span></div>
 
     <div class="reslist">
-      <div class="rrow"><span class="k">공급가액</span><span><span class="v" id="oNet"></span><button class="cp" data-t="oNet">복사</button></span></div>
-      <div class="rrow"><span class="k">부가세</span><span><span class="v" id="oVat"></span><button class="cp" data-t="oVat">복사</button></span></div>
-      <div class="rrow total"><span class="k">합계 (공급대가)</span><span><span class="v" id="oGross"></span><button class="cp" data-t="oGross">복사</button></span></div>
+      <div class="rrow"><span class="k" data-i18n="b_vat_label_net">공급가액</span><span><span class="v" id="oNet"></span><button class="cp" data-t="oNet" data-i18n="b_vat_copy">복사</button></span></div>
+      <div class="rrow"><span class="k" data-i18n="b_vat_label_vat">부가세</span><span><span class="v" id="oVat"></span><button class="cp" data-t="oVat" data-i18n="b_vat_copy">복사</button></span></div>
+      <div class="rrow total"><span class="k" data-i18n="b_vat_label_gross">합계 (공급대가)</span><span><span class="v" id="oGross"></span><button class="cp" data-t="oGross" data-i18n="b_vat_copy">복사</button></span></div>
     </div>
-    <div class="note">
-      한국 부가가치세 기본 세율은 10%입니다. ‘합계 → 공급가액’은 공급가액 = 합계 ÷ (1 + 세율), 부가세 = 합계 − 공급가액으로 역산합니다. 원 단위는 반올림해 표시하며, 실제 세금계산서의 절사 방식과 1원 단위에서 차이가 날 수 있습니다. 계산은 모두 브라우저에서 이루어집니다.
+    <div class="note" data-i18n="b_vat_note">
+      한국 부가가치세 기본 세율은 10%입니다. '합계 → 공급가액'은 공급가액 = 합계 ÷ (1 + 세율), 부가세 = 합계 − 공급가액으로 역산합니다. 원 단위는 반올림해 표시하며, 실제 세금계산서의 절사 방식과 1원 단위에서 차이가 날 수 있습니다. 계산은 모두 브라우저에서 이루어집니다.
     </div>
   </div>
 </div>
@@ -117,7 +117,7 @@
   });
   document.querySelector('.reslist').addEventListener('click', function(e){
     var b=e.target.closest('.cp'); if(!b) return;
-    navigator.clipboard.writeText($(b.dataset.t).textContent).then(function(){ toast('복사됐습니다'); });
+    navigator.clipboard.writeText($(b.dataset.t).textContent).then(function(){ toast(t('b_vat_copied')); });
   });
   calc();
 </script>

@@ -22,14 +22,14 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:820px;">
-  <h1>HTML → 마크다운 변환기</h1>
-  <p class="sub">HTML을 붙여넣으면 깔끔한 마크다운으로 바꿔 줍니다. 블로그 이전·문서화에 좋아요.</p>
+  <h1 data-i18n="b_html2md_title">HTML → 마크다운 변환기</h1>
+  <p class="sub" data-i18n="b_html2md_sub">HTML을 붙여넣으면 깔끔한 마크다운으로 바꿔 줍니다. 블로그 이전·문서화에 좋아요.</p>
   <div class="card">
     <textarea id="in">&lt;h1&gt;제목&lt;/h1&gt;&lt;p&gt;안녕하세요 &lt;a href="https://gemini2k.co.kr"&gt;링크&lt;/a&gt;입니다.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;첫째&lt;/li&gt;&lt;li&gt;둘째&lt;/li&gt;&lt;/ul&gt;&lt;pre&gt;&lt;code&gt;console.log(1)&lt;/code&gt;&lt;/pre&gt;</textarea>
-    <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 복사</button></div>
+    <div class="actions"><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_html2md_btn_copy">📋 복사</button></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>
-    <div class="note">오픈소스 <b>Turndown</b>(MIT, <a href="https://github.com/mixmark-io/turndown" target="_blank" rel="noopener">mixmark-io/turndown</a>)을 자체 호스팅합니다. 표·코드블록은 GFM 스타일로 처리합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_html2md_note">오픈소스 <b>Turndown</b>(MIT, <a href="https://github.com/mixmark-io/turndown" target="_blank" rel="noopener">mixmark-io/turndown</a>)을 자체 호스팅합니다. 표·코드블록은 GFM 스타일로 처리합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/turndown-7/turndown.js"></script>
@@ -45,7 +45,7 @@
     return '\n\n'+out.join('\n')+'\n\n'; } });
   function run(){ try{ $('out').textContent=td.turndown($('in').value); }catch(e){ $('out').textContent='⚠️ '+e.message; } }
   $('in').addEventListener('input',run);
-  $('copy').addEventListener('click',function(){if($('out').textContent)navigator.clipboard.writeText($('out').textContent).then(function(){toast('복사됐습니다');});});
+  $('copy').addEventListener('click',function(){if($('out').textContent)navigator.clipboard.writeText($('out').textContent).then(function(){toast(t('b_html2md_toast_copied'));});});
   run();
 </script>
 </body>

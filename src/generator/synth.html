@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>웹 신디사이저 (피아노 건반·음색) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="브라우저에서 연주하는 신디사이저입니다. 마우스·키보드로 건반을 누르고 음색(파형)·효과를 바꿔 보세요. Tone.js 자체 호스팅. 설치 없이 브라우저에서 바로 동작합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/synth.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="웹 신디사이저 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="피아노 건반·음색을 연주하는 웹 신디사이저(Tone.js). 브라우저에서 바로."/><meta property="og:url" content="https://gemini2k.co.kr/synth.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:.8rem;font-size:.9rem;}
+select{padding:.5rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+.kb{position:relative;display:flex;height:180px;user-select:none;margin:0 auto;max-width:560px;}
+.wk{flex:1;border:1px solid #333;background:#fff;border-radius:0 0 6px 6px;position:relative;cursor:pointer;}
+.wk.act{background:#cfe3ff;}.wk span{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:.65rem;color:#888;}
+.bk{position:absolute;top:0;width:6%;height:60%;background:#222;border-radius:0 0 4px 4px;cursor:pointer;z-index:2;}.bk.act{background:#4a6;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"웹 신디사이저","description":"브라우저에서 연주하는 신디사이저입니다(Tone.js).","url":"https://gemini2k.co.kr/synth.html","applicationCategory":"MultimediaApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:660px;">
+  <h1 data-i18n="b_synth_title">웹 신디사이저</h1>
+  <p class="sub" data-i18n="b_synth_sub">건반을 누르거나 키보드(A~K, W·E·T·Y·U)로 연주하세요. 음색과 효과를 바꿀 수 있어요.</p>
+  <div class="card">
+    <div class="row">
+      <span data-i18n="b_synth_lbl_timbre">음색</span> <select id="osc"><option value="triangle" data-i18n="b_synth_osc_triangle">부드러움(삼각)</option><option value="sine" data-i18n="b_synth_osc_sine">맑음(사인)</option><option value="square" data-i18n="b_synth_osc_square">레트로(사각)</option><option value="sawtooth" data-i18n="b_synth_osc_sawtooth">강함(톱니)</option></select>
+      <span data-i18n="b_synth_lbl_octave">옥타브</span> <select id="oct"><option>3</option><option selected>4</option><option>5</option></select>
+      <span data-i18n="b_synth_lbl_reverb">리버브</span> <input type="range" id="rev" min="0" max="1" step="0.1" value="0.2"/>
+    </div>
+    <div class="kb" id="kb"></div>
+    <div class="note" data-i18n-html="b_synth_note">오픈소스 <b>Tone.js</b>(MIT, <a href="https://github.com/Tonejs/Tone.js" target="_blank" rel="noopener">Tonejs/Tone.js</a>)를 자체 호스팅합니다. 처음 누를 때 소리가 활성화됩니다(브라우저 정책). 모든 소리는 브라우저에서 생성됩니다.</div>
+  </div>
+</div>
+<script src="/vendor/tone-14/Tone.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var reverb=new Tone.Reverb(1.5).toDestination();
+  var synth=new Tone.PolySynth(Tone.Synth).connect(reverb);
+  reverb.wet.value=0.2;
+  function setOsc(){ synth.set({oscillator:{type:$('osc').value}}); }
+  $('osc').addEventListener('change',setOsc);
+  $('rev').addEventListener('input',function(){ reverb.wet.value=+$('rev').value; });
+  var whites=['C','D','E','F','G','A','B']; var keymap={a:'C',w:'C#',s:'D',e:'D#',d:'E',f:'F',t:'F#',g:'G',y:'G#',h:'A',u:'A#',j:'B',k:'C+'};
+  function octave(){return +$('oct').value;}
+  function noteFor(n){ if(n==='C+')return 'C'+(octave()+1); return n+octave(); }
+  function build(){ var kb=$('kb'); kb.innerHTML=''; var leftPct=[ ['C#',0],['D#',1],['F#',3],['G#',4],['A#',5] ];
+    whites.forEach(function(w,i){ var d=document.createElement('div'); d.className='wk'; d.dataset.note=w; d.innerHTML='<span>'+w+'</span>'; kb.appendChild(d); });
+    var unit=100/7;
+    leftPct.forEach(function(p){ var b=document.createElement('div'); b.className='bk'; b.dataset.note=p[0]; b.style.left=(unit*(p[1]+1)-3)+'%'; kb.appendChild(b); });
+  }
+  function play(note){ Tone.start(); var n=noteFor(note); synth.triggerAttackRelease(n,'8n');
+    var el=document.querySelector('[data-note="'+note+'"]'); if(el){el.classList.add('act');setTimeout(function(){el.classList.remove('act');},160);} }
+  $('kb').addEventListener('pointerdown',function(e){var tmp=e.target.closest('[data-note]');if(tmp)play(tmp.dataset.note);});
+  document.addEventListener('keydown',function(e){ if(e.repeat)return; var n=keymap[e.key.toLowerCase()]; if(n)play(n); });
+  build(); setOsc();
+</script>
+</body>
+</html>

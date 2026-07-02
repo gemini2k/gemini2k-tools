@@ -61,27 +61,27 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:660px;">
-  <h1>탱크 배틀</h1>
-  <p class="sub">넓은 아레나를 누비며 적 탱크를 모두 격파하세요. 장애물을 엄폐물로 활용하면 유리합니다!</p>
+  <h1 data-i18n="b_tank_title">탱크 배틀</h1>
+  <p class="sub" data-i18n="b_tank_sub">넓은 아레나를 누비며 적 탱크를 모두 격파하세요. 장애물을 엄폐물로 활용하면 유리합니다!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li><b>↑/W</b> 전진, <b>↓/S</b> 후진, <b>←→/A D</b> 회전 (아래 방향 버튼도 가능)</li>
-    <li><b>F 키 · 발사 버튼 · 화면 탭</b>으로 포탄을 발사합니다 (포신 방향으로)</li>
-    <li>적을 모두 없애면 다음 웨이브. <b>Space/P</b>로 일시정지 (발사는 Space 아님)</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_tank_howto_title">조작법</b><ol>
+    <li data-i18n-html="b_tank_howto1"><b>↑/W</b> 전진, <b>↓/S</b> 후진, <b>←→/A D</b> 회전 (아래 방향 버튼도 가능)</li>
+    <li data-i18n-html="b_tank_howto2"><b>F 키 · 발사 버튼 · 화면 탭</b>으로 포탄을 발사합니다 (포신 방향으로)</li>
+    <li data-i18n-html="b_tank_howto3">적을 모두 없애면 다음 웨이브. <b>Space/P</b>로 일시정지 (발사는 Space 아님)</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
       <div class="scores">
-        <div class="sbox"><div class="l">웨이브</div><div class="v" id="wave">1</div></div>
-        <div class="sbox"><div class="l">적</div><div class="v" id="enemies">0</div></div>
-        <div class="sbox"><div class="l">체력</div><div class="v" id="hp">100</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_tank_lbl_wave">웨이브</div><div class="v" id="wave">1</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_tank_lbl_enemies">적</div><div class="v" id="enemies">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_tank_lbl_hp">체력</div><div class="v" id="hp">100</div></div>
       </div>
-      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+      <button class="btn btn-ghost" id="restart" type="button" data-i18n="b_tank_btn_restart">다시 시작</button>
     </div>
     <div class="stage">
       <canvas id="cv" width="640" height="440"></canvas>
-      <div class="over" id="gover"><div><div class="big" id="goverBig">🎯 탱크 배틀</div><div class="sm" id="goverSm">아레나의 적을 모두 격파하세요!</div><button class="btn" id="goverBtn" type="button">시작하기</button></div></div>
+      <div class="over" id="gover"><div><div class="big" id="goverBig">🎯 <span data-i18n="b_tank_title">탱크 배틀</span></div><div class="sm" id="goverSm" data-i18n="b_tank_ready_sm">아레나의 적을 모두 격파하세요!</div><button class="btn" id="goverBtn" type="button" data-i18n="b_tank_btn_start">시작하기</button></div></div>
     </div>
     <div class="ctrl">
       <div class="joy">
@@ -90,9 +90,9 @@
         <button class="j-down" data-d="d" aria-label="후진">▼</button>
         <button class="j-right" data-d="r" aria-label="우회전">▶</button>
       </div>
-      <button class="fire" id="fireBtn" type="button">발사</button>
+      <button class="fire" id="fireBtn" type="button" data-i18n="b_tank_btn_fire">발사</button>
     </div>
-    <div class="note">아레나와 적 배치는 매번 무작위로 생성됩니다. 적의 포탄과 충돌에 주의하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_tank_note">아레나와 적 배치는 매번 무작위로 생성됩니다. 적의 포탄과 충돌에 주의하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -112,8 +112,8 @@
   function hitWall(px,py,r){ for(var i=0;i<walls.length;i++){ var w=walls[i]; if(rectsOverlap(px-r,py-r,2*r,2*r,w[0],w[1],w[2],w[3])) return true; } return false; }
 
   function build(){
-    walls=[]; var t=20;
-    walls.push([0,0,WORLD_W,t]); walls.push([0,WORLD_H-t,WORLD_W,t]); walls.push([0,0,t,WORLD_H]); walls.push([WORLD_W-t,0,t,WORLD_H]);
+    walls=[]; var tmp=20;
+    walls.push([0,0,WORLD_W,tmp]); walls.push([0,WORLD_H-tmp,WORLD_W,tmp]); walls.push([0,0,tmp,WORLD_H]); walls.push([WORLD_W-tmp,0,tmp,WORLD_H]);
     for(var i=0;i<8+wave;i++){ var ww=rand(50,160), wh=rand(50,160), wx=rand(60,WORLD_W-60-ww), wy=rand(60,WORLD_H-60-wh);
       if(rectsOverlap(wx,wy,ww,wh, WORLD_W/2-120,WORLD_H/2-120,240,240)) continue; walls.push([wx,wy,ww,wh]); }
     me={x:WORLD_W/2,y:WORLD_H/2,a:-Math.PI/2,r:16,cool:0};
@@ -173,12 +173,30 @@
     x.fillStyle='#4da3ff'; x.fillRect(mx+me.x*sx-2,my+me.y*sy-2,4,4); }
 
   var last=0, raf=0;
-  function loop(t){ raf=requestAnimationFrame(loop); var dt=Math.min(0.04,((t-last)/1000)||0); last=t; if(!gc.isPaused()) update(dt); draw(); }
+  function loop(tmp){ raf=requestAnimationFrame(loop); var dt=Math.min(0.04,((tmp-last)/1000)||0); last=tmp; if(!gc.isPaused()) update(dt); draw(); }
   function startLoop(){ if(!raf){ last=performance.now(); raf=requestAnimationFrame(loop); } }
 
   function begin(){ state='play'; $('gover').style.display='none'; }
-  function win(){ state='over'; $('goverBig').textContent='🎉 웨이브 '+wave+' 격파!'; $('goverSm').textContent='다음 웨이브는 적이 더 많아집니다'; $('goverBtn').textContent='다음 웨이브'; $('gover').style.display='flex'; wave++; }
-  function lose(){ state='over'; $('goverBig').textContent='💥 파괴됨'; $('goverSm').textContent='웨이브 '+wave+'에서 종료'; $('goverBtn').textContent='다시 시작'; $('gover').style.display='flex'; }
+  function win(){ state='over'; $('goverBig').textContent='🎉 '+t('b_tank_win_wave')+wave+t('b_tank_win_wave_suffix'); $('goverSm').textContent=t('b_tank_win_sm'); $('goverBtn').textContent=t('b_tank_btn_next_wave'); $('gover').style.display='flex'; wave++; }
+  function lose(){ state='over'; $('goverBig').textContent=t('b_tank_lose_big'); $('goverSm').textContent=t('b_tank_lose_wave_prefix')+wave+t('b_tank_lose_wave_suffix'); $('goverBtn').textContent=t('b_tank_btn_restart'); $('gover').style.display='flex'; }
+
+  window.onI18n = function(){
+    if(state==='ready'||state==='over'){
+      var isBig=$('goverBig').textContent;
+      if(isBig.indexOf('🎉')>=0){
+        $('goverSm').textContent=t('b_tank_win_sm');
+        $('goverBtn').textContent=t('b_tank_btn_next_wave');
+      } else if(isBig.indexOf('💥')>=0){
+        $('goverSm').textContent=$('goverSm').textContent;
+        $('goverBtn').textContent=t('b_tank_btn_restart');
+      } else {
+        $('goverSm').textContent=t('b_tank_ready_sm');
+        $('goverBtn').textContent=t('b_tank_btn_start');
+      }
+    }
+    $('restart').textContent=t('b_tank_btn_restart');
+    $('fireBtn').textContent=t('b_tank_btn_fire');
+  };
 
   var KEYMAP={ArrowUp:'u',ArrowDown:'d',ArrowLeft:'l',ArrowRight:'r',w:'u',s:'d',a:'l',d:'r',W:'u',S:'d',A:'l',D:'r'};
   document.addEventListener('keydown',function(e){ var k=KEYMAP[e.key]; if(k){ e.preventDefault(); keys[k]=true; } else if(e.key==='f'||e.key==='F'){ e.preventDefault(); if(state==='play')fire(me,false); } });
@@ -191,8 +209,8 @@
   cv.addEventListener('pointerdown',doFire);
 
   $('goverBtn').addEventListener('click',function(e){ e.stopPropagation();
-    if($('goverBig').textContent.indexOf('파괴')>=0){ wave=1; } build(); begin(); });
-  $('restart').addEventListener('click',function(){ wave=1; state='ready'; $('goverBig').textContent='🎯 탱크 배틀'; $('goverSm').textContent='아레나의 적을 모두 격파하세요!'; $('goverBtn').textContent='시작하기'; $('gover').style.display='flex'; build(); });
+    if($('goverBig').textContent.indexOf('💥')>=0){ wave=1; } build(); begin(); });
+  $('restart').addEventListener('click',function(){ wave=1; state='ready'; $('goverBig').innerHTML='🎯 <span data-i18n="b_tank_title">'+t('b_tank_title')+'</span>'; $('goverSm').textContent=t('b_tank_ready_sm'); $('goverBtn').textContent=t('b_tank_btn_start'); $('gover').style.display='flex'; build(); });
   build(); startLoop();
 })();
 </script>

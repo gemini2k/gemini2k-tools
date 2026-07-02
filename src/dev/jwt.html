@@ -58,25 +58,25 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>JWT 디코더</h1>
-  <p class="sub">JWT(JSON Web Token)의 헤더와 페이로드를 디코딩해 내용을 확인합니다. 토큰은 어디로도 전송되지 않고 이 브라우저에서만 해석됩니다.</p>
+  <h1 data-i18n="b_jwt_title">JWT 디코더</h1>
+  <p class="sub" data-i18n="b_jwt_sub">JWT(JSON Web Token)의 헤더와 페이로드를 디코딩해 내용을 확인합니다. 토큰은 어디로도 전송되지 않고 이 브라우저에서만 해석됩니다.</p>
 
   <div class="card">
-    <label for="input">JWT 토큰</label>
+    <label for="input" data-i18n="b_jwt_label_input">JWT 토큰</label>
     <textarea id="input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0..."></textarea>
     <div class="actions">
-      <button class="btn" id="decode" type="button">디코딩</button>
-      <button class="btn btn-ghost" id="sample" type="button">샘플</button>
-      <button class="btn btn-ghost" id="clear" type="button">지우기</button>
+      <button class="btn" id="decode" type="button" data-i18n="b_jwt_btn_decode">디코딩</button>
+      <button class="btn btn-ghost" id="sample" type="button" data-i18n="b_jwt_btn_sample">샘플</button>
+      <button class="btn btn-ghost" id="clear" type="button" data-i18n="b_jwt_btn_clear">지우기</button>
     </div>
     <div class="err" id="err"></div>
     <div id="result" style="display:none;">
-      <div class="part"><h3>① 헤더 (Header) <button class="cp" data-t="hOut">복사</button></h3><pre id="hOut"></pre></div>
-      <div class="part"><h3>② 페이로드 (Payload) <button class="cp" data-t="pOut">복사</button></h3><pre id="pOut"></pre>
+      <div class="part"><h3 data-i18n="b_jwt_sec_header">① 헤더 (Header) <button class="cp" data-t="hOut" data-i18n="b_jwt_btn_copy">복사</button></h3><pre id="hOut"></pre></div>
+      <div class="part"><h3 data-i18n="b_jwt_sec_payload">② 페이로드 (Payload) <button class="cp" data-t="pOut" data-i18n="b_jwt_btn_copy">복사</button></h3><pre id="pOut"></pre>
         <div class="claims" id="claims"></div></div>
-      <div class="part"><h3>③ 서명 (Signature)</h3><pre class="sig" id="sOut"></pre></div>
+      <div class="part"><h3 data-i18n="b_jwt_sec_sig">③ 서명 (Signature)</h3><pre class="sig" id="sOut"></pre></div>
     </div>
-    <div class="note">
+    <div class="note" data-i18n-html="b_jwt_note">
       이 도구는 <strong>디코딩만</strong> 하며 서명을 검증하지 않습니다(비밀키·공개키 미사용). 따라서 토큰의 진위는 확인할 수 없습니다. <code>exp</code>(만료)·<code>iat</code>(발급)·<code>nbf</code> 같은 시각 클레임은 사람이 읽을 수 있는 날짜로 함께 표시합니다. 입력한 토큰은 서버로 전송되지 않습니다.
     </div>
   </div>
@@ -98,41 +98,57 @@
   }
   function pretty(jsonStr){ return JSON.stringify(JSON.parse(jsonStr), null, 2); }
 
+  var _localeMap = {ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'};
   function fmtTime(sec){
     var d=new Date(sec*1000);
     if(isNaN(d.getTime())) return '';
-    return d.toLocaleString('ko-KR')+' (' + d.toISOString() + ')';
+    var loc = _localeMap[typeof curLang==='function'?curLang():'ko'] || 'ko-KR';
+    return d.toLocaleString(loc)+' (' + d.toISOString() + ')';
   }
   function claimsInfo(payloadStr){
     var p; try{ p=JSON.parse(payloadStr); }catch(e){ return ''; }
     var rows=[], now=Math.floor(Date.now()/1000);
-    if(typeof p.iat==='number') rows.push('<b>iat</b> 발급: '+fmtTime(p.iat));
-    if(typeof p.nbf==='number') rows.push('<b>nbf</b> 유효 시작: '+fmtTime(p.nbf));
+    if(typeof p.iat==='number') rows.push('<b>iat</b> '+t('b_jwt_claim_iat')+': '+fmtTime(p.iat));
+    if(typeof p.nbf==='number') rows.push('<b>nbf</b> '+t('b_jwt_claim_nbf')+': '+fmtTime(p.nbf));
     if(typeof p.exp==='number'){
       var expired = p.exp < now;
-      rows.push('<b>exp</b> 만료: '+fmtTime(p.exp)+' — '+(expired?'⚠️ 만료됨':'유효'));
+      rows.push('<b>exp</b> '+t('b_jwt_claim_exp')+': '+fmtTime(p.exp)+' — '+(expired?'⚠️ '+t('b_jwt_expired'):t('b_jwt_valid')));
     }
     return rows.join('<br/>');
   }
 
   function decode(){
     $('err').textContent=''; $('result').style.display='none';
-    var t=$('input').value.trim();
-    if(!t){ $('err').textContent='토큰을 입력하세요.'; return; }
-    var parts=t.split('.');
-    if(parts.length<2){ $('err').textContent='JWT 형식이 아닙니다 (점으로 구분된 3부분이 필요).'; return; }
+    var tmp=$('input').value.trim();
+    if(!tmp){ $('err').textContent=t('b_jwt_err_empty'); return; }
+    var parts=tmp.split('.');
+    if(parts.length<2){ $('err').textContent=t('b_jwt_err_format'); return; }
     try{
       var h=pretty(b64urlDecode(parts[0]));
       var p=pretty(b64urlDecode(parts[1]));
       $('hOut').textContent=h;
       $('pOut').textContent=p;
-      $('sOut').textContent=parts[2]||'(서명 없음)';
+      $('sOut').textContent=parts[2]||t('b_jwt_no_sig');
       $('claims').innerHTML=claimsInfo(b64urlDecode(parts[1]));
       $('result').style.display='';
     }catch(e){
-      $('err').textContent='디코딩 실패: 올바른 JWT(Base64URL/JSON)가 아닙니다.';
+      $('err').textContent=t('b_jwt_err_decode');
     }
   }
+
+  window.onI18n = function(){
+    // re-render claims if result is visible
+    if($('result').style.display !== 'none'){
+      var tmp2 = $('input').value.trim();
+      if(tmp2){
+        var parts2 = tmp2.split('.');
+        if(parts2.length >= 2){
+          try{ $('claims').innerHTML=claimsInfo(b64urlDecode(parts2[1])); }catch(e){}
+        }
+      }
+    }
+  };
+
   $('decode').addEventListener('click', decode);
   $('clear').addEventListener('click', function(){ $('input').value=''; $('result').style.display='none'; $('err').textContent=''; $('input').focus(); });
   $('sample').addEventListener('click', function(){
@@ -141,7 +157,7 @@
   });
   document.getElementById('result').addEventListener('click', function(e){
     var b=e.target.closest('.cp'); if(!b) return;
-    navigator.clipboard.writeText($(b.dataset.t).textContent).then(function(){ toast('복사됐습니다'); });
+    navigator.clipboard.writeText($(b.dataset.t).textContent).then(function(){ toast(t('b_jwt_toast_copied')); });
   });
 </script>
 </body>

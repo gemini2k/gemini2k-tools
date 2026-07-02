@@ -24,14 +24,14 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:880px;">
-  <h1>SQL 연습장 <span style="font-size:.9rem;color:var(--muted)">(SQLite)</span></h1>
-  <p class="sub">브라우저에서 진짜 SQLite를 실행합니다. 쿼리를 작성해 바로 결과를 확인하세요. SQL 학습·테스트에 좋아요.</p>
+  <h1 data-i18n="b_sqlplay_title">SQL 연습장 <span style="font-size:.9rem;color:var(--muted)">(SQLite)</span></h1>
+  <p class="sub" data-i18n="b_sqlplay_sub">브라우저에서 진짜 SQLite를 실행합니다. 쿼리를 작성해 바로 결과를 확인하세요. SQL 학습·테스트에 좋아요.</p>
   <div class="card" style="max-width:none;">
     <textarea id="sql">SELECT name, dept, salary FROM emp WHERE salary >= 3000 ORDER BY salary DESC;</textarea>
-    <div class="actions"><button class="btn" id="run" type="button">▶ 실행 (Ctrl+Enter)</button><button class="btn btn-ghost" id="reset" type="button">샘플 DB 초기화</button></div>
+    <div class="actions"><button class="btn" id="run" type="button" data-i18n="b_sqlplay_btn_run">▶ 실행 (Ctrl+Enter)</button><button class="btn btn-ghost" id="reset" type="button" data-i18n="b_sqlplay_btn_reset">샘플 DB 초기화</button></div>
     <div class="err" id="err"></div>
     <div class="tblwrap" id="result"></div>
-    <div class="note">오픈소스 <b>sql.js</b>(MIT, <a href="https://github.com/sql-js/sql.js" target="_blank" rel="noopener">sql-js/sql.js</a> · SQLite는 퍼블릭 도메인)를 WASM으로 자체 호스팅합니다. 샘플 테이블 <code>emp(id,name,dept,salary)</code>가 미리 만들어져 있습니다. 모든 처리는 브라우저(메모리)에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_sqlplay_note">오픈소스 <b>sql.js</b>(MIT, <a href="https://github.com/sql-js/sql.js" target="_blank" rel="noopener">sql-js/sql.js</a> · SQLite는 퍼블릭 도메인)를 WASM으로 자체 호스팅합니다. 샘플 테이블 <code>emp(id,name,dept,salary)</code>가 미리 만들어져 있습니다. 모든 처리는 브라우저(메모리)에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/sqljs-1.10/sql-wasm.js"></script>
@@ -41,18 +41,19 @@
   var db=null;
   function seed(){ db.run("DROP TABLE IF EXISTS emp; CREATE TABLE emp(id INTEGER PRIMARY KEY, name TEXT, dept TEXT, salary INTEGER);"
     +"INSERT INTO emp(name,dept,salary) VALUES ('홍길동','기획',3200),('김영희','개발',4100),('이철수','디자인',2800),('박민수','개발',3600),('최지우','영업',2500);"); }
-  function show(res){ if(!res.length){ $('result').innerHTML='<div style="padding:.8rem;color:var(--muted)">결과 행이 없습니다 (또는 실행 완료)</div>'; return; }
+  function show(res){ if(!res.length){ $('result').innerHTML='<div style="padding:.8rem;color:var(--muted)">'+t('b_sqlplay_no_rows')+'</div>'; return; }
     var r=res[0]; var h='<table><thead><tr>'+r.columns.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>';
     h+=r.values.map(function(row){return '<tr>'+row.map(function(v){return '<td>'+(v==null?'<i style="color:var(--muted)">NULL</i>':String(v).replace(/</g,'&lt;'))+'</td>';}).join('')+'</tr>';}).join('');
     $('result').innerHTML=h+'</tbody></table>';
   }
-  function run(){ if(!db){$('err').textContent='DB 로딩 중…';return;} $('err').textContent='';
+  function run(){ if(!db){$('err').textContent=t('b_sqlplay_loading');return;} $('err').textContent='';
     try{ show(db.exec($('sql').value)); }catch(e){ $('err').textContent='⚠️ '+e.message; } }
   $('run').addEventListener('click',run);
   $('sql').addEventListener('keydown',function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();} });
   $('reset').addEventListener('click',function(){ if(db){seed();run();} });
   initSqlJs({ locateFile:function(){ return '/vendor/sqljs-1.10/sql-wasm.wasm'; } }).then(function(SQL){ db=new SQL.Database(); seed(); run(); })
-    .catch(function(e){ $('err').textContent='SQLite 로딩 실패: '+e.message; });
+    .catch(function(e){ $('err').textContent=t('b_sqlplay_load_fail')+': '+e.message; });
+  window.onI18n=function(){ if(db)run(); };
 </script>
 </body>
 </html>

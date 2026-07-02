@@ -67,22 +67,22 @@
 <body>
 
 <div class="toolwrap">
-  <h1>텍스트 비교 (diff)</h1>
-  <p class="sub">두 글을 줄 단위로 비교해 추가·삭제된 부분을 색으로 보여 줍니다. 문서 버전, 코드 변경 확인에.</p>
+  <h1 data-i18n="b_diff_title">텍스트 비교 (diff)</h1>
+  <p class="sub" data-i18n="b_diff_sub">두 글을 줄 단위로 비교해 추가·삭제된 부분을 색으로 보여 줍니다. 문서 버전, 코드 변경 확인에.</p>
 
   <div class="card">
     <div class="io">
-      <div class="fld"><label for="a">원본 (A)</label><textarea id="a" placeholder="원본 텍스트"></textarea></div>
-      <div class="fld"><label for="b">비교 (B)</label><textarea id="b" placeholder="비교할 텍스트"></textarea></div>
+      <div class="fld"><label for="a" data-i18n="b_diff_label_a">원본 (A)</label><textarea id="a" data-i18n-ph="b_diff_ph_a" placeholder="원본 텍스트"></textarea></div>
+      <div class="fld"><label for="b" data-i18n="b_diff_label_b">비교 (B)</label><textarea id="b" data-i18n-ph="b_diff_ph_b" placeholder="비교할 텍스트"></textarea></div>
     </div>
     <div class="opts">
-      <label><input id="trim" type="checkbox" checked/> 줄 끝 공백 무시</label>
-      <label><input id="ignorecase" type="checkbox"/> 대소문자 무시</label>
+      <label><input id="trim" type="checkbox" checked/> <span data-i18n="b_diff_opt_trim">줄 끝 공백 무시</span></label>
+      <label><input id="ignorecase" type="checkbox"/> <span data-i18n="b_diff_opt_ignorecase">대소문자 무시</span></label>
     </div>
-    <div class="row"><button class="btn" id="run">비교하기</button></div>
+    <div class="row"><button class="btn" id="run" data-i18n="b_diff_btn_run">비교하기</button></div>
     <div class="summary" id="summary" style="display:none;"></div>
     <div class="diff" id="diff" style="display:none;"></div>
-    <div class="note">
+    <div class="note" data-i18n="b_diff_note">
       줄(line) 단위로 가장 긴 공통 부분(LCS)을 찾아 차이를 표시합니다. 초록(+)은 B에만 있는 줄, 빨강(−)은 A에만 있는 줄입니다. 모든 비교는 브라우저에서만 이루어지며 입력은 전송되지 않습니다.
     </div>
   </div>
@@ -115,13 +115,14 @@
     var a=$('a').value.split('\n'), b=$('b').value.split('\n');
     if($('a').value==='' ) a=[]; if($('b').value==='') b=[];
     var ops=diff(a,b), add=0, del=0;
-    var html=ops.map(function(o){ var t=o[0]; if(t==='add')add++; if(t==='del')del++;
-      var g = t==='add'?'+':(t==='del'?'−':' ');
-      return '<div class="dl '+t+'"><span class="gut">'+g+'</span><span>'+esc(o[1])+'</span></div>'; }).join('');
-    $('diff').innerHTML = html || '<div class="dl eq"><span class="gut"> </span><span>(내용 없음)</span></div>';
-    $('summary').innerHTML = '<span class="add">+'+add+' 추가</span> · <span class="del">−'+del+' 삭제</span> · 같은 줄 '+(ops.length-add-del)+'개';
+    var html=ops.map(function(o){ var tmp=o[0]; if(tmp==='add')add++; if(tmp==='del')del++;
+      var g = tmp==='add'?'+':(tmp==='del'?'−':' ');
+      return '<div class="dl '+tmp+'"><span class="gut">'+g+'</span><span>'+esc(o[1])+'</span></div>'; }).join('');
+    $('diff').innerHTML = html || '<div class="dl eq"><span class="gut"> </span><span>'+t('b_diff_empty')+'</span></div>';
+    $('summary').innerHTML = '<span class="add">+'+add+' '+t('b_diff_added')+'</span> · <span class="del">−'+del+' '+t('b_diff_deleted')+'</span> · '+t('b_diff_equal_prefix')+(ops.length-add-del)+t('b_diff_equal_suffix');
     $('diff').style.display=''; $('summary').style.display='';
   }
+  window.onI18n = function(){ if($('diff').style.display!=='none') run(); };
   $('run').addEventListener('click', run);
   ['trim','ignorecase'].forEach(function(id){ $(id).addEventListener('change', function(){ if($('diff').style.display!=='none') run(); }); });
 </script>

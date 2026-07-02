@@ -49,21 +49,21 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>슬러그(slug) 생성기</h1>
-  <p class="sub">제목을 URL에 쓰기 좋은 슬러그로 바꿉니다. 공백은 하이픈, 특수문자는 제거하고 소문자로 정리합니다.</p>
+  <h1 data-i18n="b_slug_title">슬러그(slug) 생성기</h1>
+  <p class="sub" data-i18n="b_slug_sub">제목을 URL에 쓰기 좋은 슬러그로 바꿉니다. 공백은 하이픈, 특수문자는 제거하고 소문자로 정리합니다.</p>
 
   <div class="card">
-    <label for="input" style="font-weight:700;font-size:.85rem;">제목 / 문장</label>
+    <label for="input" style="font-weight:700;font-size:.85rem;" data-i18n="b_slug_label_input">제목 / 문장</label>
     <textarea id="input">빛의여행 gemini2k 무료 온라인 도구 모음!</textarea>
     <div class="opts">
-      <label><input type="checkbox" id="keepKo" checked/> 한글 유지</label>
-      <label><input type="checkbox" id="lower" checked/> 소문자로</label>
-      <label>구분자 <select id="sep" style="padding:.35rem .5rem;border:1px solid var(--border);border-radius:7px;background:var(--input-bg);color:var(--text);font-family:inherit;"><option value="-">하이픈 -</option><option value="_">밑줄 _</option></select></label>
+      <label><input type="checkbox" id="keepKo" checked/> <span data-i18n="b_slug_opt_keep_ko">한글 유지</span></label>
+      <label><input type="checkbox" id="lower" checked/> <span data-i18n="b_slug_opt_lower">소문자로</span></label>
+      <label><span data-i18n="b_slug_opt_sep">구분자</span> <select id="sep" style="padding:.35rem .5rem;border:1px solid var(--border);border-radius:7px;background:var(--input-bg);color:var(--text);font-family:inherit;"><option value="-" data-i18n="b_slug_sep_hyphen">하이픈 -</option><option value="_" data-i18n="b_slug_sep_underscore">밑줄 _</option></select></label>
     </div>
-    <label style="font-weight:700;font-size:.85rem;">슬러그</label>
+    <label style="font-weight:700;font-size:.85rem;" data-i18n="b_slug_label_output">슬러그</label>
     <div class="out" id="out"></div>
-    <div style="margin-top:.8rem;"><button class="btn" id="copy" type="button">📋 복사</button></div>
-    <div class="note">‘한글 유지’를 끄면 영문·숫자만 남깁니다. 연속된 공백·기호는 하나의 구분자로 합치고 앞뒤 구분자는 제거합니다. 한글 슬러그는 브라우저 주소창에서 자동 인코딩되어 동작합니다. 모든 처리는 브라우저에서 이루어집니다.</div>
+    <div style="margin-top:.8rem;"><button class="btn" id="copy" type="button" data-i18n="b_slug_btn_copy">📋 복사</button></div>
+    <div class="note" data-i18n="b_slug_note">'한글 유지'를 끄면 영문·숫자만 남깁니다. 연속된 공백·기호는 하나의 구분자로 합치고 앞뒤 구분자는 제거합니다. 한글 슬러그는 브라우저 주소창에서 자동 인코딩되어 동작합니다. 모든 처리는 브라우저에서 이루어집니다.</div>
   </div>
 </div>
 
@@ -80,7 +80,7 @@
     $('out').textContent=s;
   }
   ['input','keepKo','lower','sep'].forEach(function(id){ $(id).addEventListener('input',make); $(id).addEventListener('change',make); });
-  $('copy').addEventListener('click', function(){ var t=$('out').textContent; if(t) navigator.clipboard.writeText(t).then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click', function(){ var tmp=$('out').textContent; if(tmp) navigator.clipboard.writeText(tmp).then(function(){toast(t('b_slug_toast_copied'));}); });
   make();
 </script>
 </body>

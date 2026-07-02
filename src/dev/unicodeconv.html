@@ -9,11 +9,11 @@
 <meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
 <meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
 <title>유니코드 변환·인스펙터 (코드포인트·이스케이프) — 빛의여행(gemini2k) 도구</title>
-<meta name="description" content="문자를 유니코드 코드포인트(U+), \\u 이스케이프, HTML 엔티티, UTF-8 바이트로 변환하고, 반대로 이스케이프를 문자로 되돌립니다. 개발·디버깅에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<meta name="description" content="문자를 유니코드 코드포인트(U+), \u 이스케이프, HTML 엔티티, UTF-8 바이트로 변환하고, 반대로 이스케이프를 문자로 되돌립니다. 개발·디버깅에. 업로드 없이 브라우저에서만 처리됩니다."/>
 <link rel="canonical" href="https://gemini2k.co.kr/unicodeconv.html"/>
 <meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
 <meta property="og:title" content="유니코드 변환·인스펙터 — 빛의여행(gemini2k) 도구"/>
-<meta property="og:description" content="문자 ↔ 코드포인트·\\u 이스케이프·HTML엔티티·UTF-8 바이트. 브라우저에서만."/>
+<meta property="og:description" content="문자 ↔ 코드포인트·\u 이스케이프·HTML엔티티·UTF-8 바이트. 브라우저에서만."/>
 <meta property="og:url" content="https://gemini2k.co.kr/unicodeconv.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
 <link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
 <script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
@@ -31,13 +31,13 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:720px;">
-  <h1>유니코드 변환·인스펙터</h1>
-  <p class="sub">문자를 코드포인트·이스케이프·UTF-8 바이트로 보고, 반대로 이스케이프를 문자로 되돌립니다.</p>
+  <h1 data-i18n="b_unicodeconv_title">유니코드 변환·인스펙터</h1>
+  <p class="sub" data-i18n="b_unicodeconv_sub">문자를 코드포인트·이스케이프·UTF-8 바이트로 보고, 반대로 이스케이프를 문자로 되돌립니다.</p>
   <div class="card">
-    <div class="seg" id="seg"><button data-d="enc" class="on" type="button">문자 → 코드</button><button data-d="dec" type="button">이스케이프 → 문자</button></div>
+    <div class="seg" id="seg"><button data-d="enc" class="on" type="button" data-i18n="b_unicodeconv_btn_enc">문자 → 코드</button><button data-d="dec" type="button" data-i18n="b_unicodeconv_btn_dec">이스케이프 → 문자</button></div>
     <textarea id="in">가A€😀</textarea>
     <div id="res"></div>
-    <div class="note">‘이스케이프 → 문자’는 \\uXXXX, \\u{XXXXX}, U+XXXX, &amp;#xXXXX; 형태를 인식해 문자로 되돌립니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_unicodeconv_note">'이스케이프 → 문자'는 \uXXXX, \u{XXXXX}, U+XXXX, &amp;#xXXXX; 형태를 인식해 문자로 되돌립니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -49,12 +49,12 @@
   function utf8bytes(s){ var b=unescape(encodeURIComponent(s)); var out=[]; for(var i=0;i<b.length;i++)out.push(hex(b.charCodeAt(i),2)); return out.join(' '); }
   function enc(s){ var cps=[...s];
     return [
-      ['코드포인트 (U+)', cps.map(function(c){return 'U+'+hex(c.codePointAt(0));}).join(' ')],
-      ['\\u 이스케이프', s.split('').map(function(c){return '\\u'+hex(c.charCodeAt(0));}).join('')],
-      ['\\u{} (ES6)', cps.map(function(c){return '\\u{'+c.codePointAt(0).toString(16).toUpperCase()+'}';}).join('')],
-      ['HTML 엔티티', cps.map(function(c){return '&#'+c.codePointAt(0)+';';}).join('')],
-      ['UTF-8 바이트', utf8bytes(s)],
-      ['10진 코드', cps.map(function(c){return c.codePointAt(0);}).join(' ')]
+      [t('b_unicodeconv_label_codepoint'), cps.map(function(c){return 'U+'+hex(c.codePointAt(0));}).join(' ')],
+      [t('b_unicodeconv_label_u_escape'), s.split('').map(function(c){return '\\u'+hex(c.charCodeAt(0));}).join('')],
+      [t('b_unicodeconv_label_u_es6'), cps.map(function(c){return '\\u{'+c.codePointAt(0).toString(16).toUpperCase()+'}';}).join('')],
+      [t('b_unicodeconv_label_html_entity'), cps.map(function(c){return '&#'+c.codePointAt(0)+';';}).join('')],
+      [t('b_unicodeconv_label_utf8'), utf8bytes(s)],
+      [t('b_unicodeconv_label_decimal'), cps.map(function(c){return c.codePointAt(0);}).join(' ')]
     ];
   }
   function dec(s){ var out=s
@@ -63,14 +63,15 @@
     .replace(/U\+([0-9a-fA-F]{2,6})/g,function(_,h){return String.fromCodePoint(parseInt(h,16));})
     .replace(/&#x([0-9a-fA-F]+);/g,function(_,h){return String.fromCodePoint(parseInt(h,16));})
     .replace(/&#(\d+);/g,function(_,d){return String.fromCodePoint(parseInt(d,10));});
-    return [['복원된 문자', out]];
+    return [[t('b_unicodeconv_label_decoded'), out]];
   }
   function render(){ var s=$('in').value; var items = dir==='enc'? enc(s) : dec(s);
     $('res').innerHTML=items.map(function(it){ return '<div class="item" data-v="'+(''+it[1]).replace(/"/g,'&quot;')+'"><div class="l">'+it[0]+'</div><div class="v">'+(it[1]||'…').replace(/</g,'&lt;')+'</div></div>'; }).join(''); }
   $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;dir=b.dataset.d;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
     $('in').value = dir==='enc'?'가A€😀':'\\uAC00 \\u0041 U+1F600'; render();});
   $('in').addEventListener('input',render);
-  $('res').addEventListener('click',function(e){var it=e.target.closest('.item');if(it){navigator.clipboard.writeText(it.dataset.v).then(function(){toast('복사됐습니다');});}});
+  $('res').addEventListener('click',function(e){var it=e.target.closest('.item');if(it){navigator.clipboard.writeText(it.dataset.v).then(function(){toast(t('b_unicodeconv_toast_copied'));});}});
+  window.onI18n = render;
   render();
 </script>
 </body>

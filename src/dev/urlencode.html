@@ -53,28 +53,28 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>URL 인코딩 / 디코딩</h1>
-  <p class="sub">URL·쿼리 문자열의 한글·특수문자·공백을 퍼센트 인코딩하거나, 인코딩된 주소를 사람이 읽을 수 있게 디코딩합니다.</p>
+  <h1 data-i18n="b_urlencode_title">URL 인코딩 / 디코딩</h1>
+  <p class="sub" data-i18n="b_urlencode_sub">URL·쿼리 문자열의 한글·특수문자·공백을 퍼센트 인코딩하거나, 인코딩된 주소를 사람이 읽을 수 있게 디코딩합니다.</p>
 
   <div class="card">
-    <label for="input">입력</label>
-    <textarea id="input" placeholder="예: https://example.com/검색?q=한글 검색어&page=1"></textarea>
+    <label for="input" data-i18n="b_urlencode_lbl_input">입력</label>
+    <textarea id="input" data-i18n-ph="b_urlencode_ph_input" placeholder="예: https://example.com/검색?q=한글 검색어&page=1"></textarea>
     <div class="opts">
-      <label><input type="radio" name="scope" value="component" checked/> 구성요소 (encodeURIComponent)</label>
-      <label><input type="radio" name="scope" value="uri"/> 전체 URL (encodeURI)</label>
+      <label><input type="radio" name="scope" value="component" checked/> <span data-i18n="b_urlencode_opt_component">구성요소 (encodeURIComponent)</span></label>
+      <label><input type="radio" name="scope" value="uri"/> <span data-i18n="b_urlencode_opt_uri">전체 URL (encodeURI)</span></label>
     </div>
     <div class="actions">
-      <button class="btn" id="enc" type="button">인코딩 ↓</button>
-      <button class="btn" id="dec" type="button">디코딩 ↓</button>
-      <button class="btn btn-ghost" id="swap" type="button">⇅ 입력↔출력</button>
-      <button class="btn btn-ghost" id="clear" type="button">지우기</button>
+      <button class="btn" id="enc" type="button" data-i18n="b_urlencode_btn_enc">인코딩 ↓</button>
+      <button class="btn" id="dec" type="button" data-i18n="b_urlencode_btn_dec">디코딩 ↓</button>
+      <button class="btn btn-ghost" id="swap" type="button" data-i18n="b_urlencode_btn_swap">⇅ 입력↔출력</button>
+      <button class="btn btn-ghost" id="clear" type="button" data-i18n="b_urlencode_btn_clear">지우기</button>
     </div>
     <div class="arrow">↓</div>
-    <label for="output">결과</label>
-    <textarea id="output" readonly placeholder="결과가 여기에 표시됩니다"></textarea>
+    <label for="output" data-i18n="b_urlencode_lbl_output">결과</label>
+    <textarea id="output" readonly data-i18n-ph="b_urlencode_ph_output" placeholder="결과가 여기에 표시됩니다"></textarea>
     <div class="err" id="err"></div>
-    <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 결과 복사</button></div>
-    <div class="note">
+    <div class="actions"><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_urlencode_btn_copy">📋 결과 복사</button></div>
+    <div class="note" data-i18n-html="b_urlencode_note">
       <strong>구성요소</strong>는 쿼리 값·경로 조각처럼 부분 문자열에 쓰며 <code>?&=/:#</code> 등도 모두 인코딩합니다. <strong>전체 URL</strong>은 주소 전체를 인코딩하되 <code>:/?#&=</code> 등 URL 구조 문자는 보존합니다. 입력·결과는 서버로 전송되지 않습니다.
     </div>
   </div>
@@ -96,14 +96,14 @@
       $('output').value = out;
     }catch(e){
       $('output').value='';
-      $('err').textContent = '디코딩 실패: 올바른 퍼센트 인코딩 형식이 아닙니다 ('+e.message+')';
+      $('err').textContent = t('b_urlencode_err_decode') + ' (' + e.message + ')';
     }
   }
   $('enc').addEventListener('click', function(){ run(false); });
   $('dec').addEventListener('click', function(){ run(true); });
   $('swap').addEventListener('click', function(){ $('input').value=$('output').value; $('output').value=''; $('err').textContent=''; });
   $('clear').addEventListener('click', function(){ $('input').value=''; $('output').value=''; $('err').textContent=''; $('input').focus(); });
-  $('copy').addEventListener('click', function(){ if(!$('output').value) return; navigator.clipboard.writeText($('output').value).then(function(){ toast('복사됐습니다'); }); });
+  $('copy').addEventListener('click', function(){ if(!$('output').value) return; navigator.clipboard.writeText($('output').value).then(function(){ toast(t('b_urlencode_toast_copied')); }); });
 </script>
 </body>
 </html>

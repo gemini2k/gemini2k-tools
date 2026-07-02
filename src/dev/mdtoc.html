@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>마크다운 목차(TOC) 생성기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="마크다운 문서의 제목(#)을 분석해 GitHub 호환 앵커가 달린 목차(TOC)를 자동으로 만들어 줍니다. README 작성에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/mdtoc.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="마크다운 목차(TOC) 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="마크다운 제목으로 GitHub 호환 목차를 자동 생성. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/mdtoc.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:180px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.86rem;color:var(--text);resize:vertical;}
+.opts{margin:.7rem 0;font-size:.9rem;}.opts label{display:inline-flex;gap:.35rem;align-items:center;font-weight:600;margin-right:1rem;}
+.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin:.5rem 0;}
+.out{width:100%;min-height:120px;border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.86rem;color:var(--text);white-space:pre;overflow:auto;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"마크다운 목차(TOC) 생성기","description":"마크다운 제목으로 GitHub 호환 목차를 자동 생성합니다.","url":"https://gemini2k.co.kr/mdtoc.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:820px;">
+  <h1 data-i18n="b_mdtoc_title">마크다운 목차(TOC) 생성기</h1>
+  <p class="sub" data-i18n="b_mdtoc_sub">마크다운의 제목(#)을 읽어 GitHub 호환 앵커가 달린 목차를 만들어 줍니다.</p>
+  <div class="card">
+    <textarea id="in"># 프로젝트 이름
+
+## 소개
+이 프로젝트는...
+
+## 설치 방법
+### 요구 사항
+### 설치 단계
+
+## 사용법
+## 라이선스</textarea>
+    <div class="opts">
+      <label><span data-i18n="b_mdtoc_min_level">최소 레벨</span> <select id="min"><option value="1">H1</option><option value="2" selected>H2</option></select></label>
+      <label><span data-i18n="b_mdtoc_max_level">최대 레벨</span> <select id="max"><option value="2">H2</option><option value="3" selected>H3</option><option value="4">H4</option><option value="6">H6</option></select></label>
+    </div>
+    <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 <span data-i18n="b_mdtoc_btn_copy">복사</span></button></div>
+    <div class="out" id="out"></div>
+    <div class="note" data-i18n-html="b_mdtoc_note">코드 블록(```) 안의 <code>#</code>은 제외합니다. 앵커는 GitHub 규칙(소문자화, 공백→하이픈, 특수문자 제거, 한글 유지)을 따릅니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function slug(t){ return t.trim().toLowerCase().replace(/[^\w\sÀ-￿-]/g,'').replace(/\s+/g,'-'); }
+  function run(){ var lines=$('in').value.split(/\r?\n/), mn=+$('min').value, mx=+$('max').value, toc=[], seen={}, code=false;
+    lines.forEach(function(l){ if(/^```/.test(l.trim())){code=!code;return;} if(code)return;
+      var m=l.match(/^(#{1,6})\s+(.+?)\s*#*$/); if(!m)return; var lv=m[1].length; if(lv<mn||lv>mx)return;
+      var txt=m[2].replace(/\*\*|__|\*|`/g,''), s=slug(txt); if(seen[s]!==undefined){seen[s]++;s=s+'-'+seen[s];}else seen[s]=0;
+      toc.push('  '.repeat(lv-mn)+'- ['+txt+'](#'+s+')'); });
+    $('out').textContent=toc.join('\n')||(t('b_mdtoc_no_heading')); }
+  window.onI18n=run;
+  ['in','min','max'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
+  $('copy').addEventListener('click',function(){if($('out').textContent)navigator.clipboard.writeText($('out').textContent).then(function(){toast(t('b_mdtoc_copied'));});});
+  run();
+</script>
+</body>
+</html>

@@ -54,29 +54,29 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:840px;">
-  <h1>XML 포매터</h1>
-  <p class="sub">복잡한 XML을 보기 좋게 들여쓰기하거나 한 줄로 압축하고, 형식 오류를 확인합니다.</p>
+  <h1 data-i18n="b_xmlformat_title">XML 포매터</h1>
+  <p class="sub" data-i18n="b_xmlformat_sub">복잡한 XML을 보기 좋게 들여쓰기하거나 한 줄로 압축하고, 형식 오류를 확인합니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>XML(RSS·SVG·설정 파일 등)을 붙여넣습니다</li>
-    <li>‘정렬’로 들여쓰기, ‘압축’으로 한 줄로 만듭니다</li>
-    <li>형식 오류가 있으면 위치를 안내합니다. ‘복사’로 결과를 가져가세요</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_xmlformat_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_xmlformat_howto1">XML(RSS·SVG·설정 파일 등)을 붙여넣습니다</li>
+    <li data-i18n="b_xmlformat_howto2">'정렬'로 들여쓰기, '압축'으로 한 줄로 만듭니다</li>
+    <li data-i18n="b_xmlformat_howto3">형식 오류가 있으면 위치를 안내합니다. '복사'로 결과를 가져가세요</li>
   </ol></div></div>
 
   <div class="card">
     <textarea id="input">&lt;rss version="2.0"&gt;&lt;channel&gt;&lt;title&gt;예시 피드&lt;/title&gt;&lt;item&gt;&lt;title&gt;첫 글&lt;/title&gt;&lt;link&gt;https://example.com&lt;/link&gt;&lt;/item&gt;&lt;/channel&gt;&lt;/rss&gt;</textarea>
     <div class="opts">
-      <label>들여쓰기 <select id="indent"><option value="2">스페이스 2</option><option value="4">스페이스 4</option><option value="tab">탭</option></select></label>
+      <label><span data-i18n="b_xmlformat_indent_label">들여쓰기</span> <select id="indent"><option value="2" data-i18n="b_xmlformat_indent_space2">스페이스 2</option><option value="4" data-i18n="b_xmlformat_indent_space4">스페이스 4</option><option value="tab" data-i18n="b_xmlformat_indent_tab">탭</option></select></label>
     </div>
     <div class="actions">
-      <button class="btn" id="format" type="button">정렬(Beautify)</button>
-      <button class="btn btn-ghost" id="minify" type="button">압축(Minify)</button>
-      <button class="btn btn-ghost" id="copy" type="button">📋 복사</button>
+      <button class="btn" id="format" type="button" data-i18n="b_xmlformat_btn_format">정렬(Beautify)</button>
+      <button class="btn btn-ghost" id="minify" type="button" data-i18n="b_xmlformat_btn_minify">압축(Minify)</button>
+      <button class="btn btn-ghost" id="copy" type="button" data-i18n="b_xmlformat_btn_copy">📋 복사</button>
     </div>
     <div class="err" id="err"></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>
-    <div class="note">브라우저의 표준 XML 파서로 형식을 검사한 뒤 다시 직렬화합니다. 주석·CDATA는 보존됩니다. 텍스트 내용의 공백은 정렬 시 다듬어질 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_xmlformat_note">브라우저의 표준 XML 파서로 형식을 검사한 뒤 다시 직렬화합니다. 주석·CDATA는 보존됩니다. 텍스트 내용의 공백은 정렬 시 다듬어질 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -88,7 +88,7 @@
   function parseXML(text){
     var doc=new DOMParser().parseFromString(text,'application/xml');
     var perr=doc.getElementsByTagName('parsererror');
-    if(perr.length){ throw new Error((perr[0].textContent||'XML 형식 오류').replace(/\s+/g,' ').trim().slice(0,160)); }
+    if(perr.length){ throw new Error((perr[0].textContent||t('b_xmlformat_err_invalid')).replace(/\s+/g,' ').trim().slice(0,160)); }
     return doc;
   }
   function pretty(node, indent, level){
@@ -100,7 +100,7 @@
         if(kids.length===0){ out+=pad+open+'/>\n'; }
         else if(onlyText){ out+=pad+open+'>'+esc(kids[0].nodeValue.trim())+'</'+n.nodeName+'>\n'; }
         else { out+=pad+open+'>\n'+pretty(n,indent,level+1)+pad+'</'+n.nodeName+'>\n'; }
-      } else if(n.nodeType===3){ var t=n.nodeValue.trim(); if(t) out+=pad+esc(t)+'\n'; }
+      } else if(n.nodeType===3){ var tmp=n.nodeValue.trim(); if(tmp) out+=pad+esc(tmp)+'\n'; }
       else if(n.nodeType===8){ out+=pad+'<!--'+n.nodeValue+'-->\n'; }
       else if(n.nodeType===4){ out+=pad+'<![CDATA['+n.nodeValue+']]>\n'; }
     }
@@ -108,19 +108,20 @@
   }
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function format(){
-    $('err').textContent=''; var t=$('input').value.trim(); if(!t){ $('out').textContent=''; return; }
-    try{ var doc=parseXML(t); var decl=''; if(/^\s*<\?xml/i.test(t)){ decl='<?xml version="1.0" encoding="UTF-8"?>\n'; }
-      $('out').textContent=(decl+pretty(doc,indentStr(),0)).replace(/\n+$/,''); $('err').innerHTML='<span class="ok">✓ 형식이 올바릅니다</span>';
+    $('err').textContent=''; var inp=$('input').value.trim(); if(!inp){ $('out').textContent=''; return; }
+    try{ var doc=parseXML(inp); var decl=''; if(/^\s*<\?xml/i.test(inp)){ decl='<?xml version="1.0" encoding="UTF-8"?>\n'; }
+      $('out').textContent=(decl+pretty(doc,indentStr(),0)).replace(/\n+$/,''); $('err').innerHTML='<span class="ok">✓ '+t('b_xmlformat_valid')+'</span>';
     }catch(e){ $('out').textContent=''; $('err').textContent='⚠️ '+e.message; }
   }
   function minify(){
-    $('err').textContent=''; var t=$('input').value.trim(); if(!t){ $('out').textContent=''; return; }
-    try{ parseXML(t); var m=t.replace(/>\s+</g,'><').replace(/\s+/g,' ').replace(/> </g,'><').trim(); $('out').textContent=m; $('err').innerHTML='<span class="ok">✓ 형식이 올바릅니다</span>';
+    $('err').textContent=''; var inp=$('input').value.trim(); if(!inp){ $('out').textContent=''; return; }
+    try{ parseXML(inp); var m=inp.replace(/>\s+</g,'><').replace(/\s+/g,' ').replace(/> </g,'><').trim(); $('out').textContent=m; $('err').innerHTML='<span class="ok">✓ '+t('b_xmlformat_valid')+'</span>';
     }catch(e){ $('out').textContent=''; $('err').textContent='⚠️ '+e.message; }
   }
   $('format').addEventListener('click',format);
   $('minify').addEventListener('click',minify);
-  $('copy').addEventListener('click',function(){ if($('out').textContent) navigator.clipboard.writeText($('out').textContent).then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click',function(){ if($('out').textContent) navigator.clipboard.writeText($('out').textContent).then(function(){toast(t('b_xmlformat_copied'));}); });
+  window.onI18n=format;
   format();
 </script>
 </body>

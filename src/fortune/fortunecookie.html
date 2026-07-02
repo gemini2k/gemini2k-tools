@@ -23,27 +23,43 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:480px;">
-  <h1>포춘쿠키 <span style="font-size:.9rem;color:var(--muted)">(재미)</span></h1>
-  <p class="sub">쿠키를 눌러(깨서) 오늘의 한마디와 행운의 숫자를 받아 보세요.</p>
+  <h1><span data-i18n="b_fortunecookie_title">포춘쿠키</span> <span style="font-size:.9rem;color:var(--muted)" data-i18n="b_fortunecookie_title_sub">(재미)</span></h1>
+  <p class="sub" data-i18n="b_fortunecookie_sub">쿠키를 눌러(깨서) 오늘의 한마디와 행운의 숫자를 받아 보세요.</p>
   <div class="card">
     <div class="cookie" id="cookie">🥠</div>
-    <div class="msg" id="msg">쿠키를 눌러보세요!</div>
+    <div class="msg" id="msg" data-i18n="b_fortunecookie_prompt">쿠키를 눌러보세요!</div>
     <div class="lucky" id="lucky"></div>
-    <button class="btn" id="open" type="button" style="width:100%;margin-top:1rem;">🥠 쿠키 열기</button>
-    <div class="note">메시지는 무작위로 나오는 <b>재미·격려용</b>입니다. 운세를 단정하지 않습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <button class="btn" id="open" type="button" style="width:100%;margin-top:1rem;" data-i18n="b_fortunecookie_btn">🥠 쿠키 열기</button>
+    <div class="note" data-i18n-html="b_fortunecookie_note">메시지는 무작위로 나오는 <b>재미·격려용</b>입니다. 운세를 단정하지 않습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
-  var MSG=['작은 친절이 큰 행운으로 돌아옵니다.','오늘 미뤄둔 일에 좋은 결과가 기다립니다.','웃음은 가장 좋은 화장입니다. 많이 웃으세요.','지금의 노력이 미래의 당신을 만듭니다.','용기 내어 먼저 연락해 보세요. 반가운 소식이 올 거예요.','쉬어가는 것도 전진의 일부입니다.','새로운 만남이 기분 좋은 변화를 가져옵니다.','당신의 진심이 곧 전해질 거예요.','오늘은 평소보다 운이 좋은 날입니다.','작은 것에 감사하면 큰 것이 따라옵니다.','계획했던 일을 시작하기 좋은 날입니다.','뜻밖의 곳에서 도움을 받게 됩니다.','당신의 아이디어가 빛을 발할 때입니다.','조급함을 내려놓으면 길이 보입니다.','오랜 고민의 답이 곧 찾아옵니다.','오늘 한 걸음이 내일의 큰 도약이 됩니다.','당신은 생각보다 훨씬 강한 사람입니다.','좋은 일은 준비된 사람에게 옵니다.','마음먹은 대로 술술 풀리는 하루가 될 거예요.','잠시 멈춰 하늘을 보세요. 여유가 행운을 부릅니다.'];
+  var MSG_KO=['작은 친절이 큰 행운으로 돌아옵니다.','오늘 미뤄둔 일에 좋은 결과가 기다립니다.','웃음은 가장 좋은 화장입니다. 많이 웃으세요.','지금의 노력이 미래의 당신을 만듭니다.','용기 내어 먼저 연락해 보세요. 반가운 소식이 올 거예요.','쉬어가는 것도 전진의 일부입니다.','새로운 만남이 기분 좋은 변화를 가져옵니다.','당신의 진심이 곧 전해질 거예요.','오늘은 평소보다 운이 좋은 날입니다.','작은 것에 감사하면 큰 것이 따라옵니다.','계획했던 일을 시작하기 좋은 날입니다.','뜻밖의 곳에서 도움을 받게 됩니다.','당신의 아이디어가 빛을 발할 때입니다.','조급함을 내려놓으면 길이 보입니다.','오랜 고민의 답이 곧 찾아옵니다.','오늘 한 걸음이 내일의 큰 도약이 됩니다.','당신은 생각보다 훨씬 강한 사람입니다.','좋은 일은 준비된 사람에게 옵니다.','마음먹은 대로 술술 풀리는 하루가 될 거예요.','잠시 멈춰 하늘을 보세요. 여유가 행운을 부릅니다.'];
+  var MSG_EN=['A small kindness returns as great fortune.','Good results await the task you\'ve put off today.','A smile is the best makeup. Smile often.','Today\'s effort shapes who you will be tomorrow.','Be brave and reach out first — good news is on its way.','Taking a rest is also part of moving forward.','A new encounter brings a welcome change.','Your sincerity will soon be felt.','Today is a luckier day than usual.','Gratitude for small things invites greater ones.','Today is a great day to start what you planned.','Help will come from an unexpected place.','It\'s time for your ideas to shine.','Let go of impatience and the path will reveal itself.','The answer to a long-held worry is coming soon.','One step today becomes a great leap tomorrow.','You are far stronger than you think.','Good things come to those who are prepared.','Today will unfold smoothly, just as you imagined.','Pause and look at the sky — ease invites luck.'];
+  var MSG_ZH=['小小的善意会以大幸运归来。','今天拖延的事情有好结果在等待。','微笑是最好的妆容，多多微笑吧。','现在的努力成就未来的你。','鼓起勇气主动联系吧，好消息即将到来。','休息也是前进的一部分。','新的相遇带来令人愉快的改变。','你的真诚很快就会传达出去。','今天是比平时更幸运的一天。','感恩小事，大事自然随之而来。','今天是开始计划中事情的好日子。','会从意想不到的地方得到帮助。','现在是你的想法大放光彩的时候了。','放下焦急，前路自然显现。','长久烦恼的答案即将到来。','今天迈出的一步是明天的巨大飞跃。','你比自己想象的要强大得多。','好事降临于有准备的人。','今天会顺顺当当，一切如你所愿。','稍作停歇，仰望天空——从容带来幸运。'];
+  var MSG_JA=['小さな親切が大きな幸運として返ってきます。','今日先延ばしにしていたことに、良い結果が待っています。','笑顔は最高のメイクです。たくさん笑いましょう。','今の努力が未来のあなたをつくります。','勇気を出して先に連絡してみて。嬉しい知らせが届きますよ。','休むことも前進の一部です。','新しい出会いが心地よい変化をもたらします。','あなたの真心はすぐに伝わります。','今日はいつもより運が良い日です。','小さなことに感謝すると、大きなものがついてきます。','計画していたことを始めるのに良い日です。','思わぬところから助けを受けることになります。','あなたのアイデアが輝くときです。','焦りを手放せば、道が見えてきます。','長い悩みの答えがもうすぐ見つかります。','今日の一歩が明日の大きな飛躍になります。','あなたは思っているよりずっと強い人です。','良いことは準備ができている人のところへやってきます。','思い通りにすらすらと進む一日になりますよ。','少し立ち止まって空を見上げてみて。余裕が幸運を呼びます。'];
+  var MSG_MAP={ko:MSG_KO,en:MSG_EN,zh:MSG_ZH,ja:MSG_JA};
   function rnd(n){return Math.floor(Math.random()*n);}
-  function open(){ $('cookie').textContent='✨'; $('msg').textContent='"'+MSG[rnd(MSG.length)]+'"';
+  function openCookie(){
+    var lang=(typeof curLang==='function'?curLang():'ko')||'ko';
+    var msgs=MSG_MAP[lang]||MSG_KO;
+    $('cookie').textContent='✨';
+    $('msg').textContent='"'+msgs[rnd(msgs.length)]+'"';
     var nums=[]; while(nums.length<6){ var v=rnd(45)+1; if(nums.indexOf(v)<0)nums.push(v);} nums.sort(function(a,b){return a-b;});
-    $('lucky').textContent='🍀 행운의 숫자: '+nums.join(', ');
+    $('lucky').textContent=t('b_fortunecookie_lucky_prefix')+nums.join(', ');
     setTimeout(function(){$('cookie').textContent='🥠';},600);
   }
-  $('open').addEventListener('click',open); $('cookie').addEventListener('click',open);
+  window.onI18n=function(){
+    var msgEl=$('msg');
+    if(msgEl&&msgEl.getAttribute('data-i18n')==='b_fortunecookie_prompt'){
+      msgEl.textContent=t('b_fortunecookie_prompt');
+    }
+    var luckyEl=$('lucky');
+    if(luckyEl&&luckyEl.textContent==='') {}
+  };
+  $('open').addEventListener('click',openCookie); $('cookie').addEventListener('click',openCookie);
 </script>
 </body>
 </html>

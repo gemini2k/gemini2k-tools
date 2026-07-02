@@ -25,15 +25,15 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:760px;">
-  <h1>수식 편집기 <span style="font-size:.9rem;color:var(--muted)">(LaTeX)</span></h1>
-  <p class="sub">LaTeX 문법으로 수학식을 입력하면 바로 렌더링됩니다. 리포트·문제지·블로그용 수식 이미지를 만드세요.</p>
+  <h1 data-i18n="b_matheditor_title">수식 편집기 <span style="font-size:.9rem;color:var(--muted)">(LaTeX)</span></h1>
+  <p class="sub" data-i18n="b_matheditor_sub">LaTeX 문법으로 수학식을 입력하면 바로 렌더링됩니다. 리포트·문제지·블로그용 수식 이미지를 만드세요.</p>
   <div class="card">
     <div class="syms" id="syms"></div>
     <textarea id="in">E = mc^2 \quad \int_{a}^{b} f(x)\,dx = F(b)-F(a)</textarea>
     <div class="err" id="err"></div>
-    <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 LaTeX 복사</button><button class="btn btn-ghost" id="png" type="button">⬇️ PNG 저장</button></div>
+    <div class="actions"><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_matheditor_btn_copy">📋 LaTeX 복사</button><button class="btn btn-ghost" id="png" type="button" data-i18n="b_matheditor_btn_png">⬇️ PNG 저장</button></div>
     <div class="prev" id="prev"></div>
-    <div class="note">오픈소스 <b>KaTeX</b>(MIT, <a href="https://github.com/KaTeX/KaTeX" target="_blank" rel="noopener">KaTeX/KaTeX</a>)를 자체 호스팅합니다(폰트 포함, 외부 호출 없음). 모든 렌더링은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_matheditor_note">오픈소스 <b>KaTeX</b>(MIT, <a href="https://github.com/KaTeX/KaTeX" target="_blank" rel="noopener">KaTeX/KaTeX</a>)를 자체 호스팅합니다(폰트 포함, 외부 호출 없음). 모든 렌더링은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/katex-0.16/katex.min.js"></script>
@@ -41,20 +41,26 @@
 <script>
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
-  var SYM=[['x^2','x²'],['x_n','xₙ'],['\\frac{a}{b}','분수'],['\\sqrt{x}','√'],['\\sum_{i=1}^{n}','Σ'],['\\int_{a}^{b}','∫'],['\\lim_{x\\to 0}','lim'],['\\alpha','α'],['\\beta','β'],['\\pi','π'],['\\theta','θ'],['\\times','×'],['\\div','÷'],['\\pm','±'],['\\leq','≤'],['\\geq','≥'],['\\neq','≠'],['\\infty','∞'],['\\rightarrow','→'],['\\begin{matrix}a&b\\\\c&d\\end{matrix}','행렬']];
+  var SYM=[['x^2','x²'],['x_n','xₙ'],['\\frac{a}{b}',t('b_matheditor_sym_frac')],['\\sqrt{x}','√'],['\\sum_{i=1}^{n}','Σ'],['\\int_{a}^{b}','∫'],['\\lim_{x\\to 0}','lim'],['\\alpha','α'],['\\beta','β'],['\\pi','π'],['\\theta','θ'],['\\times','×'],['\\div','÷'],['\\pm','±'],['\\leq','≤'],['\\geq','≥'],['\\neq','≠'],['\\infty','∞'],['\\rightarrow','→'],['\\begin{matrix}a&b\\\\c&d\\end{matrix}',t('b_matheditor_sym_matrix')]];
   function render(){ $('err').textContent=''; try{ katex.render($('in').value, $('prev'), {displayMode:true, throwOnError:true}); }
     catch(e){ $('err').textContent='⚠️ '+(e.message||e).toString().replace(/KaTeX parse error: /,''); } }
   $('syms').innerHTML=SYM.map(function(s){return '<button data-t="'+s[0].replace(/"/g,'&quot;').replace(/\\/g,'\\\\')+'" title="'+s[0].replace(/"/g,'&quot;')+'">'+s[1]+'</button>';}).join('');
-  $('syms').addEventListener('click',function(e){var b=e.target.closest('button');if(b){var t=b.getAttribute('data-t').replace(/\\\\/g,'\\');var ta=$('in');var p=ta.selectionStart||ta.value.length;ta.value=ta.value.slice(0,p)+t+ta.value.slice(ta.selectionEnd||p);render();ta.focus();}});
+  $('syms').addEventListener('click',function(e){var b=e.target.closest('button');if(b){var tmp=b.getAttribute('data-t').replace(/\\\\/g,'\\');var ta=$('in');var p=ta.selectionStart||ta.value.length;ta.value=ta.value.slice(0,p)+tmp+ta.value.slice(ta.selectionEnd||p);render();ta.focus();}});
   $('in').addEventListener('input',render);
-  $('copy').addEventListener('click',function(){navigator.clipboard.writeText($('in').value).then(function(){toast('복사됐습니다');});});
+  $('copy').addEventListener('click',function(){navigator.clipboard.writeText($('in').value).then(function(){toast(t('b_matheditor_toast_copied'));});});
   $('png').addEventListener('click',function(){ var el=$('prev'); var svg=null;
     // KaTeX는 HTML 렌더라 PNG는 foreignObject로 캡처
     var html=el.innerHTML; var w=el.scrollWidth||400,h=el.scrollHeight||80;
     var data='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" style="font-size:24px;color:#000;background:#fff;padding:8px;">'+html+'</div></foreignObject></svg>';
     var img=new Image(); img.onload=function(){var cv=document.createElement('canvas');cv.width=w*2;cv.height=h*2;var x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.scale(2,2);x.drawImage(img,0,0);var a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='equation.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},100);};
-    img.onerror=function(){toast('PNG 변환은 일부 브라우저에서 제한될 수 있어요');}; img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data); });
+    img.onerror=function(){toast(t('b_matheditor_toast_png_err'));}; img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data); });
   render();
+  window.onI18n=function(){
+    SYM[2][1]=t('b_matheditor_sym_frac');
+    SYM[19][1]=t('b_matheditor_sym_matrix');
+    $('syms').innerHTML=SYM.map(function(s){return '<button data-t="'+s[0].replace(/"/g,'&quot;').replace(/\\/g,'\\\\')+'" title="'+s[0].replace(/"/g,'&quot;')+'">'+s[1]+'</button>';}).join('');
+    $('syms').addEventListener('click',function(e){var b=e.target.closest('button');if(b){var tmp=b.getAttribute('data-t').replace(/\\\\/g,'\\');var ta=$('in');var p=ta.selectionStart||ta.value.length;ta.value=ta.value.slice(0,p)+tmp+ta.value.slice(ta.selectionEnd||p);render();ta.focus();}});
+  };
 </script>
 </body>
 </html>

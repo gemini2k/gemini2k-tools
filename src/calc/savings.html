@@ -55,44 +55,47 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:540px;">
-  <h1>적금·예금 이자 계산기</h1>
-  <p class="sub">매월 붓는 적금과 목돈을 맡기는 예금의 만기 수령액을 세금까지 반영해 계산합니다.</p>
+  <h1 data-i18n="b_savings_h1">적금·예금 이자 계산기</h1>
+  <p class="sub" data-i18n="b_savings_sub">매월 붓는 적금과 목돈을 맡기는 예금의 만기 수령액을 세금까지 반영해 계산합니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>적금(매월 납입) / 예금(목돈 예치) 중 고릅니다</li>
-    <li>금액·연이율·기간·이자 방식(단리/복리)·세금을 입력합니다</li>
-    <li>세전·세후 이자와 만기 수령액을 바로 확인합니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_savings_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_savings_howto1">적금(매월 납입) / 예금(목돈 예치) 중 고릅니다</li>
+    <li data-i18n="b_savings_howto2">금액·연이율·기간·이자 방식(단리/복리)·세금을 입력합니다</li>
+    <li data-i18n="b_savings_howto3">세전·세후 이자와 만기 수령액을 바로 확인합니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="seg" id="seg">
-      <button data-m="jeok" class="on" type="button">적금(매월 납입)</button>
-      <button data-m="ye" type="button">예금(목돈)</button>
+      <button data-m="jeok" class="on" type="button" data-i18n="b_savings_btn_jeok">적금(매월 납입)</button>
+      <button data-m="ye" type="button" data-i18n="b_savings_btn_ye">예금(목돈)</button>
     </div>
-    <div class="fld"><label for="amt" id="amtLabel">월 납입액 (원)</label><input id="amt" type="number" min="0" value="300000" inputmode="numeric"/></div>
+    <div class="fld"><label for="amt" id="amtLabel" data-i18n="b_savings_label_amt_jeok">월 납입액 (원)</label><input id="amt" type="number" min="0" value="300000" inputmode="numeric"/></div>
     <div class="row">
-      <div class="fld"><label for="rate">연이율 (%)</label><input id="rate" type="number" min="0" step="0.1" value="4" inputmode="decimal"/></div>
-      <div class="fld"><label for="months">기간 (개월)</label><input id="months" type="number" min="1" value="12" inputmode="numeric"/></div>
+      <div class="fld"><label for="rate" data-i18n="b_savings_label_rate">연이율 (%)</label><input id="rate" type="number" min="0" step="0.1" value="4" inputmode="decimal"/></div>
+      <div class="fld"><label for="months" data-i18n="b_savings_label_months">기간 (개월)</label><input id="months" type="number" min="1" value="12" inputmode="numeric"/></div>
     </div>
     <div class="row">
-      <div class="fld"><label for="comp">이자 방식</label><select id="comp"><option value="simple">단리</option><option value="month">월 복리</option></select></div>
-      <div class="fld"><label for="tax">세금</label><select id="tax"><option value="0.154">일반과세 15.4%</option><option value="0.095">세금우대 9.5%</option><option value="0">비과세 0%</option></select></div>
+      <div class="fld"><label for="comp" data-i18n="b_savings_label_comp">이자 방식</label><select id="comp"><option value="simple" data-i18n="b_savings_opt_simple">단리</option><option value="month" data-i18n="b_savings_opt_month">월 복리</option></select></div>
+      <div class="fld"><label for="tax" data-i18n="b_savings_label_tax">세금</label><select id="tax"><option value="0.154" data-i18n="b_savings_opt_tax154">일반과세 15.4%</option><option value="0.095" data-i18n="b_savings_opt_tax095">세금우대 9.5%</option><option value="0" data-i18n="b_savings_opt_tax0">비과세 0%</option></select></div>
     </div>
-    <div class="big"><div class="n" id="final">-</div><div class="u">세후 만기 수령액</div></div>
+    <div class="big"><div class="n" id="final">-</div><div class="u" data-i18n="b_savings_lbl_final">세후 만기 수령액</div></div>
     <div class="lines">
-      <div class="r"><span>원금 합계</span><span id="principal">-</span></div>
-      <div class="r"><span>세전 이자</span><span id="pre">-</span></div>
-      <div class="r"><span>이자 과세(−)</span><span id="taxAmt">-</span></div>
-      <div class="r"><span>세후 이자</span><span id="post">-</span></div>
+      <div class="r"><span data-i18n="b_savings_lbl_principal">원금 합계</span><span id="principal">-</span></div>
+      <div class="r"><span data-i18n="b_savings_lbl_pre">세전 이자</span><span id="pre">-</span></div>
+      <div class="r"><span data-i18n="b_savings_lbl_tax">이자 과세(−)</span><span id="taxAmt">-</span></div>
+      <div class="r"><span data-i18n="b_savings_lbl_post">세후 이자</span><span id="post">-</span></div>
     </div>
-    <div class="note">적금 단리는 매월 납입금이 남은 개월수만큼 이자가 붙는 방식(은행 일반 적금)으로 계산합니다. 복리는 월 복리 기준입니다. 실제 상품은 우대금리·중도해지 등 조건이 다를 수 있어 참고용입니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_savings_note">적금 단리는 매월 납입금이 남은 개월수만큼 이자가 붙는 방식(은행 일반 적금)으로 계산합니다. 복리는 월 복리 기준입니다. 실제 상품은 우대금리·중도해지 등 조건이 다를 수 있어 참고용입니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
-  function won(n){ return Math.round(n).toLocaleString()+'원'; }
+  function won(n){
+    var locale={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[typeof curLang==='function'?curLang():'ko']||'ko-KR';
+    return Math.round(n).toLocaleString(locale)+t('b_savings_unit_won');
+  }
   var mode='jeok';
   function calc(){
     var amt=+$('amt').value||0, r=(+$('rate').value||0)/100, n=Math.max(1,parseInt($('months').value,10)||1), comp=$('comp').value, taxR=+$('tax').value;
@@ -115,11 +118,12 @@
   }
   $('seg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; mode=b.dataset.m;
     Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
-    $('amtLabel').textContent= mode==='jeok'?'월 납입액 (원)':'예치 금액 (원)';
+    $('amtLabel').textContent= mode==='jeok'?t('b_savings_label_amt_jeok'):t('b_savings_label_amt_ye');
     if(mode==='ye' && +$('amt').value===300000) $('amt').value=10000000;
     if(mode==='jeok' && +$('amt').value===10000000) $('amt').value=300000;
     calc(); });
   ['amt','rate','months','comp','tax'].forEach(function(id){ $(id).addEventListener('input',calc); $(id).addEventListener('change',calc); });
+  window.onI18n=function(){ $('amtLabel').textContent=mode==='jeok'?t('b_savings_label_amt_jeok'):t('b_savings_label_amt_ye'); calc(); };
   calc();
 </script>
 </body>

@@ -28,12 +28,12 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:640px;">
-  <h1>숫자 포맷 변환기</h1>
-  <p class="sub">큰 숫자를 천 단위 콤마, 한국식 만·억·조 단위, 통화·퍼센트 등으로 보기 좋게 바꿉니다. 줄을 클릭하면 복사돼요.</p>
+  <h1 data-i18n="b_numformat_title">숫자 포맷 변환기</h1>
+  <p class="sub" data-i18n="b_numformat_sub">큰 숫자를 천 단위 콤마, 한국식 만·억·조 단위, 통화·퍼센트 등으로 보기 좋게 바꿉니다. 줄을 클릭하면 복사돼요.</p>
   <div class="card">
-    <input class="in" id="in" type="text" inputmode="decimal" value="1234567.89" placeholder="숫자 입력"/>
+    <input class="in" id="in" type="text" inputmode="decimal" value="1234567.89" data-i18n-ph="b_numformat_input_ph"/>
     <div id="res"></div>
-    <div class="note">입력에서 숫자·소수점·부호만 인식합니다. 한글 단위는 만(10^4)·억(10^8)·조(10^12) 기준입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_numformat_note">입력에서 숫자·소수점·부호만 인식합니다. 한글 단위는 만(10^4)·억(10^8)·조(10^12) 기준입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -44,19 +44,20 @@
     var u=[['조',1e12],['억',1e8],['만',1e4],['',1]], out=''; u.forEach(function(p){ var q=Math.floor(n/p[1]); if(q>0){ out+=q.toLocaleString()+p[0]+' '; n-=q*p[1]; } }); return (neg?'-':'')+out.trim(); }
   function render(){ var raw=$('in').value.replace(/[^0-9.\-]/g,''); var n=parseFloat(raw);
     var items;
-    if(isNaN(n)){ items=[['안내','숫자를 입력하세요']]; }
+    if(isNaN(n)){ items=[[t('b_numformat_label_guide'), t('b_numformat_msg_enter')]]; }
     else { items=[
-      ['천 단위 콤마', n.toLocaleString('en-US',{maximumFractionDigits:10})],
-      ['한국식 단위', korUnit(n)],
-      ['원화(₩)', '₩'+Math.round(n).toLocaleString()],
-      ['달러($)', '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})],
-      ['반올림(정수)', Math.round(n).toLocaleString()],
-      ['소수 2자리', n.toFixed(2)],
-      ['퍼센트', (n*100).toLocaleString('en-US',{maximumFractionDigits:4})+'%'],
-      ['지수 표기', n.toExponential(3)]
+      [t('b_numformat_label_comma'), n.toLocaleString('en-US',{maximumFractionDigits:10})],
+      [t('b_numformat_label_korean'), korUnit(n)],
+      [t('b_numformat_label_krw'), '₩'+Math.round(n).toLocaleString()],
+      [t('b_numformat_label_usd'), '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})],
+      [t('b_numformat_label_round'), Math.round(n).toLocaleString()],
+      [t('b_numformat_label_decimal2'), n.toFixed(2)],
+      [t('b_numformat_label_percent'), (n*100).toLocaleString('en-US',{maximumFractionDigits:4})+'%'],
+      [t('b_numformat_label_exp'), n.toExponential(3)]
     ]; }
     $('res').innerHTML=items.map(function(it){ return '<div class="item" data-v="'+(''+it[1]).replace(/"/g,'&quot;')+'"><div class="l">'+it[0]+'</div><div class="v">'+it[1]+'</div></div>'; }).join('');
   }
+  window.onI18n=render;
   $('in').addEventListener('input',render); render();
 </script>
 </body>

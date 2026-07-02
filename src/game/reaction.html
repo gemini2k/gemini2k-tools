@@ -22,31 +22,37 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>반응속도 테스트</h1>
-  <p class="sub">파란 화면을 클릭해 시작하고, <b>초록색</b>으로 바뀌는 순간 최대한 빨리 클릭하세요!</p>
+  <h1 data-i18n="b_reaction_title">반응속도 테스트</h1>
+  <p class="sub" data-i18n-html="b_reaction_sub">파란 화면을 클릭해 시작하고, <b>초록색</b>으로 바뀌는 순간 최대한 빨리 클릭하세요!</p>
   <div class="card">
-    <div class="pad idle" id="pad">클릭해서 시작</div>
-    <div class="stat"><div class="sbox"><div class="l">이번</div><div class="v" id="last">-</div></div><div class="sbox"><div class="l">평균</div><div class="v" id="avg">-</div></div><div class="sbox"><div class="l">최고</div><div class="v" id="best">-</div></div><div class="sbox"><div class="l">등급</div><div class="v" id="grade">-</div></div></div>
-    <div class="note">사람의 평균 반응속도는 약 200~250ms입니다. 너무 일찍 클릭하면 다시 시작됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="pad idle" id="pad" data-i18n="b_reaction_start">클릭해서 시작</div>
+    <div class="stat"><div class="sbox"><div class="l" data-i18n="b_reaction_stat_last">이번</div><div class="v" id="last">-</div></div><div class="sbox"><div class="l" data-i18n="b_reaction_stat_avg">평균</div><div class="v" id="avg">-</div></div><div class="sbox"><div class="l" data-i18n="b_reaction_stat_best">최고</div><div class="v" id="best">-</div></div><div class="sbox"><div class="l" data-i18n="b_reaction_stat_grade">등급</div><div class="v" id="grade">-</div></div></div>
+    <div class="note" data-i18n="b_reaction_note">사람의 평균 반응속도는 약 200~250ms입니다. 너무 일찍 클릭하면 다시 시작됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
-  var state='idle', t0=0, timer=null, times=[], best=null;
+  var curState='idle', t0=0, timer=null, times=[], bestMs=null;
   var pad=$('pad');
   function setPad(cls,txt){ pad.className='pad '+cls; pad.textContent=txt; }
-  function start(){ state='wait'; setPad('wait','초록색을 기다리세요...'); var delay=1000+Math.random()*3000;
-    timer=setTimeout(function(){ state='ready'; t0=performance.now(); setPad('ready','지금 클릭!'); }, delay); }
-  function grade(ms){ return ms<200?'😎 최상':ms<260?'👍 빠름':ms<330?'🙂 보통':'🐢 느림'; }
+  function startGame(){ curState='wait'; setPad('wait',t('b_reaction_wait')); var delay=1000+Math.random()*3000;
+    timer=setTimeout(function(){ curState='ready'; t0=performance.now(); setPad('ready',t('b_reaction_go')); }, delay); }
+  function gradeMs(ms){ return ms<200?t('b_reaction_grade_excellent'):ms<260?t('b_reaction_grade_fast'):ms<330?t('b_reaction_grade_normal'):t('b_reaction_grade_slow'); }
   pad.addEventListener('pointerdown',function(){
-    if(state==='idle'||state==='done'||state==='early'){ start(); return; }
-    if(state==='wait'){ clearTimeout(timer); state='early'; setPad('early','너무 일찍! 다시 클릭'); return; }
-    if(state==='ready'){ var ms=Math.round(performance.now()-t0); state='done'; times.push(ms); if(best==null||ms<best)best=ms;
+    if(curState==='idle'||curState==='done'||curState==='early'){ startGame(); return; }
+    if(curState==='wait'){ clearTimeout(timer); curState='early'; setPad('early',t('b_reaction_early')); return; }
+    if(curState==='ready'){ var ms=Math.round(performance.now()-t0); curState='done'; times.push(ms); if(bestMs==null||ms<bestMs)bestMs=ms;
       var avg=Math.round(times.reduce(function(a,b){return a+b;},0)/times.length);
-      $('last').textContent=ms+'ms'; $('avg').textContent=avg+'ms'; $('best').textContent=best+'ms'; $('grade').textContent=grade(ms);
-      setPad('idle',ms+'ms! 클릭해서 다시'); }
+      $('last').textContent=ms+'ms'; $('avg').textContent=avg+'ms'; $('best').textContent=bestMs+'ms'; $('grade').textContent=gradeMs(ms);
+      setPad('idle',ms+t('b_reaction_done')); }
   });
+  window.onI18n=function(){
+    if(curState==='idle'||curState==='done'){ setPad(pad.className.split(' ')[1]==='idle'?'idle':'idle',t('b_reaction_start')); }
+    if(curState==='wait'){ setPad('wait',t('b_reaction_wait')); }
+    if(curState==='early'){ setPad('early',t('b_reaction_early')); }
+    if(curState==='ready'){ setPad('ready',t('b_reaction_go')); }
+  };
 </script>
 </body>
 </html>

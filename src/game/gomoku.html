@@ -52,25 +52,32 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:480px;">
-  <h1>오목</h1>
-  <p class="sub">가로·세로·대각선으로 같은 돌 5개를 먼저 이으면 승리! 친구와 2인으로, 또는 컴퓨터와 대결하세요.</p>
+  <h1 data-i18n="b_gomoku_title">오목</h1>
+  <p class="sub" data-i18n="b_gomoku_sub">가로·세로·대각선으로 같은 돌 5개를 먼저 이으면 승리! 친구와 2인으로, 또는 컴퓨터와 대결하세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li>‘2인 대전’ 또는 ‘vs 컴퓨터’와 난이도를 고릅니다</li>
-    <li>교차점을 클릭(터치)해 돌을 놓습니다 (사람이 검은 돌 ●로 먼저)</li>
-    <li>한 줄로 5개를 만들면 승리합니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_gomoku_howto_title">조작법</b><ol>
+    <li data-i18n="b_gomoku_howto_1">'2인 대전' 또는 'vs 컴퓨터'와 난이도를 고릅니다</li>
+    <li data-i18n="b_gomoku_howto_2">교차점을 클릭(터치)해 돌을 놓습니다 (사람이 검은 돌 ●로 먼저)</li>
+    <li data-i18n="b_gomoku_howto_3">한 줄로 5개를 만들면 승리합니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="opts">
-      <select id="mode"><option value="ai">vs 컴퓨터</option><option value="2p">2인 대전</option></select>
-      <select id="diff"><option value="easy">쉬움</option><option value="normal" selected>보통</option><option value="hard">어려움</option></select>
-      <button id="reset" type="button">다시 시작</button>
+      <select id="mode">
+        <option value="ai" data-i18n="b_gomoku_mode_ai">vs 컴퓨터</option>
+        <option value="2p" data-i18n="b_gomoku_mode_2p">2인 대전</option>
+      </select>
+      <select id="diff">
+        <option value="easy" data-i18n="b_gomoku_diff_easy">쉬움</option>
+        <option value="normal" selected data-i18n="b_gomoku_diff_normal">보통</option>
+        <option value="hard" data-i18n="b_gomoku_diff_hard">어려움</option>
+      </select>
+      <button id="reset" type="button" data-i18n="b_gomoku_btn_restart">다시 시작</button>
     </div>
     <div class="turn" id="turn"></div>
     <canvas id="cv" width="372" height="372" aria-label="오목판"></canvas>
     <div class="msg" id="msg"></div>
-    <div class="note">컴퓨터는 외부 서버 없이 브라우저에서 계산하는 규칙 기반 AI(공격·수비 위협 점수 평가)입니다. 데이터는 전송되지 않습니다.</div>
+    <div class="note" data-i18n="b_gomoku_note">컴퓨터는 외부 서버 없이 브라우저에서 계산하는 규칙 기반 AI(공격·수비 위협 점수 평가)입니다. 데이터는 전송되지 않습니다.</div>
   </div>
 </div>
 
@@ -83,7 +90,7 @@
   function inb(r,c){ return r>=0&&r<N&&c>=0&&c<N; }
   function reset(){ g=[]; for(var r=0;r<N;r++){ g.push([]); for(var c=0;c<N;c++) g[r].push(0); } cur=1; over=false; last=null; $('msg').textContent=''; draw(); turn(); }
   function turn(){ if(over){ $('turn').textContent=''; return; } var ai=$('mode').value==='ai';
-    $('turn').textContent = ai ? (cur===1?'내 차례 (●)':'컴퓨터 생각 중…') : ('차례: '+(cur===1?'● 흑':'○ 백')); }
+    $('turn').textContent = ai ? (cur===1?t('b_gomoku_turn_my'):t('b_gomoku_turn_ai')) : (t('b_gomoku_turn_prefix')+(cur===1?t('b_gomoku_turn_black'):t('b_gomoku_turn_white'))); }
 
   function draw(){
     x.fillStyle='#e3b873'; x.fillRect(0,0,372,372);
@@ -105,8 +112,8 @@
 
   function place(r,c){
     if(over||g[r][c]) return; g[r][c]=cur; last=[r,c]; draw();
-    if(winAt(r,c,cur)){ over=true; var ai=$('mode').value==='ai'; $('msg').textContent = ai?(cur===1?'🎉 승리!':'컴퓨터 승'):(cur===1?'● 흑 승!':'○ 백 승!'); turn(); return; }
-    if(g.every(function(row){return row.every(function(v){return v;});})){ over=true; $('msg').textContent='무승부'; return; }
+    if(winAt(r,c,cur)){ over=true; var ai=$('mode').value==='ai'; $('msg').textContent = ai?(cur===1?t('b_gomoku_win_player'):t('b_gomoku_win_ai')):(cur===1?t('b_gomoku_win_black'):t('b_gomoku_win_white')); turn(); return; }
+    if(g.every(function(row){return row.every(function(v){return v;});})){ over=true; $('msg').textContent=t('b_gomoku_draw'); return; }
     cur=cur===1?2:1; turn();
     if($('mode').value==='ai' && cur===2 && !over) setTimeout(aiMove, 250);
   }
@@ -118,9 +125,9 @@
       while(inb(rr,cc)&&g[rr][cc]===p){cnt++;rr+=dr;cc+=dc;} if(inb(rr,cc)&&g[rr][cc]===0)open++;
       rr=r-dr;cc=c-dc; while(inb(rr,cc)&&g[rr][cc]===p){cnt++;rr-=dr;cc-=dc;} if(inb(rr,cc)&&g[rr][cc]===0)open++;
       tot+=val(cnt,open); } return tot; }
-  function candidates(){ var set={}, list=[]; var any=false;
+  function candidates(){ var tmp_set={}, list=[]; var any=false;
     for(var r=0;r<N;r++)for(var c=0;c<N;c++){ if(!g[r][c]) continue; any=true;
-      for(var dr=-2;dr<=2;dr++)for(var dc=-2;dc<=2;dc++){ var nr=r+dr,nc=c+dc; if(inb(nr,nc)&&!g[nr][nc]){ var k=nr+','+nc; if(!set[k]){set[k]=1;list.push({r:nr,c:nc});} } } }
+      for(var dr=-2;dr<=2;dr++)for(var dc=-2;dc<=2;dc++){ var nr=r+dr,nc=c+dc; if(inb(nr,nc)&&!g[nr][nc]){ var k=nr+','+nc; if(!tmp_set[k]){tmp_set[k]=1;list.push({r:nr,c:nc});} } } }
     if(!any) return [{r:7,c:7}]; return list; }
   function aiMove(){
     if(over) return; var cands=candidates(), bestS=-1, best=[];
@@ -145,6 +152,7 @@
   $('reset').addEventListener('click', reset);
   $('mode').addEventListener('change', function(){ $('diff').classList.toggle('hide',$('mode').value!=='ai'); reset(); });
   $('diff').addEventListener('change', reset);
+  window.onI18n = function(){ turn(); };
   reset();
 </script>
 </body>

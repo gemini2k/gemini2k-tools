@@ -63,30 +63,30 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>타이머 · 스톱워치</h1>
-  <p class="sub">카운트다운 타이머와 스톱워치를 한곳에서. 타이머는 끝나면 알림음이 울리고, 스톱워치는 랩(구간)을 기록합니다.</p>
+  <h1 data-i18n="b_timer_title">타이머 · 스톱워치</h1>
+  <p class="sub" data-i18n="b_timer_sub">카운트다운 타이머와 스톱워치를 한곳에서. 타이머는 끝나면 알림음이 울리고, 스톱워치는 랩(구간)을 기록합니다.</p>
 
   <div class="card">
     <div class="seg">
-      <button id="tabTimer" class="on" type="button">⏲️ 타이머</button>
-      <button id="tabSw" type="button">⏱️ 스톱워치</button>
+      <button id="tabTimer" class="on" type="button" data-i18n="b_timer_tab_timer">⏲️ 타이머</button>
+      <button id="tabSw" type="button" data-i18n="b_timer_tab_sw">⏱️ 스톱워치</button>
     </div>
 
     <!-- 타이머 -->
     <div id="paneTimer">
       <div class="setrow" id="setrow">
-        <input id="mm" type="number" value="5" min="0" max="999" aria-label="분"/><span>분</span>
-        <input id="ss" type="number" value="0" min="0" max="59" aria-label="초"/><span>초</span>
+        <input id="mm" type="number" value="5" min="0" max="999" aria-label="분"/><span data-i18n="b_timer_unit_min">분</span>
+        <input id="ss" type="number" value="0" min="0" max="59" aria-label="초"/><span data-i18n="b_timer_unit_sec">초</span>
       </div>
       <div class="presets">
-        <button data-sec="60">1분</button><button data-sec="180">3분</button><button data-sec="300">5분</button>
-        <button data-sec="600">10분</button><button data-sec="1500">25분</button>
+        <button data-sec="60" data-i18n="b_timer_preset_1m">1분</button><button data-sec="180" data-i18n="b_timer_preset_3m">3분</button><button data-sec="300" data-i18n="b_timer_preset_5m">5분</button>
+        <button data-sec="600" data-i18n="b_timer_preset_10m">10분</button><button data-sec="1500" data-i18n="b_timer_preset_25m">25분</button>
       </div>
       <div class="disp" id="tDisp">05:00</div>
       <div class="ctl">
-        <button class="btn" id="tStart" type="button">시작</button>
-        <button class="btn btn-ghost hide" id="tPause" type="button">일시정지</button>
-        <button class="btn btn-ghost" id="tReset" type="button">초기화</button>
+        <button class="btn" id="tStart" type="button" data-i18n="b_timer_btn_start">시작</button>
+        <button class="btn btn-ghost hide" id="tPause" type="button" data-i18n="b_timer_btn_pause">일시정지</button>
+        <button class="btn btn-ghost" id="tReset" type="button" data-i18n="b_timer_btn_reset">초기화</button>
       </div>
     </div>
 
@@ -94,9 +94,9 @@
     <div id="paneSw" class="hide">
       <div class="disp" id="swDisp">00:00<span class="cs">.00</span></div>
       <div class="ctl">
-        <button class="btn" id="swStart" type="button">시작</button>
-        <button class="btn btn-ghost" id="swLap" type="button" disabled>랩</button>
-        <button class="btn btn-ghost" id="swReset" type="button">초기화</button>
+        <button class="btn" id="swStart" type="button" data-i18n="b_timer_btn_start">시작</button>
+        <button class="btn btn-ghost" id="swLap" type="button" disabled data-i18n="b_timer_btn_lap">랩</button>
+        <button class="btn btn-ghost" id="swReset" type="button" data-i18n="b_timer_btn_reset">초기화</button>
       </div>
       <div class="laps hide" id="laps"></div>
     </div>
@@ -111,13 +111,13 @@
     try{
       var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
       var ctx=new AC();
-      [0,0.25,0.5].forEach(function(t){
+      [0,0.25,0.5].forEach(function(tmp){
         var o=ctx.createOscillator(), g=ctx.createGain();
         o.frequency.value=880; o.connect(g); g.connect(ctx.destination);
-        g.gain.setValueAtTime(0.001, ctx.currentTime+t);
-        g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime+t+0.02);
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+t+0.18);
-        o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+0.2);
+        g.gain.setValueAtTime(0.001, ctx.currentTime+tmp);
+        g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime+tmp+0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+tmp+0.18);
+        o.start(ctx.currentTime+tmp); o.stop(ctx.currentTime+tmp+0.2);
       });
       setTimeout(function(){ ctx.close(); }, 1200);
     }catch(e){}
@@ -171,23 +171,30 @@
   /* ── 스톱워치 ── */
   var swStartT=0, swAcc=0, swRAF=0, swRunning=false, swLaps=[], swLast=0;
   function swMs(){ return swAcc + (swRunning ? performance.now()-swStartT : 0); }
-  function fmt(ms){ var t=Math.floor(ms), cs=Math.floor(t%1000/10), s=Math.floor(t/1000)%60, m=Math.floor(t/60000); return pad(m)+':'+pad(s)+'<span class="cs">.'+pad(cs)+'</span>'; }
+  function fmt(ms){ var tmp=Math.floor(ms), cs=Math.floor(tmp%1000/10), s=Math.floor(tmp/1000)%60, m=Math.floor(tmp/60000); return pad(m)+':'+pad(s)+'<span class="cs">.'+pad(cs)+'</span>'; }
   function swTick(){ $('swDisp').innerHTML=fmt(swMs()); swRAF=requestAnimationFrame(swTick); }
   $('swStart').addEventListener('click', function(){
-    if(swRunning){ swAcc=swMs(); swRunning=false; cancelAnimationFrame(swRAF); $('swStart').textContent='시작'; $('swLap').disabled=true; }
-    else { swStartT=performance.now(); swRunning=true; swRAF=requestAnimationFrame(swTick); $('swStart').textContent='정지'; $('swLap').disabled=false; }
+    if(swRunning){ swAcc=swMs(); swRunning=false; cancelAnimationFrame(swRAF); $('swStart').textContent=t('b_timer_btn_start'); $('swLap').disabled=true; }
+    else { swStartT=performance.now(); swRunning=true; swRAF=requestAnimationFrame(swTick); $('swStart').textContent=t('b_timer_btn_stop'); $('swLap').disabled=false; }
   });
   $('swLap').addEventListener('click', function(){
     if(!swRunning) return;
     var now=swMs(), split=now-swLast; swLast=now; swLaps.unshift({n:swLaps.length+1, lap:split, total:now});
     $('laps').classList.remove('hide');
-    $('laps').innerHTML=swLaps.map(function(l){ return '<div class="lap"><span class="n">랩 '+l.n+'</span><span>'+fmt(l.lap)+'</span><span class="n">'+fmt(l.total)+'</span></div>'; }).join('');
+    $('laps').innerHTML=swLaps.map(function(l){ return '<div class="lap"><span class="n">'+t('b_timer_lap_label')+' '+l.n+'</span><span>'+fmt(l.lap)+'</span><span class="n">'+fmt(l.total)+'</span></div>'; }).join('');
   });
   $('swReset').addEventListener('click', function(){
     swRunning=false; cancelAnimationFrame(swRAF); swAcc=0; swLast=0; swLaps=[];
-    $('swDisp').innerHTML='00:00<span class="cs">.00</span>'; $('swStart').textContent='시작'; $('swLap').disabled=true;
+    $('swDisp').innerHTML='00:00<span class="cs">.00</span>'; $('swStart').textContent=t('b_timer_btn_start'); $('swLap').disabled=true;
     $('laps').classList.add('hide'); $('laps').innerHTML='';
   });
+  window.onI18n = function(){
+    if(!swRunning){ $('swStart').textContent=t('b_timer_btn_start'); }
+    else { $('swStart').textContent=t('b_timer_btn_stop'); }
+    if(swLaps.length){
+      $('laps').innerHTML=swLaps.map(function(l){ return '<div class="lap"><span class="n">'+t('b_timer_lap_label')+' '+l.n+'</span><span>'+fmt(l.lap)+'</span><span class="n">'+fmt(l.total)+'</span></div>'; }).join('');
+    }
+  };
 </script>
 </body>
 </html>

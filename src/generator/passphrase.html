@@ -29,18 +29,18 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:600px;">
-  <h1>패스프레이즈 생성기</h1>
-  <p class="sub">단어를 조합해 외우기 쉬우면서도 안전한 비밀번호(패스프레이즈)를 만듭니다. 결과를 클릭하면 복사돼요.</p>
+  <h1 data-i18n="b_passphrase_title">패스프레이즈 생성기</h1>
+  <p class="sub" data-i18n="b_passphrase_sub">단어를 조합해 외우기 쉬우면서도 안전한 비밀번호(패스프레이즈)를 만듭니다. 결과를 클릭하면 복사돼요.</p>
   <div class="card">
     <div class="ent" id="ent"></div>
     <div class="out" id="out">…</div>
     <div class="opts">
-      <div class="r">단어 수 <input id="words" type="number" min="2" max="10" value="4"/>
-        구분자 <select id="sep"><option value="-">- 하이픈</option><option value="_">_ 밑줄</option><option value=".">. 점</option><option value=" ">(공백)</option><option value="">(붙임)</option></select></div>
-      <div class="r"><label><input type="checkbox" id="cap" checked/> 첫 글자 대문자</label><label><input type="checkbox" id="num" checked/> 숫자 추가</label></div>
-      <button class="btn" id="gen" type="button" style="width:100%;">🔄 새로 생성</button>
+      <div class="r"><span data-i18n="b_passphrase_word_count">단어 수</span> <input id="words" type="number" min="2" max="10" value="4"/>
+        <span data-i18n="b_passphrase_separator">구분자</span> <select id="sep"><option value="-" data-i18n="b_passphrase_sep_hyphen">- 하이픈</option><option value="_" data-i18n="b_passphrase_sep_underscore">_ 밑줄</option><option value="." data-i18n="b_passphrase_sep_dot">. 점</option><option value=" " data-i18n="b_passphrase_sep_space">(공백)</option><option value="" data-i18n="b_passphrase_sep_none">(붙임)</option></select></div>
+      <div class="r"><label><input type="checkbox" id="cap" checked/> <span data-i18n="b_passphrase_opt_cap">첫 글자 대문자</span></label><label><input type="checkbox" id="num" checked/> <span data-i18n="b_passphrase_opt_num">숫자 추가</span></label></div>
+      <button class="btn" id="gen" type="button" style="width:100%;" data-i18n="b_passphrase_btn_gen">🔄 새로 생성</button>
     </div>
-    <div class="note">단어 목록(영문)에서 암호학적 난수(crypto)로 무작위 선택합니다. 단어 수가 많을수록 안전합니다(권장 4개 이상). 생성된 비밀번호는 어디에도 전송·저장되지 않습니다.</div>
+    <div class="note" data-i18n="b_passphrase_note">단어 목록(영문)에서 암호학적 난수(crypto)로 무작위 선택합니다. 단어 수가 많을수록 안전합니다(권장 4개 이상). 생성된 비밀번호는 어디에도 전송·저장되지 않습니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -54,12 +54,14 @@
     var pw=parts.join(sep); if(num)pw+=sep+(rnd(90)+10);
     $('out').textContent=pw;
     var bits=Math.round(n*Math.log2(W.length)+(num?9.4:0));
-    $('ent').textContent='약 '+bits+' 비트 엔트로피 · '+(bits>=70?'매우 강함':bits>=50?'강함':'보통');
+    var strength=bits>=70?t('b_passphrase_strength_very_strong'):bits>=50?t('b_passphrase_strength_strong'):t('b_passphrase_strength_moderate');
+    $('ent').textContent=t('b_passphrase_entropy_label').replace('{bits}',bits).replace('{strength}',strength);
     window._pw=pw;
   }
+  window.onI18n=gen;
   ['words','sep','cap','num'].forEach(function(id){$(id).addEventListener('input',gen);$(id).addEventListener('change',gen);});
   $('gen').addEventListener('click',gen);
-  $('out').addEventListener('click',function(){if(window._pw)navigator.clipboard.writeText(window._pw).then(function(){toast('복사됐습니다');});});
+  $('out').addEventListener('click',function(){if(window._pw)navigator.clipboard.writeText(window._pw).then(function(){toast(t('b_passphrase_copied'));});});
   gen();
 </script>
 </body>

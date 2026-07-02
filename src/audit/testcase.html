@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>테스트케이스·결함 관리대장 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="테스트케이스를 작성하고 수행 결과·결함을 기록합니다. 수행률·통과율 자동 집계. 테스트·품질 산출물. 입력값은 브라우저에만 저장됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/testcase.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="테스트케이스·결함 관리대장 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="테스트케이스를 작성하고 수행 결과·결함을 기록합니다. 수행률·통과율 자동 집계. 테스트·품질 산출물. 입력값은 브라우저에만 저장됩니다."/><meta property="og:url" content="https://gemini2k.co.kr/testcase.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"테스트케이스·결함 관리대장","description":"테스트케이스를 작성하고 수행 결과·결함을 기록합니다. 수행률·통과율 자동 집계. 테스트·품질 산출물. 입력값은 브라우저에만 저장됩니다.","url":"https://gemini2k.co.kr/testcase.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_testcase_title">테스트케이스·결함 관리대장</h1>
+  <p class="sub" data-i18n="b_testcase_sub">테스트케이스와 결함을 기록하고 수행률·통과율을 집계합니다.</p>
+  <div class="card" style="max-width:none;">
+    <div id="app"></div>
+    <div class="note" data-i18n="b_testcase_note">결과가 Fail이면 결함ID를 연결하세요. 수행률·통과율이 자동 계산됩니다. 데이터는 브라우저에만 저장됩니다.</div>
+  </div>
+</div>
+<script src="audit-kit.js"></script><script src="tool-shell.js"></script>
+<script>
+AuditKit.register({mount:'#app',key:'testcase',cols:[
+    {k:'id',label:t('b_testcase_col_id'),w:'80px'},{k:'mod',label:t('b_testcase_col_mod'),w:'100px'},{k:'scenario',label:t('b_testcase_col_scenario'),w:'160px',type:'area'},
+    {k:'input',label:t('b_testcase_col_input'),w:'120px',type:'area'},{k:'expect',label:t('b_testcase_col_expect'),w:'130px',type:'area'},
+    {k:'result',label:t('b_testcase_col_result'),type:'select',opts:[t('b_testcase_opt_notrun'),t('b_testcase_opt_pass'),t('b_testcase_opt_fail'),t('b_testcase_opt_block'),t('b_testcase_opt_na')]},{k:'defect',label:t('b_testcase_col_defect'),w:'80px'},{k:'note',label:t('b_testcase_col_note'),w:'90px',type:'area'}],
+    seed:[{id:'TC-001',mod:t('b_testcase_seed_login'),scenario:t('b_testcase_seed_normal_login'),input:t('b_testcase_seed_valid_idpw'),expect:t('b_testcase_seed_main_move'),result:t('b_testcase_opt_pass'),defect:'',note:''},{id:'TC-002',mod:t('b_testcase_seed_login'),scenario:t('b_testcase_seed_pw_error'),input:t('b_testcase_seed_wrong_pw'),expect:t('b_testcase_seed_error_msg'),result:t('b_testcase_opt_fail'),defect:'BUG-12',note:''}],
+    summary:function(rows){var n=rows.length,run=rows.filter(function(r){return r.result&&r.result!==t('b_testcase_opt_notrun');}).length,pass=rows.filter(function(r){return r.result===t('b_testcase_opt_pass');}).length,fail=rows.filter(function(r){return r.result===t('b_testcase_opt_fail');}).length;var pr=(pass+fail)>0?Math.round(pass/(pass+fail)*100):0;return '<div class="ak-rate"><b>'+pr+'%</b> '+t('b_testcase_sum_passrate')+' <span>· '+t('b_testcase_sum_run')+' '+run+'/'+n+' · Pass '+pass+' · Fail '+fail+'</span></div><div class="ak-bar2"><i style="width:'+pr+'%"></i></div>';}});
+window.onI18n=function(){AuditKit.reregister&&AuditKit.reregister({mount:'#app',key:'testcase',cols:[
+    {k:'id',label:t('b_testcase_col_id'),w:'80px'},{k:'mod',label:t('b_testcase_col_mod'),w:'100px'},{k:'scenario',label:t('b_testcase_col_scenario'),w:'160px',type:'area'},
+    {k:'input',label:t('b_testcase_col_input'),w:'120px',type:'area'},{k:'expect',label:t('b_testcase_col_expect'),w:'130px',type:'area'},
+    {k:'result',label:t('b_testcase_col_result'),type:'select',opts:[t('b_testcase_opt_notrun'),t('b_testcase_opt_pass'),t('b_testcase_opt_fail'),t('b_testcase_opt_block'),t('b_testcase_opt_na')]},{k:'defect',label:t('b_testcase_col_defect'),w:'80px'},{k:'note',label:t('b_testcase_col_note'),w:'90px',type:'area'}],
+    seed:[{id:'TC-001',mod:t('b_testcase_seed_login'),scenario:t('b_testcase_seed_normal_login'),input:t('b_testcase_seed_valid_idpw'),expect:t('b_testcase_seed_main_move'),result:t('b_testcase_opt_pass'),defect:'',note:''},{id:'TC-002',mod:t('b_testcase_seed_login'),scenario:t('b_testcase_seed_pw_error'),input:t('b_testcase_seed_wrong_pw'),expect:t('b_testcase_seed_error_msg'),result:t('b_testcase_opt_fail'),defect:'BUG-12',note:''}],
+    summary:function(rows){var n=rows.length,run=rows.filter(function(r){return r.result&&r.result!==t('b_testcase_opt_notrun');}).length,pass=rows.filter(function(r){return r.result===t('b_testcase_opt_pass');}).length,fail=rows.filter(function(r){return r.result===t('b_testcase_opt_fail');}).length;var pr=(pass+fail)>0?Math.round(pass/(pass+fail)*100):0;return '<div class="ak-rate"><b>'+pr+'%</b> '+t('b_testcase_sum_passrate')+' <span>· '+t('b_testcase_sum_run')+' '+run+'/'+n+' · Pass '+pass+' · Fail '+fail+'</span></div><div class="ak-bar2"><i style="width:'+pr+'%"></i></div>';}});};
+</script>
+</body>
+</html>

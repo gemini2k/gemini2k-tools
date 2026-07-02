@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>대수·미적분 계산기 (전개·인수분해·미분) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="수식을 전개·인수분해·간소화하고 미분·적분·방정식 풀이까지 기호 계산으로 처리합니다. 수학 학습에. nerdamer(CAS) 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/algebra.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="대수·미적분 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="전개·인수분해·미분·적분·방정식 풀이(nerdamer CAS). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/algebra.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem;}
+input[type=text]{flex:1;min-width:200px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);color:var(--text);font-family:ui-monospace,monospace;font-size:1rem;}
+select{padding:.65rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+.varrow{font-size:.9rem;color:var(--muted);margin-bottom:.7rem;}.varrow input{width:60px;padding:.35rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1.1rem;text-align:center;}
+.res .main{font-size:1.5rem;font-weight:800;color:var(--accent);word-break:break-all;font-family:ui-monospace,monospace;}.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"대수·미적분 계산기","description":"수식 전개·인수분해·미분·적분·방정식 풀이(nerdamer CAS).","url":"https://gemini2k.co.kr/algebra.html","applicationCategory":"EducationalApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:660px;">
+  <h1 data-i18n="b_algebra_h1">대수·미적분 계산기</h1>
+  <p class="sub" data-i18n="b_algebra_sub">수식을 전개·인수분해·간소화하고, 미분·적분·방정식 풀이까지 기호로 계산합니다.</p>
+  <div class="card">
+    <div class="row">
+      <select id="op"><option value="simplify" data-i18n="b_algebra_op_simplify">간소화</option><option value="expand" data-i18n="b_algebra_op_expand">전개</option><option value="factor" data-i18n="b_algebra_op_factor">인수분해</option><option value="diff" data-i18n="b_algebra_op_diff">미분</option><option value="integrate" data-i18n="b_algebra_op_integrate">적분</option><option value="solve" data-i18n="b_algebra_op_solve">방정식 풀이(=0)</option></select>
+      <input type="text" id="expr" value="(x+1)^2"/>
+    </div>
+    <div class="varrow"><span data-i18n="b_algebra_var_label">변수</span> <input type="text" id="var" value="x"/> <span data-i18n="b_algebra_var_hint">(미분·적분·풀이에 사용)</span></div>
+    <div class="err" id="err"></div>
+    <div class="res"><div class="main" id="main"></div></div>
+    <div class="note" data-i18n-html="b_algebra_note">오픈소스 <b>nerdamer</b>(MIT, <a href="https://github.com/jiggzson/nerdamer" target="_blank" rel="noopener">jiggzson/nerdamer</a>)를 자체 호스팅합니다. 예: <code>x^2-1</code> 인수분해, <code>sin(x)</code> 미분, <code>x^2-4</code> 풀이. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/nerdamer-1/nerdamer.core.js"></script>
+<script src="/vendor/nerdamer-1/Algebra.js"></script>
+<script src="/vendor/nerdamer-1/Calculus.js"></script>
+<script src="/vendor/nerdamer-1/Solve.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function run(){ $('err').textContent=''; var e=$('expr').value, v=$('var').value||'x', op=$('op').value, out='';
+    try{
+      if(op==='simplify')out=nerdamer('simplify('+e+')').toString();
+      else if(op==='expand')out=nerdamer('expand('+e+')').toString();
+      else if(op==='factor')out=nerdamer('factor('+e+')').toString();
+      else if(op==='diff')out=nerdamer('diff('+e+','+v+')').toString();
+      else if(op==='integrate')out=nerdamer('integrate('+e+','+v+')').toString()+' + C';
+      else if(op==='solve'){ var sols=nerdamer.solve(e,v); out=v+' = '+sols.toString(); }
+      $('main').textContent=out||(typeof t==='function'?t('b_algebra_no_result'):'(결과 없음)');
+    }catch(err){ $('err').textContent='⚠️ '+(err.message||err); $('main').textContent='-'; } }
+  ['op','expr','var'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
+  run();
+</script>
+</body>
+</html>

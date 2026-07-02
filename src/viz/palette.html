@@ -52,13 +52,13 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:760px;">
-  <h1>색 팔레트 생성기</h1>
-  <p class="sub">기준 색 하나로 보색·유사·삼각 배색과 명도·채도 변형 팔레트를 만듭니다. 색을 클릭하면 HEX가 복사됩니다.</p>
+  <h1 data-i18n="b_palette_title">색 팔레트 생성기</h1>
+  <p class="sub" data-i18n="b_palette_sub">기준 색 하나로 보색·유사·삼각 배색과 명도·채도 변형 팔레트를 만듭니다. 색을 클릭하면 HEX가 복사됩니다.</p>
 
   <div class="card">
-    <div class="pickrow"><input id="picker" type="color" value="#5B5BF5"/><input id="hex" type="text" value="#5B5BF5"/><span style="color:var(--muted);font-size:.85rem;">기준 색</span></div>
+    <div class="pickrow"><input id="picker" type="color" value="#5B5BF5"/><input id="hex" type="text" value="#5B5BF5"/><span style="color:var(--muted);font-size:.85rem;" data-i18n="b_palette_base_label">기준 색</span></div>
     <div id="out"></div>
-    <div class="note">HSL 색상환을 기준으로 배색을 계산합니다. 보색(180°), 유사색(±30°), 삼각(120°), 사각(90°) 배색과, 같은 색의 명도(Shade)·옅은 톤(Tint)을 제공합니다. 색을 클릭하면 HEX 코드가 복사됩니다. 모든 처리는 브라우저에서 이루어집니다.</div>
+    <div class="note" data-i18n="b_palette_note">HSL 색상환을 기준으로 배색을 계산합니다. 보색(180°), 유사색(±30°), 삼각(120°), 사각(90°) 배색과, 같은 색의 명도(Shade)·옅은 톤(Tint)을 제공합니다. 색을 클릭하면 HEX 코드가 복사됩니다. 모든 처리는 브라우저에서 이루어집니다.</div>
   </div>
 </div>
 
@@ -84,17 +84,18 @@
     $('picker').value=base;
     var rgb=hex2rgb(base), hsl=rgb2hsl(rgb[0],rgb[1],rgb[2]), h=hsl[0],s=hsl[1],l=hsl[2];
     var html='';
-    html+=scheme('보색 (Complementary)', [base, hsl2hex(h+180,s,l)]);
-    html+=scheme('유사색 (Analogous)', [hsl2hex(h-30,s,l), base, hsl2hex(h+30,s,l)]);
-    html+=scheme('삼각 배색 (Triadic)', [base, hsl2hex(h+120,s,l), hsl2hex(h+240,s,l)]);
-    html+=scheme('사각 배색 (Tetradic)', [base, hsl2hex(h+90,s,l), hsl2hex(h+180,s,l), hsl2hex(h+270,s,l)]);
-    html+=scheme('명도 (Shades)', [20,35,50,65,80].map(function(L){return hsl2hex(h,s,L);}));
-    html+=scheme('단색조 (Mono)', [hsl2hex(h,s*0.3,90),hsl2hex(h,s*0.6,75),base,hsl2hex(h,Math.min(100,s*1.1),40),hsl2hex(h,Math.min(100,s*1.2),25)]);
+    html+=scheme(t('b_palette_scheme_complementary'), [base, hsl2hex(h+180,s,l)]);
+    html+=scheme(t('b_palette_scheme_analogous'), [hsl2hex(h-30,s,l), base, hsl2hex(h+30,s,l)]);
+    html+=scheme(t('b_palette_scheme_triadic'), [base, hsl2hex(h+120,s,l), hsl2hex(h+240,s,l)]);
+    html+=scheme(t('b_palette_scheme_tetradic'), [base, hsl2hex(h+90,s,l), hsl2hex(h+180,s,l), hsl2hex(h+270,s,l)]);
+    html+=scheme(t('b_palette_scheme_shades'), [20,35,50,65,80].map(function(L){return hsl2hex(h,s,L);}));
+    html+=scheme(t('b_palette_scheme_mono'), [hsl2hex(h,s*0.3,90),hsl2hex(h,s*0.6,75),base,hsl2hex(h,Math.min(100,s*1.1),40),hsl2hex(h,Math.min(100,s*1.2),25)]);
     $('out').innerHTML=html;
   }
+  window.onI18n = build;
   $('picker').addEventListener('input', function(){ $('hex').value=this.value.toUpperCase(); build(); });
   $('hex').addEventListener('input', build);
-  $('out').addEventListener('click', function(e){ var s=e.target.closest('.sw'); if(s){ navigator.clipboard.writeText(s.dataset.c).then(function(){ toast(s.dataset.c+' 복사됨'); }); } });
+  $('out').addEventListener('click', function(e){ var sw=e.target.closest('.sw'); if(sw){ navigator.clipboard.writeText(sw.dataset.c).then(function(){ toast(sw.dataset.c+' '+t('b_palette_copied')); }); } });
   build();
 </script>
 </body>

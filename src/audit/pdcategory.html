@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>개인정보 항목 분류 점검표 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="시스템이 수집하는 정보를 일반·고유식별정보·민감정보·금융정보로 분류하고 법적 처리요건(별도 동의 등)을 점검합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/pdcategory.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="개인정보 항목 분류 점검표 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="시스템이 수집하는 정보를 일반·고유식별정보·민감정보·금융정보로 분류하고 법적 처리요건(별도 동의 등)을 점검합니다."/><meta property="og:url" content="https://gemini2k.co.kr/pdcategory.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"개인정보 항목 분류 점검표","description":"시스템이 수집하는 정보를 일반·고유식별정보·민감정보·금융정보로 분류하고 법적 처리요건(별도 동의 등)을 점검합니다.","url":"https://gemini2k.co.kr/pdcategory.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_pdcategory_title">개인정보 항목 분류 점검</h1>
+  <p class="sub" data-i18n="b_pdcategory_sub">수집 정보를 유형별로 분류해 법적 처리요건을 확인합니다.</p>
+  <div class="card" style="max-width:none;">
+    <div id="app"></div>
+    <div class="note" data-i18n="b_pdcategory_note">고유식별정보(주민·여권·운전면허·외국인등록번호)와 민감정보(건강·사상·노조 등)는 원칙적으로 별도 동의 또는 법령 근거가 필요합니다. '충족=수집함'으로 표시하세요.</div>
+  </div>
+</div>
+<script src="audit-kit.js"></script><script src="tool-shell.js"></script>
+<script>
+function renderChecklist() {
+  var appEl = document.getElementById('app');
+  appEl.innerHTML = '';
+  AuditKit.checklist({mount:'#app',key:'pdcategory',groups:[
+    {title:t('b_pdcategory_grp1'),items:[t('b_pdcategory_item_name'),t('b_pdcategory_item_contact'),t('b_pdcategory_item_address'),t('b_pdcategory_item_dob'),t('b_pdcategory_item_account'),t('b_pdcategory_item_ip')]},
+    {title:t('b_pdcategory_grp2'),items:[t('b_pdcategory_item_rrn'),t('b_pdcategory_item_passport'),t('b_pdcategory_item_license'),t('b_pdcategory_item_alien')]},
+    {title:t('b_pdcategory_grp3'),items:[t('b_pdcategory_item_health'),t('b_pdcategory_item_belief'),t('b_pdcategory_item_union'),t('b_pdcategory_item_political'),t('b_pdcategory_item_genetic'),t('b_pdcategory_item_biometric')]},
+    {title:t('b_pdcategory_grp4'),items:[t('b_pdcategory_item_bankacct'),t('b_pdcategory_item_card'),t('b_pdcategory_item_transaction'),t('b_pdcategory_item_asset')]}
+  ]});
+}
+window.onI18n = renderChecklist;
+renderChecklist();
+</script>
+</body>
+</html>

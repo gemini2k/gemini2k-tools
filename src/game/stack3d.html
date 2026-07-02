@@ -52,28 +52,28 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>3D 타워 쌓기</h1>
-  <p class="sub">움직이는 블록을 아래 블록에 정확히 맞춰 쌓으세요. 어긋난 부분은 잘려 나갑니다. 얼마나 높이 쌓을 수 있을까요?</p>
+  <h1 data-i18n="b_stack3d_title">3D 타워 쌓기</h1>
+  <p class="sub" data-i18n="b_stack3d_sub">움직이는 블록을 아래 블록에 정확히 맞춰 쌓으세요. 어긋난 부분은 잘려 나갑니다. 얼마나 높이 쌓을 수 있을까요?</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li>블록이 좌우로 움직일 때 <b>화면을 탭/클릭</b>하거나 아래 <b>[쌓기]</b> 버튼을 누릅니다</li>
-    <li>아래 블록과 겹친 부분만 남고 나머지는 잘립니다 — 정확할수록 오래 갑니다</li>
-    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지할 수 있어요</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_stack3d_howto_title">조작법</b><ol>
+    <li data-i18n-html="b_stack3d_howto1">블록이 좌우로 움직일 때 <b>화면을 탭/클릭</b>하거나 아래 <b>[쌓기]</b> 버튼을 누릅니다</li>
+    <li data-i18n="b_stack3d_howto2">아래 블록과 겹친 부분만 남고 나머지는 잘립니다 — 정확할수록 오래 갑니다</li>
+    <li data-i18n-html="b_stack3d_howto3"><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지할 수 있어요</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
       <div class="scores">
-        <div class="sbox"><div class="l">높이</div><div class="v" id="score">0</div></div>
-        <div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_stack3d_lbl_height">높이</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_stack3d_lbl_best">최고</div><div class="v" id="best">0</div></div>
       </div>
     </div>
     <div class="g3d-wrap">
       <div class="g3d-stage" id="stage"></div>
-      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig">3D 타워 쌓기</div><div class="sm" id="goverSm">탭하거나 버튼을 눌러 시작</div><button class="btn" id="goverBtn" type="button">시작</button></div></div>
+      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig" data-i18n="b_stack3d_title">3D 타워 쌓기</div><div class="sm" id="goverSm" data-i18n="b_stack3d_tap_to_start">탭하거나 버튼을 눌러 시작</div><button class="btn" id="goverBtn" type="button" data-i18n="b_stack3d_btn_start">시작</button></div></div>
     </div>
-    <button class="drop-btn" id="drop" type="button">⬇ 쌓기</button>
-    <div class="note">Three.js 3D 그래픽을 사용합니다. 3D를 지원하지 않는 환경에서는 안내 메시지가 표시됩니다. 모든 진행은 브라우저에서만 이루어지며 최고 기록만 이 기기에 저장됩니다.</div>
+    <button class="drop-btn" id="drop" type="button" data-i18n="b_stack3d_btn_drop">⬇ 쌓기</button>
+    <div class="note" data-i18n="b_stack3d_note">Three.js 3D 그래픽을 사용합니다. 3D를 지원하지 않는 환경에서는 안내 메시지가 표시됩니다. 모든 진행은 브라우저에서만 이루어지며 최고 기록만 이 기기에 저장됩니다.</div>
   </div>
 </div>
 
@@ -117,9 +117,22 @@
   function gameOver(){
     over=true;
     if(score>best){ best=score; localStorage.setItem('stack3d:best',best); $('best').textContent=best; }
-    $('goverBig').textContent='게임 오버'; $('goverSm').textContent='높이 '+score+' · 다시 도전!'; $('goverBtn').textContent='다시 시작';
+    $('goverBig').textContent=t('b_stack3d_gameover');
+    $('goverSm').textContent=t('b_stack3d_gameover_msg').replace('{score}', score);
+    $('goverBtn').textContent=t('b_stack3d_btn_restart');
     $('gover').style.display='';
   }
+  window.onI18n = function(){
+    if(over && $('gover').style.display!=='none'){
+      var bigTxt=$('goverBig').textContent;
+      // 게임오버 상태면 재렌더
+      if(bigTxt && bigTxt!==t('b_stack3d_title')){
+        $('goverBig').textContent=t('b_stack3d_gameover');
+        $('goverSm').textContent=t('b_stack3d_gameover_msg').replace('{score}', score||0);
+        $('goverBtn').textContent=t('b_stack3d_btn_restart');
+      }
+    }
+  };
   function drop(){
     if(over||!moving) return;
     var cur = axis==='x'?moving.position.x:moving.position.z;

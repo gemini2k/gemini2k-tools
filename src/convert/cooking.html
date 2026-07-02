@@ -23,16 +23,16 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:540px;">
-  <h1>요리 계량 변환기</h1>
-  <p class="sub">컵·큰술·작은술·ml·g를 서로 변환합니다. 재료를 고르면 무게(g)도 환산돼요.</p>
+  <h1 data-i18n="b_cooking_title">요리 계량 변환기</h1>
+  <p class="sub" data-i18n="b_cooking_sub">컵·큰술·작은술·ml·g를 서로 변환합니다. 재료를 고르면 무게(g)도 환산돼요.</p>
   <div class="card">
     <div class="row">
-      <div class="fld"><label>값</label><input id="v" type="number" inputmode="decimal" value="1"/></div>
-      <div class="fld"><label>단위</label><select id="u"><option value="cup">컵 (200ml)</option><option value="tbsp">큰술 (15ml)</option><option value="tsp">작은술 (5ml)</option><option value="ml">ml</option><option value="g">g</option></select></div>
+      <div class="fld"><label data-i18n="b_cooking_lbl_value">값</label><input id="v" type="number" inputmode="decimal" value="1"/></div>
+      <div class="fld"><label data-i18n="b_cooking_lbl_unit">단위</label><select id="u"><option value="cup" data-i18n="b_cooking_opt_cup">컵 (200ml)</option><option value="tbsp" data-i18n="b_cooking_opt_tbsp">큰술 (15ml)</option><option value="tsp" data-i18n="b_cooking_opt_tsp">작은술 (5ml)</option><option value="ml">ml</option><option value="g">g</option></select></div>
     </div>
-    <div class="fld" style="margin-bottom:1rem;"><label>재료 (무게 환산용)</label><select id="ing"><option value="1">물·우유 (1.0 g/ml)</option><option value="0.53">밀가루 (0.53)</option><option value="0.85">설탕 (0.85)</option><option value="1.2">소금 (1.2)</option><option value="0.91">식용유 (0.91)</option><option value="0.96">버터 (0.96)</option><option value="0.8">쌀 (0.8)</option></select></div>
+    <div class="fld" style="margin-bottom:1rem;"><label data-i18n="b_cooking_lbl_ingredient">재료 (무게 환산용)</label><select id="ing"><option value="1" data-i18n="b_cooking_ing_water">물·우유 (1.0 g/ml)</option><option value="0.53" data-i18n="b_cooking_ing_flour">밀가루 (0.53)</option><option value="0.85" data-i18n="b_cooking_ing_sugar">설탕 (0.85)</option><option value="1.2" data-i18n="b_cooking_ing_salt">소금 (1.2)</option><option value="0.91" data-i18n="b_cooking_ing_oil">식용유 (0.91)</option><option value="0.96" data-i18n="b_cooking_ing_butter">버터 (0.96)</option><option value="0.8" data-i18n="b_cooking_ing_rice">쌀 (0.8)</option></select></div>
     <div id="res"></div>
-    <div class="note">한국 표준 계량컵 200ml, 큰술 15ml, 작은술 5ml 기준입니다. g 환산은 재료 밀도의 <b>근사값</b>이라 실제와 다소 차이가 있을 수 있습니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_cooking_note">한국 표준 계량컵 200ml, 큰술 15ml, 작은술 5ml 기준입니다. g 환산은 재료 밀도의 <b>근사값</b>이라 실제와 다소 차이가 있을 수 있습니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -42,9 +42,16 @@
   function calc(){ var v=+$('v').value||0, u=$('u').value, dens=+$('ing').value||1, ml;
     if(u==='g') ml=v/dens; else ml=v*ML[u];
     var g=ml*dens;
-    var items=[['컵', (ml/200).toFixed(2)+' 컵'],['큰술', (ml/15).toFixed(1)+' 큰술'],['작은술', (ml/5).toFixed(1)+' 작은술'],['ml', ml.toFixed(0)+' ml'],['g (무게)', g.toFixed(0)+' g']];
+    var items=[
+      [t('b_cooking_res_cup'), (ml/200).toFixed(2)+' '+t('b_cooking_unit_cup')],
+      [t('b_cooking_res_tbsp'), (ml/15).toFixed(1)+' '+t('b_cooking_unit_tbsp')],
+      [t('b_cooking_res_tsp'), (ml/5).toFixed(1)+' '+t('b_cooking_unit_tsp')],
+      [t('b_cooking_res_ml'), ml.toFixed(0)+' ml'],
+      [t('b_cooking_res_g'), g.toFixed(0)+' g']
+    ];
     $('res').innerHTML=items.map(function(it){return '<div class="item"><span class="l">'+it[0]+'</span><span class="v">'+it[1]+'</span></div>';}).join('');
   }
+  window.onI18n=calc;
   ['v','u','ing'].forEach(function(id){$(id).addEventListener('input',calc);$(id).addEventListener('change',calc);});
   calc();
 </script>

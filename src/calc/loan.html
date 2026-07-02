@@ -73,37 +73,37 @@
 <body>
 
 <div class="toolwrap">
-  <h1>대출 이자 계산기</h1>
-  <p class="sub">대출금·금리·기간을 넣으면 상환 방식별 월 상환액과 총 이자를 계산합니다.</p>
+  <h1 data-i18n="b_loan_h1">대출 이자 계산기</h1>
+  <p class="sub" data-i18n="b_loan_sub">대출금·금리·기간을 넣으면 상환 방식별 월 상환액과 총 이자를 계산합니다.</p>
 
   <div class="card">
     <div class="grid2">
-      <div class="fld"><label for="amount">대출 금액 <span class="unit">(만원)</span></label><input id="amount" type="number" value="10000" min="0" step="100"/></div>
-      <div class="fld"><label for="rate">연이율 <span class="unit">(%)</span></label><input id="rate" type="number" value="4.5" min="0" step="0.1"/></div>
-      <div class="fld"><label for="years">기간 <span class="unit">(개월)</span></label><input id="months" type="number" value="360" min="1" step="1"/></div>
-      <div class="fld"><label for="method">상환 방식</label>
+      <div class="fld"><label for="amount"><span data-i18n="b_loan_lbl_amount">대출 금액</span> <span class="unit" data-i18n="b_loan_unit_amount">(만원)</span></label><input id="amount" type="number" value="10000" min="0" step="100"/></div>
+      <div class="fld"><label for="rate"><span data-i18n="b_loan_lbl_rate">연이율</span> <span class="unit">(%)</span></label><input id="rate" type="number" value="4.5" min="0" step="0.1"/></div>
+      <div class="fld"><label for="years"><span data-i18n="b_loan_lbl_months">기간</span> <span class="unit" data-i18n="b_loan_unit_months">(개월)</span></label><input id="months" type="number" value="360" min="1" step="1"/></div>
+      <div class="fld"><label for="method" data-i18n="b_loan_lbl_method">상환 방식</label>
         <select id="method">
-          <option value="equal">원리금균등</option>
-          <option value="principal">원금균등</option>
-          <option value="bullet">만기일시</option>
+          <option value="equal" data-i18n="b_loan_opt_equal">원리금균등</option>
+          <option value="principal" data-i18n="b_loan_opt_principal">원금균등</option>
+          <option value="bullet" data-i18n="b_loan_opt_bullet">만기일시</option>
         </select>
       </div>
     </div>
-    <div class="row" style="margin-top:1.1rem;"><button class="btn" id="calc">계산하기</button></div>
+    <div class="row" style="margin-top:1.1rem;"><button class="btn" id="calc" data-i18n="b_loan_btn_calc">계산하기</button></div>
 
     <div class="res" id="res" style="display:none;">
-      <div class="big"><div class="lbl" id="big-lbl">월 상환액</div><div class="amt" id="monthly">0원</div></div>
+      <div class="big"><div class="lbl" id="big-lbl" data-i18n="b_loan_monthly_label">월 상환액</div><div class="amt" id="monthly">0원</div></div>
       <div class="chips">
-        <div class="chip"><div class="l">총 이자</div><div class="n" id="totint">0원</div></div>
-        <div class="chip"><div class="l">총 상환액</div><div class="n" id="totpay">0원</div></div>
-        <div class="chip"><div class="l">대출 원금</div><div class="n" id="principal">0원</div></div>
+        <div class="chip"><div class="l" data-i18n="b_loan_chip_totint">총 이자</div><div class="n" id="totint">0원</div></div>
+        <div class="chip"><div class="l" data-i18n="b_loan_chip_totpay">총 상환액</div><div class="n" id="totpay">0원</div></div>
+        <div class="chip"><div class="l" data-i18n="b_loan_chip_principal">대출 원금</div><div class="n" id="principal">0원</div></div>
       </div>
-      <details class="sched"><summary>상환 스케줄 (앞 12개월) ▾</summary>
-        <table class="amort"><thead><tr><th>회차</th><th>납입액</th><th>원금</th><th>이자</th><th>잔액</th></tr></thead><tbody id="amort"></tbody></table>
+      <details class="sched"><summary data-i18n="b_loan_sched_summary">상환 스케줄 (앞 12개월) ▾</summary>
+        <table class="amort"><thead><tr><th data-i18n="b_loan_th_seq">회차</th><th data-i18n="b_loan_th_pay">납입액</th><th data-i18n="b_loan_th_princ">원금</th><th data-i18n="b_loan_th_int">이자</th><th data-i18n="b_loan_th_bal">잔액</th></tr></thead><tbody id="amort"></tbody></table>
       </details>
     </div>
 
-    <div class="note">
+    <div class="note" data-i18n="b_loan_note">
       원리금균등은 매월 같은 금액을, 원금균등은 매월 같은 원금 + 줄어드는 이자를(첫 회 납입액 표시), 만기일시는 매월 이자만 내고 만기에 원금을 갚는 방식입니다. 실제 대출은 중도상환수수료·우대금리·거치기간 등에 따라 달라지니 참고용으로 보세요. 모든 계산은 브라우저에서 이루어집니다.
     </div>
   </div>
@@ -112,26 +112,35 @@
 <script src="tool-shell.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
-  function won(n){ return Math.round(n).toLocaleString('ko-KR') + '원'; }
+  function _locale(){ var lang = (typeof curLang === 'function') ? curLang() : 'ko'; return {ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[lang] || 'ko-KR'; }
+  function _unit(){ var lang = (typeof curLang === 'function') ? curLang() : 'ko'; return lang === 'ko' ? '원' : ''; }
+  function won(n){
+    var locale = _locale();
+    if(locale === 'ko-KR') return Math.round(n).toLocaleString(locale) + '원';
+    return Math.round(n).toLocaleString(locale);
+  }
   function calc(){
     var P = (parseFloat($('amount').value)||0) * 10000;
     var annual = (parseFloat($('rate').value)||0)/100;
     var n = Math.max(1, parseInt($('months').value)||1);
     var r = annual/12;
     var method = $('method').value;
-    var rows = [], totalInt = 0, monthlyLabel = '월 상환액', monthlyShow = 0, balance = P;
+    var rows = [], totalInt = 0, monthlyLabel = '', monthlyShow = 0, balance = P;
 
     if(method==='equal'){
+      monthlyLabel = t('b_loan_monthly_label');
       var m = r>0 ? P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1) : P/n;
       monthlyShow = m;
       for(var i=1;i<=n;i++){ var interest=balance*r; var princ=m-interest; balance-=princ; totalInt+=interest;
         if(i<=12) rows.push([i, m, princ, interest, Math.max(0,balance)]); }
     } else if(method==='principal'){
-      var basePrinc = P/n; monthlyLabel='첫 회 상환액';
+      monthlyLabel = t('b_loan_first_payment_label');
+      var basePrinc = P/n;
       for(var i2=1;i2<=n;i2++){ var interest2=balance*r; var pay=basePrinc+interest2; balance-=basePrinc; totalInt+=interest2;
         if(i2===1) monthlyShow=pay; if(i2<=12) rows.push([i2, pay, basePrinc, interest2, Math.max(0,balance)]); }
     } else { // bullet
-      monthlyLabel='월 이자(만기 원금)'; var mi=P*r; monthlyShow=mi; totalInt=mi*n;
+      monthlyLabel = t('b_loan_bullet_label');
+      var mi=P*r; monthlyShow=mi; totalInt=mi*n;
       for(var i3=1;i3<=12 && i3<=n;i3++){ var princ3=(i3===n)?P:0; rows.push([i3, mi+princ3, princ3, mi, (i3===n)?0:P]); }
     }
     $('big-lbl').textContent=monthlyLabel;
@@ -142,6 +151,7 @@
     $('amort').innerHTML = rows.map(function(r){ return '<tr><td>'+r[0]+'</td><td>'+won(r[1])+'</td><td>'+won(r[2])+'</td><td>'+won(r[3])+'</td><td>'+won(r[4])+'</td></tr>'; }).join('');
     $('res').style.display='';
   }
+  window.onI18n = calc;
   $('calc').addEventListener('click', calc);
   ['amount','rate','months','method'].forEach(function(id){ $(id).addEventListener('keydown',function(e){ if(e.key==='Enter') calc(); }); });
   calc();

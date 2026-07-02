@@ -23,14 +23,14 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:720px;">
-  <h1>이미지 픽셀화·도트화</h1>
-  <p class="sub">사진을 픽셀아트 느낌으로 바꿉니다. 픽셀 크기를 키울수록 더 큰 도트가 됩니다.</p>
+  <h1 data-i18n="b_pixelate_title">이미지 픽셀화·도트화</h1>
+  <p class="sub" data-i18n="b_pixelate_sub">사진을 픽셀아트 느낌으로 바꿉니다. 픽셀 크기를 키울수록 더 큰 도트가 됩니다.</p>
   <div class="card">
-    <div class="drop" id="drop"><div style="font-size:1.8rem">🟦</div><div><strong>이미지를 끌어다 놓거나 클릭</strong></div></div>
+    <div class="drop" id="drop"><div style="font-size:1.8rem">🟦</div><div><strong data-i18n="b_pixelate_drop">이미지를 끌어다 놓거나 클릭</strong></div></div>
     <input type="file" id="file" accept="image/*" class="hide"/>
-    <div class="opts hide" id="opts"><label>픽셀 크기 <input id="px" type="range" min="2" max="40" value="10"/><span id="pv">10</span></label><label>색 단계 <input id="lv" type="range" min="2" max="32" value="32"/><span id="lvv">32</span></label><button class="btn" id="dl" type="button">⬇️ PNG 저장</button></div>
+    <div class="opts hide" id="opts"><label><span data-i18n="b_pixelate_px_label">픽셀 크기</span> <input id="px" type="range" min="2" max="40" value="10"/><span id="pv">10</span></label><label><span data-i18n="b_pixelate_lv_label">색 단계</span> <input id="lv" type="range" min="2" max="32" value="32"/><span id="lvv">32</span></label><button class="btn" id="dl" type="button" data-i18n="b_pixelate_save">⬇️ PNG 저장</button></div>
     <div class="cvwrap hide" id="cvwrap"><canvas id="cv"></canvas></div>
-    <div class="note">픽셀 크기만큼 블록 평균색으로 묶고, 색 단계로 색을 양자화합니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
+    <div class="note" data-i18n="b_pixelate_note">픽셀 크기만큼 블록 평균색으로 묶고, 색 단계로 색을 양자화합니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>

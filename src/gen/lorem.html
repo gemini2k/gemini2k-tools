@@ -55,26 +55,33 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>더미 텍스트 생성기</h1>
-  <p class="sub">Lorem ipsum 또는 한글 더미 텍스트를 원하는 분량만큼 만듭니다. 디자인 시안·레이아웃 테스트·목업의 자리 채우기에 쓰세요.</p>
+  <h1 data-i18n="b_lorem_title">더미 텍스트 생성기</h1>
+  <p class="sub" data-i18n="b_lorem_sub">Lorem ipsum 또는 한글 더미 텍스트를 원하는 분량만큼 만듭니다. 디자인 시안·레이아웃 테스트·목업의 자리 채우기에 쓰세요.</p>
 
   <div class="card">
     <div class="opts">
-      <div class="fld"><label for="lang">종류</label>
-        <select id="lang"><option value="lorem">Lorem ipsum (라틴)</option><option value="ko">한글</option></select></div>
-      <div class="fld"><label for="unit">단위</label>
-        <select id="unit"><option value="para">문단</option><option value="sent">문장</option><option value="word">단어</option></select></div>
-      <div class="fld"><label for="count">개수</label><input id="count" type="number" value="3" min="1" max="200"/></div>
-      <label class="chk"><input id="startLorem" type="checkbox" checked/> “Lorem ipsum…”으로 시작</label>
+      <div class="fld"><label for="lang" data-i18n="b_lorem_lbl_type">종류</label>
+        <select id="lang">
+          <option value="lorem" data-i18n="b_lorem_opt_lorem">Lorem ipsum (라틴)</option>
+          <option value="ko" data-i18n="b_lorem_opt_ko">한글</option>
+        </select></div>
+      <div class="fld"><label for="unit" data-i18n="b_lorem_lbl_unit">단위</label>
+        <select id="unit">
+          <option value="para" data-i18n="b_lorem_opt_para">문단</option>
+          <option value="sent" data-i18n="b_lorem_opt_sent">문장</option>
+          <option value="word" data-i18n="b_lorem_opt_word">단어</option>
+        </select></div>
+      <div class="fld"><label for="count" data-i18n="b_lorem_lbl_count">개수</label><input id="count" type="number" value="3" min="1" max="200"/></div>
+      <label class="chk"><input id="startLorem" type="checkbox" checked/> <span data-i18n="b_lorem_chk_start">"Lorem ipsum…"으로 시작</span></label>
     </div>
     <div class="actions" style="margin-top:0;margin-bottom:1rem;">
-      <button class="btn" id="gen" type="button">생성</button>
-      <button class="btn btn-ghost" id="copy" type="button">📋 복사</button>
+      <button class="btn" id="gen" type="button" data-i18n="b_lorem_btn_gen">생성</button>
+      <button class="btn btn-ghost" id="copy" type="button" data-i18n="b_lorem_btn_copy">📋 복사</button>
     </div>
     <textarea id="out" readonly></textarea>
     <div class="meta" id="meta"></div>
-    <div class="note">
-      문단은 4~7개의 문장으로, 문장은 6~14개의 단어로 무작위 구성됩니다. ‘Lorem ipsum…으로 시작’을 켜면 첫 문장이 관용적인 “Lorem ipsum dolor sit amet…”로 시작합니다(라틴 모드). 생성·복사는 모두 브라우저에서 이루어집니다.
+    <div class="note" data-i18n="b_lorem_note">
+      문단은 4~7개의 문장으로, 문장은 6~14개의 단어로 무작위 구성됩니다. 'Lorem ipsum…으로 시작'을 켜면 첫 문장이 관용적인 "Lorem ipsum dolor sit amet…"로 시작합니다(라틴 모드). 생성·복사는 모두 브라우저에서 이루어집니다.
     </div>
   </div>
 </div>
@@ -122,11 +129,13 @@
     }
     $('out').value=out;
     var nw=(out.trim().match(/\S+/g)||[]).length;
-    $('meta').textContent = nw+' 단어 · '+out.length+' 자';
+    var sep = t('b_lorem_meta_sep');
+    $('meta').textContent = nw+t('b_lorem_meta_words')+sep+out.length+t('b_lorem_meta_chars');
   }
+  window.onI18n = gen;
   $('gen').addEventListener('click', gen);
   ['lang','unit','count','startLorem'].forEach(function(id){ $(id).addEventListener('change', gen); });
-  $('copy').addEventListener('click', function(){ if(!$('out').value) return; navigator.clipboard.writeText($('out').value).then(function(){ toast('복사됐습니다'); }); });
+  $('copy').addEventListener('click', function(){ if(!$('out').value) return; navigator.clipboard.writeText($('out').value).then(function(){ toast(t('b_lorem_toast_copied')); }); });
   gen();
 </script>
 </body>

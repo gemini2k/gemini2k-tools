@@ -25,19 +25,19 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:620px;">
-  <h1>bcrypt 해시 생성·검증</h1>
-  <p class="sub">비밀번호를 bcrypt 해시로 만들고, 해시와 평문이 맞는지 확인합니다. 입력은 전송·저장되지 않습니다.</p>
+  <h1 data-i18n="b_bcrypt_title">bcrypt 해시 생성·검증</h1>
+  <p class="sub" data-i18n="b_bcrypt_sub">비밀번호를 bcrypt 해시로 만들고, 해시와 평문이 맞는지 확인합니다. 입력은 전송·저장되지 않습니다.</p>
   <div class="card">
-    <div class="fld"><label>평문 비밀번호</label><input id="pw" type="text" value="hunter2"/></div>
-    <div class="fld"><label>Cost (라운드, 4~14)</label><input id="rounds" type="number" min="4" max="14" value="10"/></div>
-    <div class="actions"><button class="btn" id="gen" type="button">🔒 해시 생성</button><button class="btn btn-ghost" id="copy" type="button">📋 복사</button></div>
+    <div class="fld"><label data-i18n="b_bcrypt_label_pw">평문 비밀번호</label><input id="pw" type="text" value="hunter2"/></div>
+    <div class="fld"><label data-i18n="b_bcrypt_label_rounds">Cost (라운드, 4~14)</label><input id="rounds" type="number" min="4" max="14" value="10"/></div>
+    <div class="actions"><button class="btn" id="gen" type="button" data-i18n="b_bcrypt_btn_gen">🔒 해시 생성</button><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_bcrypt_btn_copy">📋 복사</button></div>
     <div class="out" id="hash"></div>
     <hr/>
-    <div class="fld"><label>검증할 해시</label><input id="vhash" type="text" placeholder="$2a$10$..."/></div>
-    <div class="fld"><label>평문</label><input id="vpw" type="text" value="hunter2"/></div>
-    <div class="actions"><button class="btn" id="verify" type="button">✔ 검증</button></div>
+    <div class="fld"><label data-i18n="b_bcrypt_label_vhash">검증할 해시</label><input id="vhash" type="text" placeholder="$2a$10$..."/></div>
+    <div class="fld"><label data-i18n="b_bcrypt_label_vpw">평문</label><input id="vpw" type="text" value="hunter2"/></div>
+    <div class="actions"><button class="btn" id="verify" type="button" data-i18n="b_bcrypt_btn_verify">✔ 검증</button></div>
     <div class="verdict" id="verdict"></div>
-    <div class="note">오픈소스 <b>bcryptjs</b>(MIT, <a href="https://github.com/dcodeIO/bcrypt.js" target="_blank" rel="noopener">dcodeIO/bcrypt.js</a>)를 자체 호스팅합니다. cost가 높을수록 안전하지만 느립니다(웹 권장 10~12). 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_bcrypt_note">오픈소스 <b>bcryptjs</b>(MIT, <a href="https://github.com/dcodeIO/bcrypt.js" target="_blank" rel="noopener">dcodeIO/bcrypt.js</a>)를 자체 호스팅합니다. cost가 높을수록 안전하지만 느립니다(웹 권장 10~12). 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/bcryptjs-2.4/bcrypt.min.js"></script>
@@ -46,9 +46,9 @@
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
   var B=window.bcrypt||(window.dcodeIO&&window.dcodeIO.bcrypt);
-  $('gen').addEventListener('click',function(){ try{ var r=Math.max(4,Math.min(14,parseInt($('rounds').value,10)||10)); var h=B.hashSync($('pw').value, r); $('hash').textContent=h; window._h=h; }catch(e){ $('hash').textContent='오류: '+e.message; } });
-  $('copy').addEventListener('click',function(){ if(window._h)navigator.clipboard.writeText(window._h).then(function(){toast('복사됐습니다');}); });
-  $('verify').addEventListener('click',function(){ try{ var ok=B.compareSync($('vpw').value, $('vhash').value.trim()); $('verdict').textContent=ok?'✅ 일치합니다':'❌ 일치하지 않습니다'; $('verdict').style.color=ok?'#16a34a':'#ef4444'; }catch(e){ $('verdict').textContent='⚠️ 해시 형식 오류'; $('verdict').style.color='#e0563b'; } });
+  $('gen').addEventListener('click',function(){ try{ var r=Math.max(4,Math.min(14,parseInt($('rounds').value,10)||10)); var h=B.hashSync($('pw').value, r); $('hash').textContent=h; window._h=h; }catch(e){ $('hash').textContent=t('b_bcrypt_err_prefix')+e.message; } });
+  $('copy').addEventListener('click',function(){ if(window._h)navigator.clipboard.writeText(window._h).then(function(){toast(t('b_bcrypt_toast_copied'));}); });
+  $('verify').addEventListener('click',function(){ try{ var ok=B.compareSync($('vpw').value, $('vhash').value.trim()); $('verdict').textContent=ok?t('b_bcrypt_verdict_match'):t('b_bcrypt_verdict_nomatch'); $('verdict').style.color=ok?'#16a34a':'#ef4444'; }catch(e){ $('verdict').textContent=t('b_bcrypt_verdict_invalid'); $('verdict').style.color='#e0563b'; } });
   $('gen').click();
 </script>
 </body>

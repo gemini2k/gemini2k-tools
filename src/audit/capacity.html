@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>시스템 용량 산정 계산기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="동시사용자·트랜잭션·피크계수로 필요 TPS를, 행 수·행 크기·증가율로 데이터 스토리지를 산정합니다. 인프라 설계."/>
+<link rel="canonical" href="https://gemini2k.co.kr/capacity.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="시스템 용량 산정 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="동시사용자·트랜잭션·피크계수로 필요 TPS를, 행 수·행 크기·증가율로 데이터 스토리지를 산정합니다. 인프라 설계."/><meta property="og:url" content="https://gemini2k.co.kr/capacity.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"시스템 용량 산정 계산기","description":"동시사용자·트랜잭션·피크계수로 필요 TPS를, 행 수·행 크기·증가율로 데이터 스토리지를 산정합니다. 인프라 설계.","url":"https://gemini2k.co.kr/capacity.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_capacity_title">시스템 용량 산정</h1>
+  <p class="sub" data-i18n="b_capacity_sub">필요 처리량(TPS)과 데이터 스토리지 용량을 추정합니다.</p>
+  <div class="card" style="max-width:none;">
+    <div class="frm">
+    <label><span data-i18n="b_capacity_label_users">동시 사용자</span><input type="number" id="users" value="500"></label>
+    <label><span data-i18n="b_capacity_label_req">사용자당 요청/시간</span><input type="number" id="req" value="120"></label>
+    <label><span data-i18n="b_capacity_label_peak">피크계수</span><input type="number" id="peak" value="2" step="0.1"></label>
+  </div><div class="frm">
+    <label><span data-i18n="b_capacity_label_rows">일 발생 행 수</span><input type="number" id="rows" value="100000"></label>
+    <label><span data-i18n="b_capacity_label_size">행당 크기(byte)</span><input type="number" id="size" value="500"></label>
+    <label><span data-i18n="b_capacity_label_years">보존(년)</span><input type="number" id="years" value="3"></label>
+  </div><div class="res" id="res"></div>
+    <div class="note" data-i18n="b_capacity_note">TPS = 동시사용자 × 사용자당 시간당 요청 ÷ 3600 × 피크계수. 스토리지는 인덱스·여유율을 포함한 근사치입니다. 참고용 추정입니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};
+  function gb(b){if(b<1048576)return (b/1024).toFixed(1)+' KB';if(b<1073741824)return (b/1048576).toFixed(1)+' MB';if(b<1099511627776)return (b/1073741824).toFixed(2)+' GB';return (b/1099511627776).toFixed(2)+' TB';}
+  function run(){var u=+$('users').value||0,r=+$('req').value||0,pk=+$('peak').value||1;
+    var tps=u*r/3600*pk;
+    var rows=+$('rows').value||0,sz=+$('size').value||0,yr=+$('years').value||1;
+    var raw=rows*sz*365*yr;var withIdx=raw*1.5;var withFree=withIdx*1.3;
+    $('res').innerHTML='<div class="big">'+tps.toFixed(1)+' TPS</div><table>'+
+    '<tr><td>'+t('b_capacity_res_tps_label')+'</td><td><b>'+tps.toFixed(1)+' TPS</b> ('+Math.ceil(tps)+t('b_capacity_res_tps_unit')+')</td></tr>'+
+    '<tr><td>'+t('b_capacity_res_raw_label').replace('{yr}',yr)+'</td><td><b>'+gb(raw)+'</b></td></tr>'+
+    '<tr><td>'+t('b_capacity_res_idx_label')+'</td><td><b>'+gb(withIdx)+'</b></td></tr>'+
+    '<tr><td>'+t('b_capacity_res_free_label')+'</td><td><b>'+gb(withFree)+'</b></td></tr></table>';}
+  window.onI18n=run;
+  ['users','req','peak','rows','size','years'].forEach(function(i){$(i).addEventListener('input',run);});run();
+</script>
+</body>
+</html>

@@ -30,25 +30,30 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>유류비·연비 계산기</h1>
-  <p class="sub">주행 거리·연비·유가로 예상 기름값과 필요 연료량을 계산합니다. 왕복·카풀 분담도 됩니다.</p>
+  <h1 data-i18n="b_fuelcost_h1">유류비·연비 계산기</h1>
+  <p class="sub" data-i18n="b_fuelcost_sub">주행 거리·연비·유가로 예상 기름값과 필요 연료량을 계산합니다. 왕복·카풀 분담도 됩니다.</p>
   <div class="card">
-    <div class="row"><div class="fld"><label>거리 (km)</label><input id="dist" type="number" inputmode="decimal" value="100"/></div><div class="fld"><label>연비 (km/L)</label><input id="eff" type="number" inputmode="decimal" value="12"/></div></div>
-    <div class="fld"><label>유가 (원/L)</label><input id="price" type="number" inputmode="decimal" value="1700"/></div>
-    <div class="opts"><label><input type="checkbox" id="round"/> 왕복</label><label>분담 인원 <input id="people" type="number" min="1" value="1" style="width:64px;padding:.3rem;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text);"/></label></div>
-    <div class="big"><div class="n" id="cost">-</div><div class="u">예상 유류비</div></div>
-    <div class="lines"><div class="r"><span>총 거리</span><span id="td">-</span></div><div class="r"><span>필요 연료</span><span id="liters">-</span></div><div class="r"><span>1인당 분담</span><span id="per">-</span></div></div>
-    <div class="note">유류비 = 거리 ÷ 연비 × 유가. 실제는 운전 습관·도로 상황에 따라 달라집니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="row"><div class="fld"><label data-i18n="b_fuelcost_lbl_dist">거리 (km)</label><input id="dist" type="number" inputmode="decimal" value="100"/></div><div class="fld"><label data-i18n="b_fuelcost_lbl_eff">연비 (km/L)</label><input id="eff" type="number" inputmode="decimal" value="12"/></div></div>
+    <div class="fld"><label data-i18n="b_fuelcost_lbl_price">유가 (원/L)</label><input id="price" type="number" inputmode="decimal" value="1700"/></div>
+    <div class="opts"><label><input type="checkbox" id="round"/> <span data-i18n="b_fuelcost_chk_round">왕복</span></label><label><span data-i18n="b_fuelcost_lbl_people">분담 인원</span> <input id="people" type="number" min="1" value="1" style="width:64px;padding:.3rem;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text);"/></label></div>
+    <div class="big"><div class="n" id="cost">-</div><div class="u" data-i18n="b_fuelcost_result_label">예상 유류비</div></div>
+    <div class="lines"><div class="r"><span data-i18n="b_fuelcost_row_dist">총 거리</span><span id="td">-</span></div><div class="r"><span data-i18n="b_fuelcost_row_liters">필요 연료</span><span id="liters">-</span></div><div class="r"><span data-i18n="b_fuelcost_row_per">1인당 분담</span><span id="per">-</span></div></div>
+    <div class="note" data-i18n="b_fuelcost_note">유류비 = 거리 ÷ 연비 × 유가. 실제는 운전 습관·도로 상황에 따라 달라집니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
-  function won(n){return Math.round(n).toLocaleString()+'원';}
+  function _locale(){var l=typeof curLang==='function'?curLang():'ko';return {ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[l]||'ko-KR';}
+  function _currSuffix(){return typeof t==='function'?t('b_fuelcost_unit_won'):'원';}
+  function won(n){return Math.round(n).toLocaleString(_locale())+_currSuffix();}
+  function _unitKm(){return typeof t==='function'?t('b_fuelcost_unit_km'):' km';}
+  function _unitL(){return typeof t==='function'?t('b_fuelcost_unit_l'):' L';}
   function calc(){ var d=+$('dist').value||0,e=+$('eff').value||1,p=+$('price').value||0,ppl=Math.max(1,parseInt($('people').value,10)||1);
     if($('round').checked)d*=2; var liters=d/(e||1), cost=liters*p;
-    $('cost').textContent=won(cost); $('td').textContent=d.toLocaleString()+' km'; $('liters').textContent=liters.toFixed(1)+' L'; $('per').textContent=won(cost/ppl); }
+    $('cost').textContent=won(cost); $('td').textContent=d.toLocaleString(_locale())+_unitKm(); $('liters').textContent=liters.toFixed(1)+_unitL(); $('per').textContent=won(cost/ppl); }
   ['dist','eff','price','round','people'].forEach(function(id){$(id).addEventListener('input',calc);$(id).addEventListener('change',calc);});
+  window.onI18n=calc;
   calc();
 </script>
 </body>

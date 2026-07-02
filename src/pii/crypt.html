@@ -59,36 +59,36 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>텍스트 암호화 / 복호화</h1>
-  <p class="sub">비밀번호로 메모·메시지를 AES-256으로 잠그고 풉니다. 암호화된 결과만 안전한 곳에 보관하거나 전달하세요. 모든 처리는 이 브라우저 안에서만 이루어집니다.</p>
+  <h1 data-i18n="b_crypt_title">텍스트 암호화 / 복호화</h1>
+  <p class="sub" data-i18n="b_crypt_sub">비밀번호로 메모·메시지를 AES-256으로 잠그고 풉니다. 암호화된 결과만 안전한 곳에 보관하거나 전달하세요. 모든 처리는 이 브라우저 안에서만 이루어집니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol><li>위에서 ‘암호화’ 또는 ‘복호화’를 고릅니다</li><li>내용과 비밀번호를 입력합니다 (비밀번호는 꼭 따로 보관하세요)</li><li>실행 버튼을 누르고 결과를 복사합니다</li></ol></div></div>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_crypt_howto_title">사용 방법</b><ol><li data-i18n="b_crypt_howto_1">위에서 '암호화' 또는 '복호화'를 고릅니다</li><li data-i18n="b_crypt_howto_2">내용과 비밀번호를 입력합니다 (비밀번호는 꼭 따로 보관하세요)</li><li data-i18n="b_crypt_howto_3">실행 버튼을 누르고 결과를 복사합니다</li></ol></div></div>
 
   <div class="card">
     <div class="seg">
-      <button id="mEnc" class="on" type="button">🔒 암호화</button>
-      <button id="mDec" type="button">🔓 복호화</button>
+      <button id="mEnc" class="on" type="button" data-i18n="b_crypt_btn_enc">🔒 암호화</button>
+      <button id="mDec" type="button" data-i18n="b_crypt_btn_dec">🔓 복호화</button>
     </div>
 
-    <label for="input" id="inLabel">평문 (암호화할 내용)</label>
-    <textarea id="input" placeholder="여기에 텍스트를 입력하세요"></textarea>
+    <label for="input" id="inLabel" data-i18n="b_crypt_label_plain">평문 (암호화할 내용)</label>
+    <textarea id="input" data-i18n-ph="b_crypt_ph_input" placeholder="여기에 텍스트를 입력하세요"></textarea>
 
     <div class="pw">
-      <input id="pw" type="password" placeholder="비밀번호" autocomplete="off"/>
+      <input id="pw" type="password" data-i18n-ph="b_crypt_ph_pw" placeholder="비밀번호" autocomplete="off"/>
       <button id="togglePw" type="button">👁</button>
     </div>
 
     <div class="actions">
-      <button class="btn" id="run" type="button">암호화</button>
-      <button class="btn btn-ghost" id="copy" type="button">📋 결과 복사</button>
-      <button class="btn btn-ghost" id="clear" type="button">지우기</button>
+      <button class="btn" id="run" type="button" data-i18n="b_crypt_run_enc">암호화</button>
+      <button class="btn btn-ghost" id="copy" type="button" data-i18n="b_crypt_copy">📋 결과 복사</button>
+      <button class="btn btn-ghost" id="clear" type="button" data-i18n="b_crypt_clear">지우기</button>
     </div>
     <div class="arrow">↓</div>
-    <label for="output" id="outLabel">암호문 (Base64)</label>
-    <textarea id="output" readonly placeholder="결과가 여기에 표시됩니다"></textarea>
+    <label for="output" id="outLabel" data-i18n="b_crypt_label_cipher">암호문 (Base64)</label>
+    <textarea id="output" readonly data-i18n-ph="b_crypt_ph_output" placeholder="결과가 여기에 표시됩니다"></textarea>
     <div class="err" id="err"></div>
 
-    <div class="note">
+    <div class="note" data-i18n-html="b_crypt_note">
       <span class="warn">비밀번호를 잊으면 복구할 수 없습니다.</span> AES-256-GCM으로 암호화하고, 비밀번호는 PBKDF2-SHA256(15만 회)로 키를 유도합니다. 결과 Base64에는 <code>솔트(16B) + IV(12B) + 암호문</code>이 함께 담겨 있어, 같은 비밀번호만 있으면 어디서든 복호화됩니다. 비밀번호·평문·암호문 모두 서버로 전송되지 않습니다.
     </div>
   </div>
@@ -115,8 +115,8 @@
   function encrypt(){
     $('err').textContent='';
     var txt=$('input').value, pw=$('pw').value;
-    if(!txt){ $('err').textContent='암호화할 텍스트를 입력하세요.'; return; }
-    if(!pw){ $('err').textContent='비밀번호를 입력하세요.'; return; }
+    if(!txt){ $('err').textContent=t('b_crypt_err_no_plain'); return; }
+    if(!pw){ $('err').textContent=t('b_crypt_err_no_pw'); return; }
     var salt=crypto.getRandomValues(new Uint8Array(16)), iv=crypto.getRandomValues(new Uint8Array(12));
     deriveKey(pw, salt, 'encrypt').then(function(key){
       return crypto.subtle.encrypt({name:'AES-GCM', iv:iv}, key, enc.encode(txt));
@@ -124,36 +124,37 @@
       var c=new Uint8Array(ct), out=new Uint8Array(16+12+c.length);
       out.set(salt,0); out.set(iv,16); out.set(c,28);
       $('output').value=b64enc(out);
-    }).catch(function(e){ $('err').textContent='암호화 실패: '+e.message; });
+    }).catch(function(e){ $('err').textContent=t('b_crypt_err_enc_fail')+': '+e.message; });
   }
   function decrypt(){
     $('err').textContent='';
     var data=$('input').value.trim(), pw=$('pw').value;
-    if(!data){ $('err').textContent='복호화할 암호문을 입력하세요.'; return; }
-    if(!pw){ $('err').textContent='비밀번호를 입력하세요.'; return; }
-    var bytes; try{ bytes=b64dec(data); }catch(e){ $('err').textContent='암호문 형식이 올바르지 않습니다(Base64).'; return; }
-    if(bytes.length<29){ $('err').textContent='암호문이 너무 짧습니다.'; return; }
+    if(!data){ $('err').textContent=t('b_crypt_err_no_cipher'); return; }
+    if(!pw){ $('err').textContent=t('b_crypt_err_no_pw'); return; }
+    var bytes; try{ bytes=b64dec(data); }catch(e){ $('err').textContent=t('b_crypt_err_bad_format'); return; }
+    if(bytes.length<29){ $('err').textContent=t('b_crypt_err_too_short'); return; }
     var salt=bytes.slice(0,16), iv=bytes.slice(16,28), ct=bytes.slice(28);
     deriveKey(pw, salt, 'decrypt').then(function(key){
       return crypto.subtle.decrypt({name:'AES-GCM', iv:iv}, key, ct);
     }).then(function(pt){
       $('output').value=dec.decode(pt);
-    }).catch(function(){ $('err').textContent='복호화 실패: 비밀번호가 틀렸거나 손상된 암호문입니다.'; });
+    }).catch(function(){ $('err').textContent=t('b_crypt_err_dec_fail'); });
   }
 
   function setMode(m){
     mode=m;
     $('mEnc').classList.toggle('on', m==='enc'); $('mDec').classList.toggle('on', m==='dec');
-    $('run').textContent = m==='enc' ? '암호화' : '복호화';
-    $('inLabel').textContent = m==='enc' ? '평문 (암호화할 내용)' : '암호문 (Base64)';
-    $('outLabel').textContent = m==='enc' ? '암호문 (Base64)' : '평문 (복호화 결과)';
+    $('run').textContent = m==='enc' ? t('b_crypt_run_enc') : t('b_crypt_run_dec');
+    $('inLabel').textContent = m==='enc' ? t('b_crypt_label_plain') : t('b_crypt_label_cipher');
+    $('outLabel').textContent = m==='enc' ? t('b_crypt_label_cipher') : t('b_crypt_label_plain_result');
     $('input').value=''; $('output').value=''; $('err').textContent='';
   }
+  window.onI18n = function(){ setMode(mode); };
   $('mEnc').addEventListener('click', function(){ setMode('enc'); });
   $('mDec').addEventListener('click', function(){ setMode('dec'); });
   $('run').addEventListener('click', function(){ (mode==='enc'?encrypt:decrypt)(); });
   $('togglePw').addEventListener('click', function(){ $('pw').type = $('pw').type==='password' ? 'text' : 'password'; });
-  $('copy').addEventListener('click', function(){ if(!$('output').value) return; navigator.clipboard.writeText($('output').value).then(function(){ toast('복사됐습니다'); }); });
+  $('copy').addEventListener('click', function(){ if(!$('output').value) return; navigator.clipboard.writeText($('output').value).then(function(){ toast(t('b_crypt_toast_copied')); }); });
   $('clear').addEventListener('click', function(){ $('input').value=''; $('output').value=''; $('err').textContent=''; $('input').focus(); });
 </script>
 </body>

@@ -25,14 +25,14 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>공학용 계산기</h1>
-  <p class="sub">수식을 입력하면 계산합니다. 삼각·로그·제곱근·단위 변환·행렬까지 됩니다. (예: <code>sqrt(2)^2</code>, <code>3 cm to inch</code>, <code>sin(45 deg)</code>)</p>
+  <h1 data-i18n="b_mathcalc_h1">공학용 계산기</h1>
+  <p class="sub" data-i18n-html="b_mathcalc_sub">수식을 입력하면 계산합니다. 삼각·로그·제곱근·단위 변환·행렬까지 됩니다. (예: <code>sqrt(2)^2</code>, <code>3 cm to inch</code>, <code>sin(45 deg)</code>)</p>
   <div class="card">
     <input class="in" id="in" value="2^10 + sqrt(144)" autocomplete="off"/>
     <div class="res" id="res"></div>
     <div class="keys" id="keys"></div>
     <div class="hist" id="hist"></div>
-    <div class="note">오픈소스 <b>math.js</b>(Apache-2.0, <a href="https://github.com/josdejong/mathjs" target="_blank" rel="noopener">josdejong/mathjs</a>)를 자체 호스팅합니다. <code>to</code> 로 단위 변환(예: <code>90 km/h to m/s</code>), <code>!</code> 팩토리얼, <code>%</code> 모듈로 등을 지원합니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_mathcalc_note">오픈소스 <b>math.js</b>(Apache-2.0, <a href="https://github.com/josdejong/mathjs" target="_blank" rel="noopener">josdejong/mathjs</a>)를 자체 호스팅합니다. <code>to</code> 로 단위 변환(예: <code>90 km/h to m/s</code>), <code>!</code> 팩토리얼, <code>%</code> 모듈로 등을 지원합니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/mathjs-12/math.js"></script>
@@ -41,10 +41,10 @@
   var $=function(id){return document.getElementById(id);};
   var KEYS=['7','8','9','/','(',')','4','5','6','*','^','sqrt(','1','2','3','-','pi','sin(','0','.','=','+','e','cos(','%','!',',','to ','log(','tan('];
   $('keys').innerHTML=KEYS.map(function(k){return '<button data-k="'+k.replace(/"/g,'')+'">'+(k==='='?'=':k.trim())+'</button>';}).join('');
-  function calc(){ var ex=$('in').value.trim(); if(!ex){$('res').textContent='';return;} try{ var r=math.evaluate(ex); $('res').textContent=math.format(r,{precision:12}); window._r={ex:ex,r:$('res').textContent}; }catch(e){ $('res').textContent='…'; } }
+  function calc(){ var ex=$('in').value.trim(); if(!ex){$('res').textContent='';return;} try{ var r=math.evaluate(ex); $('res').textContent=math.format(r,{precision:12}); window._r={ex:ex,r:$('res').textContent}; }catch(e){ $('res').textContent=t('b_mathcalc_err'); } }
   $('keys').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var k=b.dataset.k;
     if(k==='='){ commit(); return; } var i=$('in'); var p=i.selectionStart||i.value.length; i.value=i.value.slice(0,p)+k+i.value.slice(i.selectionEnd||p); i.focus(); calc(); });
-  function commit(){ calc(); if(window._r&&window._r.r&&window._r.r!=='…'){ $('hist').insertAdjacentHTML('afterbegin','<div data-e="'+window._r.ex.replace(/"/g,'&quot;')+'"><span>'+window._r.ex.replace(/</g,'&lt;')+'</span><span class="r">'+window._r.r+'</span></div>'); } }
+  function commit(){ calc(); if(window._r&&window._r.r&&window._r.r!==t('b_mathcalc_err')){ $('hist').insertAdjacentHTML('afterbegin','<div data-e="'+window._r.ex.replace(/"/g,'&quot;')+'"><span>'+window._r.ex.replace(/</g,'&lt;')+'</span><span class="r">'+window._r.r+'</span></div>'); } }
   $('in').addEventListener('input',calc);
   $('in').addEventListener('keydown',function(e){ if(e.key==='Enter'){e.preventDefault();commit();} });
   $('hist').addEventListener('click',function(e){var d=e.target.closest('div');if(d){$('in').value=d.dataset.e;calc();$('in').focus();}});

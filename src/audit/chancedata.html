@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>테스트 더미데이터 생성기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="이름·이메일·전화·주소·회사·날짜 등 다양한 타입의 가짜 테스트 데이터를 원하는 행 수만큼 생성합니다. 시드로 재현 가능. Chance.js 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/chancedata.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="테스트 더미데이터 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="테스트용 더미데이터 생성(Chance.js). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/chancedata.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"테스트 더미데이터 생성기","description":"이름·이메일·전화·주소·회사·날짜 등 다양한 타입의 가짜 테스트 데이터를 원하는 행 수만큼 생성합니다. 시드로 재현 가능. Chance.js 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다.","url":"https://gemini2k.co.kr/chancedata.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_chancedata_title">테스트 더미데이터 생성기</h1>
+  <p class="sub" data-i18n="b_chancedata_sub">컬럼=타입을 정의하면 테스트용 가짜 데이터를 표·CSV·JSON으로 만듭니다.</p>
+  <div class="card" style="max-width:none;">
+    <div class="frm"><label><span data-i18n="b_chancedata_label_rows">행 수</span><input type="number" id="n" value="10" min="1" max="1000"></label><label><span data-i18n="b_chancedata_label_seed">시드(선택)</span><input type="text" id="seed" data-i18n-ph="b_chancedata_seed_ph" placeholder="비우면 랜덤"></label><button class="btn" id="gen" type="button" data-i18n="b_chancedata_btn_gen">생성</button><button class="btn btn-ghost" id="csv" type="button" data-i18n="b_chancedata_btn_csv">⬇️ CSV</button><button class="btn btn-ghost" id="json" type="button" data-i18n="b_chancedata_btn_json">📋 JSON</button></div><label style="font-weight:700;font-size:.85rem" data-i18n-html="b_chancedata_col_def_label">컬럼 정의 (한 줄에 <code>컬럼명=타입</code>)</label><textarea class="in" id="cols" spellcheck="false" style="min-height:120px">id=정수\nname=이름\nemail=이메일\nphone=전화\ncompany=회사\njoined=날짜\nactive=불리언</textarea><div style="font-size:.8rem;color:var(--muted);margin:.3rem 0" data-i18n="b_chancedata_types_hint">타입: 이름·이메일·전화·주소·도시·국가·회사·정수·금액·날짜·불리언·문장·단어·GUID·IP·나이</div><div class="res" id="res" style="overflow-x:auto"></div>
+    <div class="note" data-i18n-html="b_chancedata_note">오픈소스 <b>Chance.js</b>(MIT, <a href="https://github.com/chancejs/chancejs" target="_blank" rel="noopener">chancejs/chancejs</a>)를 자체 호스팅합니다. 같은 시드를 넣으면 같은 데이터가 재현됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/chance-1/chance.min.js"></script><script src="audit-kit.js"></script><script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};var rows=[],cols=[];function gen(){var C=$("seed").value?new Chance($("seed").value):new Chance();var M={"이름":function(){return C.name();},"이메일":function(){return C.email();},"전화":function(){return C.phone();},"주소":function(){return C.address();},"도시":function(){return C.city();},"국가":function(){return C.country({full:true});},"회사":function(){return C.company();},"정수":function(){return C.integer({min:1,max:1000});},"금액":function(){return C.integer({min:1000,max:1000000});},"날짜":function(){return C.date({string:true,year:C.integer({min:2020,max:2025})});},"불리언":function(){return C.bool();},"문장":function(){return C.sentence({words:6});},"단어":function(){return C.word();},"GUID":function(){return C.guid();},"IP":function(){return C.ip();},"나이":function(){return C.age();}};cols=$("cols").value.replace(/\\n/g,"\n").split(/\r?\n/).map(function(l){var p=l.split("=");return {name:(p[0]||"").trim(),type:(p[1]||p[0]||"").trim()};}).filter(function(c){return c.name;});var n=Math.max(1,Math.min(1000,+$("n").value||10));rows=[];for(var r=0;r<n;r++){var o={};cols.forEach(function(c){var f=M[c.type]||function(){return C.word();};o[c.name]=f();});rows.push(o);}$("res").innerHTML="<table><tr>"+cols.map(function(c){return "<td><b>"+c.name+"</b></td>";}).join("")+"</tr>"+rows.slice(0,100).map(function(o){return "<tr>"+cols.map(function(c){return "<td>"+String(o[c.name])+"</td>";}).join("")+"</tr>";}).join("")+"</table>";}$("gen").addEventListener("click",gen);$("csv").addEventListener("click",function(){if(!rows.length)gen();AuditKit.csv("testdata.csv",[cols.map(function(c){return c.name;})].concat(rows.map(function(o){return cols.map(function(c){return o[c.name];});})));});$("json").addEventListener("click",function(){if(!rows.length)gen();navigator.clipboard.writeText(JSON.stringify(rows,null,2)).then(function(){AuditKit.toast(t('b_chancedata_toast_json_copied'));});});gen();window.onI18n=function(){gen();};
+</script>
+</body>
+</html>

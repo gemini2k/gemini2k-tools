@@ -31,36 +31,38 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:540px;">
-  <h1>전월세 전환 계산기</h1>
-  <p class="sub">전세를 월세로, 월세를 전세로 전환율 기준으로 환산합니다. 재계약·이사 비교에 쓰세요.</p>
+  <h1 data-i18n="b_jeonse_h1">전월세 전환 계산기</h1>
+  <p class="sub" data-i18n="b_jeonse_sub">전세를 월세로, 월세를 전세로 전환율 기준으로 환산합니다. 재계약·이사 비교에 쓰세요.</p>
   <div class="card">
-    <div class="seg" id="seg"><button data-m="j2w" class="on" type="button">전세 → 월세</button><button data-m="w2j" type="button">월세 → 전세</button></div>
+    <div class="seg" id="seg"><button data-m="j2w" class="on" type="button" data-i18n="b_jeonse_btn_j2w">전세 → 월세</button><button data-m="w2j" type="button" data-i18n="b_jeonse_btn_w2j">월세 → 전세</button></div>
     <div id="m-j2w">
-      <div class="fld"><label>전세보증금 (만원)</label><input id="jeonse" type="number" inputmode="numeric" value="30000"/></div>
-      <div class="fld"><label>전환 후 보증금 (만원)</label><input id="deposit" type="number" inputmode="numeric" value="5000"/></div>
-      <div class="fld"><label>전환율 (%/년)</label><input id="rate1" type="number" inputmode="decimal" value="5.5"/></div>
-      <div class="big"><div class="n" id="monthly">-</div><div class="u">예상 월세</div></div>
+      <div class="fld"><label data-i18n="b_jeonse_lbl_jeonse">전세보증금 (만원)</label><input id="jeonse" type="number" inputmode="numeric" value="30000"/></div>
+      <div class="fld"><label data-i18n="b_jeonse_lbl_deposit">전환 후 보증금 (만원)</label><input id="deposit" type="number" inputmode="numeric" value="5000"/></div>
+      <div class="fld"><label data-i18n="b_jeonse_lbl_rate1">전환율 (%/년)</label><input id="rate1" type="number" inputmode="decimal" value="5.5"/></div>
+      <div class="big"><div class="n" id="monthly">-</div><div class="u" data-i18n="b_jeonse_unit_monthly">예상 월세</div></div>
     </div>
     <div id="m-w2j" class="hide">
-      <div class="fld"><label>보증금 (만원)</label><input id="dep2" type="number" inputmode="numeric" value="5000"/></div>
-      <div class="fld"><label>월세 (만원)</label><input id="rent2" type="number" inputmode="decimal" value="115"/></div>
-      <div class="fld"><label>전환율 (%/년)</label><input id="rate2" type="number" inputmode="decimal" value="5.5"/></div>
-      <div class="big"><div class="n" id="jeonseOut">-</div><div class="u">환산 전세금</div></div>
+      <div class="fld"><label data-i18n="b_jeonse_lbl_dep2">보증금 (만원)</label><input id="dep2" type="number" inputmode="numeric" value="5000"/></div>
+      <div class="fld"><label data-i18n="b_jeonse_lbl_rent2">월세 (만원)</label><input id="rent2" type="number" inputmode="decimal" value="115"/></div>
+      <div class="fld"><label data-i18n="b_jeonse_lbl_rate2">전환율 (%/년)</label><input id="rate2" type="number" inputmode="decimal" value="5.5"/></div>
+      <div class="big"><div class="n" id="jeonseOut">-</div><div class="u" data-i18n="b_jeonse_unit_jeonse_out">환산 전세금</div></div>
     </div>
-    <div class="note">월세 = (전세금−보증금) × 전환율 ÷ 12. 전환율은 지역·시점에 따라 다르며 법정 상한(기준금리+2%)이 적용될 수 있습니다. 참고용이며 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_jeonse_note">월세 = (전세금−보증금) × 전환율 ÷ 12. 전환율은 지역·시점에 따라 다르며 법정 상한(기준금리+2%)이 적용될 수 있습니다. 참고용이며 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
-  function man(n){return Math.round(n).toLocaleString()+'만원';}
+  function _locale(){var l=typeof curLang==='function'?curLang():'ko';return {ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[l]||'ko-KR';}
+  function man(n){var unit=t('b_jeonse_unit_man');return Math.round(n).toLocaleString(_locale())+unit;}
   var mode='j2w';
   function calc(){
     if(mode==='j2w'){ var j=+$('jeonse').value||0, d=+$('deposit').value||0, r=+$('rate1').value||0;
-      var m=(j-d)*(r/100)/12; $('monthly').textContent= m>=0? man(m)+' / 월' : '보증금이 전세금보다 큽니다'; }
+      var m=(j-d)*(r/100)/12; $('monthly').textContent= m>=0? man(m)+' / '+t('b_jeonse_per_month') : t('b_jeonse_err_deposit'); }
     else { var d2=+$('dep2').value||0, rent=+$('rent2').value||0, r2=+$('rate2').value||0;
-      if(r2<=0){$('jeonseOut').textContent='전환율 확인';return;} var j2=d2 + rent*12/(r2/100); $('jeonseOut').textContent=man(j2); }
+      if(r2<=0){$('jeonseOut').textContent=t('b_jeonse_err_rate');return;} var j2=d2 + rent*12/(r2/100); $('jeonseOut').textContent=man(j2); }
   }
+  window.onI18n=calc;
   $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;mode=b.dataset.m;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
     $('m-j2w').classList.toggle('hide',mode!=='j2w');$('m-w2j').classList.toggle('hide',mode!=='w2j');calc();});
   ['jeonse','deposit','rate1','dep2','rent2','rate2'].forEach(function(id){$(id).addEventListener('input',calc);});

@@ -50,27 +50,33 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>혈중알코올농도(BAC) 추정기</h1>
-  <p class="sub">마신 술과 시간으로 혈중알코올농도를 대략 추정합니다. 위드마크 공식을 사용합니다.</p>
+  <h1 data-i18n="b_bac_title">혈중알코올농도(BAC) 추정기</h1>
+  <p class="sub" data-i18n="b_bac_sub">마신 술과 시간으로 혈중알코올농도를 대략 추정합니다. 위드마크 공식을 사용합니다.</p>
 
-  <div class="warnbox">🚫 절대 음주운전 가능 여부 판단에 사용하지 마세요. 추정값은 실제와 크게 다를 수 있습니다.</div>
+  <div class="warnbox" data-i18n="b_bac_warn">🚫 절대 음주운전 가능 여부 판단에 사용하지 마세요. 추정값은 실제와 크게 다를 수 있습니다.</div>
 
   <div class="card">
-    <label>성별</label>
-    <div class="seg" style="margin-bottom:1rem;"><button id="male" class="on" type="button">남성</button><button id="female" type="button">여성</button></div>
+    <label data-i18n="b_bac_lbl_sex">성별</label>
+    <div class="seg" style="margin-bottom:1rem;"><button id="male" class="on" type="button" data-i18n="b_bac_male">남성</button><button id="female" type="button" data-i18n="b_bac_female">여성</button></div>
     <div class="frow">
-      <div class="fld"><label for="w">체중 (kg)</label><input id="w" type="number" value="70" min="30" max="200"/></div>
-      <div class="fld"><label for="hours">경과 시간 (시간)</label><input id="hours" type="number" value="2" min="0" max="24" step="0.5"/></div>
+      <div class="fld"><label for="w" data-i18n="b_bac_lbl_weight">체중 (kg)</label><input id="w" type="number" value="70" min="30" max="200"/></div>
+      <div class="fld"><label for="hours" data-i18n="b_bac_lbl_hours">경과 시간 (시간)</label><input id="hours" type="number" value="2" min="0" max="24" step="0.5"/></div>
     </div>
     <div class="frow">
-      <div class="fld"><label for="amount">음주량 (ml)</label><input id="amount" type="number" value="500" min="0" max="5000" step="10"/></div>
-      <div class="fld"><label for="abv">도수 (%)</label><input id="abv" type="number" value="4.5" min="0" max="100" step="0.5"/></div>
+      <div class="fld"><label for="amount" data-i18n="b_bac_lbl_amount">음주량 (ml)</label><input id="amount" type="number" value="500" min="0" max="5000" step="10"/></div>
+      <div class="fld"><label for="abv" data-i18n="b_bac_lbl_abv">도수 (%)</label><input id="abv" type="number" value="4.5" min="0" max="100" step="0.5"/></div>
     </div>
-    <div class="frow"><div class="fld" style="flex:none;width:100%;"><label for="preset">빠른 선택</label>
-      <select id="preset"><option value="">직접 입력</option><option value="500,4.5">맥주 500ml (4.5%)</option><option value="360,17">소주 1병 360ml (17%)</option><option value="150,12">와인 1잔 150ml (12%)</option><option value="45,40">양주 1잔 45ml (40%)</option></select></div>
+    <div class="frow"><div class="fld" style="flex:none;width:100%;"><label for="preset" data-i18n="b_bac_lbl_preset">빠른 선택</label>
+      <select id="preset">
+        <option value="" data-i18n="b_bac_opt_custom">직접 입력</option>
+        <option value="500,4.5" data-i18n="b_bac_opt_beer">맥주 500ml (4.5%)</option>
+        <option value="360,17" data-i18n="b_bac_opt_soju">소주 1병 360ml (17%)</option>
+        <option value="150,12" data-i18n="b_bac_opt_wine">와인 1잔 150ml (12%)</option>
+        <option value="45,40" data-i18n="b_bac_opt_spirits">양주 1잔 45ml (40%)</option>
+      </select></div>
     </div>
     <div class="res"><div class="v" id="bac">0.000%</div><div><span class="cat" id="cat"></span></div></div>
-    <div class="note">⚠️ 참고용입니다 — 의학·법적 판단 근거가 될 수 없습니다. 위드마크 공식(알코올 g = 양×도수×0.789, 분포계수 남 0.68·여 0.55, 시간당 0.015% 분해)으로 계산하며 체질·공복·약물 등으로 실제값은 크게 달라집니다. 한국 면허 정지 0.03%·취소 0.08% 기준은 단순 비교용 표시일 뿐입니다. 음주 후에는 절대 운전하지 마세요.</div>
+    <div class="note" data-i18n="b_bac_note">⚠️ 참고용입니다 — 의학·법적 판단 근거가 될 수 없습니다. 위드마크 공식(알코올 g = 양×도수×0.789, 분포계수 남 0.68·여 0.55, 시간당 0.015% 분해)으로 계산하며 체질·공복·약물 등으로 실제값은 크게 달라집니다. 한국 면허 정지 0.03%·취소 0.08% 기준은 단순 비교용 표시일 뿐입니다. 음주 후에는 절대 운전하지 마세요.</div>
   </div>
 </div>
 
@@ -86,13 +92,14 @@
     var bac=(grams/(w*1000*r))*100 - 0.015*h;
     if(bac<0) bac=0;
     $('bac').textContent=bac.toFixed(3)+'%';
-    var cat=$('cat'), c,txt;
-    if(bac<0.03){ c='#22c55e'; txt='정지 기준 미만(0.03% 미만)'; }
-    else if(bac<0.08){ c='#f97316'; txt='면허 정지 수준(0.03~0.08%)'; }
-    else { c='#ef4444'; txt='면허 취소 수준(0.08% 이상)'; }
-    cat.textContent=txt; cat.style.background=c+'22'; cat.style.color=c;
+    var catEl=$('cat'), c,txt;
+    if(bac<0.03){ c='#22c55e'; txt=t('b_bac_cat_safe'); }
+    else if(bac<0.08){ c='#f97316'; txt=t('b_bac_cat_warn'); }
+    else { c='#ef4444'; txt=t('b_bac_cat_danger'); }
+    catEl.textContent=txt; catEl.style.background=c+'22'; catEl.style.color=c;
     $('bac').style.color=c;
   }
+  window.onI18n=calc;
   $('male').addEventListener('click',function(){sex='male';this.classList.add('on');$('female').classList.remove('on');calc();});
   $('female').addEventListener('click',function(){sex='female';this.classList.add('on');$('male').classList.remove('on');calc();});
   $('preset').addEventListener('change',function(){ if(!this.value)return; var p=this.value.split(','); $('amount').value=p[0]; $('abv').value=p[1]; calc(); });

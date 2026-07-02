@@ -60,28 +60,28 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:860px;">
-  <h1>이미지 이어붙이기</h1>
-  <p class="sub">여러 이미지를 세로·가로 또는 격자로 한 장으로 합칩니다. 긴 스크린샷 연결이나 비교 이미지에 좋아요.</p>
+  <h1 data-i18n="b_imgmerge_title">이미지 이어붙이기</h1>
+  <p class="sub" data-i18n="b_imgmerge_sub">여러 이미지를 세로·가로 또는 격자로 한 장으로 합칩니다. 긴 스크린샷 연결이나 비교 이미지에 좋아요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>이미지 여러 장을 한꺼번에 올립니다 (다시 올리면 추가됩니다)</li>
-    <li>방향(세로/가로/격자)·간격·배경색을 고릅니다</li>
-    <li>미리보기를 확인하고 ‘PNG 다운로드’</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_imgmerge_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_imgmerge_howto_1">이미지 여러 장을 한꺼번에 올립니다 (다시 올리면 추가됩니다)</li>
+    <li data-i18n="b_imgmerge_howto_2">방향(세로/가로/격자)·간격·배경색을 고릅니다</li>
+    <li data-i18n="b_imgmerge_howto_3">미리보기를 확인하고 'PNG 다운로드'</li>
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">🧩</div><div><strong>이미지 여러 장을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG · WebP (여러 장)</div></div>
+    <div class="drop" id="drop"><div class="big">🧩</div><div><strong data-i18n="b_imgmerge_drop_label">이미지 여러 장을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;" data-i18n="b_imgmerge_drop_hint">JPG · PNG · WebP (여러 장)</div></div>
     <input type="file" id="file" accept="image/*" multiple class="hide"/>
     <div class="thumbs" id="thumbs"></div>
     <div class="opts hide" id="opts">
-      <label>방향 <select id="dir"><option value="v">세로</option><option value="h">가로</option><option value="grid">격자</option></select></label>
-      <label id="colwrap" style="display:none;">열 수 <input id="cols" type="number" min="1" max="10" value="2"/></label>
-      <label>간격 <input id="gap" type="number" min="0" max="100" value="8"/>px</label>
-      <label>배경 <input id="bg" type="color" value="#ffffff"/></label>
-      <button class="btn" id="dl" type="button">⬇️ PNG 다운로드</button>
+      <label><span data-i18n="b_imgmerge_lbl_dir">방향</span> <select id="dir"><option value="v" data-i18n="b_imgmerge_opt_v">세로</option><option value="h" data-i18n="b_imgmerge_opt_h">가로</option><option value="grid" data-i18n="b_imgmerge_opt_grid">격자</option></select></label>
+      <label id="colwrap" style="display:none;"><span data-i18n="b_imgmerge_lbl_cols">열 수</span> <input id="cols" type="number" min="1" max="10" value="2"/></label>
+      <label><span data-i18n="b_imgmerge_lbl_gap">간격</span> <input id="gap" type="number" min="0" max="100" value="8"/>px</label>
+      <label><span data-i18n="b_imgmerge_lbl_bg">배경</span> <input id="bg" type="color" value="#ffffff"/></label>
+      <button class="btn" id="dl" type="button" data-i18n="b_imgmerge_btn_dl">⬇️ PNG 다운로드</button>
     </div>
     <div class="cvwrap hide" id="cvwrap"><canvas id="cv"></canvas></div>
-    <div class="note">세로/가로는 가운데 정렬로 이어 붙이고, 격자는 칸에 맞춰 배치합니다. 썸네일의 ✕로 제거, 다시 올려서 추가할 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_imgmerge_note">세로/가로는 가운데 정렬로 이어 붙이고, 격자는 칸에 맞춰 배치합니다. 썸네일의 ✕로 제거, 다시 올려서 추가할 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 

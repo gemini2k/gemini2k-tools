@@ -23,16 +23,16 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>WiFi QR코드 생성기</h1>
-  <p class="sub">와이파이 이름과 비밀번호로 QR을 만들면, 스캔만으로 자동 연결됩니다. 매장·가정에 붙여두세요.</p>
+  <h1 data-i18n="b_wifiqr_title">WiFi QR코드 생성기</h1>
+  <p class="sub" data-i18n="b_wifiqr_sub">와이파이 이름과 비밀번호로 QR을 만들면, 스캔만으로 자동 연결됩니다. 매장·가정에 붙여두세요.</p>
   <div class="card">
-    <div class="fld"><label>WiFi 이름 (SSID)</label><input id="ssid" type="text" value="MyWiFi"/></div>
-    <div class="fld"><label>비밀번호</label><input id="pw" type="text" value="password123"/></div>
-    <div class="fld"><label>보안 방식</label><select id="enc"><option value="WPA">WPA/WPA2</option><option value="WEP">WEP</option><option value="nopass">없음(개방)</option></select></div>
-    <label style="font-size:.85rem;font-weight:600;display:inline-flex;gap:.4rem;align-items:center;"><input type="checkbox" id="hidden"/> 숨겨진 네트워크</label>
+    <div class="fld"><label data-i18n="b_wifiqr_label_ssid">WiFi 이름 (SSID)</label><input id="ssid" type="text" value="MyWiFi"/></div>
+    <div class="fld"><label data-i18n="b_wifiqr_label_pw">비밀번호</label><input id="pw" type="text" value="password123"/></div>
+    <div class="fld"><label data-i18n="b_wifiqr_label_enc">보안 방식</label><select id="enc"><option value="WPA" data-i18n="b_wifiqr_opt_wpa">WPA/WPA2</option><option value="WEP" data-i18n="b_wifiqr_opt_wep">WEP</option><option value="nopass" data-i18n="b_wifiqr_opt_nopass">없음(개방)</option></select></div>
+    <label style="font-size:.85rem;font-weight:600;display:inline-flex;gap:.4rem;align-items:center;"><input type="checkbox" id="hidden"/> <span data-i18n="b_wifiqr_hidden">숨겨진 네트워크</span></label>
     <div class="qrwrap"><div id="qr"></div></div>
-    <div class="actions"><button class="btn" id="png" type="button">⬇️ PNG 다운로드</button></div>
-    <div class="note">QR에는 WiFi 접속 정보가 담깁니다(표준 WIFI: 형식). 비밀번호가 포함되니 신뢰할 수 있는 곳에만 공유하세요. 오픈소스 qr-code-styling(MIT) 자체 호스팅, 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="actions"><button class="btn" id="png" type="button" data-i18n="b_wifiqr_btn_png">⬇️ PNG 다운로드</button></div>
+    <div class="note" data-i18n="b_wifiqr_note">QR에는 WiFi 접속 정보가 담깁니다(표준 WIFI: 형식). 비밀번호가 포함되니 신뢰할 수 있는 곳에만 공유하세요. 오픈소스 qr-code-styling(MIT) 자체 호스팅, 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/qrstyling-1.6/qr-code-styling.js"></script>

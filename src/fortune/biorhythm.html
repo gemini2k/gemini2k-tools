@@ -53,27 +53,27 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:620px;">
-  <h1>바이오리듬 계산기</h1>
-  <p class="sub">생년월일 기준으로 오늘의 신체·감성·지성 리듬을 곡선으로 보여 줍니다.</p>
+  <h1 data-i18n="b_biorhythm_title">바이오리듬 계산기</h1>
+  <p class="sub" data-i18n="b_biorhythm_sub">생년월일 기준으로 오늘의 신체·감성·지성 리듬을 곡선으로 보여 줍니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>생년월일과 기준일(기본: 오늘)을 입력합니다</li>
-    <li>세 가지 리듬 수치(%)와 ±15일 곡선을 확인합니다</li>
-    <li>+는 활동에 좋은 고조기, −는 휴식이 필요한 저조기, 0 근처는 전환일입니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_biorhythm_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_biorhythm_howto_step1">생년월일과 기준일(기본: 오늘)을 입력합니다</li>
+    <li data-i18n="b_biorhythm_howto_step2">세 가지 리듬 수치(%)와 ±15일 곡선을 확인합니다</li>
+    <li data-i18n="b_biorhythm_howto_step3">+는 활동에 좋은 고조기, −는 휴식이 필요한 저조기, 0 근처는 전환일입니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="row">
-      <div class="fld"><label for="birth">생년월일</label><input id="birth" type="date"/></div>
-      <div class="fld"><label for="base">기준일</label><input id="base" type="date"/></div>
+      <div class="fld"><label for="birth" data-i18n="b_biorhythm_label_birth">생년월일</label><input id="birth" type="date"/></div>
+      <div class="fld"><label for="base" data-i18n="b_biorhythm_label_base">기준일</label><input id="base" type="date"/></div>
     </div>
     <div class="cards">
-      <div class="bcard"><div class="ic">💪</div><div class="l">신체 (23일)</div><div class="v" id="vP" style="color:#ef4444">-</div></div>
-      <div class="bcard"><div class="ic">💗</div><div class="l">감성 (28일)</div><div class="v" id="vE" style="color:#22c55e">-</div></div>
-      <div class="bcard"><div class="ic">🧠</div><div class="l">지성 (33일)</div><div class="v" id="vI" style="color:#3b82f6">-</div></div>
+      <div class="bcard"><div class="ic">💪</div><div class="l" data-i18n="b_biorhythm_card_physical">신체 (23일)</div><div class="v" id="vP" style="color:#ef4444">-</div></div>
+      <div class="bcard"><div class="ic">💗</div><div class="l" data-i18n="b_biorhythm_card_emotional">감성 (28일)</div><div class="v" id="vE" style="color:#22c55e">-</div></div>
+      <div class="bcard"><div class="ic">🧠</div><div class="l" data-i18n="b_biorhythm_card_intellectual">지성 (33일)</div><div class="v" id="vI" style="color:#3b82f6">-</div></div>
     </div>
     <div class="chartwrap"><svg id="chart" viewBox="0 0 620 260" preserveAspectRatio="xMidYMid meet"></svg></div>
-    <div class="note">바이오리듬은 출생일로부터의 경과일을 주기(신체 23·감성 28·지성 33일)로 나눠 사인 곡선으로 나타낸 것으로, 과학적으로 입증된 이론은 아닙니다. <b>재미·참고용</b>으로 즐겨 주세요. 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_biorhythm_note">바이오리듬은 출생일로부터의 경과일을 주기(신체 23·감성 28·지성 33일)로 나눠 사인 곡선으로 나타낸 것으로, 과학적으로 입증된 이론은 아닙니다. <b>재미·참고용</b>으로 즐겨 주세요. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -94,7 +94,7 @@
     // 격자/0선
     s+='<line x1="0" y1="'+midY+'" x2="'+W+'" y2="'+midY+'" stroke="var(--border)"/>';
     s+='<line x1="'+cx+'" y1="0" x2="'+cx+'" y2="'+H+'" stroke="var(--accent)" stroke-dasharray="4 4" opacity="0.6"/>';
-    s+='<text x="'+(cx+4)+'" y="14" font-size="11" fill="var(--muted)">오늘</text>';
+    s+='<text x="'+(cx+4)+'" y="14" font-size="11" fill="var(--muted)">'+t('b_biorhythm_today')+'</text>';
     function path(period,color){ var d=''; for(var k=-span;k<=span;k++){ var x=cx+(k/span)*(W/2-pad); var y=midY-Math.sin(2*Math.PI*(days+k)/period)*amp; d+=(k===-span?'M':'L')+x.toFixed(1)+' '+y.toFixed(1)+' '; }
       return '<path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="2.5"/>'; }
     s+=path(23,'#ef4444')+path(28,'#22c55e')+path(33,'#3b82f6');
@@ -102,7 +102,8 @@
     [['#ef4444',23],['#22c55e',28],['#3b82f6',33]].forEach(function(c){ var y=midY-Math.sin(2*Math.PI*days/c[1])*amp; s+='<circle cx="'+cx+'" cy="'+y.toFixed(1)+'" r="4" fill="'+c[0]+'"/>'; });
     $('chart').innerHTML=s;
   }
-  (function(){ var t=new Date(),pad=function(n){return(n<10?'0':'')+n;}; $('base').value=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate()); $('birth').value='1995-03-10'; })();
+  window.onI18n = function(){ if($('chart').innerHTML) calc(); };
+  (function(){ var tmp=new Date(),padz=function(n){return(n<10?'0':'')+n;}; $('base').value=tmp.getFullYear()+'-'+padz(tmp.getMonth()+1)+'-'+padz(tmp.getDate()); $('birth').value='1995-03-10'; })();
   ['birth','base'].forEach(function(id){ $(id).addEventListener('change',calc); $(id).addEventListener('input',calc); });
   calc();
 </script>

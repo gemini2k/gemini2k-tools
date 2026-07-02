@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>시큐어코딩 패턴 스캐너 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="소스코드를 붙여넣으면 SQL인젝션·XSS·하드코딩·위험함수 등 보안약점 의심 패턴을 휴리스틱으로 찾아 줄 번호와 함께 알려 줍니다(참고용)."/>
+<link rel="canonical" href="https://gemini2k.co.kr/seccode.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="시큐어코딩 패턴 스캐너 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="소스코드를 붙여넣으면 SQL인젝션·XSS·하드코딩·위험함수 등 보안약점 의심 패턴을 휴리스틱으로 찾아 줄 번호와 함께 알려 줍니다(참고용)."/><meta property="og:url" content="https://gemini2k.co.kr/seccode.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"시큐어코딩 패턴 스캐너","description":"소스코드를 붙여넣으면 SQL인젝션·XSS·하드코딩·위험함수 등 보안약점 의심 패턴을 휴리스틱으로 찾아 줄 번호와 함께 알려 줍니다(참고용).","url":"https://gemini2k.co.kr/seccode.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_seccode_title">시큐어코딩 패턴 스캐너</h1>
+  <p class="sub" data-i18n="b_seccode_sub">소스에서 보안약점 의심 패턴을 찾아 줄 번호로 표시합니다.</p>
+  <div class="card" style="max-width:none;">
+    <textarea class="in" id="in" spellcheck="false">function search(q){
+  var sql = "SELECT * FROM users WHERE name = '" + q + "'";
+  el.innerHTML = q;
+  var token = Math.random().toString(36);
+  var pw = "admin1234";
+  eval(userInput);
+}</textarea><div class="err" id="err"></div><div class="out" id="out" style="margin-top:.6rem"></div>
+    <div class="note" data-i18n="b_seccode_note">정규식 휴리스틱 기반 참고용 점검입니다(정적분석 도구를 대체하지 않음). 모든 분석은 브라우저에서만 이루어지며 코드는 전송되지 않습니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};
+  var RULES=[
+    [/\.innerHTML\s*=|document\.write\s*\(/,'XSS',t('b_seccode_r_xss')],
+    [/(SELECT|INSERT|UPDATE|DELETE)[^;]*['"]\s*\+|\+\s*['"][^;]*(WHERE|VALUES)/i,t('b_seccode_r_sqli_type'),t('b_seccode_r_sqli')],
+    [/\beval\s*\(|new\s+Function\s*\(/,t('b_seccode_r_eval_type'),t('b_seccode_r_eval')],
+    [/Math\.random\s*\(/,t('b_seccode_r_rand_type'),t('b_seccode_r_rand')],
+    [/(password|passwd|pwd|secret|api[_-]?key|token)\s*[:=]\s*['"][^'"]{3,}/i,t('b_seccode_r_hc_type'),t('b_seccode_r_hc')],
+    [/\bmd5\b|\bsha1\b/i,t('b_seccode_r_hash_type'),t('b_seccode_r_hash')],
+    [/exec\s*\(|child_process|Runtime\.getRuntime|os\.system/,t('b_seccode_r_cmd_type'),t('b_seccode_r_cmd')],
+    [/http:\/\//,t('b_seccode_r_http_type'),t('b_seccode_r_http')],
+    [/console\.(log|debug)\s*\(/,t('b_seccode_r_debug_type'),t('b_seccode_r_debug')]
+  ];
+  function run(){$('err').textContent='';var lines=$('in').value.split(/\n/);var hits=[];
+    lines.forEach(function(ln,i){RULES.forEach(function(r){if(r[0].test(ln))hits.push({line:i+1,type:r[1],msg:r[2],code:ln.trim().slice(0,80)});});});
+    if(!hits.length){$('out').innerHTML='<span style="color:#16a34a">'+t('b_seccode_no_hits')+'</span>';return;}
+    $('out').innerHTML='<b>'+hits.length+t('b_seccode_hits_suffix')+'</b>\n\n'+hits.map(function(h){return 'L'+h.line+' ['+h.type+'] '+h.msg+'\n   '+h.code;}).join('\n\n');}
+  window.onI18n=function(){RULES[0][1]='XSS';RULES[0][2]=t('b_seccode_r_xss');RULES[1][1]=t('b_seccode_r_sqli_type');RULES[1][2]=t('b_seccode_r_sqli');RULES[2][1]=t('b_seccode_r_eval_type');RULES[2][2]=t('b_seccode_r_eval');RULES[3][1]=t('b_seccode_r_rand_type');RULES[3][2]=t('b_seccode_r_rand');RULES[4][1]=t('b_seccode_r_hc_type');RULES[4][2]=t('b_seccode_r_hc');RULES[5][1]=t('b_seccode_r_hash_type');RULES[5][2]=t('b_seccode_r_hash');RULES[6][1]=t('b_seccode_r_cmd_type');RULES[6][2]=t('b_seccode_r_cmd');RULES[7][1]=t('b_seccode_r_http_type');RULES[7][2]=t('b_seccode_r_http');RULES[8][1]=t('b_seccode_r_debug_type');RULES[8][2]=t('b_seccode_r_debug');run();};
+  $('in').addEventListener('input',run);run();
+</script>
+</body>
+</html>

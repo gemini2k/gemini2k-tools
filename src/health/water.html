@@ -49,17 +49,17 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>하루 물 섭취량 계산기</h1>
-  <p class="sub">몸무게와 활동량으로 하루에 마시면 좋은 물의 양을 계산합니다.</p>
+  <h1 data-i18n="b_water_title">하루 물 섭취량 계산기</h1>
+  <p class="sub" data-i18n="b_water_sub">몸무게와 활동량으로 하루에 마시면 좋은 물의 양을 계산합니다.</p>
 
   <div class="card">
     <div class="frow">
-      <div class="fld"><label for="w">몸무게 (kg)</label><input id="w" type="number" value="65" min="20" max="300"/></div>
-      <div class="fld"><label for="act">활동량</label><select id="act"><option value="0">보통</option><option value="350">가벼운 운동(+)</option><option value="700">활발한 운동(++)</option></select></div>
+      <div class="fld"><label for="w" data-i18n="b_water_label_weight">몸무게 (kg)</label><input id="w" type="number" value="65" min="20" max="300"/></div>
+      <div class="fld"><label for="act" data-i18n="b_water_label_activity">활동량</label><select id="act"><option value="0" data-i18n="b_water_opt_normal">보통</option><option value="350" data-i18n="b_water_opt_light">가벼운 운동(+)</option><option value="700" data-i18n="b_water_opt_active">활발한 운동(++)</option></select></div>
     </div>
-    <div class="big"><span class="v" id="ml">2,145</span> <span class="u">ml / 일</span></div>
+    <div class="big"><span class="v" id="ml">2,145</span> <span class="u" data-i18n="b_water_unit_ml">ml / 일</span></div>
     <div class="cups" id="cups"></div>
-    <div class="note">⚠️ 참고용입니다 — 의료 조언이 아닙니다. 몸무게 1kg당 약 33ml를 기준으로 하고 운동 시 추가량을 더했습니다. 음식으로 섭취하는 수분도 있으니 모두 물로 마실 필요는 없습니다. 신장·심장 질환 등이 있으면 의사와 상담하세요. 컵은 200ml 기준입니다.</div>
+    <div class="note" data-i18n-html="b_water_note">⚠️ 참고용입니다 — 의료 조언이 아닙니다. 몸무게 1kg당 약 33ml를 기준으로 하고 운동 시 추가량을 더했습니다. 음식으로 섭취하는 수분도 있으니 모두 물로 마실 필요는 없습니다. 신장·심장 질환 등이 있으면 의사와 상담하세요. 컵은 200ml 기준입니다.</div>
   </div>
 </div>
 
@@ -70,10 +70,12 @@
     var w=parseFloat($('w').value), add=+$('act').value;
     if(!(w>0)){ $('ml').textContent='—'; $('cups').textContent=''; return; }
     var ml=Math.round(w*33+add);
-    $('ml').textContent=ml.toLocaleString('ko-KR');
+    var locale={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[window.curLang?curLang():'ko'];
+    $('ml').textContent=ml.toLocaleString(locale);
     var cups=Math.round(ml/200);
-    $('cups').innerHTML='💧'.repeat(Math.min(cups,12))+'<span class="lab">약 '+cups+'컵 (200ml 기준)</span>';
+    $('cups').innerHTML='💧'.repeat(Math.min(cups,12))+'<span class="lab">'+t('b_water_cups_label').replace('{n}',cups)+'</span>';
   }
+  window.onI18n=calc;
   ['w','act'].forEach(function(id){ $(id).addEventListener('input',calc); });
   calc();
 </script>

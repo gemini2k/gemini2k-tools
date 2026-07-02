@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>색각이상(색맹) 시뮬레이터 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="이미지가 적록색약·청황색약 등 색각이상 사용자에게 어떻게 보이는지 시뮬레이션합니다. 접근성(웹/디자인) 점검에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/colorblind.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="색각이상(색맹) 시뮬레이터 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="이미지를 색각이상 시점으로 시뮬레이션(접근성 점검). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/colorblind.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.drop{border:2px dashed var(--border);border-radius:12px;padding:1.6rem;text-align:center;cursor:pointer;color:var(--muted);}.drop.drag{border-color:var(--accent);background:var(--accent-soft);}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.8rem 0;}select{padding:.55rem .65rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.6rem;}@media(max-width:560px){.compare{grid-template-columns:1fr;}}
+.compare figure{margin:0;text-align:center;}.compare figcaption{font-size:.82rem;color:var(--muted);margin-bottom:.3rem;font-weight:700;}canvas{max-width:100%;border:1px solid var(--border);border-radius:10px;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"색각이상(색맹) 시뮬레이터","description":"이미지를 색각이상 사용자 시점으로 시뮬레이션합니다.","url":"https://gemini2k.co.kr/colorblind.html","applicationCategory":"DesignApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:820px;">
+  <h1 data-i18n="b_colorblind_title">색각이상(색맹) 시뮬레이터</h1>
+  <p class="sub" data-i18n="b_colorblind_sub">이미지가 색각이상 사용자에게 어떻게 보이는지 보여 줍니다. 웹·디자인 접근성 점검에 활용하세요.</p>
+  <div class="card">
+    <div class="drop" id="drop" data-i18n="b_colorblind_drop">🖼️ 이미지를 끌어다 놓거나 클릭해서 선택<input type="file" id="file" accept="image/*" hidden/></div>
+    <div class="row"><span data-i18n="b_colorblind_type_label">유형</span> <select id="type">
+      <option value="protanopia" data-i18n="b_colorblind_opt_protanopia">적색맹 (Protanopia)</option>
+      <option value="deuteranopia" selected data-i18n="b_colorblind_opt_deuteranopia">녹색맹 (Deuteranopia)</option>
+      <option value="tritanopia" data-i18n="b_colorblind_opt_tritanopia">청색맹 (Tritanopia)</option>
+      <option value="achromatopsia" data-i18n="b_colorblind_opt_achromatopsia">전색맹 (Achromatopsia·흑백)</option>
+    </select><button class="btn btn-ghost" id="dl" type="button" data-i18n="b_colorblind_btn_save">⬇️ 결과 저장</button></div>
+    <div class="compare">
+      <figure><figcaption data-i18n="b_colorblind_original">원본</figcaption><canvas id="orig"></canvas></figure>
+      <figure><figcaption id="cap" data-i18n="b_colorblind_simulation">시뮬레이션</figcaption><canvas id="sim"></canvas></figure>
+    </div>
+    <div class="note" data-i18n="b_colorblind_note">Brettel/Viénot 계열의 표준 변환 행렬을 사용한 근사 시뮬레이션입니다. 실제 인지는 개인차가 있어 참고용입니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 업로드되지 않습니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var M={
+    protanopia:[0.567,0.433,0,0.558,0.442,0,0,0.242,0.758],
+    deuteranopia:[0.625,0.375,0,0.7,0.3,0,0,0.3,0.7],
+    tritanopia:[0.95,0.05,0,0,0.433,0.567,0,0.475,0.525],
+    achromatopsia:[0.299,0.587,0.114,0.299,0.587,0.114,0.299,0.587,0.114]
+  };
+  var img=new Image(), loaded=false;
+  var drop=$('drop'), file=$('file');
+  drop.addEventListener('click',function(){file.click();});
+  drop.addEventListener('dragover',function(e){e.preventDefault();drop.classList.add('drag');});
+  drop.addEventListener('dragleave',function(){drop.classList.remove('drag');});
+  drop.addEventListener('drop',function(e){e.preventDefault();drop.classList.remove('drag');if(e.dataTransfer.files[0])read(e.dataTransfer.files[0]);});
+  file.addEventListener('change',function(){if(file.files[0])read(file.files[0]);});
+  function read(f){ if(!/^image\//.test(f.type)){alert(t('b_colorblind_err_not_image'));return;} var r=new FileReader(); r.onload=function(){img.onload=function(){loaded=true;draw();};img.src=r.result;}; r.readAsDataURL(f); }
+  function draw(){ if(!loaded)return; var w=img.width,h=img.height,max=520; if(w>max){h=h*max/w;w=max;}
+    w=Math.round(w);h=Math.round(h);
+    var oc=$('orig'),sc=$('sim'); oc.width=sc.width=w; oc.height=sc.height=h;
+    var octx=oc.getContext('2d'); octx.drawImage(img,0,0,w,h);
+    var data=octx.getImageData(0,0,w,h), d=data.data, m=M[$('type').value];
+    var out=$('sim').getContext('2d').createImageData(w,h), o=out.data;
+    for(var i=0;i<d.length;i+=4){ var r=d[i],g=d[i+1],b=d[i+2];
+      o[i]=Math.min(255,r*m[0]+g*m[1]+b*m[2]); o[i+1]=Math.min(255,r*m[3]+g*m[4]+b*m[5]); o[i+2]=Math.min(255,r*m[6]+g*m[7]+b*m[8]); o[i+3]=d[i+3]; }
+    $('sim').getContext('2d').putImageData(out,0,0);
+    $('cap').textContent=$('type').options[$('type').selectedIndex].text; }
+  $('type').addEventListener('change',draw);
+  $('dl').addEventListener('click',function(){ if(!loaded)return; var a=document.createElement('a'); a.href=$('sim').toDataURL('image/png'); a.download='colorblind.png'; document.body.appendChild(a);a.click();a.remove(); });
+  window.onI18n=function(){
+    var sel=$('type');
+    for(var i=0;i<sel.options.length;i++){
+      var keys=['b_colorblind_opt_protanopia','b_colorblind_opt_deuteranopia','b_colorblind_opt_tritanopia','b_colorblind_opt_achromatopsia'];
+      sel.options[i].textContent=t(keys[i]);
+    }
+    if(loaded){ $('cap').textContent=sel.options[sel.selectedIndex].text; }
+  };
+</script>
+</body>
+</html>

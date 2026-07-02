@@ -58,28 +58,28 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:540px;">
-  <h1>벽돌깨기</h1>
-  <p class="sub">막대를 움직여 공을 튕기고, 위쪽 벽돌을 모두 깨세요.</p>
+  <h1 data-i18n="b_breakout_title">벽돌깨기</h1>
+  <p class="sub" data-i18n="b_breakout_sub">막대를 움직여 공을 튕기고, 위쪽 벽돌을 모두 깨세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li>마우스를 좌우로 움직이거나(모바일은 손가락으로 화면을 좌우로) 막대를 조종합니다</li>
-    <li>화면을 클릭·터치하면 게임이 시작됩니다</li>
-    <li>공을 놓치면 생명이 줄고, 벽돌을 다 깨면 승리합니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_breakout_howto_title">조작법</b><ol>
+    <li data-i18n="b_breakout_howto1">마우스를 좌우로 움직이거나(모바일은 손가락으로 화면을 좌우로) 막대를 조종합니다</li>
+    <li data-i18n="b_breakout_howto2">화면을 클릭·터치하면 게임이 시작됩니다</li>
+    <li data-i18n="b_breakout_howto3">공을 놓치면 생명이 줄고, 벽돌을 다 깨면 승리합니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
-      <button class="btn" id="restart" type="button">다시 시작</button>
+      <button class="btn" id="restart" type="button" data-i18n="b_breakout_restart">다시 시작</button>
       <div class="scores">
-        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
-        <div class="sbox"><div class="l">생명</div><div class="v" id="lives">3</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_breakout_score_label">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_breakout_lives_label">생명</div><div class="v" id="lives">3</div></div>
       </div>
     </div>
     <div class="stage">
-      <canvas id="cv" width="480" height="600" aria-label="벽돌깨기"></canvas>
+      <canvas id="cv" width="480" height="600" data-i18n-ph="b_breakout_title" aria-label="벽돌깨기"></canvas>
       <div class="overlay" id="ov"><div><div class="big" id="ovBig">벽돌깨기</div><div class="sm" id="ovSm">클릭하면 시작합니다</div></div></div>
     </div>
-    <div class="note">모든 처리는 브라우저에서만 이루어지며 데이터는 전송되지 않습니다.</div>
+    <div class="note" data-i18n="b_breakout_note">모든 처리는 브라우저에서만 이루어지며 데이터는 전송되지 않습니다.</div>
   </div>
 </div>
 
@@ -100,10 +100,10 @@
       for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++) bricks.push({c:c,r:r,alive:true});
     }
     state='ready'; $('score').textContent=score; $('lives').textContent=lives;
-    showOverlay('벽돌깨기','클릭하면 시작합니다');
+    showOverlay(t('b_breakout_title'),t('b_breakout_click_start'));
   }
   function launch(){ if(state!=='ready') return; var ang=(-60+Math.random()*120)*Math.PI/180; ball.vx=ball.sp*Math.sin(ang); ball.vy=-ball.sp*Math.cos(ang); state='play'; hideOverlay(); }
-  function showOverlay(b,s){ $('ovBig').textContent=b; $('ovSm').textContent=s; $('ov').classList.remove('hide'); }
+  function showOverlay(bv,sv){ $('ovBig').textContent=bv; $('ovSm').textContent=sv; $('ov').classList.remove('hide'); }
   function hideOverlay(){ $('ov').classList.add('hide'); }
 
   function step(){
@@ -117,18 +117,18 @@
         ball.vx=ball.sp*Math.sin(ang); ball.vy=-ball.sp*Math.abs(Math.cos(ang));
       }
       // 벽돌
-      for(var i=0;i<bricks.length;i++){ var b=bricks[i]; if(!b.alive) continue;
-        var bx=b.c*BW+3, by=TOP+b.r*BH+3, bw=BW-6, bh=BH-6;
+      for(var i=0;i<bricks.length;i++){ var tmp=bricks[i]; if(!tmp.alive) continue;
+        var bx=tmp.c*BW+3, by=TOP+tmp.r*BH+3, bw=BW-6, bh=BH-6;
         if(ball.x>bx-ball.r && ball.x<bx+bw+ball.r && ball.y>by-ball.r && ball.y<by+bh+ball.r){
-          b.alive=false; score+=10; $('score').textContent=score; ball.vy*=-1;
-          if(bricks.every(function(z){return !z.alive;})){ state='win'; showOverlay('🎉 클리어!','클릭하면 다시 시작'); }
+          tmp.alive=false; score+=10; $('score').textContent=score; ball.vy*=-1;
+          if(bricks.every(function(z){return !z.alive;})){ state='win'; showOverlay(t('b_breakout_clear'),t('b_breakout_click_restart')); }
           break;
         }
       }
       // 바닥
       if(ball.y-ball.r>H){ lives--; $('lives').textContent=lives;
-        if(lives<=0){ state='over'; showOverlay('게임 오버','클릭하면 다시 시작'); }
-        else { ball.x=W/2; ball.y=H-50; ball.vx=0; ball.vy=0; state='ready'; showOverlay('생명 '+lives+'개 남음','클릭하면 계속'); }
+        if(lives<=0){ state='over'; showOverlay(t('b_breakout_gameover'),t('b_breakout_click_restart')); }
+        else { ball.x=W/2; ball.y=H-50; ball.vx=0; ball.vy=0; state='ready'; showOverlay(t('b_breakout_lives_remain').replace('{n}',lives),t('b_breakout_click_continue')); }
       }
     }
     draw(); requestAnimationFrame(step);
@@ -136,9 +136,9 @@
   function draw(){
     x.clearRect(0,0,W,H); x.fillStyle='#0f1226'; x.fillRect(0,0,W,H);
     // 벽돌
-    for(var i=0;i<bricks.length;i++){ var b=bricks[i]; if(!b.alive) continue;
-      var bx=b.c*BW+3, by=TOP+b.r*BH+3, bw=BW-6, bh=BH-6;
-      var g=x.createLinearGradient(bx,by,bx,by+bh); g.addColorStop(0,BCOL[b.r]); g.addColorStop(1,shade(BCOL[b.r]));
+    for(var i=0;i<bricks.length;i++){ var tmp=bricks[i]; if(!tmp.alive) continue;
+      var bx=tmp.c*BW+3, by=TOP+tmp.r*BH+3, bw=BW-6, bh=BH-6;
+      var g=x.createLinearGradient(bx,by,bx,by+bh); g.addColorStop(0,BCOL[tmp.r]); g.addColorStop(1,shade(BCOL[tmp.r]));
       x.fillStyle=g; roundRect(bx,by,bw,bh,5); x.fill();
     }
     // 패들
@@ -148,7 +148,7 @@
     x.save(); x.shadowColor='#fff'; x.shadowBlur=14; x.fillStyle='#fff'; x.beginPath(); x.arc(ball.x,ball.y,ball.r,0,7); x.fill(); x.restore();
   }
   function roundRect(rx,ry,rw,rh,rad){ x.beginPath(); x.moveTo(rx+rad,ry); x.arcTo(rx+rw,ry,rx+rw,ry+rh,rad); x.arcTo(rx+rw,ry+rh,rx,ry+rh,rad); x.arcTo(rx,ry+rh,rx,ry,rad); x.arcTo(rx,ry,rx+rw,ry,rad); x.closePath(); }
-  function shade(h){ var n=parseInt(h.slice(1),16); var r=Math.max(0,(n>>16)-40),g=Math.max(0,((n>>8)&255)-40),b=Math.max(0,(n&255)-40); return 'rgb('+r+','+g+','+b+')'; }
+  function shade(h){ var n=parseInt(h.slice(1),16); var r=Math.max(0,(n>>16)-40),g=Math.max(0,((n>>8)&255)-40),tmp=Math.max(0,(n&255)-40); return 'rgb('+r+','+g+','+tmp+')'; }
 
   function movePaddle(clientX){ var rect=cv.getBoundingClientRect(); var px=(clientX-rect.left)/rect.width*W; paddle.x=Math.max(0,Math.min(W-paddle.w, px-paddle.w/2)); if(state==='ready'){ ball.x=paddle.x+paddle.w/2; } }
   cv.addEventListener('mousemove', function(e){ movePaddle(e.clientX); });
@@ -158,6 +158,12 @@
   $('ov').addEventListener('click', tap);
   cv.addEventListener('touchstart', function(e){ e.preventDefault(); tap(); }, {passive:false});
   $('restart').addEventListener('click', function(){ reset(true); });
+  window.onI18n = function(){ if(state==='ready'||state==='over'||state==='win'){ var bv=$('ovBig').textContent; var sv=$('ovSm').textContent;
+    if(state==='ready' && score===0 && lives===3){ showOverlay(t('b_breakout_title'),t('b_breakout_click_start')); }
+    else if(state==='win'){ showOverlay(t('b_breakout_clear'),t('b_breakout_click_restart')); }
+    else if(state==='over'){ showOverlay(t('b_breakout_gameover'),t('b_breakout_click_restart')); }
+    else { showOverlay(t('b_breakout_lives_remain').replace('{n}',lives),t('b_breakout_click_continue')); }
+  }};
   reset(true); requestAnimationFrame(step);
 </script>
 </body>

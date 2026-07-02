@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>SVG 아이콘 검색 (Lucide 1000+) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="1000개가 넘는 Lucide 오픈소스 아이콘을 검색해 SVG 코드를 한 번에 복사합니다. 웹·앱 디자인에. Lucide 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/icons.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="SVG 아이콘 검색 (Lucide) — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="1000+ Lucide 아이콘 검색·SVG 복사. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/icons.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem;}
+input[type=text]{flex:1;min-width:200px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);color:var(--text);font-size:1rem;}
+input[type=range]{width:120px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:.5rem;}
+.cell{border:1px solid var(--border);border-radius:10px;padding:.6rem .3rem;text-align:center;cursor:pointer;background:var(--surface);transition:border-color .15s;}
+.cell:hover{border-color:var(--accent);}.cell svg{color:var(--text);}.cell .nm{font-size:.62rem;color:var(--muted);margin-top:.35rem;word-break:break-all;line-height:1.2;}
+.cnt{font-size:.85rem;color:var(--muted);margin-bottom:.5rem;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DesignApplication","name":"SVG 아이콘 검색 (Lucide)","description":"Lucide 오픈소스 아이콘을 검색해 SVG를 복사합니다.","url":"https://gemini2k.co.kr/icons.html","applicationCategory":"DesignApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/ISC","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:880px;">
+  <h1 data-i18n="b_icons_title">SVG 아이콘 검색 <span style="font-size:.9rem;color:var(--muted)">(Lucide)</span></h1>
+  <p class="sub" data-i18n="b_icons_sub">아이콘을 검색하고 클릭하면 SVG 코드가 복사됩니다.</p>
+  <div class="card" style="max-width:none;">
+    <div class="row"><input type="text" id="q" data-i18n-ph="b_icons_search_ph" placeholder="아이콘 이름 검색 (영문, 예: arrow, home, user)" value="arrow">
+      <span data-i18n="b_icons_stroke_weight">굵기</span> <input type="range" id="sw" min="1" max="3" step="0.5" value="2"></div>
+    <div class="cnt" id="cnt"></div>
+    <div class="grid" id="grid"></div>
+    <div class="note" data-i18n-html="b_icons_note">오픈소스 <b>Lucide</b>(ISC, <a href="https://github.com/lucide-icons/lucide" target="_blank" rel="noopener">lucide-icons/lucide</a>)를 자체 호스팅합니다. 성능을 위해 최대 120개까지 표시합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/lucide-0/lucide.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function kebab(s){ return s.replace(/([a-z0-9])([A-Z])/g,'$1-$2').replace(/([A-Z])([A-Z][a-z])/g,'$1-$2').toLowerCase(); }
+  var names=Object.keys(lucide.icons||{});
+  function svgFor(name,sw){ var node=lucide.icons[name]; if(!node)return '';
+    // node is [tag, attrs, children]; use createElement
+    try{ var el=lucide.createElement(node); el.setAttribute('stroke-width',sw); el.setAttribute('width',28); el.setAttribute('height',28); return el; }catch(e){ return null; } }
+  function render(){ var q=$('q').value.trim().toLowerCase(), sw=$('sw').value;
+    var list=names.filter(function(n){ return kebab(n).indexOf(q)>=0 || n.toLowerCase().indexOf(q)>=0; });
+    var total=list.length; list=list.slice(0,120);
+    $('cnt').textContent=t('b_icons_cnt_fmt').replace('{total}',total).replace('{shown}',list.length);
+    var g=$('grid'); g.innerHTML='';
+    list.forEach(function(n){ var el=svgFor(n,sw); if(!el)return; var k=kebab(n);
+      var cell=document.createElement('div'); cell.className='cell'; cell.appendChild(el);
+      var nm=document.createElement('div'); nm.className='nm'; nm.textContent=k; cell.appendChild(nm);
+      cell.addEventListener('click',function(){ var s=el.outerHTML; navigator.clipboard.writeText(s).then(function(){toast(k+' '+t('b_icons_svg_copied'));}); });
+      g.appendChild(cell); }); }
+  window.onI18n=render;
+  var _t; $('q').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(render,200);});
+  $('sw').addEventListener('input',render);
+  render();
+</script>
+</body>
+</html>

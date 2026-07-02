@@ -57,29 +57,29 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:840px;">
-  <h1>좌표 일괄 변환기</h1>
-  <p class="sub">여러 좌표를 한 번에 다른 좌표계로 변환합니다. 한 줄에 좌표 하나씩(또는 CSV) 붙여 넣으세요.</p>
+  <h1 data-i18n="b_coordbatch_title">좌표 일괄 변환기</h1>
+  <p class="sub" data-i18n="b_coordbatch_sub">여러 좌표를 한 번에 다른 좌표계로 변환합니다. 한 줄에 좌표 하나씩(또는 CSV) 붙여 넣으세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>좌표를 한 줄에 하나씩 입력합니다(쉼표 구분). 경위도는 기본 ‘위도,경도’ 순서입니다</li>
-    <li>입력 좌표계와 출력 좌표계를 고릅니다</li>
-    <li>‘변환’을 누르면 표로 나오고 CSV로 내려받을 수 있습니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_coordbatch_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_coordbatch_howto1">좌표를 한 줄에 하나씩 입력합니다(쉼표 구분). 경위도는 기본 '위도,경도' 순서입니다</li>
+    <li data-i18n="b_coordbatch_howto2">입력 좌표계와 출력 좌표계를 고릅니다</li>
+    <li data-i18n="b_coordbatch_howto3">'변환'을 누르면 표로 나오고 CSV로 내려받을 수 있습니다</li>
   </ol></div></div>
 
   <div class="card">
-    <label for="input" style="font-weight:700;font-size:.85rem;">좌표 입력 (한 줄에 하나)</label>
-    <textarea id="input" placeholder="37.5665,126.9780&#10;35.1796,129.0756"></textarea>
+    <label for="input" style="font-weight:700;font-size:.85rem;" data-i18n="b_coordbatch_input_label">좌표 입력 (한 줄에 하나)</label>
+    <textarea id="input" data-i18n-ph="b_coordbatch_input_ph" placeholder="37.5665,126.9780&#10;35.1796,129.0756"></textarea>
     <div class="ctl">
-      <div class="fld"><label>입력 좌표계</label><select id="src"></select></div>
-      <div class="fld"><label>출력 좌표계</label><select id="dst"></select></div>
-      <div class="fld"><label>경위도 순서</label><select id="order"><option value="latlon">위도,경도</option><option value="lonlat">경도,위도</option></select></div>
-      <div class="actions"><button class="btn" id="run" type="button">변환</button><button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
+      <div class="fld"><label data-i18n="b_coordbatch_src_label">입력 좌표계</label><select id="src"></select></div>
+      <div class="fld"><label data-i18n="b_coordbatch_dst_label">출력 좌표계</label><select id="dst"></select></div>
+      <div class="fld"><label data-i18n="b_coordbatch_order_label">경위도 순서</label><select id="order"><option value="latlon" data-i18n="b_coordbatch_order_latlon">위도,경도</option><option value="lonlat" data-i18n="b_coordbatch_order_lonlat">경도,위도</option></select></div>
+      <div class="actions"><button class="btn" id="run" type="button" data-i18n="b_coordbatch_btn_run">변환</button><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_coordbatch_btn_sample">샘플</button></div>
     </div>
     <div id="result" class="hide">
-      <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 복사</button><button class="btn btn-ghost" id="dl" type="button">⬇️ CSV</button></div>
+      <div class="actions"><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_coordbatch_btn_copy">📋 복사</button><button class="btn btn-ghost" id="dl" type="button" data-i18n="b_coordbatch_btn_dl">⬇️ CSV</button></div>
       <div class="tbl-scroll"><table id="tbl"></table></div>
     </div>
-    <div class="note">경위도(WGS84)는 ‘위도,경도’ 순서가 기본이며 필요하면 바꿀 수 있습니다. 투영 좌표계는 X(동),Y(북) 순서입니다. proj4 기반(GRS80)으로 계산하며, 정밀 측량 용도는 결과를 검증해 사용하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_coordbatch_note">경위도(WGS84)는 '위도,경도' 순서가 기본이며 필요하면 바꿀 수 있습니다. 투영 좌표계는 X(동),Y(북) 순서입니다. proj4 기반(GRS80)으로 계산하며, 정밀 측량 용도는 결과를 검증해 사용하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -88,44 +88,46 @@
   var $ = function(id){ return document.getElementById(id); };
   function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
   var CRS=[
-    {code:'EPSG:4326', geo:true, name:'경위도 (WGS84)'},
-    {code:'EPSG:5179', def:'+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs', name:'UTM-K (5179)'},
-    {code:'EPSG:5186', def:'+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:'중부원점 (5186)'},
-    {code:'EPSG:5185', def:'+proj=tmerc +lat_0=38 +lon_0=125 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:'서부원점 (5185)'},
-    {code:'EPSG:5187', def:'+proj=tmerc +lat_0=38 +lon_0=129 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:'동부원점 (5187)'},
-    {code:'EPSG:3857', def:'EPSG:3857', name:'웹 메르카토르 (3857)'}
+    {code:'EPSG:4326', geo:true, name:'b_coordbatch_crs_wgs84'},
+    {code:'EPSG:5179', def:'+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs', name:'b_coordbatch_crs_utmk'},
+    {code:'EPSG:5186', def:'+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:'b_coordbatch_crs_central'},
+    {code:'EPSG:5185', def:'+proj=tmerc +lat_0=38 +lon_0=125 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:'b_coordbatch_crs_west'},
+    {code:'EPSG:5187', def:'+proj=tmerc +lat_0=38 +lon_0=129 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs', name:'b_coordbatch_crs_east'},
+    {code:'EPSG:3857', def:'EPSG:3857', name:'b_coordbatch_crs_webmerc'}
   ];
   CRS.forEach(function(c){ if(c.def && c.def!=='EPSG:3857') proj4.defs(c.code, c.def); });
-  function fill(sel,defv){ $(sel).innerHTML=CRS.map(function(c){return '<option value="'+c.code+'">'+c.name+'</option>';}).join(''); $(sel).value=defv; }
+  function fill(sel,defv){ $(sel).innerHTML=CRS.map(function(c){return '<option value="'+c.code+'">'+t(c.name)+'</option>';}).join(''); $(sel).value=defv; }
   fill('src','EPSG:4326'); fill('dst','EPSG:5179');
   function isGeo(code){ return CRS.filter(function(c){return c.code===code;})[0].geo; }
   var lastMatrix=null;
 
   function run(){
     var lines=$('input').value.split(/\r?\n/).map(function(s){return s.trim();}).filter(Boolean);
-    if(!lines.length){ toast('좌표를 입력하세요'); return; }
+    if(!lines.length){ toast(t('b_coordbatch_toast_empty')); return; }
     var src=$('src').value, dst=$('dst').value, order=$('order').value;
     var srcGeo=isGeo(src), dstGeo=isGeo(dst);
     var rows=[]; var ok=0;
     lines.forEach(function(ln){
       var parts=ln.split(/[\s,]+/).map(parseFloat);
-      if(parts.length<2 || !isFinite(parts[0]) || !isFinite(parts[1])){ rows.push([ln,'(형식 오류)',true]); return; }
+      if(parts.length<2 || !isFinite(parts[0]) || !isFinite(parts[1])){ rows.push([ln,t('b_coordbatch_err_format'),true]); return; }
       var a=parts[0], b=parts[1];
       var xy = srcGeo ? (order==='latlon'?[b,a]:[a,b]) : [a,b];   // proj4 [lon,lat] or [x,y]
       try{ var out = proj4(src, dst, xy); ok++;
         var os = dstGeo ? (out[1].toFixed(6)+', '+out[0].toFixed(6)) : (out[0].toFixed(3)+', '+out[1].toFixed(3));
         rows.push([ln, os, false]);
-      }catch(e){ rows.push([ln,'(변환 실패)',true]); }
+      }catch(e){ rows.push([ln,t('b_coordbatch_err_convert'),true]); }
     });
-    lastMatrix=[['입력','출력('+dst+(dstGeo?', 위도,경도':', X,Y')+')']].concat(rows.map(function(r){return [r[0],r[1]];}));
-    $('tbl').innerHTML='<tr><th>입력 ('+src+')</th><th>출력 ('+dst+')</th></tr>'+
+    var dstSuffix = dstGeo ? t('b_coordbatch_suffix_latlon') : t('b_coordbatch_suffix_xy');
+    lastMatrix=[[t('b_coordbatch_col_input'),t('b_coordbatch_col_output')+'('+dst+dstSuffix+')']].concat(rows.map(function(r){return [r[0],r[1]];}));
+    $('tbl').innerHTML='<tr><th>'+t('b_coordbatch_col_input')+' ('+src+')</th><th>'+t('b_coordbatch_col_output')+' ('+dst+')</th></tr>'+
       rows.map(function(r){return '<tr><td>'+r[0]+'</td><td'+(r[2]?' class="bad"':'')+'>'+r[1]+'</td></tr>';}).join('');
     $('result').classList.remove('hide');
   }
   $('run').addEventListener('click', run);
-  $('copy').addEventListener('click', function(){ if(lastMatrix) navigator.clipboard.writeText(CSV.toText(lastMatrix,{delimiter:','})).then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click', function(){ if(lastMatrix) navigator.clipboard.writeText(CSV.toText(lastMatrix,{delimiter:','})).then(function(){toast(t('b_coordbatch_toast_copied'));}); });
   $('dl').addEventListener('click', function(){ if(!lastMatrix)return; var blob=new Blob(['﻿'+CSV.toText(lastMatrix,{delimiter:','})],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='coords.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove();},100); });
   $('sample').addEventListener('click', function(){ $('input').value='37.5665,126.9780\n35.1796,129.0756\n33.4996,126.5312'; run(); });
+  window.onI18n = function(){ fill('src',$('src').value); fill('dst',$('dst').value); };
 </script>
 </body>
 </html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>마크다운 → 워드(.docx) 문서 생성기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="마크다운 형식의 글을 워드(.docx) 문서로 변환해 내려받습니다. 제목·목록·굵게/기울임 지원. 보고서 초안에. docx 라이브러리 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/docxgen.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="마크다운 → 워드(.docx) 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="마크다운 글을 워드(.docx) 문서로 변환·저장. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/docxgen.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:240px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.88rem;color:var(--text);resize:vertical;line-height:1.7;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.8rem 0;}input{padding:.55rem .65rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"마크다운 → 워드(.docx) 생성기","description":"마크다운 글을 워드(.docx) 문서로 변환합니다(docx).","url":"https://gemini2k.co.kr/docxgen.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1 data-i18n="b_docxgen_title">마크다운 → 워드(.docx)</h1>
+  <p class="sub" data-i18n-html="b_docxgen_sub">마크다운으로 쓴 글을 워드 문서로 바꿔 줍니다. <b># ## ###</b> 제목, <b>-</b> 목록, <b>**굵게**</b>·<b>*기울임*</b>을 지원합니다.</p>
+  <div class="card">
+    <textarea id="in" data-i18n-ph="b_docxgen_placeholder"># 업무 보고서
+
+## 개요
+이번 주 **주요 업무** 내용을 정리합니다.
+
+## 진행 사항
+- 기획안 검토 완료
+- *디자인 시안* 2종 작성
+- 개발 착수
+
+## 다음 주 계획
+- 사용자 테스트
+- 피드백 반영</textarea>
+    <div class="row"><span data-i18n="b_docxgen_label_fname">제목</span> <input type="text" id="fname" value="document" data-i18n-ph="b_docxgen_ph_fname"/>
+      <button class="btn" id="gen" type="button" data-i18n="b_docxgen_btn_gen">📝 DOCX 만들기</button></div>
+    <div class="note" data-i18n-html="b_docxgen_note">오픈소스 <b>docx</b>(MIT, <a href="https://github.com/dolanmiu/docx" target="_blank" rel="noopener">dolanmiu/docx</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/docx-8/index.umd.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function runsFrom(text){ // **bold** *italic*
+    var parts=[], re=/(\*\*[^*]+\*\*|\*[^*]+\*)/g, last=0, m;
+    while((m=re.exec(text))){ if(m.index>last)parts.push(new docx.TextRun(text.slice(last,m.index)));
+      var tmp=m[0]; if(/^\*\*/.test(tmp))parts.push(new docx.TextRun({text:tmp.slice(2,-2),bold:true}));
+      else parts.push(new docx.TextRun({text:tmp.slice(1,-1),italics:true})); last=re.lastIndex; }
+    if(last<text.length)parts.push(new docx.TextRun(text.slice(last)));
+    return parts.length?parts:[new docx.TextRun(text)]; }
+  function build(md){ var paras=[];
+    md.split(/\r?\n/).forEach(function(l){ var line=l.trim();
+      if(/^###\s+/.test(line))paras.push(new docx.Paragraph({children:runsFrom(line.replace(/^###\s+/,'')),heading:docx.HeadingLevel.HEADING_3}));
+      else if(/^##\s+/.test(line))paras.push(new docx.Paragraph({children:runsFrom(line.replace(/^##\s+/,'')),heading:docx.HeadingLevel.HEADING_2}));
+      else if(/^#\s+/.test(line))paras.push(new docx.Paragraph({children:runsFrom(line.replace(/^#\s+/,'')),heading:docx.HeadingLevel.HEADING_1}));
+      else if(/^[-*]\s+/.test(line))paras.push(new docx.Paragraph({children:runsFrom(line.replace(/^[-*]\s+/,'')),bullet:{level:0}}));
+      else if(line==='')paras.push(new docx.Paragraph(''));
+      else paras.push(new docx.Paragraph({children:runsFrom(line)})); });
+    return new docx.Document({sections:[{children:paras}]}); }
+  $('gen').addEventListener('click',function(){
+    var doc=build($('in').value);
+    docx.Packer.toBlob(doc).then(function(blob){
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=($('fname').value||'document')+'.docx';
+      document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},150);
+    });
+  });
+</script>
+</body>
+</html>

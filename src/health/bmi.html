@@ -61,24 +61,30 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>BMI 계산기</h1>
-  <p class="sub">키와 몸무게를 넣으면 체질량지수(BMI)와 비만도 단계, 정상 체중 범위를 바로 계산합니다.</p>
+  <h1 data-i18n="b_bmi_title">BMI 계산기</h1>
+  <p class="sub" data-i18n="b_bmi_sub">키와 몸무게를 넣으면 체질량지수(BMI)와 비만도 단계, 정상 체중 범위를 바로 계산합니다.</p>
 
   <div class="card">
     <div class="frow">
-      <div class="fld"><label for="h">키 (cm)</label><input id="h" type="number" value="170" min="50" max="250" step="0.1"/></div>
-      <div class="fld"><label for="w">몸무게 (kg)</label><input id="w" type="number" value="65" min="10" max="400" step="0.1"/></div>
+      <div class="fld"><label for="h" data-i18n="b_bmi_label_h">키 (cm)</label><input id="h" type="number" value="170" min="50" max="250" step="0.1"/></div>
+      <div class="fld"><label for="w" data-i18n="b_bmi_label_w">몸무게 (kg)</label><input id="w" type="number" value="65" min="10" max="400" step="0.1"/></div>
     </div>
 
     <div class="bmiout">
       <div class="v" id="bmiv">22.5</div>
-      <div><span class="cat" id="bmicat">정상</span></div>
+      <div><span class="cat" id="bmicat" data-i18n="b_bmi_cat_normal">정상</span></div>
     </div>
     <div class="bar"><span class="pin" id="pin" style="left:50%;"></span></div>
-    <div class="ticks"><span>저체중</span><span>정상</span><span>과체중</span><span>비만</span><span>고도비만</span></div>
+    <div class="ticks">
+      <span data-i18n="b_bmi_tick_under">저체중</span>
+      <span data-i18n="b_bmi_tick_normal">정상</span>
+      <span data-i18n="b_bmi_tick_over">과체중</span>
+      <span data-i18n="b_bmi_tick_ob">비만</span>
+      <span data-i18n="b_bmi_tick_ob3">고도비만</span>
+    </div>
     <div class="range" id="range"></div>
 
-    <div class="note" id="note">
+    <div class="note" id="note" data-i18n="b_bmi_note">
       대한비만학회 기준(아시아인): 저체중 18.5 미만, 정상 18.5~22.9, 과체중 23~24.9, 1단계 비만 25~29.9, 2단계 비만 30~34.9, 3단계(고도)비만 35 이상. BMI는 근육량·체형을 반영하지 못하므로 참고용이며, 정확한 판단은 전문가와 상담하세요. 계산은 모두 브라우저에서 이루어집니다.
     </div>
   </div>
@@ -87,14 +93,14 @@
 <script src="tool-shell.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
-  // [상한 BMI, 라벨, 색클래스] — 마지막은 Infinity
+  // [상한 BMI, i18n키, 색클래스] — 마지막은 Infinity
   var CATS=[
-    [18.5,'저체중','c-under'],
-    [23,  '정상','c-normal'],
-    [25,  '과체중','c-over'],
-    [30,  '1단계 비만','c-ob1'],
-    [35,  '2단계 비만','c-ob2'],
-    [Infinity,'3단계 비만(고도비만)','c-ob3']
+    [18.5,'b_bmi_cat_under','c-under'],
+    [23,  'b_bmi_cat_normal','c-normal'],
+    [25,  'b_bmi_cat_over','c-over'],
+    [30,  'b_bmi_cat_ob1','c-ob1'],
+    [35,  'b_bmi_cat_ob2','c-ob2'],
+    [Infinity,'b_bmi_cat_ob3','c-ob3']
   ];
   function catOf(b){ for(var i=0;i<CATS.length;i++) if(b<CATS[i][0]) return CATS[i]; return CATS[CATS.length-1]; }
   function r1(x){ return Math.round(x*10)/10; }
@@ -105,15 +111,16 @@
     var m=h/100, bmi=w/(m*m);
     var c=catOf(bmi);
     $('bmiv').textContent = r1(bmi);
-    var catEl=$('bmicat'); catEl.textContent=c[1]; catEl.className='cat '+c[2];
+    var catEl=$('bmicat'); catEl.textContent=t(c[1]); catEl.className='cat '+c[2];
     // 바 핀: BMI 15~40 구간을 0~100%로 매핑
     var pct=Math.max(0, Math.min(100, (bmi-15)/(40-15)*100));
     $('pin').style.left=pct+'%';
     // 정상 체중 범위(18.5~22.9)
     var lo=18.5*m*m, hi=22.9*m*m;
-    $('range').innerHTML = '키 '+r1(h)+'cm 기준 정상 체중 <b>'+r1(lo)+'~'+r1(hi)+'kg</b>';
+    $('range').innerHTML = t('b_bmi_range').replace('{h}',r1(h)).replace('{lo}',r1(lo)).replace('{hi}',r1(hi));
   }
   ['h','w'].forEach(function(id){ $(id).addEventListener('input', calc); });
+  window.onI18n = calc;
   calc();
 </script>
 </body>

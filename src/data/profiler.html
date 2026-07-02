@@ -68,30 +68,40 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:920px;">
-  <h1>데이터 프로파일러 (EDA)</h1>
-  <p class="sub">CSV를 붙여넣거나 파일을 올리면 열마다 자료형·결측치·고유값·통계와 상위 빈도값을 한눈에 보여줍니다. 고유값이 많은 열은 <strong>준식별자 후보</strong>로 표시되어 재식별 위험 점검의 출발점이 됩니다.</p>
+  <h1 data-i18n="b_profiler_title">데이터 프로파일러 (EDA)</h1>
+  <p class="sub"><span data-i18n="b_profiler_sub">CSV를 붙여넣거나 파일을 올리면 열마다 자료형·결측치·고유값·통계와 상위 빈도값을 한눈에 보여줍니다. 고유값이 많은 열은 <strong>준식별자 후보</strong>로 표시되어 재식별 위험 점검의 출발점이 됩니다.</span></p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol><li>CSV를 붙여넣거나 파일을 끌어다 놓습니다</li><li>첫 행이 머리글이면 ‘첫 행을 헤더로’를 켭니다 (구분자는 자동 감지)</li><li>‘분석’을 누르면 열별 통계와 준식별자 후보가 표로 나옵니다</li></ol></div></div>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_profiler_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_profiler_howto_1">CSV를 붙여넣거나 파일을 끌어다 놓습니다</li>
+    <li data-i18n="b_profiler_howto_2">첫 행이 머리글이면 '첫 행을 헤더로'를 켭니다 (구분자는 자동 감지)</li>
+    <li data-i18n="b_profiler_howto_3">'분석'을 누르면 열별 통계와 준식별자 후보가 표로 나옵니다</li>
+  </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop">📄 <strong>CSV 파일을 끌어다 놓거나 클릭</strong>해서 선택 (또는 아래에 붙여넣기)</div>
+    <div class="drop" id="drop">📄 <span data-i18n="b_profiler_drop"><strong>CSV 파일을 끌어다 놓거나 클릭</strong>해서 선택 (또는 아래에 붙여넣기)</span></div>
     <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain" class="hide"/>
-    <textarea id="input" placeholder="이름,나이,도시&#10;홍길동,32,서울&#10;김영희,,부산"></textarea>
+    <textarea id="input" data-i18n-ph="b_profiler_input_ph" placeholder="이름,나이,도시&#10;홍길동,32,서울&#10;김영희,,부산"></textarea>
     <div class="opts">
-      <label><input type="checkbox" id="hasHeader" checked/> 첫 행을 헤더로</label>
-      <label>구분자 <select id="delim"><option value="auto">자동</option><option value=",">쉼표 ,</option><option value=";">세미콜론 ;</option><option value="\t">탭</option><option value="|">파이프 |</option></select></label>
+      <label><input type="checkbox" id="hasHeader" checked/> <span data-i18n="b_profiler_header_label">첫 행을 헤더로</span></label>
+      <label><span data-i18n="b_profiler_delim_label">구분자</span> <select id="delim">
+        <option value="auto" data-i18n="b_profiler_delim_auto">자동</option>
+        <option value="," data-i18n="b_profiler_delim_comma">쉼표 ,</option>
+        <option value=";" data-i18n="b_profiler_delim_semicolon">세미콜론 ;</option>
+        <option value="\t" data-i18n="b_profiler_delim_tab">탭</option>
+        <option value="|" data-i18n="b_profiler_delim_pipe">파이프 |</option>
+      </select></label>
     </div>
     <div class="actions">
-      <button class="btn" id="run" type="button">분석</button>
-      <button class="btn btn-ghost" id="sample" type="button">샘플</button>
-      <button class="btn btn-ghost" id="copy" type="button" disabled>📋 프로파일 복사(TSV)</button>
+      <button class="btn" id="run" type="button" data-i18n="b_profiler_btn_run">분석</button>
+      <button class="btn btn-ghost" id="sample" type="button" data-i18n="b_profiler_btn_sample">샘플</button>
+      <button class="btn btn-ghost" id="copy" type="button" disabled data-i18n="b_profiler_btn_copy">📋 프로파일 복사(TSV)</button>
     </div>
 
     <div id="result" class="hide">
       <div class="summary" id="summary"></div>
       <div class="tbl-scroll"><table id="tbl"></table></div>
     </div>
-    <div class="note">
+    <div class="note" data-i18n="b_profiler_note">
       자료형은 비어 있지 않은 값으로 추정합니다(정수·숫자·날짜·불리언·문자열). <strong>준식별자 후보</strong>는 고유값 비율이 높아(기본 90% 이상, 2건 초과) 개인을 특정할 수 있는 열입니다 — 재식별 위험성 평가기로 이어서 점검해 보세요. 모든 분석은 브라우저에서만 이루어지며 데이터는 전송되지 않습니다.
     </div>
   </div>
@@ -107,7 +117,7 @@
   var BOOL={'true':1,'false':1,'1':1,'0':1,'y':1,'n':1,'yes':1,'no':1,'참':1,'거짓':1};
 
   function inferType(vals){
-    if(!vals.length) return '문자열';
+    if(!vals.length) return t('b_profiler_type_str');
     var allInt=true, allNum=true, allDate=true, allBool=true;
     for(var i=0;i<vals.length;i++){ var v=vals[i];
       if(!INT.test(v)) allInt=false;
@@ -115,14 +125,14 @@
       if(!DATE.test(v)) allDate=false;
       if(!(v.toLowerCase() in BOOL)) allBool=false;
     }
-    if(allBool) return '불리언';
-    if(allInt) return '정수';
-    if(allNum) return '숫자';
-    if(allDate) return '날짜';
-    return '문자열';
+    if(allBool) return t('b_profiler_type_bool');
+    if(allInt) return t('b_profiler_type_int');
+    if(allNum) return t('b_profiler_type_num');
+    if(allDate) return t('b_profiler_type_date');
+    return t('b_profiler_type_str');
   }
   function profile(parsed){
-    var header = parsed.header.length ? parsed.header : parsed.rows[0] ? parsed.rows[0].map(function(_,i){return '열'+(i+1);}) : [];
+    var header = parsed.header.length ? parsed.header : parsed.rows[0] ? parsed.rows[0].map(function(_,i){return t('b_profiler_col_prefix')+(i+1);}) : [];
     var rows = parsed.rows, total = rows.length, out=[];
     for(var c=0;c<header.length;c++){
       var vals=[], nonEmpty=[];
@@ -132,10 +142,10 @@
       var uniqKeys = Object.keys(uniq), nu = uniqKeys.length;
       var ty = inferType(nonEmpty);
       var stat='';
-      if((ty==='정수'||ty==='숫자') && nonEmpty.length){
+      if((ty===t('b_profiler_type_int')||ty===t('b_profiler_type_num')) && nonEmpty.length){
         var nums=nonEmpty.map(Number), mn=Math.min.apply(null,nums), mx=Math.max.apply(null,nums);
         var mean=nums.reduce(function(a,b){return a+b;},0)/nums.length;
-        stat='min '+mn+' · max '+mx+' · 평균 '+(Math.round(mean*100)/100);
+        stat='min '+mn+' · max '+mx+' · '+t('b_profiler_stat_mean')+' '+(Math.round(mean*100)/100);
       }
       var top = uniqKeys.map(function(k){return {v:k,n:uniq[k]};}).sort(function(a,b){return b.n-a.n;}).slice(0,3);
       var qid = nonEmpty.length>2 && (nu/nonEmpty.length)>=0.9;
@@ -145,17 +155,25 @@
   }
 
   function render(prof, parsed){
+    var delimLabel = parsed.delimiter==='\t' ? t('b_profiler_delim_tab') : parsed.delimiter;
     $('summary').innerHTML =
-      '<span class="pill">행 '+parsed.rows.length+'</span>' +
-      '<span class="pill">열 '+prof.length+'</span>' +
-      '<span class="pill">구분자 '+(parsed.delimiter==='\t'?'탭':parsed.delimiter)+'</span>' +
-      '<span class="pill">준식별자 후보 '+prof.filter(function(p){return p.qid;}).length+'</span>';
-    var h='<tr><th>열</th><th>자료형</th><th>결측</th><th>고유값</th><th>통계(숫자)</th><th>상위 빈도값</th></tr>';
+      '<span class="pill">'+t('b_profiler_pill_rows')+' '+parsed.rows.length+'</span>' +
+      '<span class="pill">'+t('b_profiler_pill_cols')+' '+prof.length+'</span>' +
+      '<span class="pill">'+t('b_profiler_pill_delim')+' '+delimLabel+'</span>' +
+      '<span class="pill">'+t('b_profiler_pill_qid')+' '+prof.filter(function(p){return p.qid;}).length+'</span>';
+    var h='<tr>'
+      +'<th>'+t('b_profiler_th_col')+'</th>'
+      +'<th>'+t('b_profiler_th_type')+'</th>'
+      +'<th>'+t('b_profiler_th_miss')+'</th>'
+      +'<th>'+t('b_profiler_th_uniq')+'</th>'
+      +'<th>'+t('b_profiler_th_stat')+'</th>'
+      +'<th>'+t('b_profiler_th_top')+'</th>'
+      +'</tr>';
     prof.forEach(function(p){
-      var topHtml = p.top.map(function(t){ return esc(t.v||'(빈값)')+' <small>×'+t.n+'</small>'; }).join('<br/>');
+      var topHtml = p.top.map(function(tmp){ return esc(tmp.v||('('+t('b_profiler_empty_val')+')'))+' <small>×'+tmp.n+'</small>'; }).join('<br/>');
       var missBar = '<span class="bar" style="width:'+Math.max(2,Math.round(p.missPct*0.6))+'px"></span>';
       h += '<tr>'
-        + '<td class="col">'+esc(p.col)+(p.qid?'<span class="qid">준식별자?</span>':'')+'</td>'
+        + '<td class="col">'+esc(p.col)+(p.qid?'<span class="qid">'+t('b_profiler_qid_label')+'</span>':'')+'</td>'
         + '<td><span class="ty">'+p.type+'</span></td>'
         + '<td class="miss">'+(p.miss? missBar+p.miss+' ('+p.missPct+'%)' : '0')+'</td>'
         + '<td>'+p.nu+'</td>'
@@ -171,13 +189,15 @@
 
   function run(){
     var text=$('input').value.trim();
-    if(!text){ toast('CSV 데이터를 입력하세요'); return; }
+    if(!text){ toast(t('b_profiler_toast_no_data')); return; }
     var d=$('delim').value; if(d==='\\t') d='\t';
     var parsed=CSV.parse(text, {header:$('hasHeader').checked, delimiter:d});
-    if(!parsed.rows.length){ toast('데이터 행이 없습니다'); return; }
+    if(!parsed.rows.length){ toast(t('b_profiler_toast_no_rows')); return; }
     render(profile(parsed), parsed);
   }
   function readFile(f){ var rd=new FileReader(); rd.onload=function(){ $('input').value=rd.result; run(); }; rd.readAsText(f); }
+
+  window.onI18n = function(){ if(window._prof && window._lastParsed) render(window._prof, window._lastParsed); };
 
   $('run').addEventListener('click', run);
   $('file').addEventListener('change', function(e){ if(e.target.files[0]) readFile(e.target.files[0]); });
@@ -191,9 +211,9 @@
   });
   $('copy').addEventListener('click', function(){
     if(!window._prof) return;
-    var head='열\t자료형\t결측\t결측%\t고유값\t통계\t상위값';
-    var lines=window._prof.map(function(p){ return [p.col,p.type,p.miss,p.missPct,p.nu,p.stat,p.top.map(function(t){return t.v+'×'+t.n;}).join(' ')].join('\t'); });
-    navigator.clipboard.writeText(head+'\n'+lines.join('\n')).then(function(){ toast('프로파일을 복사했습니다'); });
+    var head=t('b_profiler_th_col')+'\t'+t('b_profiler_th_type')+'\t'+t('b_profiler_th_miss')+'\t'+t('b_profiler_copy_miss_pct')+'\t'+t('b_profiler_th_uniq')+'\t'+t('b_profiler_th_stat')+'\t'+t('b_profiler_copy_top');
+    var lines=window._prof.map(function(p){ return [p.col,p.type,p.miss,p.missPct,p.nu,p.stat,p.top.map(function(tmp){return tmp.v+'×'+tmp.n;}).join(' ')].join('\t'); });
+    navigator.clipboard.writeText(head+'\n'+lines.join('\n')).then(function(){ toast(t('b_profiler_toast_copied')); });
   });
 </script>
 </body>

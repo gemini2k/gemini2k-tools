@@ -54,28 +54,28 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>3D 큐브 런너</h1>
-  <p class="sub">좌우 차선을 옮겨 다가오는 장애물을 피하세요. 갈수록 빨라집니다!</p>
+  <h1 data-i18n="b_runner3d_title">3D 큐브 런너</h1>
+  <p class="sub" data-i18n="b_runner3d_sub">좌우 차선을 옮겨 다가오는 장애물을 피하세요. 갈수록 빨라집니다!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li>아래 ◀ ▶ 버튼, 방향키(←→), 또는 화면을 좌우로 스와이프/탭해 차선을 옮깁니다</li>
-    <li>장애물에 부딪히지 않고 최대한 멀리 가세요</li>
-    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지할 수 있어요</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_runner3d_howto_title">조작법</b><ol>
+    <li data-i18n="b_runner3d_howto_1">아래 ◀ ▶ 버튼, 방향키(←→), 또는 화면을 좌우로 스와이프/탭해 차선을 옮깁니다</li>
+    <li data-i18n="b_runner3d_howto_2">장애물에 부딪히지 않고 최대한 멀리 가세요</li>
+    <li><b>Space/P</b> <span data-i18n="b_runner3d_howto_3_rest">또는 ⏸ 버튼으로 일시정지할 수 있어요</span></li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
       <div class="scores">
-        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
-        <div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_runner3d_score_label">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_runner3d_best_label">최고</div><div class="v" id="best">0</div></div>
       </div>
     </div>
     <div class="g3d-wrap">
       <div class="g3d-stage" id="stage"></div>
-      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig">3D 큐브 런너</div><div class="sm" id="goverSm">탭하거나 버튼을 눌러 시작</div><button class="btn" id="goverBtn" type="button">시작</button></div></div>
+      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig" data-i18n="b_runner3d_title">3D 큐브 런너</div><div class="sm" id="goverSm" data-i18n="b_runner3d_press_start">탭하거나 버튼을 눌러 시작</div><button class="btn" id="goverBtn" type="button" data-i18n="b_runner3d_btn_start">시작</button></div></div>
     </div>
-    <div class="dpad"><button id="left" type="button" aria-label="왼쪽">◀</button><button id="right" type="button" aria-label="오른쪽">▶</button></div>
-    <div class="note">Three.js 3D 그래픽을 사용합니다. 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만, 최고 기록만 이 기기에 저장됩니다.</div>
+    <div class="dpad"><button id="left" type="button" aria-label="왼쪽" data-i18n-aria="b_runner3d_aria_left">◀</button><button id="right" type="button" aria-label="오른쪽" data-i18n-aria="b_runner3d_aria_right">▶</button></div>
+    <div class="note" data-i18n="b_runner3d_note">Three.js 3D 그래픽을 사용합니다. 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만, 최고 기록만 이 기기에 저장됩니다.</div>
   </div>
 </div>
 
@@ -116,7 +116,7 @@
   function clearObs(){ obstacles.forEach(function(o){ scene.remove(o); o.geometry.dispose(); o.material.dispose(); }); obstacles=[]; }
   function start(){ clearObs(); over=false; lane=1; score=0; speed=14; spawnT=0; player.position.x=0; $('score').textContent='0'; $('gover').style.display='none'; }
   function gameOver(){ over=true; if(score>best){ best=score; localStorage.setItem('runner3d:best',best); $('best').textContent=best; }
-    $('goverBig').textContent='💥 충돌!'; $('goverSm').textContent='점수 '+score+' · 다시 도전!'; $('goverBtn').textContent='다시 시작'; $('gover').style.display=''; }
+    $('goverBig').textContent=t('b_runner3d_crash'); $('goverSm').textContent=t('b_runner3d_score_result').replace('{score}',Math.floor(score)); $('goverBtn').textContent=t('b_runner3d_btn_retry'); $('gover').style.display=''; }
   function move(d){ if(over){ start(); return; } lane=Math.max(0,Math.min(2,lane+d)); }
 
   T.start(function(dt){

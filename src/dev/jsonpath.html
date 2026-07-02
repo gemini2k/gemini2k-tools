@@ -51,25 +51,25 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:820px;">
-  <h1>JSON 경로 추출기</h1>
-  <p class="sub">JSON에서 점 표기 경로로 원하는 값만 뽑아냅니다. API 응답을 탐색하거나 디버깅할 때 쓰세요.</p>
+  <h1 data-i18n="b_jsonpath_title">JSON 경로 추출기</h1>
+  <p class="sub" data-i18n="b_jsonpath_sub">JSON에서 점 표기 경로로 원하는 값만 뽑아냅니다. API 응답을 탐색하거나 디버깅할 때 쓰세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>JSON을 붙여 넣습니다</li>
-    <li>경로를 입력합니다. 예: <code>items[0].name</code>, <code>users.*.email</code></li>
-    <li>일치하는 값이 아래에 표시됩니다(여러 개면 배열로)</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_jsonpath_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_jsonpath_howto_1">JSON을 붙여 넣습니다</li>
+    <li data-i18n="b_jsonpath_howto_2">경로를 입력합니다. 예: <code>items[0].name</code>, <code>users.*.email</code></li>
+    <li data-i18n="b_jsonpath_howto_3">일치하는 값이 아래에 표시됩니다(여러 개면 배열로)</li>
   </ol></div></div>
 
   <div class="card">
     <label for="json" style="font-weight:700;font-size:.85rem;">JSON</label>
     <textarea id="json"></textarea>
-    <div class="pathrow"><input id="path" type="text" placeholder="예: data.items[*].name" value=""/></div>
-    <p class="ex">예시: <code data-p="users[0].name">users[0].name</code> · <code data-p="users[*].email">users[*].email</code> · <code data-p="users.*.name">users.*.name</code></p>
+    <div class="pathrow"><input id="path" type="text" data-i18n-ph="b_jsonpath_path_ph" placeholder="예: data.items[*].name" value=""/></div>
+    <p class="ex" data-i18n="b_jsonpath_examples">예시: <code data-p="users[0].name">users[0].name</code> · <code data-p="users[*].email">users[*].email</code> · <code data-p="users.*.name">users.*.name</code></p>
     <div class="err" id="err"></div>
-    <label style="font-weight:700;font-size:.85rem;">결과</label>
+    <label style="font-weight:700;font-size:.85rem;" data-i18n="b_jsonpath_result_label">결과</label>
     <textarea id="out" class="out" readonly></textarea>
-    <div style="margin-top:.7rem;"><button class="btn btn-ghost" id="copy" type="button">📋 복사</button> <button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
-    <div class="note">점(<code>.</code>)으로 키를, 대괄호(<code>[0]</code>)로 배열 인덱스를 지정합니다. <code>*</code> 또는 <code>[*]</code>는 배열·객체의 모든 항목을 펼칩니다. 결과가 여러 개면 배열로 모아 보여 줍니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div style="margin-top:.7rem;"><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_jsonpath_btn_copy">📋 복사</button> <button class="btn btn-ghost" id="sample" type="button" data-i18n="b_jsonpath_btn_sample">샘플</button></div>
+    <div class="note" data-i18n-html="b_jsonpath_note">점(<code>.</code>)으로 키를, 대괄호(<code>[0]</code>)로 배열 인덱스를 지정합니다. <code>*</code> 또는 <code>[*]</code>는 배열·객체의 모든 항목을 펼칩니다. 결과가 여러 개면 배열로 모아 보여 줍니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -78,9 +78,9 @@
   var $ = function(id){ return document.getElementById(id); };
   function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
   function tokens(path){
-    var t=[], re=/\s*\.?\s*([A-Za-z0-9_$가-힣-]+|\*)|\[\s*(\*|\d+)\s*\]/g, m;
-    while((m=re.exec(path))!==null){ t.push(m[1]!=null?m[1]:m[2]); }
-    return t;
+    var tmp=[], re=/\s*\.?\s*([A-Za-z0-9_$가-힣-]+|\*)|\[\s*(\*|\d+)\s*\]/g, m;
+    while((m=re.exec(path))!==null){ tmp.push(m[1]!=null?m[1]:m[2]); }
+    return tmp;
   }
   function query(obj, toks){
     var cur=[obj];
@@ -99,18 +99,19 @@
   function run(){
     $('err').textContent='';
     var src=$('json').value.trim(); if(!src){ $('out').value=''; return; }
-    var data; try{ data=JSON.parse(src); }catch(e){ $('err').textContent='올바른 JSON이 아닙니다.'; $('out').value=''; return; }
+    var data; try{ data=JSON.parse(src); }catch(e){ $('err').textContent=t('b_jsonpath_err_invalid_json'); $('out').value=''; return; }
     var p=$('path').value.trim();
     if(!p){ $('out').value=JSON.stringify(data,null,2); return; }
-    var toks=tokens(p); if(!toks.length){ $('err').textContent='경로를 해석할 수 없습니다.'; return; }
+    var toks=tokens(p); if(!toks.length){ $('err').textContent=t('b_jsonpath_err_invalid_path'); return; }
     var res=query(data, toks).filter(function(v){return v!==undefined;});
     var out = res.length<=1 ? (res.length?res[0]:undefined) : res;
-    $('out').value = out===undefined ? '(일치하는 값 없음)' : JSON.stringify(out,null,2);
+    $('out').value = out===undefined ? t('b_jsonpath_no_match') : JSON.stringify(out,null,2);
   }
   ['json','path'].forEach(function(id){ $(id).addEventListener('input', run); });
-  $('copy').addEventListener('click', function(){ if($('out').value) navigator.clipboard.writeText($('out').value).then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click', function(){ if($('out').value) navigator.clipboard.writeText($('out').value).then(function(){toast(t('b_jsonpath_toast_copied'));}); });
   document.querySelector('.ex').addEventListener('click', function(e){ var c=e.target.closest('code'); if(c){ $('path').value=c.dataset.p; run(); } });
   $('sample').addEventListener('click', function(){ $('json').value=JSON.stringify({users:[{name:'홍길동',email:'hong@x.com'},{name:'김영희',email:'kim@y.com'}]},null,2); $('path').value='users[*].email'; run(); });
+  window.onI18n = run;
   // 초기 샘플
   $('json').value=JSON.stringify({users:[{name:'홍길동',email:'hong@x.com'},{name:'김영희',email:'kim@y.com'}]},null,2); $('path').value='users[*].name'; run();
 </script>

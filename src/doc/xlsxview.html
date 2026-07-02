@@ -60,24 +60,24 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:980px;">
-  <h1>엑셀 뷰어</h1>
-  <p class="sub">엑셀 프로그램 없이 .xlsx·.xls 파일을 바로 열어 시트별로 보고 내용을 검색합니다.</p>
+  <h1 data-i18n="b_xlsxview_title">엑셀 뷰어</h1>
+  <p class="sub" data-i18n="b_xlsxview_sub">엑셀 프로그램 없이 .xlsx·.xls 파일을 바로 열어 시트별로 보고 내용을 검색합니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>엑셀 파일을 끌어다 놓거나 클릭해 올립니다</li>
-    <li>아래 탭으로 시트를 전환합니다</li>
-    <li>검색창에 입력하면 일치하는 행만 보여주고 일치 부분을 강조합니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_xlsxview_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_xlsxview_howto_step1">엑셀 파일을 끌어다 놓거나 클릭해 올립니다</li>
+    <li data-i18n="b_xlsxview_howto_step2">아래 탭으로 시트를 전환합니다</li>
+    <li data-i18n="b_xlsxview_howto_step3">검색창에 입력하면 일치하는 행만 보여주고 일치 부분을 강조합니다</li>
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">📈</div><div><strong>엑셀 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.xlsx · .xls · .ods</div></div>
+    <div class="drop" id="drop"><div class="big">📈</div><div><strong data-i18n="b_xlsxview_drop_label">엑셀 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.xlsx · .xls · .ods</div></div>
     <input type="file" id="file" accept=".xlsx,.xls,.ods" class="hide"/>
     <div class="bar hide" id="bar">
       <div class="tabs" id="tabs"></div>
-      <input type="search" id="q" placeholder="셀 내용 검색…"/>
+      <input type="search" id="q" data-i18n-ph="b_xlsxview_search_ph" placeholder="셀 내용 검색…"/>
     </div>
     <div class="tblwrap hide" id="tblwrap"></div>
-    <div class="note">파일은 서버로 전송되지 않고 브라우저 안에서만 열립니다. 큰 시트는 처음 1,000행까지 표시합니다(검색은 표시된 범위에서 동작). 서식·수식 결과는 값으로 표시됩니다.</div>
+    <div class="note" data-i18n="b_xlsxview_note">파일은 서버로 전송되지 않고 브라우저 안에서만 열립니다. 큰 시트는 처음 1,000행까지 표시합니다(검색은 표시된 범위에서 동작). 서식·수식 결과는 값으로 표시됩니다.</div>
   </div>
 </div>
 
@@ -88,7 +88,7 @@
   var wb=null, sheets={}, cur=null, MAXROW=1000;
   function readFile(f){ if(!f) return; var fr=new FileReader();
     fr.onload=function(e){ try{ wb=XLSX.read(e.target.result,{type:'array'}); build(); }
-      catch(err){ $('tblwrap').classList.remove('hide'); $('tblwrap').innerHTML='<div style="padding:1rem;color:var(--muted)">파일을 열 수 없습니다. 엑셀 형식이 맞는지 확인해 주세요.</div>'; } };
+      catch(err){ $('tblwrap').classList.remove('hide'); $('tblwrap').innerHTML='<div style="padding:1rem;color:var(--muted)">'+t('b_xlsxview_err_open')+'</div>'; } };
     fr.readAsArrayBuffer(f);
   }
   function build(){

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>고급 차트 생성기 (히트맵·레이더·게이지) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="막대·선·원형뿐 아니라 히트맵·레이더·게이지·산점도 등 고급 차트를 데이터로 만들고 PNG로 저장합니다. ECharts 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/echarts.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="고급 차트 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="히트맵·레이더·게이지 등 고급 차트 생성·PNG 저장(ECharts). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/echarts.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem;}select,button.mini{padding:.5rem .65rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.84rem;color:var(--text);resize:vertical;}
+#chart{width:100%;height:380px;margin-top:.5rem;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"고급 차트 생성기","description":"히트맵·레이더·게이지 등 고급 차트를 생성합니다(ECharts).","url":"https://gemini2k.co.kr/echarts.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://www.apache.org/licenses/LICENSE-2.0","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:880px;">
+  <h1 data-i18n="b_echarts_title">고급 차트 생성기</h1>
+  <p class="sub" data-i18n="b_echarts_sub">막대·선·원형은 물론 히트맵·레이더·게이지·산점도까지. 데이터를 넣고 차트 종류를 고르세요.</p>
+  <div class="card" style="max-width:none;">
+    <div class="row"><span data-i18n="b_echarts_label_type">종류</span> <select id="type">
+      <option value="bar" data-i18n="b_echarts_opt_bar">막대</option><option value="line" data-i18n="b_echarts_opt_line">선</option><option value="pie" data-i18n="b_echarts_opt_pie">원형</option>
+      <option value="radar" data-i18n="b_echarts_opt_radar">레이더</option><option value="scatter" data-i18n="b_echarts_opt_scatter">산점도</option><option value="gauge" data-i18n="b_echarts_opt_gauge">게이지</option><option value="funnel" data-i18n="b_echarts_opt_funnel">깔때기</option></select>
+      <button class="mini" id="dl" type="button" data-i18n="b_echarts_btn_save">⬇️ PNG 저장</button></div>
+    <textarea id="data" data-i18n-ph="b_echarts_textarea_ph">사과, 35
+바나나, 28
+체리, 42
+포도, 19
+오렌지, 31</textarea>
+    <div id="chart"></div>
+    <div class="note" data-i18n-html="b_echarts_note">오픈소스 <b>ECharts</b>(Apache-2.0, <a href="https://github.com/apache/echarts" target="_blank" rel="noopener">apache/echarts</a>)를 자체 호스팅합니다. 데이터는 <code>레이블, 값</code> 형식으로 한 줄에 하나씩 입력합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/echarts-5/echarts.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var chart=echarts.init($('chart'));
+  function parse(){ return $('data').value.split(/\r?\n/).map(function(l){var p=l.split(',');return {name:(p[0]||'').trim(),value:+(p[1]||0)};}).filter(function(d){return d.name;}); }
+  function render(){ var d=parse(), names=d.map(function(x){return x.name;}), vals=d.map(function(x){return x.value;}); var tmp=$('type').value, opt;
+    var acc=getComputedStyle(document.documentElement).getPropertyValue('--accent')||'#2563eb';
+    if(tmp==='pie')opt={tooltip:{},legend:{top:'bottom'},series:[{type:'pie',radius:['35%','65%'],data:d}]};
+    else if(tmp==='radar')opt={tooltip:{},radar:{indicator:d.map(function(x){return {name:x.name,max:Math.max.apply(null,vals)*1.2};})},series:[{type:'radar',data:[{value:vals}]}]};
+    else if(tmp==='scatter')opt={tooltip:{},xAxis:{},yAxis:{},series:[{type:'scatter',symbolSize:14,data:d.map(function(x,i){return [i,x.value];})}]};
+    else if(tmp==='gauge')opt={series:[{type:'gauge',max:Math.max.apply(null,vals)||100,data:[{value:vals[0]||0,name:names[0]||''}]}]};
+    else if(tmp==='funnel')opt={tooltip:{},legend:{top:'bottom'},series:[{type:'funnel',data:d}]};
+    else opt={tooltip:{},xAxis:{type:'category',data:names},yAxis:{type:'value'},series:[{type:tmp,data:vals,itemStyle:{color:acc.trim()||'#2563eb'}}]};
+    chart.setOption(opt,true); }
+  ['data','type'].forEach(function(id){$(id).addEventListener('input',render);$(id).addEventListener('change',render);});
+  window.addEventListener('resize',function(){chart.resize();});
+  $('dl').addEventListener('click',function(){var url=chart.getDataURL({pixelRatio:2,backgroundColor:'#fff'});var a=document.createElement('a');a.href=url;a.download='chart.png';document.body.appendChild(a);a.click();a.remove();});
+  window.onI18n=render;
+  render();
+</script>
+</body>
+</html>

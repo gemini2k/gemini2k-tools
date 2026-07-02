@@ -24,17 +24,17 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:720px;">
-  <h1>밈 생성기</h1>
-  <p class="sub">사진을 올리고 글자를 얹어 짤방을 만드세요. 글자는 드래그로 이동·크기 조절돼요.</p>
+  <h1 data-i18n="b_memegen_title">밈 생성기</h1>
+  <p class="sub" data-i18n="b_memegen_sub">사진을 올리고 글자를 얹어 짤방을 만드세요. 글자는 드래그로 이동·크기 조절돼요.</p>
   <div class="card">
-    <div class="drop" id="drop"><div style="font-size:1.8rem">🖼️+🔤</div><div><strong>사진을 끌어다 놓거나 클릭</strong></div></div>
+    <div class="drop" id="drop"><div style="font-size:1.8rem">🖼️+🔤</div><div><strong data-i18n="b_memegen_drop_hint">사진을 끌어다 놓거나 클릭</strong></div></div>
     <input type="file" id="file" accept="image/*" class="hide"/>
     <div class="bar hide" id="bar">
-      <button id="addTop" type="button">＋ 위 자막</button><button id="addBottom" type="button">＋ 아래 자막</button><button id="addText" type="button">＋ 텍스트</button>
-      <input id="color" type="color" value="#ffffff" title="글자색"/><button id="del" type="button">🗑 삭제</button><button class="btn" id="png" type="button">⬇️ PNG</button>
+      <button id="addTop" type="button" data-i18n="b_memegen_btn_add_top">＋ 위 자막</button><button id="addBottom" type="button" data-i18n="b_memegen_btn_add_bottom">＋ 아래 자막</button><button id="addText" type="button" data-i18n="b_memegen_btn_add_text">＋ 텍스트</button>
+      <input id="color" type="color" value="#ffffff" data-i18n-ph="b_memegen_color_title" title="글자색"/><button id="del" type="button" data-i18n="b_memegen_btn_delete">🗑 삭제</button><button class="btn" id="png" type="button" data-i18n="b_memegen_btn_png">⬇️ PNG</button>
     </div>
     <div class="cvwrap"><canvas id="cv" width="600" height="400"></canvas></div>
-    <div class="note">오픈소스 <b>fabric.js</b>(MIT, <a href="https://github.com/fabricjs/fabric.js" target="_blank" rel="noopener">fabricjs/fabric.js</a>)를 자체 호스팅합니다. 자막은 흰 글자+검은 테두리(밈 스타일)로 추가되며 더블클릭해 수정합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_memegen_note">오픈소스 <b>fabric.js</b>(MIT, <a href="https://github.com/fabricjs/fabric.js" target="_blank" rel="noopener">fabricjs/fabric.js</a>)를 자체 호스팅합니다. 자막은 흰 글자+검은 테두리(밈 스타일)로 추가되며 더블클릭해 수정합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/fabric-5/fabric.min.js"></script>
@@ -46,16 +46,16 @@
     var maxW=600; var sc=Math.min(1,maxW/img.width); cv.setWidth(img.width*sc); cv.setHeight(img.height*sc);
     img.set({selectable:false,evented:false}); img.scale(sc); cv.clear(); cv.backgroundColor='#222'; cv.add(img); cv.sendToBack(img); cv.renderAll(); $('bar').classList.remove('hide'); URL.revokeObjectURL(u);
   }); }
-  function addText(txt,y){ var t=new fabric.Textbox(txt,{ left:cv.getWidth()/2, top:y, originX:'center', width:cv.getWidth()*0.9, textAlign:'center',
+  function addText(txt,y){ var tmp=new fabric.Textbox(txt,{ left:cv.getWidth()/2, top:y, originX:'center', width:cv.getWidth()*0.9, textAlign:'center',
     fontFamily:'Pretendard, Impact, sans-serif', fontWeight:'800', fontSize:Math.round(cv.getHeight()/10), fill:$('color').value, stroke:'#000', strokeWidth:2, paintFirst:'stroke' });
-    cv.add(t); cv.setActiveObject(t); cv.renderAll(); }
+    cv.add(tmp); cv.setActiveObject(tmp); cv.renderAll(); }
   $('drop').addEventListener('click',function(){$('file').click();});
   $('file').addEventListener('change',function(e){if(e.target.files[0])read(e.target.files[0]);});
   ['dragover','dragenter'].forEach(function(ev){$('drop').addEventListener(ev,function(e){e.preventDefault();});});
   $('drop').addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files[0])read(e.dataTransfer.files[0]);});
-  $('addTop').addEventListener('click',function(){addText('위 자막',20);});
-  $('addBottom').addEventListener('click',function(){addText('아래 자막',cv.getHeight()-Math.round(cv.getHeight()/10)-24);});
-  $('addText').addEventListener('click',function(){addText('텍스트',cv.getHeight()/2);});
+  $('addTop').addEventListener('click',function(){addText(t('b_memegen_caption_top'),20);});
+  $('addBottom').addEventListener('click',function(){addText(t('b_memegen_caption_bottom'),cv.getHeight()-Math.round(cv.getHeight()/10)-24);});
+  $('addText').addEventListener('click',function(){addText(t('b_memegen_caption_text'),cv.getHeight()/2);});
   $('color').addEventListener('input',function(){var o=cv.getActiveObject();if(o&&o.set){o.set('fill',$('color').value);cv.renderAll();}});
   $('del').addEventListener('click',function(){var o=cv.getActiveObject();if(o&&o.type!=='image'){cv.remove(o);cv.renderAll();}});
   $('png').addEventListener('click',function(){ cv.discardActiveObject(); cv.renderAll(); var a=document.createElement('a'); a.href=cv.toDataURL({format:'png'}); a.download='meme.png'; document.body.appendChild(a); a.click(); setTimeout(function(){a.remove();},100); });

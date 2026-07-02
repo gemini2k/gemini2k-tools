@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>JSON 스키마 검증기 (JSON Schema validator) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="JSON 데이터가 JSON Schema(draft-07) 규칙에 맞는지 검증하고 위반 항목을 자세히 알려 줍니다. API·설정 검증에. Ajv 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/jsonvalidate.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="JSON 스키마 검증기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="JSON Schema(draft-07)로 JSON 데이터 검증 + 오류 위치(Ajv). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/jsonvalidate.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}@media(max-width:640px){.grid2{grid-template-columns:1fr;}}
+label.lbl{font-weight:700;font-size:.85rem;display:block;margin-bottom:.3rem;}
+textarea{width:100%;min-height:200px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.82rem;color:var(--text);resize:vertical;}
+.result{margin-top:.9rem;border-radius:11px;padding:.8rem .9rem;font-size:.92rem;}
+.result.ok{background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.4);color:#15803d;}
+.result.no{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);color:#b91c1c;}
+.result ul{margin:.4rem 0 0;padding-left:1.2rem;}.result li{margin:.2rem 0;font-family:ui-monospace,monospace;font-size:.84rem;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DeveloperApplication","name":"JSON 스키마 검증기","description":"JSON 데이터를 JSON Schema(draft-07)로 검증합니다(Ajv).","url":"https://gemini2k.co.kr/jsonvalidate.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:880px;">
+  <h1 data-i18n="b_jsonvalidate_title">JSON 스키마 검증기</h1>
+  <p class="sub" data-i18n="b_jsonvalidate_sub">JSON 데이터가 JSON Schema(draft-07) 규칙에 맞는지 확인하고, 어긋난 부분을 알려 줍니다.</p>
+  <div class="card" style="max-width:none;">
+    <div class="grid2">
+      <div><label class="lbl" data-i18n="b_jsonvalidate_label_schema">JSON Schema</label><textarea id="schema">{
+  "type": "object",
+  "required": ["name", "age"],
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "age": { "type": "integer", "minimum": 0 },
+    "email": { "type": "string", "format": "email" }
+  }
+}</textarea></div>
+      <div><label class="lbl" data-i18n="b_jsonvalidate_label_data">검증할 데이터</label><textarea id="data">{
+  "name": "홍길동",
+  "age": -5,
+  "email": "not-an-email"
+}</textarea></div>
+    </div>
+    <div style="margin-top:.7rem;"><button class="btn" id="run" type="button" data-i18n="b_jsonvalidate_btn_run">검증하기</button></div>
+    <div class="result" id="result" style="display:none;"></div>
+    <div class="note" data-i18n-html="b_jsonvalidate_note">오픈소스 <b>Ajv</b>(MIT, <a href="https://github.com/ajv-validator/ajv" target="_blank" rel="noopener">ajv-validator/ajv</a>)를 자체 호스팅합니다. 이메일·날짜 등 format 검증과 draft-07 스키마를 지원합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/ajv-6/ajv.bundle.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var ajv=new Ajv({allErrors:true,format:'full'});
+  function run(){ var r=$('result'); r.style.display='block';
+    var schema,data;
+    try{ schema=JSON.parse($('schema').value); }catch(e){ r.className='result no'; r.textContent='⚠️ '+t('b_jsonvalidate_err_schema')+e.message; return; }
+    try{ data=JSON.parse($('data').value); }catch(e){ r.className='result no'; r.textContent='⚠️ '+t('b_jsonvalidate_err_data')+e.message; return; }
+    var validate; try{ validate=ajv.compile(schema); }catch(e){ r.className='result no'; r.textContent='⚠️ '+t('b_jsonvalidate_err_schema_def')+e.message; return; }
+    var ok=validate(data);
+    if(ok){ r.className='result ok'; r.innerHTML='✅ <b>'+t('b_jsonvalidate_result_ok_title')+'</b> '+t('b_jsonvalidate_result_ok_msg'); }
+    else{ r.className='result no';
+      var items=(validate.errors||[]).map(function(e){ var p=e.dataPath||e.instancePath||'(root)'; return '<li>'+(p||'(root)')+' — '+e.message+'</li>'; });
+      r.innerHTML='❌ <b>'+items.length+t('b_jsonvalidate_result_violations')+'</b><ul>'+items.join('')+'</ul>'; }
+  }
+  window.onI18n=run;
+  $('run').addEventListener('click',run);
+  ['schema','data'].forEach(function(id){$(id).addEventListener('input',run);});
+  run();
+</script>
+</body>
+</html>

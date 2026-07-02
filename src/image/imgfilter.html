@@ -25,25 +25,25 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:720px;">
-  <h1>이미지 필터</h1>
-  <p class="sub">사진에 필터와 밝기·대비·채도 등을 적용하고 저장합니다.</p>
+  <h1 data-i18n="b_imgfilter_title">이미지 필터</h1>
+  <p class="sub" data-i18n="b_imgfilter_sub">사진에 필터와 밝기·대비·채도 등을 적용하고 저장합니다.</p>
   <div class="card">
-    <div class="drop" id="drop"><div style="font-size:1.8rem">🎞️</div><div><strong>이미지를 끌어다 놓거나 클릭</strong></div></div>
+    <div class="drop" id="drop"><div style="font-size:1.8rem">🎞️</div><div><strong data-i18n="b_imgfilter_drop">이미지를 끌어다 놓거나 클릭</strong></div></div>
     <input type="file" id="file" accept="image/*" class="hide"/>
     <div class="opts hide" id="opts">
-      <div class="presets"><button data-p="none">원본</button><button data-p="gray">흑백</button><button data-p="sepia">세피아</button><button data-p="invert">반전</button><button data-p="cool">쿨톤</button><button data-p="warm">웜톤</button><button data-p="vivid">선명</button></div>
+      <div class="presets"><button data-p="none" data-i18n="b_imgfilter_p_none">원본</button><button data-p="gray" data-i18n="b_imgfilter_p_gray">흑백</button><button data-p="sepia" data-i18n="b_imgfilter_p_sepia">세피아</button><button data-p="invert" data-i18n="b_imgfilter_p_invert">반전</button><button data-p="cool" data-i18n="b_imgfilter_p_cool">쿨톤</button><button data-p="warm" data-i18n="b_imgfilter_p_warm">웜톤</button><button data-p="vivid" data-i18n="b_imgfilter_p_vivid">선명</button></div>
       <div class="sliders">
-        <label>밝기 <input id="bri" type="range" min="0" max="200" value="100"/></label>
-        <label>대비 <input id="con" type="range" min="0" max="200" value="100"/></label>
-        <label>채도 <input id="sat" type="range" min="0" max="300" value="100"/></label>
-        <label>블러 <input id="blur" type="range" min="0" max="10" value="0"/></label>
-        <label>색조 <input id="hue" type="range" min="0" max="360" value="0"/></label>
-        <label>세피아 <input id="sep" type="range" min="0" max="100" value="0"/></label>
+        <label><span data-i18n="b_imgfilter_bri">밝기</span> <input id="bri" type="range" min="0" max="200" value="100"/></label>
+        <label><span data-i18n="b_imgfilter_con">대비</span> <input id="con" type="range" min="0" max="200" value="100"/></label>
+        <label><span data-i18n="b_imgfilter_sat">채도</span> <input id="sat" type="range" min="0" max="300" value="100"/></label>
+        <label><span data-i18n="b_imgfilter_blur">블러</span> <input id="blur" type="range" min="0" max="10" value="0"/></label>
+        <label><span data-i18n="b_imgfilter_hue">색조</span> <input id="hue" type="range" min="0" max="360" value="0"/></label>
+        <label><span data-i18n="b_imgfilter_sep">세피아</span> <input id="sep" type="range" min="0" max="100" value="0"/></label>
       </div>
-      <button class="btn" id="dl" type="button">⬇️ PNG 저장</button>
+      <button class="btn" id="dl" type="button" data-i18n="b_imgfilter_save">⬇️ PNG 저장</button>
     </div>
     <div class="cvwrap hide" id="cvwrap"><canvas id="cv"></canvas></div>
-    <div class="note">CSS 필터를 캔버스에 적용해 저장합니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
+    <div class="note" data-i18n="b_imgfilter_note">CSS 필터를 캔버스에 적용해 저장합니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>

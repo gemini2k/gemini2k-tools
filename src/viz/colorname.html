@@ -30,13 +30,13 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>색 이름 변환기</h1>
-  <p class="sub">색을 고르면 가장 가까운 CSS 색상 이름을, 색 이름을 입력하면 HEX를 알려 줍니다. 줄을 클릭하면 복사돼요.</p>
+  <h1 data-i18n="b_colorname_title">색 이름 변환기</h1>
+  <p class="sub" data-i18n="b_colorname_sub">색을 고르면 가장 가까운 CSS 색상 이름을, 색 이름을 입력하면 HEX를 알려 줍니다. 줄을 클릭하면 복사돼요.</p>
   <div class="card">
-    <div class="row"><input id="pick" type="color" value="#4da3ff"/><input id="txt" type="text" value="#4DA3FF" placeholder="#HEX 또는 색 이름(예: tomato)"/></div>
+    <div class="row"><input id="pick" type="color" value="#4da3ff"/><input id="txt" type="text" value="#4DA3FF" data-i18n-ph="b_colorname_ph"/></div>
     <div class="sw" id="sw"></div>
     <div id="res"></div>
-    <div class="note">CSS 표준 색상 이름(약 140개) 중 가장 가까운 이름을 RGB 거리로 찾습니다. 정확히 일치하지 않으면 ‘가장 가까운’ 이름입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_colorname_note">CSS 표준 색상 이름(약 140개) 중 가장 가까운 이름을 RGB 거리로 찾습니다. 정확히 일치하지 않으면 '가장 가까운' 이름입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -50,16 +50,17 @@
     if(hex[0]!=='#')hex='#'+hex; var rgb=toRgb(hex); var n=nearest(rgb); var nhex='#'+NAMES[n.name];
     $('sw').style.background=hex; $('pick').value=hex.length===7?hex:'#'+toRgb(hex).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');
     var items=[
-      ['가장 가까운 CSS 이름', n.name+(n.dist<2?' (정확)':' (근사)'), '#'+NAMES[n.name]],
-      ['이름의 HEX', nhex.toUpperCase(), nhex],
-      ['RGB', 'rgb('+rgb.join(', ')+')', hex],
-      ['HEX', hex.toUpperCase(), hex]
+      [t('b_colorname_label_nearest'), n.name+(n.dist<2?' '+t('b_colorname_exact'):' '+t('b_colorname_approx')), '#'+NAMES[n.name]],
+      [t('b_colorname_label_hex'), nhex.toUpperCase(), nhex],
+      [t('b_colorname_label_rgb'), 'rgb('+rgb.join(', ')+')', hex],
+      [t('b_colorname_label_hexval'), hex.toUpperCase(), hex]
     ];
     $('res').innerHTML=items.map(function(it){ return '<div class="item" data-v="'+it[1].replace(/"/g,'&quot;')+'"><span class="dot" style="background:'+it[2]+'"></span><span><span class="l">'+it[0]+'</span><br><span class="v">'+it[1]+'</span></span></div>'; }).join('');
   }
+  window.onI18n=function(){update($('pick').value);};
   $('pick').addEventListener('input',function(){ $('txt').value=$('pick').value.toUpperCase(); update($('pick').value); });
   $('txt').addEventListener('input',function(){ update($('txt').value.trim()); });
-  $('res').addEventListener('click',function(e){var it=e.target.closest('.item');if(it){navigator.clipboard.writeText(it.dataset.v).then(function(){toast('복사됐습니다');});}});
+  $('res').addEventListener('click',function(e){var it=e.target.closest('.item');if(it){navigator.clipboard.writeText(it.dataset.v).then(function(){toast(t('b_colorname_copied'));});}});
   update('#4DA3FF');
 </script>
 </body>

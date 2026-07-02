@@ -60,14 +60,14 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:860px;">
-  <h1>CSV → 표 변환기</h1>
-  <p class="sub">CSV를 깃허브·블로그·문서에 바로 붙여 넣을 수 있는 마크다운 표와 HTML 표로 바꿉니다. 미리보기로 결과를 확인하세요.</p>
+  <h1 data-i18n="b_csvtable_title">CSV → 표 변환기</h1>
+  <p class="sub" data-i18n="b_csvtable_sub">CSV를 깃허브·블로그·문서에 바로 붙여 넣을 수 있는 마크다운 표와 HTML 표로 바꿉니다. 미리보기로 결과를 확인하세요.</p>
 
   <div class="card">
-    <label for="input">CSV 입력</label>
-    <textarea id="input" placeholder="이름,점수,비고&#10;홍길동,95,우수&#10;김영희,88,"></textarea>
+    <label for="input" data-i18n="b_csvtable_input_label">CSV 입력</label>
+    <textarea id="input" data-i18n-ph="b_csvtable_input_ph" placeholder="이름,점수,비고&#10;홍길동,95,우수&#10;김영희,88,"></textarea>
     <div class="opts">
-      <label><input type="checkbox" id="hasHeader" checked/> 첫 행을 머리글로</label>
+      <label><input type="checkbox" id="hasHeader" checked/> <span data-i18n="b_csvtable_has_header">첫 행을 머리글로</span></label>
     </div>
     <div class="seg">
       <button id="tMd" class="on" type="button">Markdown</button>
@@ -75,11 +75,11 @@
     </div>
     <textarea id="out" class="out" readonly></textarea>
     <div class="actions" style="margin-top:.8rem;">
-      <button class="btn" id="copy" type="button">📋 복사</button>
-      <button class="btn btn-ghost" id="sample" type="button">샘플</button>
+      <button class="btn" id="copy" type="button">📋 <span data-i18n="b_csvtable_btn_copy">복사</span></button>
+      <button class="btn btn-ghost" id="sample" type="button" data-i18n="b_csvtable_btn_sample">샘플</button>
     </div>
     <div class="pv" id="preview"></div>
-    <div class="note">구분자(쉼표·세미콜론·탭)는 자동 감지합니다. 마크다운 표는 GitHub·노션 등에서, HTML 표는 웹페이지에 바로 쓸 수 있습니다. 모든 변환은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_csvtable_note">구분자(쉼표·세미콜론·탭)는 자동 감지합니다. 마크다운 표는 GitHub·노션 등에서, HTML 표는 웹페이지에 바로 쓸 수 있습니다. 모든 변환은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -96,7 +96,7 @@
     var parsed=CSV.parse(text, {header:false, delimiter:'auto'});
     var matrix=parsed.rows; if(!matrix.length){ $('out').value=''; $('preview').innerHTML=''; return; }
     var hasH=$('hasHeader').checked;
-    var header = hasH ? matrix[0] : matrix[0].map(function(_,i){return '열'+(i+1);});
+    var header = hasH ? matrix[0] : matrix[0].map(function(_,i){return t('b_csvtable_col_prefix')+(i+1);});
     var body = hasH ? matrix.slice(1) : matrix;
     var cols=header.length;
     body=body.map(function(r){ var x=r.slice(); while(x.length<cols)x.push(''); return x.slice(0,cols); });
@@ -124,8 +124,9 @@
   $('tHtml').addEventListener('click',function(){setFmt('html');});
   $('input').addEventListener('input', build);
   $('hasHeader').addEventListener('change', build);
-  $('copy').addEventListener('click',function(){ if(!$('out').value) return; navigator.clipboard.writeText($('out').value).then(function(){ toast('복사됐습니다'); }); });
-  $('sample').addEventListener('click',function(){ $('input').value='이름,점수,비고\n홍길동,95,우수\n김영희,88,\n이철수,72,재시험'; build(); });
+  $('copy').addEventListener('click',function(){ if(!$('out').value) return; navigator.clipboard.writeText($('out').value).then(function(){ toast(t('b_csvtable_toast_copied')); }); });
+  $('sample').addEventListener('click',function(){ $('input').value=t('b_csvtable_sample_data'); build(); });
+  window.onI18n = build;
   build();
 </script>
 </body>

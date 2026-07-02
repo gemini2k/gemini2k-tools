@@ -28,12 +28,12 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:680px;">
-  <h1>텍스트 뒤집기·거꾸로</h1>
-  <p class="sub">글자를 역순으로 뒤집거나 상하·좌우로 반전합니다. 각 줄을 클릭하면 복사돼요.</p>
+  <h1 data-i18n="b_textflip_title">텍스트 뒤집기·거꾸로</h1>
+  <p class="sub" data-i18n="b_textflip_sub">글자를 역순으로 뒤집거나 상하·좌우로 반전합니다. 각 줄을 클릭하면 복사돼요.</p>
   <div class="card">
-    <textarea id="in" placeholder="텍스트 입력...">gemini2k 빛의여행</textarea>
+    <textarea id="in" data-i18n-ph="b_textflip_placeholder" placeholder="텍스트 입력...">gemini2k 빛의여행</textarea>
     <div id="res"></div>
-    <div class="note">‘상하 반전’은 비슷한 모양의 유니코드 문자로 바꾸는 재미용 변환이라 일부 글자는 그대로일 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_textflip_note">'상하 반전'은 비슷한 모양의 유니코드 문자로 바꾸는 재미용 변환이라 일부 글자는 그대로일 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -44,10 +44,11 @@
   function reverse(s){ return s.split('').reverse().join(''); }
   function upside(s){ return s.split('').map(function(c){return FLIP[c]||FLIP[c.toLowerCase()]||c;}).reverse().join(''); }
   function mirror(s){ return s.split('').map(function(c){return FLIP[c]||c;}).join(''); }
-  function render(){ var s=$('in').value; var items=[['역순(거꾸로)',reverse(s)],['상하 반전 ǝ',upside(s)],['글자만 반전',mirror(s)]];
+  function render(){ var s=$('in').value; var items=[[t('b_textflip_label_reverse'),reverse(s)],[t('b_textflip_label_upside'),upside(s)],[t('b_textflip_label_mirror'),mirror(s)]];
     $('res').innerHTML=items.map(function(it){ return '<div class="item" data-v="'+(''+it[1]).replace(/"/g,'&quot;')+'"><div class="l">'+it[0]+'</div><div class="v">'+(it[1]||'…')+'</div></div>'; }).join(''); }
   $('in').addEventListener('input',render);
-  $('res').addEventListener('click',function(e){ var it=e.target.closest('.item'); if(it){ navigator.clipboard.writeText(it.dataset.v).then(function(){toast('복사됐습니다');}); } });
+  $('res').addEventListener('click',function(e){ var it=e.target.closest('.item'); if(it){ navigator.clipboard.writeText(it.dataset.v).then(function(){toast(t('b_textflip_toast_copied'));}); } });
+  window.onI18n=render;
   render();
 </script>
 </body>

@@ -23,14 +23,14 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:640px;">
-  <h1>일본어 가나 변환기</h1>
-  <p class="sub">로마자를 히라가나·가타카나로, 또는 가나를 로마자로 변환합니다.</p>
+  <h1 data-i18n="b_wanakana_title">일본어 가나 변환기</h1>
+  <p class="sub" data-i18n="b_wanakana_sub">로마자를 히라가나·가타카나로, 또는 가나를 로마자로 변환합니다.</p>
   <div class="card">
     <textarea id="in">konnichiwa arigatou</textarea>
-    <div class="seg" id="seg"><button data-m="hira" class="on" type="button">→ 히라가나</button><button data-m="kata" type="button">→ 가타카나</button><button data-m="roma" type="button">→ 로마자</button></div>
+    <div class="seg" id="seg"><button data-m="hira" class="on" type="button" data-i18n="b_wanakana_btn_hira">→ 히라가나</button><button data-m="kata" type="button" data-i18n="b_wanakana_btn_kata">→ 가타카나</button><button data-m="roma" type="button" data-i18n="b_wanakana_btn_roma">→ 로마자</button></div>
     <div class="out" id="out"></div>
-    <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 복사</button></div>
-    <div class="note">오픈소스 <b>WanaKana</b>(MIT, <a href="https://github.com/WaniKani/WanaKana" target="_blank" rel="noopener">WaniKani/WanaKana</a>)를 자체 호스팅합니다. 로마자→가나: 발음대로 입력(예: shi, tsu, kya). 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="actions"><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_wanakana_btn_copy">📋 복사</button></div>
+    <div class="note" data-i18n-html="b_wanakana_note">오픈소스 <b>WanaKana</b>(MIT, <a href="https://github.com/WaniKani/WanaKana" target="_blank" rel="noopener">WaniKani/WanaKana</a>)를 자체 호스팅합니다. 로마자→가나: 발음대로 입력(예: shi, tsu, kya). 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/wanakana-5/wanakana.min.js"></script>
@@ -39,11 +39,11 @@
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
   var mode='hira';
-  function run(){ var t=$('in').value; var o; try{ o = mode==='hira'?wanakana.toHiragana(t): mode==='kata'?wanakana.toKatakana(t): wanakana.toRomaji(t); }catch(e){o='';} $('out').textContent=o; window._o=o; }
+  function run(){ var tmp=$('in').value; var o; try{ o = mode==='hira'?wanakana.toHiragana(tmp): mode==='kata'?wanakana.toKatakana(tmp): wanakana.toRomaji(tmp); }catch(e){o='';} $('out').textContent=o; window._o=o; }
   $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;mode=b.dataset.m;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
     $('in').value = mode==='roma'?'こんにちは ありがとう':'konnichiwa arigatou'; run();});
   $('in').addEventListener('input',run);
-  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast('복사됐습니다');});});
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_wanakana_toast_copied'));});});
   run();
 </script>
 </body>

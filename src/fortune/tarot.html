@@ -22,47 +22,50 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:480px;">
-  <h1>타로 한 장 뽑기 <span style="font-size:.9rem;color:var(--muted)">(재미)</span></h1>
-  <p class="sub">마음속으로 질문을 떠올리고 카드를 뽑아 보세요. 가볍게 즐기는 재미용 타로입니다.</p>
+  <h1><span data-i18n="b_tarot_title">타로 한 장 뽑기</span> <span style="font-size:.9rem;color:var(--muted)" data-i18n="b_tarot_title_fun">(재미)</span></h1>
+  <p class="sub" data-i18n="b_tarot_sub">마음속으로 질문을 떠올리고 카드를 뽑아 보세요. 가볍게 즐기는 재미용 타로입니다.</p>
   <div class="card">
-    <div class="card3" id="card"><div class="ic">🔮</div><div class="nm">카드를 뽑아보세요</div></div>
+    <div class="card3" id="card"><div class="ic">🔮</div><div class="nm" data-i18n="b_tarot_placeholder">카드를 뽑아보세요</div></div>
     <div class="mean" id="mean"></div>
-    <button class="btn" id="draw" type="button" style="width:100%;">🎴 카드 뽑기</button>
-    <div class="note">타로는 <b>과학적 근거가 없는 오락용</b>입니다. 운세를 단정하지 않으며 재미로만 즐겨 주세요. 카드는 무작위로 정·역방향이 정해집니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <button class="btn" id="draw" type="button" style="width:100%;"><span data-i18n="b_tarot_btn_draw">🎴 카드 뽑기</span></button>
+    <div class="note" data-i18n-html="b_tarot_note">타로는 <b>과학적 근거가 없는 오락용</b>입니다. 운세를 단정하지 않으며 재미로만 즐겨 주세요. 카드는 무작위로 정·역방향이 정해집니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   var CARDS=[
-    ['🃏','광대(The Fool)','새로운 시작·모험·순수','경솔·무모함을 조심'],
-    ['🎩','마법사(The Magician)','의지·창조·재능 발휘','속임수·집중력 부족'],
-    ['🌙','여사제(High Priestess)','직관·비밀·내면의 지혜','감춰진 의도·혼란'],
-    ['👑','여황제(The Empress)','풍요·돌봄·창의','의존·과보호'],
-    ['🏛️','황제(The Emperor)','안정·권위·리더십','독선·완고함'],
-    ['📜','교황(The Hierophant)','전통·가르침·신뢰','형식주의·고정관념'],
-    ['💞','연인(The Lovers)','사랑·선택·조화','갈등·우유부단'],
-    ['🏇','전차(The Chariot)','추진력·승리·의지','통제 상실·조급함'],
-    ['🦁','힘(Strength)','용기·인내·자제','자신감 부족·불안'],
-    ['🏮','은둔자(The Hermit)','성찰·탐구·고독','고립·회피'],
-    ['🎡','운명의 수레바퀴','전환점·행운·순환','정체·불운의 시기'],
-    ['⚖️','정의(Justice)','균형·공정·책임','불공정·회피'],
-    ['🙃','매달린 사람','관점 전환·기다림·헌신','희생·정체'],
-    ['🦋','죽음(Death)','변화·끝과 시작·재생','집착·정체'],
-    ['🍷','절제(Temperance)','조화·중용·치유','불균형·과함'],
-    ['😈','악마(The Devil)','욕망·집착·유혹','속박에서 벗어남'],
-    ['🗼','탑(The Tower)','급변·각성·해방','충격·붕괴 주의'],
-    ['⭐','별(The Star)','희망·영감·치유','실망·자신감 저하'],
-    ['🌕','달(The Moon)','상상·불안·무의식','혼란·환상 주의'],
-    ['☀️','태양(The Sun)','기쁨·성공·활력','과신·지연'],
-    ['📯','심판(Judgement)','부활·결단·각성','후회·미루기'],
-    ['🌍','세계(The World)','완성·성취·통합','미완·마무리 필요']
+    ['🃏','b_tarot_c0_name','b_tarot_c0_up','b_tarot_c0_dn'],
+    ['🎩','b_tarot_c1_name','b_tarot_c1_up','b_tarot_c1_dn'],
+    ['🌙','b_tarot_c2_name','b_tarot_c2_up','b_tarot_c2_dn'],
+    ['👑','b_tarot_c3_name','b_tarot_c3_up','b_tarot_c3_dn'],
+    ['🏛️','b_tarot_c4_name','b_tarot_c4_up','b_tarot_c4_dn'],
+    ['📜','b_tarot_c5_name','b_tarot_c5_up','b_tarot_c5_dn'],
+    ['💞','b_tarot_c6_name','b_tarot_c6_up','b_tarot_c6_dn'],
+    ['🏇','b_tarot_c7_name','b_tarot_c7_up','b_tarot_c7_dn'],
+    ['🦁','b_tarot_c8_name','b_tarot_c8_up','b_tarot_c8_dn'],
+    ['🏮','b_tarot_c9_name','b_tarot_c9_up','b_tarot_c9_dn'],
+    ['🎡','b_tarot_c10_name','b_tarot_c10_up','b_tarot_c10_dn'],
+    ['⚖️','b_tarot_c11_name','b_tarot_c11_up','b_tarot_c11_dn'],
+    ['🙃','b_tarot_c12_name','b_tarot_c12_up','b_tarot_c12_dn'],
+    ['🦋','b_tarot_c13_name','b_tarot_c13_up','b_tarot_c13_dn'],
+    ['🍷','b_tarot_c14_name','b_tarot_c14_up','b_tarot_c14_dn'],
+    ['😈','b_tarot_c15_name','b_tarot_c15_up','b_tarot_c15_dn'],
+    ['🗼','b_tarot_c16_name','b_tarot_c16_up','b_tarot_c16_dn'],
+    ['⭐','b_tarot_c17_name','b_tarot_c17_up','b_tarot_c17_dn'],
+    ['🌕','b_tarot_c18_name','b_tarot_c18_up','b_tarot_c18_dn'],
+    ['☀️','b_tarot_c19_name','b_tarot_c19_up','b_tarot_c19_dn'],
+    ['📯','b_tarot_c20_name','b_tarot_c20_up','b_tarot_c20_dn'],
+    ['🌍','b_tarot_c21_name','b_tarot_c21_up','b_tarot_c21_dn']
   ];
-  function draw(){ var c=CARDS[Math.floor(Math.random()*CARDS.length)]; var up=Math.random()<0.65;
-    $('card').innerHTML='<div class="ic"'+(up?'':' style="transform:rotate(180deg)"')+'>'+c[0]+'</div><div class="nm">'+c[1]+'</div><div class="or">'+(up?'정방향 ▲':'역방향 ▼')+'</div>';
-    $('mean').innerHTML='<b>'+(up?'정방향':'역방향')+':</b> '+(up?c[2]:c[3]);
+  function draw(){ var tmp=CARDS[Math.floor(Math.random()*CARDS.length)]; var up=Math.random()<0.65;
+    var dirLabel=up?t('b_tarot_upright'):t('b_tarot_reversed');
+    var dirArrow=up?' ▲':' ▼';
+    $('card').innerHTML='<div class="ic"'+(up?'':' style="transform:rotate(180deg)"')+'>'+tmp[0]+'</div><div class="nm">'+t(tmp[1])+'</div><div class="or">'+dirLabel+dirArrow+'</div>';
+    $('mean').innerHTML='<b>'+dirLabel+':</b> '+t(up?tmp[2]:tmp[3]);
   }
   $('draw').addEventListener('click',draw);
+  window.onI18n=function(){if($('mean').innerHTML)draw();};
 </script>
 </body>
 </html>

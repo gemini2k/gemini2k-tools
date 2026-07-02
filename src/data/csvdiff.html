@@ -63,29 +63,29 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:900px;">
-  <h1>CSV 비교기</h1>
-  <p class="sub">두 CSV를 키 열 기준으로 비교해 추가·삭제·변경된 행과 어떤 셀이 바뀌었는지 보여 줍니다. 데이터 검수·버전 비교에 좋습니다.</p>
+  <h1 data-i18n="b_csvdiff_title">CSV 비교기</h1>
+  <p class="sub" data-i18n="b_csvdiff_sub">두 CSV를 키 열 기준으로 비교해 추가·삭제·변경된 행과 어떤 셀이 바뀌었는지 보여 줍니다. 데이터 검수·버전 비교에 좋습니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>이전 버전과 이후 버전 CSV를 각각 붙여 넣습니다</li>
-    <li>행을 식별할 키 열(예: ID)을 고릅니다</li>
-    <li>‘비교’를 누르면 추가·삭제·변경 행과 바뀐 셀이 표시됩니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_csvdiff_how_title">사용 방법</b><ol>
+    <li data-i18n="b_csvdiff_how1">이전 버전과 이후 버전 CSV를 각각 붙여 넣습니다</li>
+    <li data-i18n="b_csvdiff_how2">행을 식별할 키 열(예: ID)을 고릅니다</li>
+    <li data-i18n="b_csvdiff_how3">'비교'를 누르면 추가·삭제·변경 행과 바뀐 셀이 표시됩니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="two">
-      <div><label class="lab" for="a">이전 (CSV)</label><textarea id="a" placeholder="id,이름,점수&#10;1,홍길동,90&#10;2,김영희,80"></textarea></div>
-      <div><label class="lab" for="b">이후 (CSV)</label><textarea id="b" placeholder="id,이름,점수&#10;1,홍길동,95&#10;3,이철수,70"></textarea></div>
+      <div><label class="lab" for="a" data-i18n="b_csvdiff_label_a">이전 (CSV)</label><textarea id="a" data-i18n-ph="b_csvdiff_ph_a" placeholder="id,이름,점수&#10;1,홍길동,90&#10;2,김영희,80"></textarea></div>
+      <div><label class="lab" for="b" data-i18n="b_csvdiff_label_b">이후 (CSV)</label><textarea id="b" data-i18n-ph="b_csvdiff_ph_b" placeholder="id,이름,점수&#10;1,홍길동,95&#10;3,이철수,70"></textarea></div>
     </div>
     <div class="ctl">
-      <div class="fld"><label>키 열</label><select id="key"></select></div>
-      <div style="display:flex;gap:.6rem;"><button class="btn" id="run" type="button">비교</button><button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
+      <div class="fld"><label data-i18n="b_csvdiff_key_col">키 열</label><select id="key"></select></div>
+      <div style="display:flex;gap:.6rem;"><button class="btn" id="run" type="button" data-i18n="b_csvdiff_btn_run">비교</button><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_csvdiff_btn_sample">샘플</button></div>
     </div>
     <div id="result" class="hide">
       <div class="pills" id="pills"></div>
       <div class="tbl-scroll"><table id="tbl"></table></div>
     </div>
-    <div class="note">키 값이 한쪽에만 있으면 추가/삭제, 양쪽에 있고 다른 셀이 있으면 변경으로 분류합니다. 변경된 셀은 노란색으로 강조됩니다(이전→이후). 키 열은 두 표에서 같은 이름이어야 합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_csvdiff_note">키 값이 한쪽에만 있으면 추가/삭제, 양쪽에 있고 다른 셀이 있으면 변경으로 분류합니다. 변경된 셀은 노란색으로 강조됩니다(이전→이후). 키 열은 두 표에서 같은 이름이어야 합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -105,7 +105,7 @@
 
   function run(){
     var ta=$('a').value.trim(), tb=$('b').value.trim();
-    if(!ta||!tb){ toast('이전·이후 CSV를 모두 입력하세요'); return; }
+    if(!ta||!tb){ toast(t('b_csvdiff_toast_empty')); return; }
     var A=CSV.parse(ta,{header:true,delimiter:'auto'}), B=CSV.parse(tb,{header:true,delimiter:'auto'});
     var ki=+$('key').value; var keyName=A.header[ki];
     var biKey=B.header.indexOf(keyName); if(biKey<0) biKey=ki;
@@ -115,8 +115,8 @@
     var keys={}; Object.keys(am).forEach(function(k){keys[k]=1;}); Object.keys(bm).forEach(function(k){keys[k]=1;});
     Object.keys(keys).forEach(function(k){
       var a=am[k], b=bm[k];
-      if(a&&!b){ del++; rowsHtml+=rowLine('삭제','t-del', k, a, null, A.header); }
-      else if(!a&&b){ add++; rowsHtml+=rowLine('추가','t-add', k, null, b, B.header); }
+      if(a&&!b){ del++; rowsHtml+=rowLine(t('b_csvdiff_tag_del'),'t-del', k, a, null, A.header); }
+      else if(!a&&b){ add++; rowsHtml+=rowLine(t('b_csvdiff_tag_add'),'t-add', k, null, b, B.header); }
       else {
         // 변경 판정: 공통 열 값 비교
         var changed=false, cells={};
@@ -125,20 +125,21 @@
         if(changed){ chg++; rowsHtml+=changeLine(k, header, a, b, A.header, B.header, cells); } else eq++;
       }
     });
-    $('pills').innerHTML='<span class="pill p-add">추가 '+add+'</span><span class="pill p-del">삭제 '+del+'</span><span class="pill p-chg">변경 '+chg+'</span><span class="pill p-eq">동일 '+eq+'</span>';
-    $('tbl').innerHTML='<tr><th>구분</th><th>'+esc(keyName)+'(키)</th>'+header.filter(function(h){return h!==keyName;}).map(function(h){return '<th>'+esc(h)+'</th>';}).join('')+'</tr>'+rowsHtml;
+    $('pills').innerHTML='<span class="pill p-add">'+t('b_csvdiff_pill_add')+' '+add+'</span><span class="pill p-del">'+t('b_csvdiff_pill_del')+' '+del+'</span><span class="pill p-chg">'+t('b_csvdiff_pill_chg')+' '+chg+'</span><span class="pill p-eq">'+t('b_csvdiff_pill_eq')+' '+eq+'</span>';
+    $('tbl').innerHTML='<tr><th>'+t('b_csvdiff_th_type')+'</th><th>'+esc(keyName)+'('+t('b_csvdiff_th_key')+')</th>'+header.filter(function(h){return h!==keyName;}).map(function(h){return '<th>'+esc(h)+'</th>';}).join('')+'</tr>'+rowsHtml;
     $('result').classList.remove('hide');
 
     function cellOf(row, hdr, h){ var i=hdr.indexOf(h); return i>=0?(row[i]||''):''; }
     function rowLine(tag,cls,k,a,b,hdr){ var row=a||b; var src=a?A.header:B.header;
       return '<tr><td class="tag '+cls+'">'+tag+'</td><td>'+esc(k)+'</td>'+header.filter(function(h){return h!==keyName;}).map(function(h){return '<td>'+esc(cellOf(row,src,h))+'</td>';}).join('')+'</tr>'; }
     function changeLine(k,header,a,b,ah,bh,cells){
-      return '<tr><td class="tag t-chg">변경</td><td>'+esc(k)+'</td>'+header.filter(function(h){return h!==keyName;}).map(function(h){
+      return '<tr><td class="tag t-chg">'+t('b_csvdiff_tag_chg')+'</td><td>'+esc(k)+'</td>'+header.filter(function(h){return h!==keyName;}).map(function(h){
         var av=cellOf(a,ah,h), bv=cellOf(b,bh,h);
         if(cells[h]) return '<td class="cellchg">'+esc(av)+' → '+esc(bv)+'</td>';
         return '<td>'+esc(bv||av)+'</td>';
       }).join('')+'</tr>'; }
   }
+  window.onI18n = function(){ if(!$('result').classList.contains('hide')) run(); };
   $('a').addEventListener('input', fillKey);
   $('run').addEventListener('click', run);
   $('sample').addEventListener('click', function(){ $('a').value='id,이름,점수\n1,홍길동,90\n2,김영희,80\n4,박민수,60'; $('b').value='id,이름,점수\n1,홍길동,95\n2,김영희,80\n3,이철수,70'; fillKey(); run(); });

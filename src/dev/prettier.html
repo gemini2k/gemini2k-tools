@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>Prettier 코드 포매터 (JS·CSS·HTML·JSON) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="JavaScript·CSS·HTML·JSON·Markdown 코드를 Prettier 규칙으로 일관되게 자동 정렬합니다. 들여쓰기·줄바꿈·따옴표 통일. Prettier 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/prettier.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="Prettier 코드 포매터 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="JS·CSS·HTML·JSON·MD 코드 자동 정렬(Prettier). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/prettier.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:220px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.83rem;color:var(--text);resize:vertical;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.6rem 0;}select,input{padding:.5rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DeveloperApplication","name":"Prettier 코드 포매터","description":"JS·CSS·HTML·JSON·Markdown 코드를 자동 정렬합니다(Prettier).","url":"https://gemini2k.co.kr/prettier.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:820px;">
+  <h1 data-i18n="b_prettier_title">Prettier 코드 포매터</h1>
+  <p class="sub" data-i18n="b_prettier_sub">JS·CSS·HTML·JSON·마크다운 코드를 Prettier 규칙으로 깔끔하게 정렬합니다.</p>
+  <div class="card">
+    <div class="row"><span data-i18n="b_prettier_lang_label">언어</span> <select id="lang"><option value="babel">JavaScript</option><option value="css">CSS</option><option value="html">HTML</option><option value="json">JSON</option><option value="markdown">Markdown</option></select>
+      <span data-i18n="b_prettier_indent_label">들여쓰기</span> <select id="tab"><option value="2" data-i18n="b_prettier_indent_2">2칸</option><option value="4" data-i18n="b_prettier_indent_4">4칸</option></select>
+      <label style="font-weight:600;font-size:.9rem;"><input type="checkbox" id="semi" checked/> <span data-i18n="b_prettier_semi">세미콜론</span></label>
+      <label style="font-weight:600;font-size:.9rem;"><input type="checkbox" id="single"/> <span data-i18n="b_prettier_single_quote">작은따옴표</span></label>
+      <button class="btn" id="run" type="button" data-i18n="b_prettier_run">정렬</button><button class="btn btn-ghost" id="copy" type="button">📋 <span data-i18n="b_prettier_copy">복사</span></button></div>
+    <textarea id="in">const x={a:1,b:2,c:[1,2,3]};function foo(a,b){return a+b}
+const arr=[1,2,3].map(x=>x*2).filter(x=>x>2)</textarea>
+    <div class="err" id="err"></div>
+    <div class="note" data-i18n-html="b_prettier_note">오픈소스 <b>Prettier</b>(MIT, <a href="https://github.com/prettier/prettier" target="_blank" rel="noopener">prettier/prettier</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/prettier-3/standalone.js"></script>
+<script src="/vendor/prettier-3/babel.js"></script>
+<script src="/vendor/prettier-3/estree.js"></script>
+<script src="/vendor/prettier-3/postcss.js"></script>
+<script src="/vendor/prettier-3/html.js"></script>
+<script src="/vendor/prettier-3/markdown.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function run(){ $('err').textContent='';
+    prettier.format($('in').value,{parser:$('lang').value,plugins:prettierPlugins,tabWidth:+$('tab').value,semi:$('semi').checked,singleQuote:$('single').checked})
+      .then(function(out){ $('in').value=out; }).catch(function(e){ $('err').textContent='⚠️ '+e.message; }); }
+  $('run').addEventListener('click',run);
+  $('copy').addEventListener('click',function(){navigator.clipboard.writeText($('in').value).then(function(){toast(t('b_prettier_copied'));});});
+  run();
+</script>
+</body>
+</html>

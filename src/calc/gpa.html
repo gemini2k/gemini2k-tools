@@ -54,18 +54,22 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>학점(GPA) 계산기</h1>
-  <p class="sub">과목별 학점수와 성적을 넣으면 평점평균(GPA)을 계산합니다. 만점 기준을 고를 수 있습니다.</p>
+  <h1 data-i18n="b_gpa_h1">학점(GPA) 계산기</h1>
+  <p class="sub" data-i18n="b_gpa_sub">과목별 학점수와 성적을 넣으면 평점평균(GPA)을 계산합니다. 만점 기준을 고를 수 있습니다.</p>
 
   <div class="card">
-    <div class="scaleRow"><label style="margin:0;font-weight:700;">만점 기준</label>
-      <select id="scale"><option value="4.5">4.5 만점 (국내 일반)</option><option value="4.3">4.3 만점</option><option value="4.0">4.0 만점</option></select>
+    <div class="scaleRow"><label style="margin:0;font-weight:700;" data-i18n="b_gpa_scale_label">만점 기준</label>
+      <select id="scale">
+        <option value="4.5" data-i18n="b_gpa_scale_45">4.5 만점 (국내 일반)</option>
+        <option value="4.3" data-i18n="b_gpa_scale_43">4.3 만점</option>
+        <option value="4.0" data-i18n="b_gpa_scale_40">4.0 만점</option>
+      </select>
     </div>
     <div id="rows"></div>
-    <button class="btn btn-ghost" id="add" type="button">＋ 과목 추가</button>
+    <button class="btn btn-ghost" id="add" type="button" data-i18n="b_gpa_add_btn">＋ 과목 추가</button>
     <div class="res"><span class="v" id="gpa">0.00</span> <span class="u" id="max">/ 4.5</span></div>
     <div class="sub2" id="sum"></div>
-    <div class="note">평점 = Σ(과목 평점 × 학점수) ÷ Σ(학점수). 성적 등급의 평점은 만점 기준에 따라 자동 적용됩니다(F=0). P/NP(패스) 과목은 ‘제외’로 두면 계산에서 빠집니다. 학교마다 환산표가 다를 수 있으니 참고용으로 쓰세요. 모든 계산은 브라우저에서 이루어집니다.</div>
+    <div class="note" data-i18n="b_gpa_note">평점 = Σ(과목 평점 × 학점수) ÷ Σ(학점수). 성적 등급의 평점은 만점 기준에 따라 자동 적용됩니다(F=0). P/NP(패스) 과목은 '제외'로 두면 계산에서 빠집니다. 학교마다 환산표가 다를 수 있으니 참고용으로 쓰세요. 모든 계산은 브라우저에서 이루어집니다.</div>
   </div>
 </div>
 
@@ -77,10 +81,10 @@
     '4.3':{'A+':4.3,'A':4.0,'B+':3.3,'B':3.0,'C+':2.3,'C':2.0,'D+':1.3,'D':1.0,'F':0},
     '4.0':{'A+':4.0,'A':4.0,'B+':3.3,'B':3.0,'C+':2.3,'C':2.0,'D+':1.3,'D':1.0,'F':0}
   };
-  function gradeOpts(){ return ['A+','A','B+','B','C+','C','D+','D','F'].map(function(g){return '<option>'+g+'</option>';}).join('')+'<option value="EX">제외(P/NP)</option>'; }
+  function gradeOpts(){ return ['A+','A','B+','B','C+','C','D+','D','F'].map(function(g){return '<option>'+g+'</option>';}).join('')+'<option value="EX">'+t('b_gpa_grade_ex')+'</option>'; }
   function addRow(nm,cr,gr){
     var d=document.createElement('div'); d.className='grow';
-    d.innerHTML='<input class="nm" type="text" placeholder="과목명" value="'+(nm||'')+'"/><input class="cr" type="number" min="0" max="9" step="0.5" value="'+(cr||3)+'"/><select class="gr">'+gradeOpts()+'</select><button class="del" type="button" title="삭제">✕</button>';
+    d.innerHTML='<input class="nm" type="text" placeholder="'+t('b_gpa_course_ph')+'" value="'+(nm||'')+'"/><input class="cr" type="number" min="0" max="9" step="0.5" value="'+(cr||3)+'"/><select class="gr">'+gradeOpts()+'</select><button class="del" type="button" title="'+t('b_gpa_del_title')+'">✕</button>';
     $('rows').appendChild(d); if(gr) d.querySelector('.gr').value=gr; calc();
   }
   function calc(){
@@ -89,14 +93,31 @@
     $('rows').querySelectorAll('.grow').forEach(function(r){ var gr=r.querySelector('.gr').value; if(gr==='EX') return;
       var cr=parseFloat(r.querySelector('.cr').value)||0; tc+=cr; tp+=(table[gr]||0)*cr; });
     $('gpa').textContent = tc? (Math.round(tp/tc*100)/100).toFixed(2) : '0.00';
-    $('sum').textContent = '총 '+tc+'학점 · 평점합 '+(Math.round(tp*100)/100);
+    $('sum').textContent = t('b_gpa_sum_total').replace('{credits}', tc).replace('{points}', Math.round(tp*100)/100);
+  }
+  function renderRows(){
+    $('rows').innerHTML='';
+    addRow(t('b_gpa_course1'),3,'A+'); addRow(t('b_gpa_course2'),3,'B+'); addRow(t('b_gpa_course3'),2,'A');
   }
   $('rows').addEventListener('input', calc);
   $('rows').addEventListener('change', calc);
   $('rows').addEventListener('click', function(e){ if(e.target.closest('.del')){ e.target.closest('.grow').remove(); calc(); } });
   $('scale').addEventListener('change', calc);
   $('add').addEventListener('click', function(){ addRow(); });
-  addRow('과목1',3,'A+'); addRow('과목2',3,'B+'); addRow('과목3',2,'A');
+  window.onI18n = function(){
+    renderRows();
+    // update existing row placeholders and delete button titles
+    $('rows').querySelectorAll('.nm').forEach(function(el){ el.placeholder=t('b_gpa_course_ph'); });
+    $('rows').querySelectorAll('.del').forEach(function(el){ el.title=t('b_gpa_del_title'); });
+    // rebuild grade selects to reflect new language
+    $('rows').querySelectorAll('.gr').forEach(function(sel){
+      var cur=sel.value;
+      sel.innerHTML=gradeOpts();
+      sel.value=cur;
+    });
+    calc();
+  };
+  renderRows();
 </script>
 </body>
 </html>

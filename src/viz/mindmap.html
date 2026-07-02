@@ -50,27 +50,27 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:920px;">
-  <h1>마인드맵 만들기</h1>
-  <p class="sub">노드를 선택하고 가지를 뻗어 마인드맵을 그립니다. 자동으로 배치되며 SVG·PNG로 내보낼 수 있습니다.</p>
+  <h1 data-i18n="b_mindmap_title">마인드맵 만들기</h1>
+  <p class="sub" data-i18n="b_mindmap_sub">노드를 선택하고 가지를 뻗어 마인드맵을 그립니다. 자동으로 배치되며 SVG·PNG로 내보낼 수 있습니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>노드를 클릭해 선택한 뒤, 아래 버튼으로 <b>자식/형제 추가·이름 변경·삭제</b>합니다</li>
-    <li>배치는 자동입니다. 더블클릭으로도 이름을 바꿀 수 있어요</li>
-    <li>SVG·PNG로 내보내 문서·발표에 쓰세요 (작업은 이 기기에 저장됩니다)</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_mindmap_howto_title">사용 방법</b><ol>
+    <li data-i18n-html="b_mindmap_howto_1">노드를 클릭해 선택한 뒤, 아래 버튼으로 <b>자식/형제 추가·이름 변경·삭제</b>합니다</li>
+    <li data-i18n="b_mindmap_howto_2">배치는 자동입니다. 더블클릭으로도 이름을 바꿀 수 있어요</li>
+    <li data-i18n="b_mindmap_howto_3">SVG·PNG로 내보내 문서·발표에 쓰세요 (작업은 이 기기에 저장됩니다)</li>
   </ol></div></div>
 
   <div class="card">
     <div class="toolbar">
-      <button id="addChild" type="button">＋ 자식</button>
-      <button id="addSib" type="button">＋ 형제</button>
-      <button id="rename" type="button">✏ 이름</button>
-      <button id="del" type="button">🗑 삭제</button>
-      <button id="reset" type="button" style="margin-left:auto;">새로 만들기</button>
+      <button id="addChild" type="button" data-i18n="b_mindmap_btn_add_child">＋ 자식</button>
+      <button id="addSib" type="button" data-i18n="b_mindmap_btn_add_sib">＋ 형제</button>
+      <button id="rename" type="button" data-i18n="b_mindmap_btn_rename">✏ 이름</button>
+      <button id="del" type="button" data-i18n="b_mindmap_btn_del">🗑 삭제</button>
+      <button id="reset" type="button" style="margin-left:auto;" data-i18n="b_mindmap_btn_reset">새로 만들기</button>
       <button id="svg" type="button">SVG</button>
       <button id="png" type="button">PNG</button>
     </div>
     <div class="mmwrap"><div id="mm"></div></div>
-    <div class="note">색은 깊이에 따라 자동 지정됩니다. 루트는 삭제할 수 없습니다. 모든 작업은 브라우저에서만 이루어지며 내용은 이 기기(localStorage)에 저장됩니다.</div>
+    <div class="note" data-i18n="b_mindmap_note">색은 깊이에 따라 자동 지정됩니다. 루트는 삭제할 수 없습니다. 모든 작업은 브라우저에서만 이루어지며 내용은 이 기기(localStorage)에 저장됩니다.</div>
   </div>
 </div>
 
@@ -82,7 +82,7 @@
   var nodes, rootId, sel, seq;
   var COLW=180, RH=44, VGAP=14, COLORS=['#5B5BF5','#15C39A','#F59E0B','#EF4444','#A855F7','#3D7BF0'];
 
-  function fresh(){ seq=1; nodes={}; rootId='n0'; nodes[rootId]={id:rootId,text:'중심 주제',parent:null,children:[]}; sel=rootId; }
+  function fresh(){ seq=1; nodes={}; rootId='n0'; nodes[rootId]={id:rootId,text:t('b_mindmap_root_text'),parent:null,children:[]}; sel=rootId; }
   function load(){ try{ var d=JSON.parse(localStorage.getItem(KEY)); if(d&&d.nodes&&d.rootId){ nodes=d.nodes; rootId=d.rootId; seq=d.seq||1; sel=d.rootId; return true; } }catch(e){} return false; }
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify({nodes:nodes,rootId:rootId,seq:seq})); }catch(e){} }
 
@@ -111,15 +111,17 @@
     $('mm').innerHTML=s;
   }
   function nodeW(n){ return Math.min(160,Math.max(70,n.text.length*9+24)); }
-  function clip(t){ return t.length>16?t.slice(0,15)+'…':t; }
+  function clip(tmp){ return tmp.length>16?tmp.slice(0,15)+'…':tmp; }
 
-  function addChild(){ var id='n'+(seq++); nodes[id]={id:id,text:'새 가지',parent:sel,children:[]}; nodes[sel].children.push(id); sel=id; commit(); }
-  function addSib(){ var p=nodes[sel].parent; if(p==null){ addChild(); return; } var id='n'+(seq++); nodes[id]={id:id,text:'새 가지',parent:p,children:[]}; var ch=nodes[p].children; ch.splice(ch.indexOf(sel)+1,0,id); sel=id; commit(); }
-  function rename(){ var n=nodes[sel]; var v=prompt('노드 이름', n.text); if(v!=null){ n.text=v.trim()||n.text; commit(); } }
-  function del(){ if(sel===rootId){ toast('루트는 삭제할 수 없어요'); return; } var n=nodes[sel];
+  function addChild(){ var id='n'+(seq++); nodes[id]={id:id,text:t('b_mindmap_new_branch'),parent:sel,children:[]}; nodes[sel].children.push(id); sel=id; commit(); }
+  function addSib(){ var p=nodes[sel].parent; if(p==null){ addChild(); return; } var id='n'+(seq++); nodes[id]={id:id,text:t('b_mindmap_new_branch'),parent:p,children:[]}; var ch=nodes[p].children; ch.splice(ch.indexOf(sel)+1,0,id); sel=id; commit(); }
+  function rename(){ var n=nodes[sel]; var v=prompt(t('b_mindmap_prompt_rename'), n.text); if(v!=null){ n.text=v.trim()||n.text; commit(); } }
+  function del(){ if(sel===rootId){ toast(t('b_mindmap_toast_no_del_root')); return; } var n=nodes[sel];
     (function rm(id){ nodes[id].children.slice().forEach(rm); delete nodes[id]; })(sel);
     var ch=nodes[n.parent].children; ch.splice(ch.indexOf(sel),1); sel=n.parent; commit(); }
   function commit(){ save(); render(); }
+
+  window.onI18n = function(){ if(nodes && nodes[rootId] && !load()) fresh(); render(); };
 
   $('mm').addEventListener('click', function(e){ var g=e.target.closest('.mm-node'); if(g){ sel=g.dataset.id; render(); } });
   $('mm').addEventListener('dblclick', function(e){ var g=e.target.closest('.mm-node'); if(g){ sel=g.dataset.id; rename(); } });
@@ -127,13 +129,13 @@
   $('addSib').addEventListener('click',addSib);
   $('rename').addEventListener('click',rename);
   $('del').addEventListener('click',del);
-  $('reset').addEventListener('click',function(){ if(confirm('새 마인드맵을 시작할까요? 현재 내용은 사라집니다.')){ fresh(); commit(); } });
+  $('reset').addEventListener('click',function(){ if(confirm(t('b_mindmap_confirm_reset'))){ fresh(); commit(); } });
   $('svg').addEventListener('click',function(){ var blob=new Blob([$('mm').innerHTML],{type:'image/svg+xml'}),u=URL.createObjectURL(blob),a=document.createElement('a'); a.href=u; a.download='mindmap.svg'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(u);a.remove();},100); });
   $('png').addEventListener('click',function(){ var svg=$('mmsvg'); if(!svg) return; var W=+svg.getAttribute('width'),H=+svg.getAttribute('height');
     var data=new XMLSerializer().serializeToString(svg); var img=new Image();
     img.onload=function(){ var cv=document.createElement('canvas'); cv.width=W*2; cv.height=H*2; var x=cv.getContext('2d'); x.scale(2,2); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.drawImage(img,0,0);
       var a=document.createElement('a'); a.href=cv.toDataURL('image/png'); a.download='mindmap.png'; document.body.appendChild(a); a.click(); setTimeout(function(){a.remove();},100); };
-    img.onerror=function(){ toast('PNG 변환에 실패했어요'); };
+    img.onerror=function(){ toast(t('b_mindmap_toast_png_fail')); };
     img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data); });
 
   if(!load()) fresh();

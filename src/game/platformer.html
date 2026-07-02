@@ -59,36 +59,36 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:680px;">
-  <h1>옆스크롤 플랫포머</h1>
-  <p class="sub">긴 스테이지를 달리고 점프하며 코인을 모아 끝의 깃발까지 도착하세요. 구덩이에 빠지지 않게 조심!</p>
+  <h1 data-i18n="b_platformer_title">옆스크롤 플랫포머</h1>
+  <p class="sub" data-i18n="b_platformer_sub">긴 스테이지를 달리고 점프하며 코인을 모아 끝의 깃발까지 도착하세요. 구덩이에 빠지지 않게 조심!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li><b>← →</b> 또는 <b>A D</b>로 달리고, <b>↑ / W / 점프 버튼 / 화면 탭</b>으로 점프합니다</li>
-    <li>발판을 밟고 이동하며 <b>코인</b>을 모으고 오른쪽 끝 <b>깃발</b>에 도착하세요</li>
-    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지 (점프는 Space가 아닙니다)</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_platformer_howto_title">조작법</b><ol>
+    <li data-i18n-html="b_platformer_howto1"><b>← →</b> 또는 <b>A D</b>로 달리고, <b>↑ / W / 점프 버튼 / 화면 탭</b>으로 점프합니다</li>
+    <li data-i18n-html="b_platformer_howto2">발판을 밟고 이동하며 <b>코인</b>을 모으고 오른쪽 끝 <b>깃발</b>에 도착하세요</li>
+    <li data-i18n-html="b_platformer_howto3"><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지 (점프는 Space가 아닙니다)</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
       <div class="scores">
-        <div class="sbox"><div class="l">단계</div><div class="v" id="level">1</div></div>
-        <div class="sbox"><div class="l">코인</div><div class="v" id="coins">0/0</div></div>
-        <div class="sbox"><div class="l">생명</div><div class="v" id="lives">3</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_platformer_label_level">단계</div><div class="v" id="level">1</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_platformer_label_coins">코인</div><div class="v" id="coins">0/0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_platformer_label_lives">생명</div><div class="v" id="lives">3</div></div>
       </div>
-      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+      <button class="btn btn-ghost" id="restart" type="button" data-i18n="b_platformer_btn_restart">다시 시작</button>
     </div>
     <div class="stage">
       <canvas id="cv" width="640" height="400"></canvas>
-      <div class="over" id="gover"><div><div class="big" id="goverBig">🏃 플랫포머</div><div class="sm" id="goverSm">달리고 점프해 깃발까지 가세요!</div><button class="btn" id="goverBtn" type="button">시작하기</button></div></div>
+      <div class="over" id="gover"><div><div class="big" id="goverBig">🏃 플랫포머</div><div class="sm" id="goverSm" data-i18n="b_platformer_over_ready_sm">달리고 점프해 깃발까지 가세요!</div><button class="btn" id="goverBtn" type="button" data-i18n="b_platformer_btn_start">시작하기</button></div></div>
     </div>
     <div class="ctrl">
       <div class="mv">
         <button data-d="l" aria-label="왼쪽">◀</button>
         <button data-d="r" aria-label="오른쪽">▶</button>
       </div>
-      <button class="jump" data-d="j" aria-label="점프">⤴ 점프</button>
+      <button class="jump" data-d="j" aria-label="점프" data-i18n="b_platformer_btn_jump">⤴ 점프</button>
     </div>
-    <div class="note">레벨은 매번 무작위로 생성됩니다. 구덩이에 빠지거나 가시에 닿으면 생명이 줄고 출발점으로 돌아갑니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_platformer_note">레벨은 매번 무작위로 생성됩니다. 구덩이에 빠지거나 가시에 닿으면 생명이 줄고 출발점으로 돌아갑니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -169,7 +169,7 @@
       x.fillStyle='#3a4d7a'; x.fillRect(sx,pl.y,pl.w,pl.h); x.fillStyle='#4f6aa3'; x.fillRect(sx,pl.y,pl.w,6); }
     // 가시
     x.fillStyle='#e05555'; for(var s=0;s<spikes.length;s++){ var sp=spikes[s], ssx=sp.x-cam; if(ssx>VW||ssx+sp.w<0)continue;
-      for(var t=0;t<sp.w;t+=10){ x.beginPath(); x.moveTo(ssx+t,sp.y+sp.h); x.lineTo(ssx+t+5,sp.y); x.lineTo(ssx+t+10,sp.y+sp.h); x.closePath(); x.fill(); } }
+      for(var tmp=0;tmp<sp.w;tmp+=10){ x.beginPath(); x.moveTo(ssx+tmp,sp.y+sp.h); x.lineTo(ssx+tmp+5,sp.y); x.lineTo(ssx+tmp+10,sp.y+sp.h); x.closePath(); x.fill(); } }
     // 코인
     for(var c=0;c<coins.length;c++){ var co=coins[c], cx=co.x-cam; if(cx<-20||cx>VW+20)continue; x.fillStyle='#facc15'; x.beginPath(); x.arc(cx,co.y,8,0,7); x.fill(); x.fillStyle='#b8860b'; x.fillRect(cx-1.5,co.y-5,3,10); }
     // 깃발
@@ -181,12 +181,12 @@
   function roundRect(X,Y,W,H,r){ x.beginPath(); x.moveTo(X+r,Y); x.arcTo(X+W,Y,X+W,Y+H,r); x.arcTo(X+W,Y+H,X,Y+H,r); x.arcTo(X,Y+H,X,Y,r); x.arcTo(X,Y,X+W,Y,r); x.closePath(); }
 
   var last=0, raf=0;
-  function loop(t){ raf=requestAnimationFrame(loop); var dt=Math.min(0.04,((t-last)/1000)||0); last=t; if(!gc.isPaused()) update(dt); draw(); }
+  function loop(ti){ raf=requestAnimationFrame(loop); var dt=Math.min(0.04,((ti-last)/1000)||0); last=ti; if(!gc.isPaused()) update(dt); draw(); }
   function startLoop(){ if(!raf){ last=performance.now(); raf=requestAnimationFrame(loop); } }
 
   function begin(){ state='play'; $('gover').style.display='none'; }
-  function win(){ state='over'; $('goverBig').textContent='🏁 단계 '+level+' 완료!'; $('goverSm').textContent='코인 '+got+'/'+total+' · 다음은 더 길어집니다'; $('goverBtn').textContent='다음 단계'; $('gover').style.display='flex'; level++; }
-  function lose(){ state='over'; $('goverBig').textContent='💀 게임 오버'; $('goverSm').textContent='단계 '+level+'에서 종료 — 코인 '+got+'/'+total; $('goverBtn').textContent='다시 시작'; $('gover').style.display='flex'; }
+  function win(){ state='over'; $('goverBig').textContent='🏁 '+t('b_platformer_over_win_big').replace('{n}',level); $('goverSm').textContent=t('b_platformer_over_win_sm').replace('{got}',got).replace('{total}',total); $('goverBtn').textContent=t('b_platformer_btn_next'); $('gover').style.display='flex'; level++; }
+  function lose(){ state='over'; $('goverBig').textContent='💀 '+t('b_platformer_over_lose_big'); $('goverSm').textContent=t('b_platformer_over_lose_sm').replace('{n}',level).replace('{got}',got).replace('{total}',total); $('goverBtn').textContent=t('b_platformer_btn_restart'); $('gover').style.display='flex'; }
 
   // 입력
   document.addEventListener('keydown',function(e){
@@ -202,8 +202,10 @@
   cv.addEventListener('pointerdown',function(e){ e.preventDefault(); wantJump=true; });
 
   $('goverBtn').addEventListener('click',function(e){ e.stopPropagation();
-    if($('goverBig').textContent.indexOf('오버')>=0){ level=1; lives=3; } build(); begin(); });
-  $('restart').addEventListener('click',function(){ level=1; lives=3; state='ready'; $('goverBig').textContent='🏃 플랫포머'; $('goverSm').textContent='달리고 점프해 깃발까지 가세요!'; $('goverBtn').textContent='시작하기'; $('gover').style.display='flex'; build(); });
+    if($('goverBig').textContent.indexOf('오버')>=0||$('goverBig').textContent.indexOf('Game Over')>=0||$('goverBig').textContent.indexOf('游戏结束')>=0||$('goverBig').textContent.indexOf('ゲームオーバー')>=0){ level=1; lives=3; } build(); begin(); });
+  $('restart').addEventListener('click',function(){ level=1; lives=3; state='ready'; $('goverBig').textContent='🏃 '+t('b_platformer_title'); $('goverSm').textContent=t('b_platformer_over_ready_sm'); $('goverBtn').textContent=t('b_platformer_btn_start'); $('gover').style.display='flex'; build(); });
+
+  window.onI18n=function(){ if(state==='ready'){ $('goverBig').textContent='🏃 '+t('b_platformer_title'); $('goverSm').textContent=t('b_platformer_over_ready_sm'); $('goverBtn').textContent=t('b_platformer_btn_start'); } };
 
   build(); startLoop();
 })();

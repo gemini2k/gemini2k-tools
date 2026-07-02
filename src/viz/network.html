@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>네트워크 그래프 시각화 (관계도) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="노드와 연결(엣지) 목록으로 인물·조직·개념 관계도를 그립니다. 자동 배치·드래그·줌, PNG 저장. Cytoscape.js 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/network.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="네트워크 그래프 시각화 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="관계 목록으로 네트워크 그래프 작성·PNG 저장(Cytoscape.js). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/network.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem;}select,button.mini{padding:.5rem .65rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+textarea{width:100%;min-height:130px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+#cy{width:100%;height:420px;border:1px solid var(--border);border-radius:11px;background:var(--ground);margin-top:.5rem;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"네트워크 그래프 시각화","description":"관계 목록으로 네트워크 그래프(관계도)를 그립니다(Cytoscape.js).","url":"https://gemini2k.co.kr/network.html","applicationCategory":"DesignApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:880px;">
+  <h1 data-i18n="b_network_title">네트워크 그래프 시각화</h1>
+  <p class="sub" data-i18n="b_network_sub">관계(연결) 목록을 적으면 관계도를 그려 줍니다. 드래그·줌이 되고 PNG로 저장할 수 있어요.</p>
+  <div class="card" style="max-width:none;">
+    <div class="row"><span data-i18n="b_network_layout_label">배치</span> <select id="layout"><option value="cose" data-i18n="b_network_layout_cose">자동(힘기반)</option><option value="circle" data-i18n="b_network_layout_circle">원형</option><option value="grid" data-i18n="b_network_layout_grid">격자</option><option value="concentric" data-i18n="b_network_layout_concentric">동심원</option><option value="breadthfirst" data-i18n="b_network_layout_tree">트리</option></select>
+      <button class="mini" id="fit" type="button" data-i18n="b_network_btn_fit">화면 맞춤</button><button class="mini" id="dl" type="button" data-i18n="b_network_btn_png">⬇️ PNG 저장</button></div>
+    <textarea id="data">철수 - 영희
+철수 - 민수
+영희 - 지영
+민수 - 지영
+지영 - 수빈
+수빈 - 철수</textarea>
+    <div id="cy"></div>
+    <div class="note" data-i18n-html="b_network_note">오픈소스 <b>Cytoscape.js</b>(MIT, <a href="https://github.com/cytoscape/cytoscape.js" target="_blank" rel="noopener">cytoscape/cytoscape.js</a>)를 자체 호스팅합니다. <code>A - B</code> 형식으로 연결을 한 줄에 하나씩 입력합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/cytoscape-3/cytoscape.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var cy=null;
+  function build(){ var nodes={}, edges=[];
+    $('data').value.split(/\r?\n/).forEach(function(l){ var m=l.split(/\s*-\s*/); if(m.length<2)return; var a=m[0].trim(),b=m[1].trim(); if(!a||!b)return;
+      nodes[a]=1;nodes[b]=1; edges.push({data:{source:a,target:b}}); });
+    var els=Object.keys(nodes).map(function(n){return {data:{id:n}};}).concat(edges);
+    var acc=(getComputedStyle(document.documentElement).getPropertyValue('--accent')||'#2563eb').trim();
+    if(cy)cy.destroy();
+    cy=cytoscape({container:$('cy'),elements:els,
+      style:[{selector:'node',style:{'label':'data(id)','background-color':acc,'color':'#fff','text-valign':'center','text-halign':'center','font-size':'12px','width':'34px','height':'34px','text-outline-color':acc,'text-outline-width':2}},
+             {selector:'edge',style:{'width':2,'line-color':'#94a3b8','curve-style':'bezier','target-arrow-shape':'none'}}],
+      layout:{name:$('layout').value,animate:false}});
+  }
+  ['data','layout'].forEach(function(id){$(id).addEventListener('input',build);$(id).addEventListener('change',build);});
+  $('fit').addEventListener('click',function(){if(cy)cy.fit();});
+  $('dl').addEventListener('click',function(){if(!cy)return;var png=cy.png({full:true,scale:2,bg:'#fff'});var a=document.createElement('a');a.href=png;a.download='network.png';document.body.appendChild(a);a.click();a.remove();});
+  build();
+</script>
+</body>
+</html>

@@ -75,63 +75,68 @@
 <body>
 
 <div class="toolwrap">
-  <h1>연봉 실수령액 계산기</h1>
-  <p class="sub">연봉을 넣으면 4대보험과 세금을 공제한 월·연 실수령액을 추정합니다. 요율은 직접 수정할 수 있습니다.</p>
+  <h1 data-i18n="b_salary_h1">연봉 실수령액 계산기</h1>
+  <p class="sub" data-i18n="b_salary_sub">연봉을 넣으면 4대보험과 세금을 공제한 월·연 실수령액을 추정합니다. 요율은 직접 수정할 수 있습니다.</p>
 
   <div class="card">
     <div class="sal-grid">
       <div class="fld">
-        <label for="annual">연봉 <span class="unit">(만원)</span></label>
+        <label for="annual"><span data-i18n="b_salary_lbl_annual">연봉</span> <span class="unit" data-i18n="b_salary_unit_annual">(만원)</span></label>
         <input id="annual" type="number" inputmode="numeric" value="4000" min="0" step="100"/>
       </div>
       <div class="fld">
-        <label for="deps">부양가족 수 <span class="unit">(본인 포함)</span></label>
+        <label for="deps"><span data-i18n="b_salary_lbl_deps">부양가족 수</span> <span class="unit" data-i18n="b_salary_unit_deps">(본인 포함)</span></label>
         <input id="deps" type="number" inputmode="numeric" value="1" min="1" step="1"/>
       </div>
       <div class="fld">
-        <label for="nontax">월 비과세액 <span class="unit">(원, 식대 등)</span></label>
+        <label for="nontax"><span data-i18n="b_salary_lbl_nontax">월 비과세액</span> <span class="unit" data-i18n="b_salary_unit_nontax">(원, 식대 등)</span></label>
         <input id="nontax" type="number" inputmode="numeric" value="200000" min="0" step="10000"/>
       </div>
       <div class="fld">
-        <label for="children">20세 이하 자녀 수</label>
+        <label for="children" data-i18n="b_salary_lbl_children">20세 이하 자녀 수</label>
         <input id="children" type="number" inputmode="numeric" value="0" min="0" step="1"/>
       </div>
     </div>
 
     <details class="rates">
-      <summary>4대보험 요율 (필요 시 수정) ▾</summary>
+      <summary data-i18n="b_salary_rates_summary">4대보험 요율 (필요 시 수정) ▾</summary>
       <div class="rgrid">
-        <div class="fld"><label>국민연금 (%)</label><input id="r_pension" type="number" value="4.5" step="0.01"/></div>
-        <div class="fld"><label>건강보험 (%)</label><input id="r_health" type="number" value="3.545" step="0.001"/></div>
-        <div class="fld"><label>장기요양 (건강보험료의 %)</label><input id="r_care" type="number" value="12.95" step="0.01"/></div>
-        <div class="fld"><label>고용보험 (%)</label><input id="r_emp" type="number" value="0.9" step="0.01"/></div>
+        <div class="fld"><label data-i18n="b_salary_lbl_pension">국민연금 (%)</label><input id="r_pension" type="number" value="4.5" step="0.01"/></div>
+        <div class="fld"><label data-i18n="b_salary_lbl_health">건강보험 (%)</label><input id="r_health" type="number" value="3.545" step="0.001"/></div>
+        <div class="fld"><label data-i18n="b_salary_lbl_care">장기요양 (건강보험료의 %)</label><input id="r_care" type="number" value="12.95" step="0.01"/></div>
+        <div class="fld"><label data-i18n="b_salary_lbl_emp">고용보험 (%)</label><input id="r_emp" type="number" value="0.9" step="0.01"/></div>
       </div>
     </details>
 
     <div class="row" style="margin-top:1.1rem;">
-      <button class="btn" id="calc">계산하기</button>
-      <button class="btn btn-ghost" id="copy">📋 결과 복사</button>
+      <button class="btn" id="calc" data-i18n="b_salary_btn_calc">계산하기</button>
+      <button class="btn btn-ghost" id="copy">📋 <span data-i18n="b_salary_btn_copy">결과 복사</span></button>
     </div>
 
     <div class="res" id="res" style="display:none;">
       <div class="big">
-        <div class="lbl">월 예상 실수령액</div>
+        <div class="lbl" data-i18n="b_salary_res_lbl">월 예상 실수령액</div>
         <div class="amt" id="net-month">0원</div>
-        <div class="yr" id="net-year">연 0원</div>
+        <div class="yr" id="net-year"></div>
       </div>
       <div class="breakdown" id="breakdown"></div>
     </div>
 
-    <div class="note">
-      ※ 이 계산기는 <strong>참고용 추정값</strong>입니다. 4대보험 요율은 매년 바뀌며(기본값은 예시), 국민연금·건강보험에는 상·하한 기준소득이 있어 고소득·저소득 구간에서 실제와 차이가 날 수 있습니다. 근로소득세는 연말정산 방식을 단순화해 추정하며 신용카드·연금저축 등 각종 공제는 반영하지 않습니다. 정확한 금액은 국세청 홈택스·급여명세서를 확인하세요. 모든 계산은 브라우저에서만 이루어지며 입력값은 전송되지 않습니다.
-    </div>
+    <div class="note" data-i18n-html="b_salary_note">※ 이 계산기는 <strong>참고용 추정값</strong>입니다. 4대보험 요율은 매년 바뀌며(기본값은 예시), 국민연금·건강보험에는 상·하한 기준소득이 있어 고소득·저소득 구간에서 실제와 차이가 날 수 있습니다. 근로소득세는 연말정산 방식을 단순화해 추정하며 신용카드·연금저축 등 각종 공제는 반영하지 않습니다. 정확한 금액은 국세청 홈택스·급여명세서를 확인하세요. 모든 계산은 브라우저에서만 이루어지며 입력값은 전송되지 않습니다.</div>
   </div>
 </div>
 
 <script src="tool-shell.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
-  function won(n){ return Math.round(n).toLocaleString('ko-KR') + '원'; }
+  function _locale(){ var L={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}; return L[window.curLang?curLang():'ko']||'ko-KR'; }
+  function won(n){
+    var locale=_locale();
+    if(locale==='ko-KR') return Math.round(n).toLocaleString('ko-KR')+'원';
+    if(locale==='ja-JP') return Math.round(n).toLocaleString('ja-JP')+'円';
+    if(locale==='zh-CN') return '¥'+Math.round(n).toLocaleString('zh-CN');
+    return '₩'+Math.round(n).toLocaleString('en-US');
+  }
   function num(id){ var v = parseFloat($(id).value); return isFinite(v) ? v : 0; }
 
   // 근로소득공제 (총급여 기준)
@@ -193,14 +198,18 @@
     var netM = grossM - totalDed;
 
     $('net-month').textContent = won(netM);
-    $('net-year').textContent = '연 ' + won(netM * 12);
+    $('net-year').textContent = t('b_salary_res_year_prefix') + won(netM * 12);
     var rows = [
-      ['국민연금', pension], ['건강보험', health], ['장기요양', care], ['고용보험', emp],
-      ['근로소득세(추정)', incomeTaxM], ['지방소득세', localTaxM],
+      [t('b_salary_row_pension'), pension],
+      [t('b_salary_row_health'), health],
+      [t('b_salary_row_care'), care],
+      [t('b_salary_row_emp'), emp],
+      [t('b_salary_row_income_tax'), incomeTaxM],
+      [t('b_salary_row_local_tax'), localTaxM],
     ];
-    var html = '<div class="brow"><span>월 총급여</span><span style="font-weight:600">'+won(grossM)+'</span></div>';
+    var html = '<div class="brow"><span>'+t('b_salary_row_gross')+'</span><span style="font-weight:600">'+won(grossM)+'</span></div>';
     rows.forEach(function(r){ html += '<div class="brow"><span>'+r[0]+'</span><span class="v">- '+won(r[1])+'</span></div>'; });
-    html += '<div class="brow tot"><span>공제 합계</span><span class="v">- '+won(totalDed)+'</span></div>';
+    html += '<div class="brow tot"><span>'+t('b_salary_row_total_ded')+'</span><span class="v">- '+won(totalDed)+'</span></div>';
     $('breakdown').innerHTML = html;
     $('res').style.display = '';
   }
@@ -209,13 +218,14 @@
     clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1600); }
   $('calc').addEventListener('click', calc);
   $('copy').addEventListener('click', function(){
-    if($('res').style.display==='none'){ toast('먼저 계산하세요'); return; }
-    var txt = '월 실수령액 '+$('net-month').textContent+' / '+$('net-year').textContent;
-    navigator.clipboard.writeText(txt).then(function(){ toast('복사됐습니다'); }).catch(function(){ toast('복사 실패'); });
+    if($('res').style.display==='none'){ toast(t('b_salary_toast_calc_first')); return; }
+    var txt = t('b_salary_copy_prefix')+' '+$('net-month').textContent+' / '+$('net-year').textContent;
+    navigator.clipboard.writeText(txt).then(function(){ toast(t('b_salary_toast_copied')); }).catch(function(){ toast(t('b_salary_toast_copy_fail')); });
   });
   ['annual','deps','nontax','children'].forEach(function(id){
     $(id).addEventListener('keydown', function(e){ if(e.key==='Enter') calc(); });
   });
+  window.onI18n = calc;
   calc();
 </script>
 </body>

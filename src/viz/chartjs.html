@@ -23,22 +23,22 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:760px;">
-  <h1>인터랙티브 차트 메이커</h1>
-  <p class="sub">데이터를 입력하면 툴팁·범례가 있는 인터랙티브 차트를 그려 줍니다. PNG로 저장하세요.</p>
+  <h1 data-i18n="b_chartjs_title">인터랙티브 차트 메이커</h1>
+  <p class="sub" data-i18n="b_chartjs_sub">데이터를 입력하면 툴팁·범례가 있는 인터랙티브 차트를 그려 줍니다. PNG로 저장하세요.</p>
   <div class="card">
-    <label style="font-weight:700;font-size:.85rem;">데이터 (라벨,값 — 한 줄에 하나)</label>
+    <label style="font-weight:700;font-size:.85rem;" data-i18n="b_chartjs_data_label">데이터 (라벨,값 — 한 줄에 하나)</label>
     <textarea id="in">1월,120
 2월,200
 3월,150
 4월,280
 5월,230</textarea>
     <div class="opts">
-      <label>종류 <select id="type"><option value="bar">막대</option><option value="line">선</option><option value="pie">원</option><option value="doughnut">도넛</option><option value="radar">레이더</option><option value="polarArea">극좌표</option></select></label>
-      <label>제목 <input id="title" type="text" value="월별 데이터" style="width:140px"/></label>
+      <label><span data-i18n="b_chartjs_type_label">종류</span> <select id="type"><option value="bar" data-i18n="b_chartjs_type_bar">막대</option><option value="line" data-i18n="b_chartjs_type_line">선</option><option value="pie" data-i18n="b_chartjs_type_pie">원</option><option value="doughnut" data-i18n="b_chartjs_type_doughnut">도넛</option><option value="radar" data-i18n="b_chartjs_type_radar">레이더</option><option value="polarArea" data-i18n="b_chartjs_type_polar">극좌표</option></select></label>
+      <label><span data-i18n="b_chartjs_chart_title_label">제목</span> <input id="title" type="text" value="월별 데이터" style="width:140px" data-i18n-ph="b_chartjs_chart_title_ph"/></label>
     </div>
     <div class="cvwrap"><canvas id="cv" height="300"></canvas></div>
-    <div class="actions"><button class="btn btn-ghost" id="png" type="button">⬇️ PNG 저장</button></div>
-    <div class="note">오픈소스 <b>Chart.js</b>(MIT, <a href="https://github.com/chartjs/Chart.js" target="_blank" rel="noopener">chartjs/Chart.js</a>)를 자체 호스팅합니다. 마우스를 올리면 값이 표시됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="actions"><button class="btn btn-ghost" id="png" type="button" data-i18n="b_chartjs_btn_png">⬇️ PNG 저장</button></div>
+    <div class="note" data-i18n-html="b_chartjs_note">오픈소스 <b>Chart.js</b>(MIT, <a href="https://github.com/chartjs/Chart.js" target="_blank" rel="noopener">chartjs/Chart.js</a>)를 자체 호스팅합니다. 마우스를 올리면 값이 표시됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/chartjs-4/chart.umd.min.js"></script>
@@ -61,6 +61,14 @@
   $('png').addEventListener('click',function(){ var tmp=document.createElement('canvas');tmp.width=$('cv').width;tmp.height=$('cv').height;var x=tmp.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,tmp.width,tmp.height);x.drawImage($('cv'),0,0);
     var a=document.createElement('a');a.href=tmp.toDataURL('image/png');a.download='chart.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},100); });
   render();
+  window.onI18n=function(){
+    var sel=$('type');
+    if(sel){
+      var cur=sel.value;
+      Array.from(sel.options).forEach(function(o){var k=o.getAttribute('data-i18n');if(k&&typeof t==='function')o.text=t(k);});
+      sel.value=cur;
+    }
+  };
 </script>
 </body>
 </html>

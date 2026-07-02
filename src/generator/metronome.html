@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>온라인 메트로놈 (박자기·BPM) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="정확한 박자를 들려주는 온라인 메트로놈입니다. BPM·박자표(4/4 등)·강박 설정, 탭 템포 지원. 악기 연습에. 설치 없이 브라우저에서 바로 사용합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/metronome.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="온라인 메트로놈 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="BPM·박자표·탭 템포 메트로놈. 브라우저에서 바로."/><meta property="og:url" content="https://gemini2k.co.kr/metronome.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.bpm{text-align:center;font-size:3.4rem;font-weight:800;color:var(--accent);}.bpm small{font-size:1rem;color:var(--muted);font-weight:600;}
+.dots{display:flex;gap:.5rem;justify-content:center;margin:1rem 0;}.dot{width:22px;height:22px;border-radius:50%;background:var(--border);transition:transform .05s;}
+.dot.on{background:var(--accent);transform:scale(1.4);}.dot.acc.on{background:#f59e0b;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;justify-content:center;margin:.7rem 0;}
+input[type=range]{width:100%;}select,.row button.mini{padding:.5rem .7rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;cursor:pointer;}
+.big{display:flex;gap:.6rem;justify-content:center;margin-top:.6rem;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"온라인 메트로놈","description":"BPM·박자표·탭 템포를 지원하는 온라인 메트로놈입니다.","url":"https://gemini2k.co.kr/metronome.html","applicationCategory":"MultimediaApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:520px;">
+  <h1 data-i18n="b_metronome_title">온라인 메트로놈</h1>
+  <p class="sub" data-i18n="b_metronome_sub">정확한 박자를 들려줍니다. 악기 연습에 사용하세요.</p>
+  <div class="card">
+    <div class="bpm"><span id="bpmv">100</span> <small>BPM</small></div>
+    <div class="dots" id="dots"></div>
+    <input type="range" id="bpm" min="30" max="240" value="100"/>
+    <div class="row">
+      <button class="mini" id="m5" type="button">−5</button><button class="mini" id="m1" type="button">−1</button>
+      <button class="mini" id="p1" type="button">+1</button><button class="mini" id="p5" type="button">+5</button>
+      <span data-i18n="b_metronome_beats_label">박자</span> <select id="beats"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option></select>
+      <button class="mini" id="tap" type="button" data-i18n="b_metronome_tap">탭 템포</button>
+    </div>
+    <div class="big"><button class="btn" id="toggle" type="button" style="min-width:130px;" data-i18n="b_metronome_start">▶ 시작</button></div>
+    <div class="note" data-i18n="b_metronome_note">Web Audio API로 소리를 만들어 지연 없이 정확한 박자를 냅니다(외부 음원 없음). 첫 박은 강박(주황)으로 강조됩니다. 모든 기능은 브라우저에서만 동작합니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var ac=null, playing=false, beats=4, cur=0, nextTime=0, timer=null, lookahead=0.1, schedAhead=0.2;
+  function ctx(){ if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)(); return ac; }
+  function renderDots(){ var c=$('dots'); c.innerHTML=''; for(var i=0;i<beats;i++){ var d=document.createElement('div'); d.className='dot'+(i===0?' acc':''); c.appendChild(d); } }
+  function flash(i){ var dots=$('dots').children; for(var k=0;k<dots.length;k++)dots[k].classList.remove('on'); if(dots[i])dots[i].classList.add('on');
+    setTimeout(function(){ if(dots[i])dots[i].classList.remove('on'); },90); }
+  function click(time,accent){ var a=ctx(); var o=a.createOscillator(), g=a.createGain();
+    o.frequency.value=accent?1500:1000; g.gain.setValueAtTime(0.001,time); g.gain.exponentialRampToValueAtTime(0.6,time+0.001);
+    g.gain.exponentialRampToValueAtTime(0.001,time+0.05); o.connect(g); g.connect(a.destination); o.start(time); o.stop(time+0.06); }
+  function scheduler(){ var bpm=+$('bpm').value, spb=60/bpm;
+    while(nextTime < ctx().currentTime + schedAhead){ click(nextTime,cur===0); var beatIndex=cur;
+      var delay=(nextTime-ctx().currentTime)*1000; setTimeout(function(bi){return function(){flash(bi);};}(beatIndex),Math.max(0,delay));
+      nextTime+=spb; cur=(cur+1)%beats; }
+    timer=setTimeout(scheduler,lookahead*1000); }
+  function start(){ beats=+$('beats').value; renderDots(); cur=0; nextTime=ctx().currentTime+0.05; playing=true; $('toggle').textContent=t('b_metronome_stop'); scheduler(); }
+  function stop(){ playing=false; clearTimeout(timer); $('toggle').textContent=t('b_metronome_start'); var dots=$('dots').children; for(var k=0;k<dots.length;k++)dots[k].classList.remove('on'); }
+  $('toggle').addEventListener('click',function(){ if(playing)stop(); else start(); });
+  function setBpm(v){ v=Math.max(30,Math.min(240,v)); $('bpm').value=v; $('bpmv').textContent=v; }
+  $('bpm').addEventListener('input',function(){ $('bpmv').textContent=$('bpm').value; });
+  $('m5').onclick=function(){setBpm(+$('bpm').value-5);}; $('m1').onclick=function(){setBpm(+$('bpm').value-1);};
+  $('p1').onclick=function(){setBpm(+$('bpm').value+1);}; $('p5').onclick=function(){setBpm(+$('bpm').value+5);};
+  $('beats').addEventListener('change',function(){ beats=+$('beats').value; renderDots(); cur=0; });
+  var taps=[];
+  $('tap').addEventListener('click',function(){ var now=performance.now(); taps.push(now); taps=taps.filter(function(tmp){return now-tmp<3000;});
+    if(taps.length>=2){ var diffs=[]; for(var i=1;i<taps.length;i++)diffs.push(taps[i]-taps[i-1]); var avg=diffs.reduce(function(a,b){return a+b;},0)/diffs.length; setBpm(Math.round(60000/avg)); } });
+  renderDots();
+  window.onI18n = function(){
+    if(playing){ $('toggle').textContent=t('b_metronome_stop'); }
+    else{ $('toggle').textContent=t('b_metronome_start'); }
+  };
+</script>
+</body>
+</html>

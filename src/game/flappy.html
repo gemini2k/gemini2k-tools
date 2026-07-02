@@ -24,14 +24,14 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:440px;">
-  <h1>플래피 버드</h1>
-  <p class="sub">화면을 탭(또는 ↑)해서 새를 띄우고 파이프 사이를 통과하세요! Space/P로 일시정지.</p>
+  <h1 data-i18n="b_flappy_title">플래피 버드</h1>
+  <p class="sub" data-i18n="b_flappy_sub">화면을 탭(또는 ↑)해서 새를 띄우고 파이프 사이를 통과하세요! Space/P로 일시정지.</p>
   <div class="card">
-    <div class="gbar"><div class="scores"><div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div><div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div></div>
-      <button class="btn btn-ghost" id="restart" type="button">새 게임</button></div>
+    <div class="gbar"><div class="scores"><div class="sbox"><div class="l" data-i18n="b_flappy_label_score">점수</div><div class="v" id="score">0</div></div><div class="sbox"><div class="l" data-i18n="b_flappy_label_best">최고</div><div class="v" id="best">0</div></div></div>
+      <button class="btn btn-ghost" id="restart" type="button" data-i18n="b_flappy_btn_new_game">새 게임</button></div>
     <div class="stage"><canvas id="cv" width="360" height="480"></canvas>
-      <div class="over" id="over"><div><div class="big" id="overBig">🐤 플래피 버드</div><div class="sm" id="overSm">탭해서 시작!</div><button class="btn" id="overBtn" type="button">시작</button></div></div></div>
-    <div class="note">파이프나 바닥·천장에 닿으면 끝납니다. 최고 점수는 이 기기에 저장됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+      <div class="over" id="over"><div><div class="big" id="overBig">🐤 플래피 버드</div><div class="sm" id="overSm" data-i18n="b_flappy_tap_to_start">탭해서 시작!</div><button class="btn" id="overBtn" type="button" data-i18n="b_flappy_btn_start">시작</button></div></div></div>
+    <div class="note" data-i18n="b_flappy_note">파이프나 바닥·천장에 닿으면 끝납니다. 최고 점수는 이 기기에 저장됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="game-core.js"></script><script src="tool-shell.js"></script>
@@ -42,13 +42,13 @@
   var gc=GameCore.init({mount:document.querySelector('.card')});
   var bird,pipes,score,best,state,gap=130,pw=52,speed=2.1;
   try{best=+localStorage.getItem('flappy:best')||0;}catch(e){best=0;} $('best').textContent=best;
-  function reset(){ bird={y:H/2,v:0,r:13}; pipes=[]; score=0; state='ready'; $('score').textContent='0'; $('overBig').textContent='🐤 플래피 버드'; $('overSm').textContent='탭해서 시작!'; $('overBtn').textContent='시작'; $('over').style.display='flex'; }
+  function reset(){ bird={y:H/2,v:0,r:13}; pipes=[]; score=0; state='ready'; $('score').textContent='0'; $('overBig').textContent='🐤 '+t('b_flappy_title'); $('overSm').textContent=t('b_flappy_tap_to_start'); $('overBtn').textContent=t('b_flappy_btn_start'); $('over').style.display='flex'; }
   function begin(){ if(state==='play')return; bird={y:H/2,v:0,r:13}; pipes=[{x:W+40,h:rand()}]; score=0; $('score').textContent='0'; state='play'; $('over').style.display='none'; }
   function rand(){ return 60+Math.random()*(H-gap-160); }
   function flap(){ if(state==='ready'||state==='over'){ begin(); return; } if(state==='play')bird.v=-5.2; }
-  function die(){ state='over'; if(score>best){best=score;try{localStorage.setItem('flappy:best',best);}catch(e){}$('best').textContent=best;} $('overBig').textContent='💥 게임 오버'; $('overSm').textContent='점수 '+score+' · 최고 '+best; $('overBtn').textContent='다시'; $('over').style.display='flex'; }
+  function die(){ state='over'; if(score>best){best=score;try{localStorage.setItem('flappy:best',best);}catch(e){}$('best').textContent=best;} $('overBig').textContent='💥 '+t('b_flappy_game_over'); $('overSm').textContent=t('b_flappy_score_label')+' '+score+' · '+t('b_flappy_label_best')+' '+best; $('overBtn').textContent=t('b_flappy_btn_retry'); $('over').style.display='flex'; }
   var last=0,raf=0;
-  function loop(t){ raf=requestAnimationFrame(loop); var dt=Math.min(2,(t-last)/16.67)||1; last=t;
+  function loop(tmp){ raf=requestAnimationFrame(loop); var dt=Math.min(2,(tmp-last)/16.67)||1; last=tmp;
     if(state==='play'&&!gc.isPaused()){ bird.v+=0.32*dt; bird.y+=bird.v*dt;
       for(var i=0;i<pipes.length;i++)pipes[i].x-=speed*dt;
       if(pipes.length&&pipes[pipes.length-1].x<W-200)pipes.push({x:W+40,h:rand()});
@@ -66,6 +66,7 @@
   cv.addEventListener('pointerdown',function(e){e.preventDefault();flap();});
   document.addEventListener('keydown',function(e){ if(e.key==='ArrowUp'||e.key==='w'||e.key==='W'){e.preventDefault();flap();} });
   $('restart').addEventListener('click',reset); $('overBtn').addEventListener('click',begin);
+  window.onI18n=reset;
   reset(); raf=requestAnimationFrame(loop);
   window._dbg={state:function(){return state;},begin:begin,flap:flap};
 })();

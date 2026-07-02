@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>조합 테스트 케이스 생성기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="여러 파라미터의 값들을 입력하면 전체 조합(곱집합)을 모두 나열해 테스트 케이스 표로 만듭니다. 조합 수가 폭증하면 페어와이즈 도구를 함께 쓰세요."/>
+<link rel="canonical" href="https://gemini2k.co.kr/combos.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="조합 테스트 케이스 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="여러 파라미터의 값들을 입력하면 전체 조합(곱집합)을 모두 나열해 테스트 케이스 표로 만듭니다. 조합 수가 폭증하면 페어와이즈 도구를 함께 쓰세요."/><meta property="og:url" content="https://gemini2k.co.kr/combos.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"조합 테스트 케이스 생성기","description":"여러 파라미터의 값들을 입력하면 전체 조합(곱집합)을 모두 나열해 테스트 케이스 표로 만듭니다. 조합 수가 폭증하면 페어와이즈 도구를 함께 쓰세요.","url":"https://gemini2k.co.kr/combos.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_combos_title">조합 테스트 케이스 생성</h1>
+  <p class="sub" data-i18n="b_combos_sub">파라미터별 값을 입력하면 모든 조합(곱집합)을 표로 만듭니다.</p>
+  <div class="card" style="max-width:none;">
+    <textarea class="in" id="in" spellcheck="false" style="min-height:120px">브라우저: Chrome, Safari, Edge\nOS: Windows, macOS, Android\n네트워크: WiFi, LTE</textarea><div class="frm" style="margin-top:.5rem"><button class="btn" id="run" type="button" data-i18n="b_combos_btn_run">조합 생성</button><button class="btn btn-ghost" id="csv" type="button">⬇️ CSV</button><span id="cnt" style="align-self:center;color:var(--muted)"></span></div><div class="err" id="err"></div><div class="res" id="res" style="overflow-x:auto"></div>
+    <div class="note" data-i18n-html="b_combos_note">한 줄에 <code>파라미터: 값1, 값2, 값3</code> 형식으로 입력합니다. 조합 수 = 각 값 개수의 곱이므로 폭증 시 페어와이즈를 사용하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="audit-kit.js"></script><script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};var names=[],tests=[];function parse(){return $("in").value.replace(/\\n/g,"\n").split(/\r?\n/).map(function(l){var idx=l.indexOf(":");if(idx<0)return null;return {name:l.slice(0,idx).trim(),values:l.slice(idx+1).split(",").map(function(x){return x.trim();}).filter(Boolean)};}).filter(function(p){return p&&p.name&&p.values.length;});}function run(){$("err").textContent="";var ps=parse();if(!ps.length){$("err").textContent=t('b_combos_err_empty');return;}var total=ps.reduce(function(a,p){return a*p.values.length;},1);if(total>5000){$("err").textContent=t('b_combos_err_too_many').replace('{n}',total);$("res").innerHTML="";$("cnt").textContent="";return;}names=ps.map(function(p){return p.name;});tests=[[]];ps.forEach(function(p){var nt=[];tests.forEach(function(tmp){p.values.forEach(function(v){nt.push(tmp.concat([v]));});});tests=nt;});$("cnt").textContent=t('b_combos_cnt').replace('{n}',tests.length);$("res").innerHTML="<table><tr><td><b>#</b></td>"+names.map(function(n){return "<td><b>"+n+"</b></td>";}).join("")+"</tr>"+tests.slice(0,500).map(function(tmp,i){return "<tr><td>"+(i+1)+"</td>"+tmp.map(function(v){return "<td>"+v+"</td>";}).join("")+"</tr>";}).join("")+"</table>";}window.onI18n=function(){run();};$("run").addEventListener("click",run);$("csv").addEventListener("click",function(){if(!tests.length)run();AuditKit.csv("combos.csv",[["#"].concat(names)].concat(tests.map(function(tmp,i){return [i+1].concat(tmp);})));});run();
+</script>
+</body>
+</html>

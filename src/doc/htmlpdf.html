@@ -23,15 +23,15 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:760px;">
-  <h1>HTML·글 → PDF 변환기</h1>
-  <p class="sub">HTML 코드나 글을 입력하면 A4 PDF로 만들어 줍니다. 한글도 깨지지 않아요(이미지 렌더 방식).</p>
+  <h1 data-i18n="b_htmlpdf_title">HTML·글 → PDF 변환기</h1>
+  <p class="sub" data-i18n="b_htmlpdf_sub">HTML 코드나 글을 입력하면 A4 PDF로 만들어 줍니다. 한글도 깨지지 않아요(이미지 렌더 방식).</p>
   <div class="card">
     <textarea id="in">&lt;h1&gt;보고서 제목&lt;/h1&gt;
 &lt;p&gt;안녕하세요. 이 문서는 브라우저에서 PDF로 변환됩니다.&lt;/p&gt;
 &lt;ul&gt;&lt;li&gt;항목 1&lt;/li&gt;&lt;li&gt;항목 2&lt;/li&gt;&lt;/ul&gt;</textarea>
-    <div class="actions"><button class="btn" id="make" type="button">📄 PDF 만들기</button><button class="btn btn-ghost" id="refresh" type="button">미리보기 새로고침</button></div>
+    <div class="actions"><button class="btn" id="make" type="button" data-i18n="b_htmlpdf_btn_make">📄 PDF 만들기</button><button class="btn btn-ghost" id="refresh" type="button" data-i18n="b_htmlpdf_btn_refresh">미리보기 새로고침</button></div>
     <div class="prev" id="prev"></div>
-    <div class="note">오픈소스 <b>jsPDF</b>(MIT)·<b>html2canvas</b>(MIT)를 자체 호스팅합니다. 내용을 이미지로 렌더해 PDF에 담으므로 한글·이모지·CSS가 그대로 보존되며, 길면 자동으로 여러 페이지로 나눕니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_htmlpdf_note">오픈소스 <b>jsPDF</b>(MIT)·<b>html2canvas</b>(MIT)를 자체 호스팅합니다. 내용을 이미지로 렌더해 PDF에 담으므로 한글·이모지·CSS가 그대로 보존되며, 길면 자동으로 여러 페이지로 나눕니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/jspdf-2.5/jspdf.umd.min.js"></script>
@@ -42,15 +42,15 @@
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1600);}
   function refresh(){ $('prev').innerHTML=$('in').value; }
   $('refresh').addEventListener('click',refresh); $('in').addEventListener('input',function(){clearTimeout(window._t);window._t=setTimeout(refresh,400);});
-  $('make').addEventListener('click',function(){ refresh(); var el=$('prev'); toast('PDF 생성 중…');
+  $('make').addEventListener('click',function(){ refresh(); var el=$('prev'); toast(t('b_htmlpdf_toast_generating'));
     html2canvas(el,{scale:2,backgroundColor:'#fff'}).then(function(canvas){
       var jsPDF=window.jspdf.jsPDF; var pdf=new jsPDF('p','mm','a4'); var pw=210, ph=297;
       var iw=pw, ih=canvas.height*pw/canvas.width; var pos=0, left=ih;
       var img=canvas.toDataURL('image/jpeg',0.92);
       pdf.addImage(img,'JPEG',0,pos,iw,ih); left-=ph;
       while(left>0){ pos=left-ih; pdf.addPage(); pdf.addImage(img,'JPEG',0,pos,iw,ih); left-=ph; }
-      pdf.save('document.pdf'); toast('PDF 저장 완료');
-    }).catch(function(e){ toast('변환 실패: '+e.message); });
+      pdf.save('document.pdf'); toast(t('b_htmlpdf_toast_saved'));
+    }).catch(function(e){ toast(t('b_htmlpdf_toast_error')+e.message); });
   });
   refresh();
 </script>

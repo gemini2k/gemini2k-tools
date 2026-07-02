@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>간트 차트 생성기 (프로젝트 일정표) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="작업·기간·진행률을 입력해 프로젝트 일정표(간트 차트)를 그립니다. 일/주/월 보기. 프로젝트 관리에. Frappe Gantt 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/gantt.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="간트 차트 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="작업·기간·진행률로 간트 차트 작성(Frappe Gantt). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/gantt.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<link rel="stylesheet" href="/vendor/gantt-0/frappe-gantt.min.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:130px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.6rem 0;}select{padding:.5rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.gwrap{background:#fff;border:1px solid var(--border);border-radius:11px;overflow:auto;margin-top:.4rem;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BusinessApplication","name":"간트 차트 생성기","description":"작업·기간·진행률로 프로젝트 일정표(간트 차트)를 그립니다(Frappe Gantt).","url":"https://gemini2k.co.kr/gantt.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:920px;">
+  <h1 data-i18n="b_gantt_title">간트 차트 생성기</h1>
+  <p class="sub" data-i18n="b_gantt_sub">작업·시작일·종료일·진행률을 적으면 프로젝트 일정표를 그려 줍니다.</p>
+  <div class="card" style="max-width:none;">
+    <textarea id="in">기획, 2026-07-01, 2026-07-05, 100
+디자인, 2026-07-04, 2026-07-12, 60
+개발, 2026-07-10, 2026-07-25, 30
+테스트, 2026-07-22, 2026-07-30, 0
+배포, 2026-07-30, 2026-08-02, 0</textarea>
+    <div class="row"><span data-i18n="b_gantt_view_label">보기</span> <select id="mode"><option value="Day" data-i18n="b_gantt_view_day">일</option><option value="Week" selected data-i18n="b_gantt_view_week">주</option><option value="Month" data-i18n="b_gantt_view_month">월</option></select>
+      <button class="btn" id="render" type="button" data-i18n="b_gantt_btn_render">그리기</button></div>
+    <div class="err" id="err"></div>
+    <div class="gwrap"><svg id="gantt"></svg></div>
+    <div class="note" data-i18n-html="b_gantt_note">오픈소스 <b>Frappe Gantt</b>(MIT, <a href="https://github.com/frappe/gantt" target="_blank" rel="noopener">frappe/gantt</a>)를 자체 호스팅합니다. 한 줄에 <code>작업명, 시작일, 종료일, 진행률(%)</code> 형식으로 입력합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/gantt-0/frappe-gantt.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var gantt=null;
+  function render(){ $('err').textContent='';
+    try{ var tasks=$('in').value.split(/\r?\n/).map(function(l,i){ var p=l.split(',').map(function(x){return x.trim();}); if(p.length<3||!p[0])return null;
+        return {id:'t'+i,name:p[0],start:p[1],end:p[2],progress:+(p[3]||0)}; }).filter(Boolean);
+      if(!tasks.length){$('err').textContent=t('b_gantt_err_empty');return;}
+      $('gantt').innerHTML=''; gantt=new Gantt('#gantt',tasks,{view_mode:$('mode').value,language:'en'});
+    }catch(e){ $('err').textContent='⚠️ '+(e.message||e)+' '+t('b_gantt_err_date_hint'); } }
+  $('render').addEventListener('click',render); $('mode').addEventListener('change',render);
+  var _t; $('in').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(render,500);});
+  window.onI18n=render;
+  render();
+</script>
+</body>
+</html>

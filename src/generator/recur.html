@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>반복 일정 규칙(RRULE) 생성기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="매주·매월 등 반복 일정 규칙(RRULE)을 만들고 다음 실행일들을 미리 봅니다. 캘린더(iCalendar) 연동에. rrule.js 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/recur.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="반복 일정 규칙(RRULE) 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="반복 일정 RRULE 생성 + 다음 일정 미리보기(rrule.js). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/recur.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.field{margin-bottom:.7rem;}.field label{display:block;font-weight:700;font-size:.85rem;margin-bottom:.3rem;}
+select,input{padding:.55rem .65rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+.inline{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;}
+.wd{display:flex;gap:.3rem;flex-wrap:wrap;}.wd label{display:inline-flex;gap:.25rem;align-items:center;font-weight:600;font-size:.85rem;border:1px solid var(--border);border-radius:8px;padding:.3rem .5rem;cursor:pointer;}
+.out{border:1px solid var(--border);border-radius:10px;background:var(--ground);padding:.7rem;font-family:ui-monospace,monospace;font-size:.85rem;word-break:break-all;margin:.4rem 0;}
+.list{font-size:.9rem;line-height:1.8;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"반복 일정 규칙(RRULE) 생성기","description":"반복 일정 규칙(RRULE)을 만들고 다음 일정을 미리 봅니다(rrule.js).","url":"https://gemini2k.co.kr/recur.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/BSD-3-Clause","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:600px;">
+  <h1 data-i18n="b_recur_title">반복 일정 규칙(RRULE) 생성기</h1>
+  <p class="sub" data-i18n="b_recur_sub">반복 규칙을 만들고 다음 실행일을 미리 봅니다. 캘린더(iCalendar)에 그대로 넣을 수 있어요.</p>
+  <div class="card">
+    <div class="field"><label data-i18n="b_recur_lbl_start">시작일시</label><input type="datetime-local" id="start"/></div>
+    <div class="field"><label data-i18n="b_recur_lbl_freq">반복 주기</label><div class="inline">
+      <select id="freq">
+        <option value="DAILY" data-i18n="b_recur_freq_daily">매일</option>
+        <option value="WEEKLY" selected data-i18n="b_recur_freq_weekly">매주</option>
+        <option value="MONTHLY" data-i18n="b_recur_freq_monthly">매월</option>
+        <option value="YEARLY" data-i18n="b_recur_freq_yearly">매년</option>
+      </select>
+      <span data-i18n="b_recur_lbl_interval">간격</span><input type="number" id="interval" value="1" min="1" style="width:70px;"><span id="iunit" data-i18n="b_recur_unit_weekly">주마다</span>
+    </div></div>
+    <div class="field" id="wdbox"><label data-i18n="b_recur_lbl_wd">요일 (매주)</label><div class="wd" id="wd"></div></div>
+    <div class="field"><label data-i18n="b_recur_lbl_end">종료</label><div class="inline">
+      <select id="endtype">
+        <option value="count" data-i18n="b_recur_end_count">횟수</option>
+        <option value="until" data-i18n="b_recur_end_until">날짜까지</option>
+        <option value="never" data-i18n="b_recur_end_never">없음</option>
+      </select>
+      <input type="number" id="count" value="10" min="1" style="width:80px;">
+      <input type="date" id="until" style="display:none;">
+    </div></div>
+    <div class="field"><label>RRULE</label><div class="out" id="rrule"></div><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_recur_btn_copy">📋 복사</button></div>
+    <div class="field"><label data-i18n="b_recur_lbl_list">다음 일정 (최대 10개)</label><div class="list" id="list"></div></div>
+    <div class="note" data-i18n-html="b_recur_note">오픈소스 <b>rrule.js</b>(BSD-3, <a href="https://github.com/jkbrzt/rrule" target="_blank" rel="noopener">jkbrzt/rrule</a>)를 자체 호스팅합니다. RFC 5545 기준. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/rrule-2/rrule.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var RRule=rrule.RRule;
+  var dayKeys=[['MO','b_recur_day_mo'],['TU','b_recur_day_tu'],['WE','b_recur_day_we'],['TH','b_recur_day_th'],['FR','b_recur_day_fr'],['SA','b_recur_day_sa'],['SU','b_recur_day_su']];
+  function renderWd(){
+    var wd=$('wd'); wd.innerHTML='';
+    dayKeys.forEach(function(d,i){
+      var l=document.createElement('label');
+      var cb=document.createElement('input'); cb.type='checkbox'; cb.value=d[0]; if(i<5)cb.checked=true;
+      var sp=document.createElement('span'); sp.setAttribute('data-i18n',d[1]); sp.textContent=t(d[1]);
+      l.appendChild(cb); l.appendChild(sp); wd.appendChild(l);
+    });
+  }
+  function pad(n){return(n<10?'0':'')+n;}
+  (function(){ var n=new Date(); n.setMinutes(0,0,0); $('start').value=n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate())+'T09:00';
+    var u=new Date(n.getTime()+1000*60*60*24*60); $('until').value=u.getFullYear()+'-'+pad(u.getMonth()+1)+'-'+pad(u.getDate()); })();
+  var unitMap={DAILY:'b_recur_unit_daily',WEEKLY:'b_recur_unit_weekly',MONTHLY:'b_recur_unit_monthly',YEARLY:'b_recur_unit_yearly'};
+  function build(){
+    var freq=$('freq').value; $('iunit').textContent=t(unitMap[freq]);
+    $('wdbox').style.display=freq==='WEEKLY'?'':'none';
+    var opts={freq:RRule[freq],interval:Math.max(1,+$('interval').value||1),dtstart:new Date($('start').value||Date.now())};
+    if(freq==='WEEKLY'){ var sel=[]; Array.prototype.forEach.call($('wd').querySelectorAll('input:checked'),function(c){sel.push(RRule[c.value]);}); if(sel.length)opts.byweekday=sel; }
+    var et=$('endtype').value; $('count').style.display=et==='count'?'':'none'; $('until').style.display=et==='until'?'':'none';
+    if(et==='count')opts.count=Math.max(1,+$('count').value||10); else if(et==='until')opts.until=new Date($('until').value);
+    var rule=new RRule(opts);
+    $('rrule').textContent=rule.toString(); window._r=rule.toString();
+    var all=et==='never'?rule.all(function(d,i){return i<10;}):rule.all();
+    var items=all.slice(0,10).map(function(d){ return '• '+d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes()); });
+    $('list').innerHTML=items.join('<br>')||t('b_recur_none');
+  }
+  renderWd();
+  ['start','freq','interval','endtype','count','until'].forEach(function(id){$(id).addEventListener('input',build);$(id).addEventListener('change',build);});
+  $('wd').addEventListener('change',build);
+  $('copy').addEventListener('click',function(){if(window._r)navigator.clipboard.writeText(window._r).then(function(){toast(t('b_recur_toast_copied'));});});
+  window.onI18n=function(){renderWd();build();};
+  build();
+</script>
+</body>
+</html>

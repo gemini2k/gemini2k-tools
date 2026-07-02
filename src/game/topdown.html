@@ -58,27 +58,27 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:640px;">
-  <h1>탑다운 미궁 탐험</h1>
-  <p class="sub">화면보다 훨씬 넓은 미궁을 돌아다니며 보물을 모으세요. 빨간 추격자에게 닿지 않도록 조심하세요!</p>
+  <h1 data-i18n="b_topdown_title">탑다운 미궁 탐험</h1>
+  <p class="sub" data-i18n="b_topdown_sub">화면보다 훨씬 넓은 미궁을 돌아다니며 보물을 모으세요. 빨간 추격자에게 닿지 않도록 조심하세요!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li><b>방향키 / WASD</b> 또는 아래 버튼·화면 드래그로 이동합니다</li>
-    <li>맵 곳곳의 <b>보물(노란 별)</b>을 모두 모으면 다음 단계로</li>
-    <li>오른쪽 위 <b>미니맵</b>으로 위치를 파악하세요. <b>Space/P</b>로 일시정지</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_topdown_howto_title">조작법</b><ol>
+    <li data-i18n="b_topdown_howto1"><b>방향키 / WASD</b> 또는 아래 버튼·화면 드래그로 이동합니다</li>
+    <li data-i18n="b_topdown_howto2">맵 곳곳의 <b>보물(노란 별)</b>을 모두 모으면 다음 단계로</li>
+    <li data-i18n="b_topdown_howto3">오른쪽 위 <b>미니맵</b>으로 위치를 파악하세요. <b>Space/P</b>로 일시정지</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
       <div class="scores">
-        <div class="sbox"><div class="l">단계</div><div class="v" id="level">1</div></div>
-        <div class="sbox"><div class="l">보물</div><div class="v" id="coins">0/0</div></div>
-        <div class="sbox"><div class="l">생명</div><div class="v" id="lives">3</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_topdown_lbl_level">단계</div><div class="v" id="level">1</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_topdown_lbl_coins">보물</div><div class="v" id="coins">0/0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_topdown_lbl_lives">생명</div><div class="v" id="lives">3</div></div>
       </div>
-      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+      <button class="btn btn-ghost" id="restart" type="button" data-i18n="b_topdown_btn_restart">다시 시작</button>
     </div>
     <div class="stage">
       <canvas id="cv" width="600" height="440"></canvas>
-      <div class="over" id="gover"><div><div class="big" id="goverBig">🗺️ 미궁 탐험</div><div class="sm" id="goverSm">넓은 미궁을 돌아다니며 보물을 모으세요!</div><button class="btn" id="goverBtn" type="button">시작하기</button></div></div>
+      <div class="over" id="gover"><div><div class="big" id="goverBig">🗺️ <span data-i18n="b_topdown_over_title">미궁 탐험</span></div><div class="sm" id="goverSm" data-i18n="b_topdown_over_sm">넓은 미궁을 돌아다니며 보물을 모으세요!</div><button class="btn" id="goverBtn" type="button" data-i18n="b_topdown_btn_start">시작하기</button></div></div>
     </div>
     <div class="joy">
       <button class="j-up" data-d="u" aria-label="위">▲</button>
@@ -86,7 +86,7 @@
       <button class="j-down" data-d="d" aria-label="아래">▼</button>
       <button class="j-right" data-d="r" aria-label="오른쪽">▶</button>
     </div>
-    <div class="note">맵은 매번 무작위로 생성됩니다. 추격자에게 닿으면 생명이 하나 줄고 출발점으로 돌아갑니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_topdown_note">맵은 매번 무작위로 생성됩니다. 추격자에게 닿으면 생명이 하나 줄고 출발점으로 돌아갑니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -109,7 +109,7 @@
     WORLD_W=1400+level*200; WORLD_H=1100+level*150;
     walls=[];
     // 외벽
-    var t=24; walls.push([0,0,WORLD_W,t]); walls.push([0,WORLD_H-t,WORLD_W,t]); walls.push([0,0,t,WORLD_H]); walls.push([WORLD_W-t,0,t,WORLD_H]);
+    var tmp=24; walls.push([0,0,WORLD_W,tmp]); walls.push([0,WORLD_H-tmp,WORLD_W,tmp]); walls.push([0,0,tmp,WORLD_H]); walls.push([WORLD_W-tmp,0,tmp,WORLD_H]);
     // 내부 벽(무작위 블록)
     var nW=14+level*3;
     for(var i=0;i<nW;i++){ var ww=rand(60,260), wh=rand(30,200), wx=rand(60,WORLD_W-60-ww), wy=rand(60,WORLD_H-60-wh);
@@ -186,14 +186,15 @@
   }
 
   var last=0, raf=0;
-  function loop(t){ raf=requestAnimationFrame(loop); var dt=Math.min(0.05,((t-last)/1000)||0); last=t;
+  function loop(tmp){ raf=requestAnimationFrame(loop); var dt=Math.min(0.05,((tmp-last)/1000)||0); last=tmp;
     if(!gc.isPaused()) update(dt); draw(); }
   function startLoop(){ if(!raf){ last=performance.now(); raf=requestAnimationFrame(loop); } }
 
   function begin(){ state='play'; $('gover').style.display='none'; }
-  function win(){ state='over'; $('goverBig').textContent='🎉 단계 '+level+' 완료!'; $('goverSm').textContent='모든 보물 획득! 다음은 더 넓어집니다'; $('goverBtn').textContent='다음 단계'; $('gover').style.display='flex'; level++; }
-  function lose(){ state='over'; $('goverBig').textContent='💀 게임 오버'; $('goverSm').textContent='단계 '+level+'에서 종료 — 보물 '+got+'/'+total; $('goverBtn').textContent='다시 시작'; $('gover').style.display='flex'; }
-  function nextOrRetry(){ if($('goverBtn').textContent==='다시 시작'||$('goverBtn').textContent==='시작하기'){ if(lives<=0||state==='ready'){ level=Math.max(1,level); if(lives<=0){ level=1; } lives=3; } }
+  function win(){ state='over'; $('goverBig').textContent='🎉 '+t('b_topdown_win_big').replace('{n}',level); $('goverSm').textContent=t('b_topdown_win_sm'); $('goverBtn').textContent=t('b_topdown_btn_next'); $('gover').style.display='flex'; level++; }
+  function lose(){ state='over'; $('goverBig').textContent='💀 '+t('b_topdown_lose_big'); $('goverSm').textContent=t('b_topdown_lose_sm').replace('{n}',level).replace('{got}',got).replace('{total}',total); $('goverBtn').textContent=t('b_topdown_btn_restart'); $('gover').style.display='flex'; }
+  function nextOrRetry(){ var btnTxt=$('goverBtn').textContent;
+    if(btnTxt===t('b_topdown_btn_restart')||btnTxt===t('b_topdown_btn_start')){ if(lives<=0||state==='ready'){ level=Math.max(1,level); if(lives<=0){ level=1; } lives=3; } }
     if(lives<=0){ lives=3; level=1; } build(); begin(); }
 
   // 입력
@@ -201,8 +202,8 @@
   document.addEventListener('keydown',function(e){ var k=KEYMAP[e.key]; if(k){ e.preventDefault(); keys[k]=true; } });
   document.addEventListener('keyup',function(e){ var k=KEYMAP[e.key]; if(k){ keys[k]=false; } });
   var joy=document.querySelector('.joy');
-  Array.prototype.forEach.call(joy.querySelectorAll('button'),function(b){ var d=b.dataset.d;
-    function on(e){ e.preventDefault(); keys[d]=true; b.classList.add('on'); } function off(e){ e&&e.preventDefault(); keys[d]=false; b.classList.remove('on'); }
+  Array.prototype.forEach.call(joy.querySelectorAll('button'),function(b){ var dkey=b.dataset.d;
+    function on(e){ e.preventDefault(); keys[dkey]=true; b.classList.add('on'); } function off(e){ e&&e.preventDefault(); keys[dkey]=false; b.classList.remove('on'); }
     b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off); });
   var origin=null;
   cv.addEventListener('pointerdown',function(e){ origin={x:e.clientX,y:e.clientY}; });
@@ -212,9 +213,11 @@
 
   $('goverBtn').addEventListener('click',function(e){ e.stopPropagation();
     if(state==='ready'){ build(); begin(); }
-    else if($('goverBig').textContent.indexOf('오버')>=0){ level=1; lives=3; build(); begin(); }
+    else if($('goverBig').textContent.indexOf(t('b_topdown_lose_big'))>=0){ level=1; lives=3; build(); begin(); }
     else { build(); begin(); } });
-  $('restart').addEventListener('click',function(){ level=1; lives=3; state='ready'; $('goverBig').textContent='🗺️ 미궁 탐험'; $('goverSm').textContent='넓은 미궁을 돌아다니며 보물을 모으세요!'; $('goverBtn').textContent='시작하기'; $('gover').style.display='flex'; build(); });
+  $('restart').addEventListener('click',function(){ level=1; lives=3; state='ready'; $('goverBig').textContent='🗺️ '+t('b_topdown_over_title'); $('goverSm').textContent=t('b_topdown_over_sm'); $('goverBtn').textContent=t('b_topdown_btn_start'); $('gover').style.display='flex'; build(); });
+
+  window.onI18n=function(){ if(state==='ready'){ $('goverBig').textContent='🗺️ '+t('b_topdown_over_title'); $('goverSm').textContent=t('b_topdown_over_sm'); $('goverBtn').textContent=t('b_topdown_btn_start'); } };
 
   build(); startLoop();
 })();

@@ -52,13 +52,13 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>표기(케이스) 변환기</h1>
-  <p class="sub">문장이나 식별자를 입력하면 camelCase·snake_case·kebab-case 등 모든 표기로 한 번에 바꿔 줍니다. 변수명·DB 컬럼·URL 슬러그 만들 때 쓰세요.</p>
+  <h1 data-i18n="b_caseconv_title">표기(케이스) 변환기</h1>
+  <p class="sub" data-i18n="b_caseconv_sub">문장이나 식별자를 입력하면 camelCase·snake_case·kebab-case 등 모든 표기로 한 번에 바꿔 줍니다. 변수명·DB 컬럼·URL 슬러그 만들 때 쓰세요.</p>
 
   <div class="card">
-    <input id="src" class="src" type="text" value="빛의여행 gemini2k tool name" autocomplete="off" aria-label="입력"/>
+    <input id="src" class="src" type="text" value="빛의여행 gemini2k tool name" autocomplete="off" aria-label="입력" data-i18n-ph="b_caseconv_input_placeholder"/>
     <div class="reslist" id="out"></div>
-    <div class="note">단어는 공백·하이픈·밑줄, 그리고 대소문자 경계(camelCase)로 구분해 인식합니다. 한글 등 대소문자가 없는 문자는 그대로 이어 붙입니다. 모든 변환은 브라우저에서 이루어집니다.</div>
+    <div class="note" data-i18n="b_caseconv_note">단어는 공백·하이픈·밑줄, 그리고 대소문자 경계(camelCase)로 구분해 인식합니다. 한글 등 대소문자가 없는 문자는 그대로 이어 붙입니다. 모든 변환은 브라우저에서 이루어집니다.</div>
   </div>
 </div>
 
@@ -74,29 +74,30 @@
   }
   function up(w){ return w.charAt(0).toUpperCase()+w.slice(1); }
   var FORMS=[
-    ['camelCase', function(t){ return t.map(function(w,i){ return i===0? w.toLowerCase() : up(w.toLowerCase()); }).join(''); }],
-    ['PascalCase', function(t){ return t.map(function(w){ return up(w.toLowerCase()); }).join(''); }],
-    ['snake_case', function(t){ return t.map(function(w){return w.toLowerCase();}).join('_'); }],
-    ['kebab-case', function(t){ return t.map(function(w){return w.toLowerCase();}).join('-'); }],
-    ['CONSTANT_CASE', function(t){ return t.map(function(w){return w.toUpperCase();}).join('_'); }],
-    ['Title Case', function(t){ return t.map(function(w){ return up(w.toLowerCase()); }).join(' '); }],
-    ['Sentence case', function(t){ var j=t.map(function(w){return w.toLowerCase();}).join(' '); return j? up(j):''; }],
-    ['lowercase', function(t){ return t.join(' ').toLowerCase(); }],
-    ['UPPERCASE', function(t){ return t.join(' ').toUpperCase(); }],
-    ['dot.case', function(t){ return t.map(function(w){return w.toLowerCase();}).join('.'); }],
-    ['path/case', function(t){ return t.map(function(w){return w.toLowerCase();}).join('/'); }]
+    ['camelCase', function(tk){ return tk.map(function(w,i){ return i===0? w.toLowerCase() : up(w.toLowerCase()); }).join(''); }],
+    ['PascalCase', function(tk){ return tk.map(function(w){ return up(w.toLowerCase()); }).join(''); }],
+    ['snake_case', function(tk){ return tk.map(function(w){return w.toLowerCase();}).join('_'); }],
+    ['kebab-case', function(tk){ return tk.map(function(w){return w.toLowerCase();}).join('-'); }],
+    ['CONSTANT_CASE', function(tk){ return tk.map(function(w){return w.toUpperCase();}).join('_'); }],
+    ['Title Case', function(tk){ return tk.map(function(w){ return up(w.toLowerCase()); }).join(' '); }],
+    ['Sentence case', function(tk){ var j=tk.map(function(w){return w.toLowerCase();}).join(' '); return j? up(j):''; }],
+    ['lowercase', function(tk){ return tk.join(' ').toLowerCase(); }],
+    ['UPPERCASE', function(tk){ return tk.join(' ').toUpperCase(); }],
+    ['dot.case', function(tk){ return tk.map(function(w){return w.toLowerCase();}).join('.'); }],
+    ['path/case', function(tk){ return tk.map(function(w){return w.toLowerCase();}).join('/'); }]
   ];
   function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]);}); }
 
   function render(){
-    var t=tokens($('src').value);
-    $('out').innerHTML = FORMS.map(function(f){ var v=f[1](t);
-      return '<div class="rrow"><span class="k">'+f[0]+'</span><span class="v">'+(esc(v)||'—')+'</span><button class="cp" data-v="'+esc(v)+'">복사</button></div>';
+    var tk=tokens($('src').value);
+    $('out').innerHTML = FORMS.map(function(f){ var v=f[1](tk);
+      return '<div class="rrow"><span class="k">'+f[0]+'</span><span class="v">'+(esc(v)||'—')+'</span><button class="cp" data-v="'+esc(v)+'">'+t('b_caseconv_copy')+'</button></div>';
     }).join('');
   }
+  window.onI18n = render;
   $('src').addEventListener('input', render);
   $('out').addEventListener('click', function(e){ var b=e.target.closest('.cp'); if(!b) return;
-    navigator.clipboard.writeText(b.dataset.v).then(function(){ toast('복사됐습니다'); }); });
+    navigator.clipboard.writeText(b.dataset.v).then(function(){ toast(t('b_caseconv_copied')); }); });
   render();
 </script>
 </body>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>CSV/JSON SQL 쿼리 실행기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="CSV나 JSON 데이터에 바로 SQL(SELECT·JOIN·GROUP BY·집계)을 실행해 결과를 표로 봅니다. 데이터 분석·검증에. AlaSQL 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/querysql.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="CSV/JSON SQL 쿼리 실행기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="CSV·JSON에 SQL 쿼리 실행(AlaSQL). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/querysql.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"CSV/JSON SQL 쿼리 실행기","description":"CSV나 JSON 데이터에 바로 SQL(SELECT·JOIN·GROUP BY·집계)을 실행해 결과를 표로 봅니다. 데이터 분석·검증에. AlaSQL 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다.","url":"https://gemini2k.co.kr/querysql.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_querysql_title">CSV/JSON SQL 쿼리 실행</h1>
+  <p class="sub" data-i18n="b_querysql_sub">표 데이터에 SQL을 바로 실행해 집계·필터·정렬합니다. 테이블명은 t 또는 data 입니다.</p>
+  <div class="card" style="max-width:none;">
+    <div class="frm"><label><span data-i18n="b_querysql_fmt_label">입력 형식</span> <select id="fmt"><option value="csv">CSV</option><option value="json" data-i18n="b_querysql_fmt_json">JSON 배열</option></select></label></div><textarea class="in" id="data" spellcheck="false">name,age,city\n김철수,30,서울\n이영희,25,부산\n박민수,35,서울\n최지우,28,부산\n정해인,42,서울</textarea><div class="frm" style="margin-top:.5rem"><input type="text" id="q" value="SELECT city, COUNT(*) AS n, ROUND(AVG(age),1) AS avg_age FROM t GROUP BY city ORDER BY n DESC" style="flex:1;min-width:240px;font-family:ui-monospace,monospace"><button class="btn" id="run" type="button" data-i18n="b_querysql_run">실행</button></div><div class="err" id="err"></div><div class="res" id="res" style="overflow-x:auto"></div>
+    <div class="note" data-i18n-html="b_querysql_note">오픈소스 <b>AlaSQL</b>(MIT, <a href="https://github.com/AlaSQL/alasql" target="_blank" rel="noopener">AlaSQL/alasql</a>)을 자체 호스팅합니다. 데이터는 전송되지 않고 브라우저에서만 처리됩니다.</div>
+  </div>
+</div>
+<script src="/vendor/alasql-4/alasql.min.js"></script><script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};function parse(){var raw=$("data").value.replace(/\\n/g,"\n").trim();if($("fmt").value==="json")return JSON.parse(raw);var ls=raw.split(/\r?\n/).filter(Boolean);var h=ls[0].split(",").map(function(x){return x.trim();});return ls.slice(1).map(function(l){var c=l.split(",");var o={};h.forEach(function(k,i){var v=(c[i]||"").trim();o[k]=/^-?\d+(\.\d+)?$/.test(v)?+v:v;});return o;});}function run(){$("err").textContent="";try{var rows=parse();["t","data"].forEach(function(tn){alasql("DROP TABLE IF EXISTS "+tn);alasql("CREATE TABLE "+tn);alasql.tables[tn].data=rows;});var r=alasql($("q").value);if(!Array.isArray(r)){$("res").innerHTML="<div class=\"ak-rate\">"+t('b_querysql_done')+"</div>";return;}if(!r.length){$("res").innerHTML="("+t('b_querysql_zero_rows')+")";return;}var cols=Object.keys(r[0]);var html="<table><tr>"+cols.map(function(c){return "<td><b>"+c+"</b></td>";}).join("")+"</tr>"+r.slice(0,200).map(function(row){return "<tr>"+cols.map(function(c){return "<td>"+(row[c]==null?"":String(row[c]))+"</td>";}).join("")+"</tr>";}).join("")+"</table>";$("res").innerHTML="<div class=\"ak-rate\"><b>"+r.length+t('b_querysql_rows_unit')+"</b></div>"+html;}catch(e){$("res").innerHTML="";$("err").textContent="⚠️ "+e.message;}}$("run").addEventListener("click",run);["data","q","fmt"].forEach(function(i){$(i).addEventListener("change",run);});window.onI18n=run;run();
+</script>
+</body>
+</html>

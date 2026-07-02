@@ -54,28 +54,28 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:460px;">
-  <h1>우주 슈팅</h1>
-  <p class="sub">우주선을 움직이면 자동으로 발사됩니다. 내려오는 적을 격추하세요!</p>
+  <h1 data-i18n="b_spaceshooter_title">우주 슈팅</h1>
+  <p class="sub" data-i18n="b_spaceshooter_sub">우주선을 움직이면 자동으로 발사됩니다. 내려오는 적을 격추하세요!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li>마우스나 손가락을 좌우로 움직여 우주선을 조종합니다(총알은 자동 발사)</li>
-    <li>화면을 클릭·터치하면 시작합니다</li>
-    <li>적이 바닥에 닿거나 부딪히면 생명이 줄어듭니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_spaceshooter_howto_title">조작법</b><ol>
+    <li data-i18n="b_spaceshooter_howto_1">마우스나 손가락을 좌우로 움직여 우주선을 조종합니다(총알은 자동 발사)</li>
+    <li data-i18n="b_spaceshooter_howto_2">화면을 클릭·터치하면 시작합니다</li>
+    <li data-i18n="b_spaceshooter_howto_3">적이 바닥에 닿거나 부딪히면 생명이 줄어듭니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
-      <button class="btn" id="restart" type="button">다시 시작</button>
+      <button class="btn" id="restart" type="button" data-i18n="b_spaceshooter_restart">다시 시작</button>
       <div class="scores">
-        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
-        <div class="sbox"><div class="l">생명</div><div class="v" id="lives">3</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_spaceshooter_label_score">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_spaceshooter_label_lives">생명</div><div class="v" id="lives">3</div></div>
       </div>
     </div>
     <div class="stage">
       <canvas id="cv" width="400" height="560" aria-label="우주 슈팅"></canvas>
-      <div class="overlay" id="ov"><div><div class="big">우주 슈팅</div><div class="sm">클릭하면 시작합니다</div></div></div>
+      <div class="overlay" id="ov"><div><div class="big" data-i18n="b_spaceshooter_ov_title">우주 슈팅</div><div class="sm" data-i18n="b_spaceshooter_ov_start">클릭하면 시작합니다</div></div></div>
     </div>
-    <div class="note">모든 진행은 브라우저에서만 이루어집니다. 데이터는 전송되지 않습니다.</div>
+    <div class="note" data-i18n="b_spaceshooter_note">모든 진행은 브라우저에서만 이루어집니다. 데이터는 전송되지 않습니다.</div>
   </div>
 </div>
 
@@ -85,19 +85,19 @@
   var $ = function(id){ return document.getElementById(id); };
   var cv=$('cv'), x=cv.getContext('2d'), W=400, H=560;
   var gc=GameCore.init({});
-  var ship, bullets, enemies, stars, score, lives, state='ready', last=0, fireT=0, spawnT=0, raf=null;
+  var ship, bullets, enemies, stars, score, lives, gameState='ready', last=0, fireT=0, spawnT=0, raf=null;
 
   function reset(){ ship={x:W/2,y:H-54,w:34}; bullets=[]; enemies=[]; score=0; lives=3; fireT=0; spawnT=0;
     stars=[]; for(var i=0;i<40;i++) stars.push({x:Math.random()*W,y:Math.random()*H,s:Math.random()*2+0.5});
-    $('score').textContent=0; $('lives').textContent=3; state='ready'; showOv('우주 슈팅','클릭하면 시작합니다'); draw(); }
-  function showOv(b,s){ $('ov').querySelector('.big').textContent=b; $('ov').querySelector('.sm').textContent=s; $('ov').classList.remove('hide'); }
-  function start(){ if(state==='play') return; if(state==='over') reset(); state='play'; $('ov').classList.add('hide'); last=performance.now(); if(!raf) raf=requestAnimationFrame(loop); }
+    $('score').textContent=0; $('lives').textContent=3; gameState='ready'; showOv(t('b_spaceshooter_ov_title'),t('b_spaceshooter_ov_start')); draw(); }
+  function showOv(b,sm){ $('ov').querySelector('.big').textContent=b; $('ov').querySelector('.sm').textContent=sm; $('ov').classList.remove('hide'); }
+  function start(){ if(gameState==='play') return; if(gameState==='over') reset(); gameState='play'; $('ov').classList.add('hide'); last=performance.now(); if(!raf) raf=requestAnimationFrame(loop); }
 
-  function loop(t){
-    var dt=Math.min(40,t-last); last=t;
-    if(state==='play' && !gc.isPaused()){
+  function loop(tm){
+    var dt=Math.min(40,tm-last); last=tm;
+    if(gameState==='play' && !gc.isPaused()){
       // 별
-      stars.forEach(function(s){ s.y+=s.s*dt*0.05; if(s.y>H){ s.y=0; s.x=Math.random()*W; } });
+      stars.forEach(function(st){ st.y+=st.s*dt*0.05; if(st.y>H){ st.y=0; st.x=Math.random()*W; } });
       // 발사
       fireT+=dt; if(fireT>260){ fireT=0; bullets.push({x:ship.x,y:ship.y-18}); }
       bullets.forEach(function(b){ b.y-=dt*0.6; }); bullets=bullets.filter(function(b){return b.y>-10;});
@@ -111,31 +111,34 @@
       // 적이 바닥/플레이어
       for(var k=enemies.length-1;k>=0;k--){ var e2=enemies[k];
         if(e2.y>H+e2.r || (Math.abs(e2.x-ship.x)<e2.r+14 && Math.abs(e2.y-ship.y)<e2.r+12)){ enemies.splice(k,1); lives--; $('lives').textContent=lives;
-          if(lives<=0){ state='over'; showOv('게임 오버','점수 '+score+' · 클릭하면 다시'); } }
+          if(lives<=0){ gameState='over'; showOv(t('b_spaceshooter_gameover'), t('b_spaceshooter_gameover_sub').replace('{score}', score)); } }
       }
     }
     draw(); raf=requestAnimationFrame(loop);
   }
   function draw(){
     x.fillStyle='#05060f'; x.fillRect(0,0,W,H);
-    x.fillStyle='rgba(255,255,255,.7)'; stars.forEach(function(s){ x.globalAlpha=s.s/2.5; x.fillRect(s.x,s.y,s.s,s.s); }); x.globalAlpha=1;
+    x.fillStyle='rgba(255,255,255,.7)'; stars.forEach(function(st){ x.globalAlpha=st.s/2.5; x.fillRect(st.x,st.y,st.s,st.s); }); x.globalAlpha=1;
     // 총알
     x.save(); x.shadowColor='#fde047'; x.shadowBlur=8; x.fillStyle='#fde047'; bullets.forEach(function(b){ x.fillRect(b.x-2,b.y-8,4,12); }); x.restore();
     // 적
     enemies.forEach(function(e){ var g=x.createRadialGradient(e.x,e.y,2,e.x,e.y,e.r); g.addColorStop(0,'#fca5a5'); g.addColorStop(1,'#dc2626'); x.fillStyle=g; x.beginPath(); x.arc(e.x,e.y,e.r,0,7); x.fill();
       x.fillStyle='rgba(0,0,0,.4)'; x.beginPath(); x.arc(e.x-4,e.y-3,3,0,7); x.arc(e.x+4,e.y-3,3,0,7); x.fill(); });
     // 우주선
-    var s=ship; var g2=x.createLinearGradient(0,s.y-16,0,s.y+14); g2.addColorStop(0,'#67e8f9'); g2.addColorStop(1,'#3b82f6');
-    x.fillStyle=g2; x.beginPath(); x.moveTo(s.x,s.y-18); x.lineTo(s.x+16,s.y+14); x.lineTo(s.x-16,s.y+14); x.closePath(); x.fill();
-    x.fillStyle='#fff'; x.beginPath(); x.arc(s.x,s.y-2,4,0,7); x.fill();
+    var sp=ship; var g2=x.createLinearGradient(0,sp.y-16,0,sp.y+14); g2.addColorStop(0,'#67e8f9'); g2.addColorStop(1,'#3b82f6');
+    x.fillStyle=g2; x.beginPath(); x.moveTo(sp.x,sp.y-18); x.lineTo(sp.x+16,sp.y+14); x.lineTo(sp.x-16,sp.y+14); x.closePath(); x.fill();
+    x.fillStyle='#fff'; x.beginPath(); x.arc(sp.x,sp.y-2,4,0,7); x.fill();
   }
   function moveX(clientX){ var rect=cv.getBoundingClientRect(); ship.x=Math.max(16,Math.min(W-16,(clientX-rect.left)/rect.width*W)); }
   cv.addEventListener('mousemove', function(e){ moveX(e.clientX); });
   cv.addEventListener('touchmove', function(e){ e.preventDefault(); moveX(e.touches[0].clientX); }, {passive:false});
-  function tap(){ if(state!=='play') start(); }
+  function tap(){ if(gameState!=='play') start(); }
   cv.addEventListener('click', tap); $('ov').addEventListener('click', tap);
   cv.addEventListener('touchstart', function(e){ e.preventDefault(); moveX(e.touches[0].clientX); tap(); }, {passive:false});
   $('restart').addEventListener('click', function(){ reset(); });
+
+  window.onI18n = function(){ if(gameState==='ready') showOv(t('b_spaceshooter_ov_title'),t('b_spaceshooter_ov_start')); };
+
   reset(); raf=requestAnimationFrame(loop);
 </script>
 </body>

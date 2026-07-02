@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>JavaScript 코드 벤치마크 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="두 개의 JavaScript 코드 조각의 실행 속도(ops/sec)를 통계적으로 측정·비교합니다. 성능 최적화·알고리즘 비교에. Benchmark.js 자체 호스팅, 모든 측정은 브라우저에서만 이루어집니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/jsbench.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="JavaScript 코드 벤치마크 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="JS 코드 ops/sec 벤치마크 비교(Benchmark.js). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/jsbench.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"JavaScript 코드 벤치마크","description":"두 개의 JavaScript 코드 조각의 실행 속도(ops/sec)를 통계적으로 측정·비교합니다. 성능 최적화·알고리즘 비교에. Benchmark.js 자체 호스팅, 모든 측정은 브라우저에서만 이루어집니다.","url":"https://gemini2k.co.kr/jsbench.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_jsbench_title">JavaScript 코드 벤치마크</h1>
+  <p class="sub" data-i18n="b_jsbench_sub">두 코드의 초당 처리횟수(ops/sec)를 통계적으로 비교합니다.</p>
+  <div class="card" style="max-width:none;">
+    <label style="font-weight:700;font-size:.85rem;display:block;margin-bottom:.25rem" data-i18n="b_jsbench_label_a">코드 A</label><textarea class="in" id="a" spellcheck="false" style="min-height:80px">var s="";for(var i=0;i<500;i++){s+=i;}</textarea><label style="font-weight:700;font-size:.85rem;display:block;margin:.5rem 0 .25rem" data-i18n="b_jsbench_label_b">코드 B</label><textarea class="in" id="b" spellcheck="false" style="min-height:80px">var a=[];for(var i=0;i<500;i++){a.push(i);}a.join("");</textarea><details style="margin-top:.5rem"><summary style="cursor:pointer;font-size:.85rem;color:var(--muted)" data-i18n="b_jsbench_setup_summary">공통 준비(setup) — 선택</summary><textarea class="in" id="setup" spellcheck="false" style="min-height:50px;margin-top:.4rem" data-i18n-ph="b_jsbench_setup_ph" placeholder="예: var data=[1,2,3];"></textarea></details><div class="frm" style="margin-top:.6rem"><button class="btn" id="run" type="button" data-i18n="b_jsbench_btn_run">벤치마크 실행</button><span id="st" style="align-self:center;color:var(--muted);font-size:.88rem"></span></div><div class="err" id="err"></div><div class="res" id="res"></div>
+    <div class="note" data-i18n-html="b_jsbench_note">오픈소스 <b>Benchmark.js</b>(MIT, <a href="https://github.com/bestiejs/benchmark.js" target="_blank" rel="noopener">bestiejs/benchmark.js</a>)와 <b>lodash</b>(MIT)를 자체 호스팅합니다. 측정에 수 초가 걸릴 수 있습니다. 모든 실행은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/lodash-4/lodash.min.js"></script><script src="/vendor/platform-1/platform.js"></script><script src="/vendor/benchmark-2/benchmark.js"></script><script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};function fmt(n){return Benchmark.formatNumber(n>=100?Math.round(n):+n.toFixed(2));}function run(){$("err").textContent="";$("res").innerHTML="";$("st").textContent=t('b_jsbench_status_running');$("run").disabled=true;var setup=$("setup").value;var defs=[["A",$("a").value],["B",$("b").value]];var results=[];var bad=false;var suite=new Benchmark.Suite();defs.forEach(function(d){if(!d[1].trim())return;suite.add(d[0],{fn:d[1],setup:setup});});suite.on("cycle",function(e){var b=e.target;if(b.error)return;results.push({name:b.name,hz:b.hz,rme:b.stats.rme,n:b.stats.sample.length});$("st").textContent=String(b);});suite.on("error",function(e){bad=true;var er=e.target.error;$("err").textContent="⚠️ "+(er&&er.message?er.message:t('b_jsbench_err_runtime'));});suite.on("complete",function(){$("run").disabled=false;if(bad){$("st").textContent="";return;}$("st").textContent=t('b_jsbench_status_done');results.sort(function(x,y){return y.hz-x.hz;});var max=results.length?results[0].hz:0;var head="<tr><td><b>"+t('b_jsbench_col_code')+"</b></td><td><b>ops/sec</b></td><td><b>"+t('b_jsbench_col_rme')+"</b></td><td><b>"+t('b_jsbench_col_sample')+"</b></td><td><b>"+t('b_jsbench_col_ratio')+"</b></td></tr>";var rows=results.map(function(r,i){return "<tr><td>"+r.name+(i===0?" ★":"")+"</td><td><b>"+fmt(r.hz)+"</b></td><td>±"+r.rme.toFixed(1)+"%</td><td>"+r.n+"</td><td>"+(max?(r.hz/max).toFixed(2)+"×":"-")+"</td></tr>";}).join("");var verdict=results.length>1?("<div class=\"ak-rate\" style=\"margin-top:.5rem\"><b>"+results[0].name+"</b> "+t('b_jsbench_verdict_prefix')+" "+(results[0].hz/results[1].hz).toFixed(2)+"× "+t('b_jsbench_verdict_suffix')+"</div>"):"";$("res").innerHTML="<table>"+head+rows+"</table>"+verdict;});try{suite.run({async:true});}catch(e){$("run").disabled=false;$("err").textContent="⚠️ "+e.message;}}$("run").addEventListener("click",run);
+window.onI18n=function(){if($("st").textContent===t('b_jsbench_status_running')||$("st").textContent===t('b_jsbench_status_done')){}};
+</script>
+</body>
+</html>

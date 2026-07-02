@@ -8,4 +8,6 @@ __pycache__/
 
 # 빌드 출력
 dist/
+dist2/
 apps/
+node_modules/

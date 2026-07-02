@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>손그림(스케치) 도형 생성기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="손으로 그린 듯한 스케치 스타일의 사각형·원·선·화살표를 만들어 PNG·SVG로 저장합니다. 발표자료·다이어그램 꾸미기에. Rough.js 자체 호스팅. 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/rough.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="손그림 도형 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="손그림 스타일 도형 생성·저장(Rough.js). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/rough.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem;font-size:.9rem;}
+select,input[type=number]{padding:.45rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);}input[type=color]{width:40px;height:34px;border:1px solid var(--border);border-radius:7px;background:none;}
+#cv{width:100%;max-width:520px;background:#fff;border:1px solid var(--border);border-radius:11px;display:block;margin:.4rem auto;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"손그림 도형 생성기","description":"손으로 그린 듯한 스케치 스타일 도형을 만듭니다(Rough.js).","url":"https://gemini2k.co.kr/rough.html","applicationCategory":"DesignApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:620px;">
+  <h1 data-i18n="b_rough_title">손그림 도형 생성기</h1>
+  <p class="sub" data-i18n="b_rough_sub">손으로 그린 듯한 스케치 스타일 도형을 만들어 저장합니다.</p>
+  <div class="card">
+    <div class="row">
+      <span data-i18n="b_rough_lbl_shape">도형</span> <select id="shape"><option value="rectangle" data-i18n="b_rough_shape_rect">사각형</option><option value="ellipse" data-i18n="b_rough_shape_ellipse">타원</option><option value="circle" data-i18n="b_rough_shape_circle">원</option><option value="line" data-i18n="b_rough_shape_line">선</option><option value="arrow" data-i18n="b_rough_shape_arrow">화살표</option></select>
+      <span data-i18n="b_rough_lbl_roughness">거칠기</span> <input type="number" id="rough" value="1.5" step="0.5" min="0" max="5" style="width:60px;">
+      <span data-i18n="b_rough_lbl_fill">채움</span> <select id="fillstyle"><option value="hachure" data-i18n="b_rough_fill_hachure">빗금</option><option value="solid" data-i18n="b_rough_fill_solid">단색</option><option value="zigzag" data-i18n="b_rough_fill_zigzag">지그재그</option><option value="cross-hatch" data-i18n="b_rough_fill_crosshatch">교차</option><option value="none" data-i18n="b_rough_fill_none">없음</option></select>
+    </div>
+    <div class="row">
+      <span data-i18n="b_rough_lbl_stroke">선색</span> <input type="color" id="stroke" value="#2563eb"> <span data-i18n="b_rough_lbl_fillcolor">채움색</span> <input type="color" id="fill" value="#93c5fd">
+      <span data-i18n="b_rough_lbl_sw">선굵기</span> <input type="number" id="sw" value="2" min="1" max="10" style="width:60px;">
+      <button class="btn" id="add" type="button" data-i18n="b_rough_btn_draw">그리기</button><button class="btn btn-ghost" id="clear" type="button" data-i18n="b_rough_btn_clear">지우기</button><button class="btn btn-ghost" id="png" type="button" data-i18n="b_rough_btn_png">⬇️ PNG</button>
+    </div>
+    <canvas id="cv" width="520" height="360"></canvas>
+    <div class="note" data-i18n-html="b_rough_note">오픈소스 <b>Rough.js</b>(MIT, <a href="https://github.com/rough-stuff/rough" target="_blank" rel="noopener">rough-stuff/rough</a>)를 자체 호스팅합니다. 무작위 손그림 효과라 그릴 때마다 조금씩 달라집니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/rough-4/rough.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var cv=$('cv'), rc=rough.canvas(cv), seed=1;
+  function draw(){ var ctx=cv.getContext('2d'); var opt={roughness:+$('rough').value,stroke:$('stroke').value,strokeWidth:+$('sw').value,fill:$('fill').value,fillStyle:$('fillstyle').value,seed:seed++};
+    var s=$('shape').value, W=cv.width,H=cv.height, cx=W/2,cy=H/2;
+    if(s==='rectangle')rc.rectangle(cx-160,cy-90,320,180,opt);
+    else if(s==='ellipse')rc.ellipse(cx,cy,300,180,opt);
+    else if(s==='circle')rc.circle(cx,cy,200,opt);
+    else if(s==='line')rc.line(cx-160,cy+60,cx+160,cy-60,opt);
+    else if(s==='arrow'){ rc.line(cx-150,cy,cx+130,cy,opt); rc.line(cx+130,cy,cx+95,cy-25,opt); rc.line(cx+130,cy,cx+95,cy+25,opt); }
+  }
+  $('add').addEventListener('click',draw);
+  $('clear').addEventListener('click',function(){cv.getContext('2d').clearRect(0,0,cv.width,cv.height);});
+  $('png').addEventListener('click',function(){ var tmp=document.createElement('canvas');tmp.width=cv.width;tmp.height=cv.height;var t=tmp.getContext('2d');t.fillStyle='#fff';t.fillRect(0,0,tmp.width,tmp.height);t.drawImage(cv,0,0);
+    var a=document.createElement('a');a.href=tmp.toDataURL('image/png');a.download='sketch.png';document.body.appendChild(a);a.click();a.remove(); });
+  draw();
+</script>
+</body>
+</html>

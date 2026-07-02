@@ -53,23 +53,23 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>환율 계산기</h1>
-  <p class="sub">환율을 직접 입력해 금액을 환산합니다. 인터넷 통신 없이 입력한 환율로만 계산하므로 빠르고 안전합니다.</p>
+  <h1 data-i18n="b_currency_h1">환율 계산기</h1>
+  <p class="sub" data-i18n="b_currency_sub">환율을 직접 입력해 금액을 환산합니다. 인터넷 통신 없이 입력한 환율로만 계산하므로 빠르고 안전합니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>두 통화 코드(예: USD, KRW)와 1단위당 환율을 입력합니다</li>
-    <li>위·아래 금액 칸 아무 곳에나 숫자를 넣으면 반대쪽이 자동 환산됩니다</li>
-    <li>환율은 은행·포털에서 확인한 값을 직접 넣으세요(실시간 아님)</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_currency_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_currency_howto1">두 통화 코드(예: USD, KRW)와 1단위당 환율을 입력합니다</li>
+    <li data-i18n="b_currency_howto2">위·아래 금액 칸 아무 곳에나 숫자를 넣으면 반대쪽이 자동 환산됩니다</li>
+    <li data-i18n="b_currency_howto3">환율은 은행·포털에서 확인한 값을 직접 넣으세요(실시간 아님)</li>
   </ol></div></div>
 
   <div class="card">
     <div class="conv">
       <div class="ccard"><input class="cur" id="cur1" value="USD"/><input class="amt" id="amt1" type="text" inputmode="decimal" value="1"/></div>
-      <div class="swap"><button id="swap" type="button" aria-label="통화 교환">⇅</button></div>
+      <div class="swap"><button id="swap" type="button" data-i18n-attr-aria-label="b_currency_swap_label" aria-label="통화 교환">⇅</button></div>
       <div class="ccard"><input class="cur" id="cur2" value="KRW"/><input class="amt" id="amt2" type="text" inputmode="decimal" value=""/></div>
     </div>
     <div class="raterow">1 <span id="r1">USD</span> = <input id="rate" type="text" inputmode="decimal" value="1390"/> <span id="r2">KRW</span></div>
-    <div class="note">실시간 환율이 아닙니다 — 직접 입력한 환율로만 계산합니다(외부 서버 호출 0). 정확한 환율은 거래 은행이나 포털에서 확인하세요. 모든 계산은 브라우저에서 이루어집니다.</div>
+    <div class="note" data-i18n="b_currency_note">실시간 환율이 아닙니다 — 직접 입력한 환율로만 계산합니다(외부 서버 호출 0). 정확한 환율은 거래 은행이나 포털에서 확인하세요. 모든 계산은 브라우저에서 이루어집니다.</div>
   </div>
 </div>
 
@@ -77,7 +77,10 @@
 <script>
   var $ = function(id){ return document.getElementById(id); };
   function num(s){ var v=parseFloat(String(s).replace(/[^0-9.]/g,'')); return isFinite(v)?v:0; }
-  function fmt(n){ return (Math.round(n*100)/100).toLocaleString('ko-KR',{maximumFractionDigits:2}); }
+  function fmt(n){
+    var locale = {ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[(typeof curLang==='function'?curLang():null)||'ko'] || 'ko-KR';
+    return (Math.round(n*100)/100).toLocaleString(locale,{maximumFractionDigits:2});
+  }
   function labels(){ $('r1').textContent=$('cur1').value.toUpperCase()||'?'; $('r2').textContent=$('cur2').value.toUpperCase()||'?'; }
   function from1(){ var r=num($('rate').value); $('amt2').value=fmt(num($('amt1').value)*r); }
   function from2(){ var r=num($('rate').value); $('amt1').value = r? fmt(num($('amt2').value)/r):''; }
@@ -90,6 +93,7 @@
     var r=num($('rate').value); if(r) $('rate').value=fmt(1/r);
     labels(); from1();
   });
+  window.onI18n = function(){ labels(); from1(); };
   labels(); from1();
 </script>
 </body>

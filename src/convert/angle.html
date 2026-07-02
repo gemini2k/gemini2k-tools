@@ -23,13 +23,13 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:540px;">
-  <h1>각도 변환기</h1>
-  <p class="sub">각도를 도·라디안·그라드·회전수·도분초로 한 번에 변환합니다. 줄을 클릭하면 복사돼요.</p>
+  <h1 data-i18n="b_angle_title">각도 변환기</h1>
+  <p class="sub" data-i18n="b_angle_sub">각도를 도·라디안·그라드·회전수·도분초로 한 번에 변환합니다. 줄을 클릭하면 복사돼요.</p>
   <div class="card">
-    <div class="row"><div class="fld"><label>값</label><input id="v" type="number" inputmode="decimal" value="90"/></div>
-    <div class="fld"><label>단위</label><select id="u"><option value="deg">도(°)</option><option value="rad">라디안(rad)</option><option value="grad">그라드(grad)</option><option value="turn">회전수(turn)</option></select></div></div>
+    <div class="row"><div class="fld"><label data-i18n="b_angle_lbl_value">값</label><input id="v" type="number" inputmode="decimal" value="90"/></div>
+    <div class="fld"><label data-i18n="b_angle_lbl_unit">단위</label><select id="u"><option value="deg" data-i18n="b_angle_opt_deg">도(°)</option><option value="rad" data-i18n="b_angle_opt_rad">라디안(rad)</option><option value="grad" data-i18n="b_angle_opt_grad">그라드(grad)</option><option value="turn" data-i18n="b_angle_opt_turn">회전수(turn)</option></select></div></div>
     <div id="res"></div>
-    <div class="note">π 라디안 = 180° = 200 grad = 0.5 회전. 도분초(DMS)는 1°=60′=3600″ 기준입니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_angle_note">π 라디안 = 180° = 200 grad = 0.5 회전. 도분초(DMS)는 1°=60′=3600″ 기준입니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -40,11 +40,12 @@
   function fmt(n){ return Math.abs(n)<1e-9?'0':(+n.toPrecision(10)).toString(); }
   function render(){ var v=parseFloat($('v').value); if(isNaN(v)){$('res').innerHTML='';return;} var u=$('u').value, deg;
     if(u==='deg')deg=v; else if(u==='rad')deg=v*180/Math.PI; else if(u==='grad')deg=v*0.9; else deg=v*360;
-    var items=[['도 (°)',fmt(deg)],['라디안 (rad)',fmt(deg*Math.PI/180)],['그라드 (grad)',fmt(deg/0.9)],['회전수 (turn)',fmt(deg/360)],['도분초 (DMS)',dms(deg)],['π 배수',fmt(deg/180)+' π']];
+    var items=[[t('b_angle_res_deg'),fmt(deg)],[t('b_angle_res_rad'),fmt(deg*Math.PI/180)],[t('b_angle_res_grad'),fmt(deg/0.9)],[t('b_angle_res_turn'),fmt(deg/360)],[t('b_angle_res_dms'),dms(deg)],[t('b_angle_res_pi'),fmt(deg/180)+' π']];
     $('res').innerHTML=items.map(function(it){return '<div class="item" data-v="'+(''+it[1]).replace(/"/g,'&quot;')+'"><div class="l">'+it[0]+'</div><div class="v">'+it[1]+'</div></div>';}).join('');
   }
+  window.onI18n=render;
   ['v','u'].forEach(function(id){$(id).addEventListener('input',render);$(id).addEventListener('change',render);});
-  $('res').addEventListener('click',function(e){var it=e.target.closest('.item');if(it){navigator.clipboard.writeText(it.dataset.v).then(function(){toast('복사됐습니다');});}});
+  $('res').addEventListener('click',function(e){var it=e.target.closest('.item');if(it){navigator.clipboard.writeText(it.dataset.v).then(function(){toast(t('b_angle_copied'));});}});
   render();
 </script>
 </body>

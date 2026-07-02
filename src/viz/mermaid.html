@@ -24,16 +24,16 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:880px;">
-  <h1>Mermaid 다이어그램</h1>
-  <p class="sub">텍스트만 입력하면 순서도·시퀀스·간트 등 다이어그램을 그려 줍니다. 실시간 미리보기 + SVG·PNG 저장.</p>
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol><li>예시 버튼으로 형식을 불러오거나 직접 Mermaid 문법으로 작성합니다</li><li>오른쪽(아래) 미리보기가 실시간으로 갱신됩니다</li><li>SVG·PNG로 저장해 문서·발표에 사용하세요</li></ol></div></div>
+  <h1 data-i18n="b_mermaid_title">Mermaid 다이어그램</h1>
+  <p class="sub" data-i18n="b_mermaid_sub">텍스트만 입력하면 순서도·시퀀스·간트 등 다이어그램을 그려 줍니다. 실시간 미리보기 + SVG·PNG 저장.</p>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_mermaid_howto_title">사용 방법</b><ol><li data-i18n="b_mermaid_howto_1">예시 버튼으로 형식을 불러오거나 직접 Mermaid 문법으로 작성합니다</li><li data-i18n="b_mermaid_howto_2">오른쪽(아래) 미리보기가 실시간으로 갱신됩니다</li><li data-i18n="b_mermaid_howto_3">SVG·PNG로 저장해 문서·발표에 사용하세요</li></ol></div></div>
   <div class="card">
-    <div class="ex"><button data-k="flow">순서도</button><button data-k="seq">시퀀스</button><button data-k="gantt">간트</button><button data-k="class">클래스</button><button data-k="pie">파이</button></div>
+    <div class="ex"><button data-k="flow" data-i18n="b_mermaid_ex_flow">순서도</button><button data-k="seq" data-i18n="b_mermaid_ex_seq">시퀀스</button><button data-k="gantt" data-i18n="b_mermaid_ex_gantt">간트</button><button data-k="class" data-i18n="b_mermaid_ex_class">클래스</button><button data-k="pie" data-i18n="b_mermaid_ex_pie">파이</button></div>
     <textarea id="in"></textarea>
     <div class="err" id="err"></div>
     <div class="actions"><button class="btn btn-ghost" id="svg" type="button">⬇️ SVG</button><button class="btn btn-ghost" id="png" type="button">⬇️ PNG</button></div>
     <div class="prev" id="prev"></div>
-    <div class="note">오픈소스 <b>Mermaid</b>(MIT, <a href="https://github.com/mermaid-js/mermaid" target="_blank" rel="noopener">mermaid-js/mermaid</a>)를 자체 호스팅합니다. 모든 렌더링은 브라우저에서만 이루어지며 입력은 서버로 전송되지 않습니다.</div>
+    <div class="note" data-i18n-html="b_mermaid_note">오픈소스 <b>Mermaid</b>(MIT, <a href="https://github.com/mermaid-js/mermaid" target="_blank" rel="noopener">mermaid-js/mermaid</a>)를 자체 호스팅합니다. 모든 렌더링은 브라우저에서만 이루어지며 입력은 서버로 전송되지 않습니다.</div>
   </div>
 </div>
 <script src="/vendor/mermaid-10/mermaid.min.js"></script>
@@ -52,19 +52,19 @@
   mermaid.initialize({startOnLoad:false, theme: dark?'dark':'default', securityLevel:'strict'});
   var seq=0;
   function render(){ var code=$('in').value.trim(); $('err').textContent=''; if(!code){$('prev').innerHTML='';return;}
-    var id='m'+(seq++);
-    mermaid.render(id,code).then(function(r){ $('prev').innerHTML=r.svg; window._svg=r.svg; })
-      .catch(function(e){ $('err').textContent='⚠️ 문법 오류: '+(e&&e.message?e.message.split('\n')[0]:e); });
+    var mid='m'+(seq++);
+    mermaid.render(mid,code).then(function(r){ $('prev').innerHTML=r.svg; window._svg=r.svg; })
+      .catch(function(e){ $('err').textContent=t('b_mermaid_err_syntax')+(e&&e.message?e.message.split('\n')[0]:e); });
   }
-  var t=null; $('in').addEventListener('input',function(){ clearTimeout(t); t=setTimeout(render,300); });
+  var tmr=null; $('in').addEventListener('input',function(){ clearTimeout(tmr); tmr=setTimeout(render,300); });
   document.querySelector('.ex').addEventListener('click',function(e){var b=e.target.closest('button');if(b){$('in').value=EX[b.dataset.k];render();}});
-  $('svg').addEventListener('click',function(){ if(!window._svg){toast('먼저 다이어그램을 그리세요');return;} var blob=new Blob([window._svg],{type:'image/svg+xml'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mermaid.svg';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); });
-  $('png').addEventListener('click',function(){ var svg=$('prev').querySelector('svg'); if(!svg){toast('먼저 다이어그램을 그리세요');return;}
-    var data=new XMLSerializer().serializeToString(svg); var img=new Image();
-    img.onload=function(){ var sc=2,w=(svg.viewBox&&svg.viewBox.baseVal.width)||svg.clientWidth||800,h=(svg.viewBox&&svg.viewBox.baseVal.height)||svg.clientHeight||600;
+  $('svg').addEventListener('click',function(){ if(!window._svg){toast(t('b_mermaid_toast_nodraw'));return;} var blob=new Blob([window._svg],{type:'image/svg+xml'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mermaid.svg';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); });
+  $('png').addEventListener('click',function(){ var svgEl=$('prev').querySelector('svg'); if(!svgEl){toast(t('b_mermaid_toast_nodraw'));return;}
+    var data=new XMLSerializer().serializeToString(svgEl); var img=new Image();
+    img.onload=function(){ var sc=2,w=(svgEl.viewBox&&svgEl.viewBox.baseVal.width)||svgEl.clientWidth||800,h=(svgEl.viewBox&&svgEl.viewBox.baseVal.height)||svgEl.clientHeight||600;
       var cv=document.createElement('canvas');cv.width=w*sc;cv.height=h*sc;var x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.scale(sc,sc);x.drawImage(img,0,0,w,h);
       var a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='mermaid.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},100); };
-    img.onerror=function(){toast('PNG 변환 실패');}; img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data); });
+    img.onerror=function(){toast(t('b_mermaid_toast_png_fail'));}; img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data); });
   $('in').value=EX.flow; render();
 </script>
 </body>

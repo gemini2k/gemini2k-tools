@@ -56,19 +56,19 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:840px;">
-  <h1>JSON ↔ YAML 변환기</h1>
-  <p class="sub">JSON과 YAML을 서로 변환합니다. 설정 파일·API 응답을 원하는 형식으로 바꿔 보세요.</p>
+  <h1 data-i18n="b_jsonyaml_title">JSON ↔ YAML 변환기</h1>
+  <p class="sub" data-i18n="b_jsonyaml_sub">JSON과 YAML을 서로 변환합니다. 설정 파일·API 응답을 원하는 형식으로 바꿔 보세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>변환 방향(JSON→YAML / YAML→JSON)을 고릅니다</li>
-    <li>왼쪽에 입력하면 오른쪽에 실시간으로 변환됩니다</li>
-    <li>‘복사’로 결과를 가져갑니다. 형식 오류는 아래에 안내됩니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_jsonyaml_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_jsonyaml_howto_1">변환 방향(JSON→YAML / YAML→JSON)을 고릅니다</li>
+    <li data-i18n="b_jsonyaml_howto_2">왼쪽에 입력하면 오른쪽에 실시간으로 변환됩니다</li>
+    <li data-i18n="b_jsonyaml_howto_3">'복사'로 결과를 가져갑니다. 형식 오류는 아래에 안내됩니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="seg" id="seg">
-      <button data-dir="j2y" class="on" type="button">JSON → YAML</button>
-      <button data-dir="y2j" type="button">YAML → JSON</button>
+      <button data-dir="j2y" class="on" type="button" data-i18n="b_jsonyaml_btn_j2y">JSON → YAML</button>
+      <button data-dir="y2j" type="button" data-i18n="b_jsonyaml_btn_y2j">YAML → JSON</button>
     </div>
     <textarea id="input">{
   "name": "gemini2k",
@@ -76,13 +76,13 @@
   "config": { "dark": true, "lang": "ko" }
 }</textarea>
     <div class="opts">
-      <label>들여쓰기 <select id="indent"><option value="2">2칸</option><option value="4">4칸</option></select></label>
+      <label><span data-i18n="b_jsonyaml_label_indent">들여쓰기</span> <select id="indent"><option value="2" data-i18n="b_jsonyaml_opt_2">2칸</option><option value="4" data-i18n="b_jsonyaml_opt_4">4칸</option></select></label>
     </div>
-    <div class="actions"><button class="btn" id="copy" type="button">📋 복사</button></div>
+    <div class="actions"><button class="btn" id="copy" type="button" data-i18n="b_jsonyaml_btn_copy">📋 복사</button></div>
     <div class="err" id="err"></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>
-    <div class="note">YAML 파싱·직렬화는 표준 라이브러리(js-yaml)를 사용하며 모두 브라우저 안에서 동작합니다. 함수·날짜 등 JSON으로 표현 불가능한 값은 변환되지 않을 수 있습니다.</div>
+    <div class="note" data-i18n="b_jsonyaml_note">YAML 파싱·직렬화는 표준 라이브러리(js-yaml)를 사용하며 모두 브라우저 안에서 동작합니다. 함수·날짜 등 JSON으로 표현 불가능한 값은 변환되지 않을 수 있습니다.</div>
   </div>
 </div>
 
@@ -93,19 +93,20 @@
   function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
   var dir='j2y';
   function run(){
-    var t=$('input').value, ind=parseInt($('indent').value,10); $('err').textContent='';
-    if(!t.trim()){ $('out').textContent=''; return; }
+    var inp=$('input').value, ind=parseInt($('indent').value,10); $('err').textContent='';
+    if(!inp.trim()){ $('out').textContent=''; return; }
     try{
-      if(dir==='j2y'){ var obj=JSON.parse(t); $('out').textContent=jsyaml.dump(obj,{indent:ind,lineWidth:-1,noRefs:true}); }
-      else { var o=jsyaml.load(t); $('out').textContent=JSON.stringify(o,null,ind); }
-    }catch(e){ $('out').textContent=''; $('err').textContent='⚠️ '+(dir==='j2y'?'JSON':'YAML')+' 형식 오류: '+(e.message||e); }
+      if(dir==='j2y'){ var obj=JSON.parse(inp); $('out').textContent=jsyaml.dump(obj,{indent:ind,lineWidth:-1,noRefs:true}); }
+      else { var o=jsyaml.load(inp); $('out').textContent=JSON.stringify(o,null,ind); }
+    }catch(e){ $('out').textContent=''; $('err').textContent='⚠️ '+(dir==='j2y'?'JSON':'YAML')+' '+t('b_jsonyaml_err_fmt')+(e.message||e); }
   }
+  window.onI18n=run;
   $('seg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; dir=b.dataset.dir;
     Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
     // 입력 예시 전환은 하지 않고, 현재 출력을 입력으로 넘기면 편함
     run(); });
   ['input','indent'].forEach(function(id){ $(id).addEventListener('input',run); $(id).addEventListener('change',run); });
-  $('copy').addEventListener('click',function(){ if($('out').textContent) navigator.clipboard.writeText($('out').textContent).then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click',function(){ if($('out').textContent) navigator.clipboard.writeText($('out').textContent).then(function(){toast(t('b_jsonyaml_toast_copied'));}); });
   run();
 </script>
 </body>

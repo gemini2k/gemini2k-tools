@@ -31,27 +31,27 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>주사위·랜덤 숫자</h1>
-  <p class="sub">주사위를 굴리거나 원하는 범위에서 무작위 숫자를 뽑습니다. 보드게임·추첨·제비뽑기에 쓰세요.</p>
+  <h1 data-i18n="b_dice_title">주사위·랜덤 숫자</h1>
+  <p class="sub" data-i18n="b_dice_sub">주사위를 굴리거나 원하는 범위에서 무작위 숫자를 뽑습니다. 보드게임·추첨·제비뽑기에 쓰세요.</p>
   <div class="card">
     <div class="row">
-      <label>주사위 개수 <input id="cnt" type="number" min="1" max="10" value="2"/></label>
-      <label>면 수 <input id="faces" type="number" min="2" max="100" value="6"/></label>
+      <label><span data-i18n="b_dice_cnt_label">주사위 개수</span> <input id="cnt" type="number" min="1" max="10" value="2"/></label>
+      <label><span data-i18n="b_dice_faces_label">면 수</span> <input id="faces" type="number" min="2" max="100" value="6"/></label>
     </div>
     <div class="dice" id="dice"></div>
     <div class="big" id="sum"></div>
-    <button class="btn" id="roll" type="button" style="width:100%;">🎲 굴리기</button>
+    <button class="btn" id="roll" type="button" style="width:100%;" data-i18n="b_dice_roll_btn">🎲 굴리기</button>
   </div>
   <div class="card" style="margin-top:1rem;">
     <div class="row">
-      <label>최소 <input id="min" type="number" value="1"/></label>
-      <label>최대 <input id="max" type="number" value="100"/></label>
-      <label>개수 <input id="n" type="number" min="1" max="100" value="1"/></label>
-      <label><input type="checkbox" id="uniq"/> 중복 없이</label>
+      <label><span data-i18n="b_dice_min_label">최소</span> <input id="min" type="number" value="1"/></label>
+      <label><span data-i18n="b_dice_max_label">최대</span> <input id="max" type="number" value="100"/></label>
+      <label><span data-i18n="b_dice_n_label">개수</span> <input id="n" type="number" min="1" max="100" value="1"/></label>
+      <label><input type="checkbox" id="uniq"/> <span data-i18n="b_dice_uniq_label">중복 없이</span></label>
     </div>
-    <button class="btn btn-ghost" id="pick" type="button" style="width:100%;">🔀 무작위 숫자 뽑기</button>
+    <button class="btn btn-ghost" id="pick" type="button" style="width:100%;" data-i18n="b_dice_pick_btn">🔀 무작위 숫자 뽑기</button>
     <div class="big" id="rand" style="font-size:1.6rem;"></div>
-    <div class="note">암호학적 난수(crypto)로 공정하게 추첨합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_dice_note">암호학적 난수(crypto)로 공정하게 추첨합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -62,14 +62,15 @@
   function roll(){ var cnt=Math.max(1,Math.min(10,parseInt($('cnt').value,10)||1)), f=Math.max(2,Math.min(100,parseInt($('faces').value,10)||6));
     var vals=[],sum=0; for(var i=0;i<cnt;i++){ var v=rnd(f)+1; vals.push(v); sum+=v; }
     $('dice').innerHTML=vals.map(function(v){ return '<div class="die">'+(f===6?PIPS[v]:v)+'</div>'; }).join('');
-    $('sum').textContent='합계 '+sum;
+    $('sum').textContent=t('b_dice_sum_label')+sum;
   }
-  function pick(){ var mn=parseInt($('min').value,10)||0, mx=parseInt($('max').value,10)||0; if(mx<mn){var t=mn;mn=mx;mx=t;}
+  function pick(){ var mn=parseInt($('min').value,10)||0, mx=parseInt($('max').value,10)||0; if(mx<mn){var tmp=mn;mn=mx;mx=tmp;}
     var n=Math.max(1,Math.min(100,parseInt($('n').value,10)||1)), range=mx-mn+1, uniq=$('uniq').checked;
-    if(uniq && n>range){ $('rand').textContent='범위보다 많이 뽑을 수 없어요'; return; }
+    if(uniq && n>range){ $('rand').textContent=t('b_dice_err_exceed'); return; }
     var out=[],used={}; while(out.length<n){ var v=mn+rnd(range); if(uniq){ if(used[v])continue; used[v]=1; } out.push(v); }
     $('rand').textContent=out.join(', ');
   }
+  window.onI18n=function(){ if($('sum').textContent) roll(); };
   $('roll').addEventListener('click',roll);
   $('pick').addEventListener('click',pick);
   roll();

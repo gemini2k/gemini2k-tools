@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>2D 물리 시뮬레이션 놀이터 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="중력·충돌이 적용되는 2D 물리 놀이터입니다. 도형을 떨어뜨리고 마우스로 던지며 물리 법칙을 체험하세요. Matter.js 자체 호스팅. 설치 없이 브라우저에서 바로 동작합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/physics.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="2D 물리 시뮬레이션 놀이터 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="중력·충돌 2D 물리 놀이터(Matter.js). 브라우저에서 바로."/><meta property="og:url" content="https://gemini2k.co.kr/physics.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:.7rem;}
+button.mini{padding:.5rem .8rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;cursor:pointer;font-weight:600;}
+#stage{width:100%;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#0f1226;touch-action:none;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"2D 물리 시뮬레이션 놀이터","description":"중력·충돌이 적용되는 2D 물리 놀이터입니다(Matter.js).","url":"https://gemini2k.co.kr/physics.html","applicationCategory":"GameApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:720px;">
+  <h1 data-i18n="b_physics_title">2D 물리 놀이터</h1>
+  <p class="sub" data-i18n="b_physics_sub">도형을 떨어뜨리고 마우스(터치)로 끌어 던져 보세요. 중력과 충돌이 실제처럼 작동합니다.</p>
+  <div class="card">
+    <div class="row">
+      <button class="mini" id="box" type="button" data-i18n="b_physics_btn_box">⬛ 상자</button>
+      <button class="mini" id="ball" type="button" data-i18n="b_physics_btn_ball">⚫ 공</button>
+      <button class="mini" id="rain" type="button" data-i18n="b_physics_btn_rain">🌧️ 도형 비</button>
+      <button class="mini" id="reset" type="button" data-i18n="b_physics_btn_reset">🗑️ 초기화</button>
+      <button class="mini" id="gravity" type="button" data-i18n="b_physics_btn_gravity">🙃 중력 반전</button>
+    </div>
+    <div id="stage"></div>
+    <div class="note" data-i18n-html="b_physics_note">오픈소스 <b>Matter.js</b>(MIT, <a href="https://github.com/liabru/matter-js" target="_blank" rel="noopener">liabru/matter-js</a>)를 자체 호스팅합니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/matter-0/matter.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var M=Matter, W=Math.min(680,document.querySelector('.card').clientWidth-32)||640, H=440;
+  var engine=M.Engine.create(), world=engine.world;
+  var render=M.Render.create({element:$('stage'),engine:engine,options:{width:W,height:H,wireframes:false,background:'#0f1226'}});
+  var acc=(getComputedStyle(document.documentElement).getPropertyValue('--accent')||'#2563eb').trim();
+  var colors=[acc,'#f59e0b','#ef4444','#10b981','#a855f7','#06b6d4'];
+  function wall(x,y,w,h){return M.Bodies.rectangle(x,y,w,h,{isStatic:true,render:{fillStyle:'#1e2440'}});}
+  M.Composite.add(world,[wall(W/2,H+20,W+100,40),wall(-20,H/2,40,H*2),wall(W+20,H/2,40,H*2)]);
+  function rc(){return colors[Math.floor(Math.random()*colors.length)];}
+  function addBox(x){ M.Composite.add(world,M.Bodies.rectangle(x||W/2,30,30+Math.random()*30,30+Math.random()*30,{restitution:.4,render:{fillStyle:rc()}})); }
+  function addBall(x){ M.Composite.add(world,M.Bodies.circle(x||W/2,30,16+Math.random()*16,{restitution:.7,render:{fillStyle:rc()}})); }
+  var mouse=M.Mouse.create(render.canvas), mc=M.MouseConstraint.create(engine,{mouse:mouse,constraint:{stiffness:.2,render:{visible:false}}});
+  M.Composite.add(world,mc); render.mouse=mouse;
+  M.Render.run(render); var runner=M.Runner.create(); M.Runner.run(runner,engine);
+  $('box').onclick=function(){addBox();}; $('ball').onclick=function(){addBall();};
+  $('rain').onclick=function(){ for(var i=0;i<12;i++){ (function(d){ setTimeout(function(){ Math.random()<.5?addBox(40+Math.random()*(W-80)):addBall(40+Math.random()*(W-80)); },d*70); })(i); } };
+  $('reset').onclick=function(){ M.Composite.allBodies(world).forEach(function(b){ if(!b.isStatic)M.Composite.remove(world,b); }); };
+  var gdir=1; $('gravity').onclick=function(){ gdir*=-1; engine.gravity.y=gdir; };
+  for(var i=0;i<6;i++)setTimeout(function(){addBox(40+Math.random()*(W-80));},i*100);
+</script>
+</body>
+</html>

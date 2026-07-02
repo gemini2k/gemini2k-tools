@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>페어와이즈(All-Pairs) 케이스 생성기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="파라미터·값을 입력하면 모든 2-요소 조합(페어)을 한 번씩 덮는 최소 테스트 케이스를 생성합니다. 조합 폭발을 줄이면서 결함 검출력을 유지하는 핵심 기법입니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/pairwise.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="페어와이즈(All-Pairs) 케이스 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="페어와이즈(All-Pairs) 최소 테스트 케이스 생성. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/pairwise.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"페어와이즈(All-Pairs) 케이스 생성기","description":"파라미터·값을 입력하면 모든 2-요소 조합(페어)을 한 번씩 덮는 최소 테스트 케이스를 생성합니다. 조합 폭발을 줄이면서 결함 검출력을 유지하는 핵심 기법입니다.","url":"https://gemini2k.co.kr/pairwise.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_pairwise_title">페어와이즈(All-Pairs) 케이스 생성</h1>
+  <p class="sub" data-i18n="b_pairwise_sub">모든 값 쌍을 덮는 최소 케이스를 만들어 조합 폭발을 줄입니다.</p>
+  <div class="card" style="max-width:none;">
+    <textarea class="in" id="in" spellcheck="false" style="min-height:130px">브라우저: Chrome, Safari, Edge, Firefox\nOS: Windows, macOS, Android, iOS\n결제: 카드, 계좌, 간편결제\n언어: 한국어, English</textarea><div class="frm" style="margin-top:.5rem"><button class="btn" id="run" type="button" data-i18n="b_pairwise_btn_run">페어와이즈 생성</button><button class="btn btn-ghost" id="csv" type="button">⬇️ CSV</button></div><div class="err" id="err"></div><div class="res" id="res" style="overflow-x:auto"></div>
+    <div class="note" data-i18n-html="b_pairwise_note">전체 조합 대비 케이스 수를 크게 줄이면서 2-요소 상호작용 결함을 검출합니다. 한 줄에 <code>파라미터: 값1, 값2, ...</code>로 입력하세요. 그리디 알고리즘 기반(최소에 근접). 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="audit-kit.js"></script><script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};var names=[],tests=[];function parse(){return $("in").value.replace(/\\n/g,"\n").split(/\r?\n/).map(function(l){var idx=l.indexOf(":");if(idx<0)return null;return {name:l.slice(0,idx).trim(),values:l.slice(idx+1).split(",").map(function(x){return x.trim();}).filter(Boolean)};}).filter(function(p){return p&&p.name&&p.values.length;});}function allpairs(vals){var n=vals.length;function key(i,x,j,y){return i+"_"+x+"_"+j+"_"+y;}var need=Object.create(null);for(var i=0;i<n;i++)for(var j=i+1;j<n;j++)for(var x=0;x<vals[i].length;x++)for(var y=0;y<vals[j].length;y++)need[key(i,x,j,y)]=1;var res=[],guard=0;while(Object.keys(need).length&&guard++<10000){var tmp=new Array(n).fill(-1);var f=Object.keys(need)[0].split("_");tmp[+f[0]]=+f[1];tmp[+f[2]]=+f[3];for(var k=0;k<n;k++){if(tmp[k]!==-1)continue;var best=0,bc=-1;for(var v=0;v<vals[k].length;v++){var cnt=0;for(var m=0;m<n;m++){if(m===k||tmp[m]===-1)continue;var lo=Math.min(k,m),hi=Math.max(k,m);var lv=lo===k?v:tmp[m],hv=hi===k?v:tmp[m];if(need[key(lo,lv,hi,hv)])cnt++;}if(cnt>bc){bc=cnt;best=v;}}tmp[k]=best;}for(var a=0;a<n;a++)for(var b=a+1;b<n;b++)delete need[key(a,tmp[a],b,tmp[b])];res.push(tmp.slice());}return res;}function renderRes(){if(!tests.length)return;var ps=parse();var vals=ps.map(function(p){return p.values;});var full=vals.reduce(function(a,v){return a*v.length;},1);$("res").innerHTML="<div class=\"ak-rate\"><b>"+tests.length+t('b_pairwise_unit_case')+"</b> "+t('b_pairwise_label_cases')+" <span>("+t('b_pairwise_total_prefix')+full+t('b_pairwise_total_mid')+Math.round((1-tests.length/full)*100)+t('b_pairwise_total_suffix')+")</span></div><table><tr><td><b>#</b></td>"+names.map(function(n){return "<td><b>"+n+"</b></td>";}).join("")+"</tr>"+tests.map(function(r,i){return "<tr><td>"+(i+1)+"</td>"+r.map(function(v){return "<td>"+v+"</td>";}).join("")+"</tr>";}).join("")+"</table>";}function run(){$("err").textContent="";var ps=parse();if(ps.length<2){$("err").textContent=t('b_pairwise_err_min');return;}names=ps.map(function(p){return p.name;});var vals=ps.map(function(p){return p.values;});var idxTests=allpairs(vals);tests=idxTests.map(function(r){return r.map(function(vi,k){return vals[k][vi];});});renderRes();}window.onI18n=renderRes;$("run").addEventListener("click",run);$("csv").addEventListener("click",function(){if(!tests.length)run();AuditKit.csv("pairwise.csv",[["#"].concat(names)].concat(tests.map(function(r,i){return [i+1].concat(r);})));});run();
+</script>
+</body>
+</html>

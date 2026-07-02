@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>DDL → 테이블정의서 변환 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="CREATE TABLE DDL을 붙여넣으면 컬럼·자료형·NULL여부·키·기본값을 파싱해 테이블정의서로 정리합니다. node-sql-parser 자체 호스팅."/>
+<link rel="canonical" href="https://gemini2k.co.kr/ddlparse.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="DDL → 테이블정의서 변환 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="CREATE TABLE DDL을 붙여넣으면 컬럼·자료형·NULL여부·키·기본값을 파싱해 테이블정의서로 정리합니다. node-sql-parser 자체 호스팅."/><meta property="og:url" content="https://gemini2k.co.kr/ddlparse.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"DDL → 테이블정의서 변환","description":"CREATE TABLE DDL을 붙여넣으면 컬럼·자료형·NULL여부·키·기본값을 파싱해 테이블정의서로 정리합니다. node-sql-parser 자체 호스팅.","url":"https://gemini2k.co.kr/ddlparse.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_ddlparse_title">DDL → 테이블정의서</h1>
+  <p class="sub" data-i18n="b_ddlparse_sub">CREATE TABLE 문을 테이블정의서 표로 변환합니다.</p>
+  <div class="card" style="max-width:none;">
+    <textarea class="in" id="in" spellcheck="false">CREATE TABLE user_master (
+  user_id    BIGINT NOT NULL AUTO_INCREMENT,
+  login_id   VARCHAR(50) NOT NULL,
+  user_name  VARCHAR(100) NOT NULL,
+  email      VARCHAR(200),
+  status     CHAR(1) DEFAULT 'Y',
+  reg_dt     DATETIME NOT NULL,
+  PRIMARY KEY (user_id)
+);</textarea><div class="err" id="err"></div><div class="res" id="res" style="margin-top:.6rem;overflow-x:auto"></div>
+    <div class="note" data-i18n-html="b_ddlparse_note">오픈소스 <b>node-sql-parser</b>(Apache-2.0, <a href="https://github.com/taozhi8833998/node-sql-parser" target="_blank" rel="noopener">node-sql-parser</a>)를 자체 호스팅합니다(MySQL 문법). 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/sqlparser-4/mysql.umd.js"></script><script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};
+  function run(){$('err').textContent='';var sql=$('in').value.trim();if(!sql){$('res').innerHTML='';return;}
+    try{var parser=new Parser();var ast=parser.astify(sql,{database:'mysql'});if(!Array.isArray(ast))ast=[ast];
+      var html='';
+      ast.forEach(function(st){if(st.type!=='create'||st.keyword!=='table')return;
+        var tbl=(st.table&&st.table[0]&&st.table[0].table)||'(table)';
+        var pk=[];(st.create_definitions||[]).forEach(function(d){if(d.constraint_type==='primary key'&&d.definition)d.definition.forEach(function(c){pk.push(c.column);});});
+        html+='<h3 style="font-size:.95rem;color:var(--accent);margin:.8rem 0 .3rem">'+tbl+'</h3><table><tr><td>'+t('b_ddlparse_col_column')+'</td><td>'+t('b_ddlparse_col_datatype')+'</td><td>'+t('b_ddlparse_col_null')+'</td><td>'+t('b_ddlparse_col_key')+'</td><td>'+t('b_ddlparse_col_default')+'</td></tr>';
+        (st.create_definitions||[]).forEach(function(d){if(d.resource!=='column')return;
+          var col=d.column.column;var dt=d.definition.dataType+(d.definition.length?'('+d.definition.length+')':'');
+          var nn=(d.nullable&&d.nullable.type==='not null')?'N':'Y';
+          var key=pk.indexOf(col)>=0?'PK':'';var def=d.default_val&&d.default_val.value?(d.default_val.value.value!==undefined?d.default_val.value.value:''):'';
+          html+='<tr><td><b>'+col+'</b></td><td>'+dt+'</td><td>'+nn+'</td><td>'+key+'</td><td>'+def+'</td></tr>';});
+        html+='</table>';});
+      $('res').innerHTML=html||'<span class="err">'+t('b_ddlparse_no_table')+'</span>';
+    }catch(e){$('res').innerHTML='';$('err').textContent='⚠️ '+t('b_ddlparse_parse_error')+': '+e.message;}}
+  $('in').addEventListener('input',run);run();
+  window.onI18n=run;
+</script>
+</body>
+</html>

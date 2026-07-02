@@ -27,27 +27,35 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:480px;">
-  <h1>가위바위보</h1>
-  <p class="sub">컴퓨터와 대결하세요! 아래에서 하나를 고르면 됩니다.</p>
+  <h1 data-i18n="b_rps_title">가위바위보</h1>
+  <p class="sub" data-i18n="b_rps_sub">컴퓨터와 대결하세요! 아래에서 하나를 고르면 됩니다.</p>
   <div class="card">
-    <div class="scores"><div class="sbox"><div class="l">승</div><div class="v" id="win" style="color:#16a34a">0</div></div><div class="sbox"><div class="l">무</div><div class="v" id="draw">0</div></div><div class="sbox"><div class="l">패</div><div class="v" id="lose" style="color:#ef4444">0</div></div><div class="sbox"><div class="l">연승</div><div class="v" id="streak" style="color:var(--accent)">0</div></div></div>
+    <div class="scores"><div class="sbox"><div class="l" data-i18n="b_rps_win">승</div><div class="v" id="win" style="color:#16a34a">0</div></div><div class="sbox"><div class="l" data-i18n="b_rps_draw">무</div><div class="v" id="draw">0</div></div><div class="sbox"><div class="l" data-i18n="b_rps_lose">패</div><div class="v" id="lose" style="color:#ef4444">0</div></div><div class="sbox"><div class="l" data-i18n="b_rps_streak">연승</div><div class="v" id="streak" style="color:var(--accent)">0</div></div></div>
     <div class="battle"><span id="me">❔</span><span class="vs">VS</span><span id="cpu">❔</span></div>
-    <div class="result" id="result">고르세요!</div>
+    <div class="result" id="result" data-i18n="b_rps_prompt">고르세요!</div>
     <div class="pick"><button data-m="0" type="button">✊</button><button data-m="1" type="button">✌️</button><button data-m="2" type="button">✋</button></div>
-    <div class="note">0=바위 1=가위 2=보. 컴퓨터는 무작위로 냅니다. 기록은 저장되지 않습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_rps_note">0=바위 1=가위 2=보. 컴퓨터는 무작위로 냅니다. 기록은 저장되지 않습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
-  var EMO=['✊','✌️','✋'], NAME=['바위','가위','보'], w=0,d=0,l=0,st=0;
-  function play(me){ var cpu=Math.floor(Math.random()*3); $('me').textContent=EMO[me]; $('cpu').textContent=EMO[cpu];
-    var r=(me-cpu+3)%3; // 0 무, 1 me win(바위>가위), 2 lose
-    if(r===0){ d++; st=0; $('result').textContent='무승부 😐'; $('result').style.color='var(--muted)'; }
-    else if(r===1){ w++; st++; $('result').textContent='이겼어요! 🎉'; $('result').style.color='#16a34a'; }
-    else { l++; st=0; $('result').textContent='졌어요 😢'; $('result').style.color='#ef4444'; }
+  var EMO=['✊','✌️','✋'], w=0,d=0,l=0,st=0;
+  function renderResult(r){
+    if(r===0){ d++; st=0; $('result').textContent=t('b_rps_result_draw'); $('result').style.color='var(--muted)'; }
+    else if(r===1){ w++; st++; $('result').textContent=t('b_rps_result_win'); $('result').style.color='#16a34a'; }
+    else { l++; st=0; $('result').textContent=t('b_rps_result_lose'); $('result').style.color='#ef4444'; }
     $('win').textContent=w; $('draw').textContent=d; $('lose').textContent=l; $('streak').textContent=st;
   }
+  var lastMe=-1;
+  function play(me){ var cpu=Math.floor(Math.random()*3); $('me').textContent=EMO[me]; $('cpu').textContent=EMO[cpu];
+    lastMe=me; var lastCpu=cpu;
+    var r=(me-cpu+3)%3; // 0 무, 1 me win(바위>가위), 2 lose
+    renderResult(r);
+  }
+  window.onI18n=function(){
+    if(lastMe<0){ $('result').textContent=t('b_rps_prompt'); $('result').style.color=''; }
+  };
   document.querySelector('.pick').addEventListener('click',function(e){var b=e.target.closest('button');if(b)play(+b.dataset.m);});
 </script>
 </body>

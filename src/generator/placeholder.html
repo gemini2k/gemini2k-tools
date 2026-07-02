@@ -25,19 +25,19 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:640px;">
-  <h1>플레이스홀더 이미지 생성기</h1>
-  <p class="sub">원하는 크기·색·문구의 더미(자리표시) 이미지를 만들어 저장합니다. 목업·테스트에 쓰세요.</p>
+  <h1 data-i18n="b_placeholder_title">플레이스홀더 이미지 생성기</h1>
+  <p class="sub" data-i18n="b_placeholder_sub">원하는 크기·색·문구의 더미(자리표시) 이미지를 만들어 저장합니다. 목업·테스트에 쓰세요.</p>
   <div class="card">
     <div class="grid">
-      <label>가로(px)<input id="w" type="number" value="600"/></label>
-      <label>세로(px)<input id="h" type="number" value="400"/></label>
-      <label>배경색<input id="bg" type="color" value="#cccccc"/></label>
-      <label>글자색<input id="fg" type="color" value="#666666"/></label>
-      <label style="grid-column:1/3;">문구 (비우면 크기 표시)<input id="txt" type="text" placeholder="예: PHOTO"/></label>
+      <label><span data-i18n="b_placeholder_label_w">가로(px)</span><input id="w" type="number" value="600"/></label>
+      <label><span data-i18n="b_placeholder_label_h">세로(px)</span><input id="h" type="number" value="400"/></label>
+      <label><span data-i18n="b_placeholder_label_bg">배경색</span><input id="bg" type="color" value="#cccccc"/></label>
+      <label><span data-i18n="b_placeholder_label_fg">글자색</span><input id="fg" type="color" value="#666666"/></label>
+      <label style="grid-column:1/3;"><span data-i18n="b_placeholder_label_txt">문구 (비우면 크기 표시)</span><input id="txt" type="text" data-i18n-ph="b_placeholder_ph_txt" placeholder="예: PHOTO"/></label>
     </div>
     <div class="cvwrap"><canvas id="cv"></canvas></div>
-    <div class="actions"><button class="btn" id="dl" type="button">⬇️ PNG 다운로드</button><button class="btn btn-ghost" id="copy" type="button">📋 Data URI 복사</button></div>
-    <div class="note">외부 placeholder 서비스 없이 브라우저에서 직접 생성하므로 인터넷 없이도 동작하고 추적이 없습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="actions"><button class="btn" id="dl" type="button" data-i18n="b_placeholder_btn_dl">⬇️ PNG 다운로드</button><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_placeholder_btn_copy">📋 Data URI 복사</button></div>
+    <div class="note" data-i18n="b_placeholder_note">외부 placeholder 서비스 없이 브라우저에서 직접 생성하므로 인터넷 없이도 동작하고 추적이 없습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -54,7 +54,7 @@
   }
   ['w','h','bg','fg','txt'].forEach(function(id){$(id).addEventListener('input',render);});
   $('dl').addEventListener('click',function(){cv.toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='placeholder_'+cv.width+'x'+cv.height+'.png';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120);});});
-  $('copy').addEventListener('click',function(){navigator.clipboard.writeText(cv.toDataURL('image/png')).then(function(){toast('Data URI 복사됨');});});
+  $('copy').addEventListener('click',function(){navigator.clipboard.writeText(cv.toDataURL('image/png')).then(function(){toast(t('b_placeholder_toast_copied'));});});
   render();
 </script>
 </body>

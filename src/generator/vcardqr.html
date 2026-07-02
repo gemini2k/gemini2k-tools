@@ -24,20 +24,20 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:600px;">
-  <h1>연락처(vCard) QR코드</h1>
-  <p class="sub">연락처 정보를 넣으면 QR을 만들어 줍니다. 스캔하면 휴대폰 주소록에 바로 저장돼요. 명함에 딱!</p>
+  <h1 data-i18n="b_vcardqr_title">연락처(vCard) QR코드</h1>
+  <p class="sub" data-i18n="b_vcardqr_sub">연락처 정보를 넣으면 QR을 만들어 줍니다. 스캔하면 휴대폰 주소록에 바로 저장돼요. 명함에 딱!</p>
   <div class="card">
     <div class="grid">
-      <label>이름<input id="name" type="text" value="홍길동"/></label>
-      <label>회사<input id="org" type="text" value="빛의여행"/></label>
-      <label>직함<input id="title" type="text" value="대표"/></label>
-      <label>전화<input id="tel" type="text" value="010-1234-5678"/></label>
-      <label>이메일<input id="email" type="text" value="hong@example.com"/></label>
-      <label>웹사이트<input id="url" type="text" value="https://gemini2k.co.kr"/></label>
+      <label><span data-i18n="b_vcardqr_lbl_name">이름</span><input id="name" type="text" value="홍길동"/></label>
+      <label><span data-i18n="b_vcardqr_lbl_org">회사</span><input id="org" type="text" value="빛의여행"/></label>
+      <label><span data-i18n="b_vcardqr_lbl_title">직함</span><input id="title" type="text" value="대표"/></label>
+      <label><span data-i18n="b_vcardqr_lbl_tel">전화</span><input id="tel" type="text" value="010-1234-5678"/></label>
+      <label><span data-i18n="b_vcardqr_lbl_email">이메일</span><input id="email" type="text" value="hong@example.com"/></label>
+      <label><span data-i18n="b_vcardqr_lbl_url">웹사이트</span><input id="url" type="text" value="https://gemini2k.co.kr"/></label>
     </div>
     <div class="qrwrap"><div id="qr"></div></div>
-    <div class="actions"><button class="btn" id="png" type="button">⬇️ PNG 다운로드</button></div>
-    <div class="note">표준 vCard 3.0 형식으로 만듭니다. 대부분의 스마트폰 기본 카메라로 스캔하면 ‘연락처 추가’가 떠요. 오픈소스 qr-code-styling(MIT) 자체 호스팅, 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="actions"><button class="btn" id="png" type="button" data-i18n="b_vcardqr_btn_download">⬇️ PNG 다운로드</button></div>
+    <div class="note" data-i18n="b_vcardqr_note">표준 vCard 3.0 형식으로 만듭니다. 대부분의 스마트폰 기본 카메라로 스캔하면 '연락처 추가'가 떠요. 오픈소스 qr-code-styling(MIT) 자체 호스팅, 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/qrstyling-1.6/qr-code-styling.js"></script>

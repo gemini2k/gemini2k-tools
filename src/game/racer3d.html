@@ -55,35 +55,35 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:600px;">
-  <h1>3D 레이싱</h1>
-  <p class="sub">넓은 서킷을 달리며 랩타임에 도전하세요. 트랙을 벗어나면 느려지니 코너를 잘 공략하세요!</p>
+  <h1 data-i18n="b_racer3d_title">3D 레이싱</h1>
+  <p class="sub" data-i18n="b_racer3d_sub">넓은 서킷을 달리며 랩타임에 도전하세요. 트랙을 벗어나면 느려지니 코너를 잘 공략하세요!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li><b>↑/W</b> 가속, <b>↓/S</b> 브레이크·후진, <b>←→/A D</b> 조향 (아래 버튼·화면 드래그도 가능)</li>
-    <li>회색 트랙을 따라 한 바퀴 돌면 <b>랩</b>이 올라갑니다 — 최고 랩타임에 도전!</li>
-    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_racer3d_howto_title">조작법</b><ol>
+    <li data-i18n-html="b_racer3d_howto1"><b>↑/W</b> 가속, <b>↓/S</b> 브레이크·후진, <b>←→/A D</b> 조향 (아래 버튼·화면 드래그도 가능)</li>
+    <li data-i18n-html="b_racer3d_howto2">회색 트랙을 따라 한 바퀴 돌면 <b>랩</b>이 올라갑니다 — 최고 랩타임에 도전!</li>
+    <li data-i18n-html="b_racer3d_howto3"><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
       <div class="scores">
-        <div class="sbox"><div class="l">랩</div><div class="v" id="lap">0</div></div>
-        <div class="sbox"><div class="l">현재</div><div class="v" id="cur">0.0</div></div>
-        <div class="sbox"><div class="l">최고랩</div><div class="v" id="best">-</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_racer3d_label_lap">랩</div><div class="v" id="lap">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_racer3d_label_cur">현재</div><div class="v" id="cur">0.0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_racer3d_label_best">최고랩</div><div class="v" id="best">-</div></div>
       </div>
-      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+      <button class="btn btn-ghost" id="restart" type="button" data-i18n="b_racer3d_btn_restart">다시 시작</button>
     </div>
     <div class="g3d-wrap">
       <div class="g3d-stage" id="stage"></div>
-      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig">🏁 3D 레이싱</div><div class="sm" id="goverSm">트랙을 달려 랩타임에 도전!</div><button class="btn" id="goverBtn" type="button">시작하기</button></div></div>
+      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig" data-i18n="b_racer3d_over_title">🏁 3D 레이싱</div><div class="sm" id="goverSm" data-i18n="b_racer3d_over_msg">트랙을 달려 랩타임에 도전!</div><button class="btn" id="goverBtn" type="button" data-i18n="b_racer3d_btn_start">시작하기</button></div></div>
     </div>
     <div class="joy">
-      <button class="j-up" data-d="u" aria-label="가속">▲</button>
-      <button class="j-left" data-d="l" aria-label="좌회전">◀</button>
-      <button class="j-down" data-d="d" aria-label="브레이크">▼</button>
-      <button class="j-right" data-d="r" aria-label="우회전">▶</button>
+      <button class="j-up" data-d="u" aria-label="가속" data-i18n-aria-label="b_racer3d_aria_accel">▲</button>
+      <button class="j-left" data-d="l" aria-label="좌회전" data-i18n-aria-label="b_racer3d_aria_left">◀</button>
+      <button class="j-down" data-d="d" aria-label="브레이크" data-i18n-aria-label="b_racer3d_aria_brake">▼</button>
+      <button class="j-right" data-d="r" aria-label="우회전" data-i18n-aria-label="b_racer3d_aria_right">▶</button>
     </div>
-    <div class="note">트랙(회색 링)을 벗어나면 잔디 저항으로 속도가 줄어듭니다. Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_racer3d_note">트랙(회색 링)을 벗어나면 잔디 저항으로 속도가 줄어듭니다. Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -162,7 +162,7 @@
   T.dom.addEventListener('pointermove',function(e){ if(!origin)return; var dx=e.clientX-origin.x,dy=e.clientY-origin.y,th=14; keys.l=dx<-th;keys.r=dx>th;keys.u=dy<-th;keys.d=dy>th; });
   function de(){ origin=null; keys.l=keys.r=keys.u=keys.d=false; } T.dom.addEventListener('pointerup',de); T.dom.addEventListener('pointercancel',de);
   $('goverBtn').addEventListener('click',function(e){ e.stopPropagation(); begin(); });
-  $('restart').addEventListener('click',function(){ state='ready'; $('goverBig').textContent='🏁 3D 레이싱'; $('goverSm').textContent='트랙을 달려 랩타임에 도전!'; $('goverBtn').textContent='시작하기'; $('gover').style.display=''; reset(); });
+  $('restart').addEventListener('click',function(){ state='ready'; $('goverBig').textContent=t('b_racer3d_over_title'); $('goverSm').textContent=t('b_racer3d_over_msg'); $('goverBtn').textContent=t('b_racer3d_btn_start'); $('gover').style.display=''; reset(); });
   buildOnce(); reset();
 })();
 </script>

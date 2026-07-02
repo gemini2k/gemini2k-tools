@@ -30,7 +30,7 @@
   .rrow input.bad{border-color:#ef4444;}
   .rrow input#roman{text-transform:uppercase;letter-spacing:.05em;}
   .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
-</style>
+input{min-width:0;}</style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
 <script type="application/ld+json">
 {
@@ -50,13 +50,13 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>로마 숫자 변환기</h1>
-  <p class="sub">아라비아 숫자와 로마 숫자를 서로 바꿉니다(1~3999). 아무 칸에나 입력하면 반대쪽이 즉시 바뀝니다.</p>
+  <h1 data-i18n="b_roman_title">로마 숫자 변환기</h1>
+  <p class="sub" data-i18n="b_roman_sub">아라비아 숫자와 로마 숫자를 서로 바꿉니다(1~3999). 아무 칸에나 입력하면 반대쪽이 즉시 바뀝니다.</p>
 
   <div class="card">
-    <div class="rrow"><label for="arabic">숫자</label><input id="arabic" inputmode="numeric" value="2026" autocomplete="off"/></div>
-    <div class="rrow"><label for="roman">로마 숫자</label><input id="roman" autocomplete="off"/></div>
-    <div class="note">표준 로마 숫자 규칙(I·V·X·L·C·D·M, 뺄셈 표기 IV·IX 등)을 사용하며 1~3999 범위를 지원합니다. 로마 숫자 입력은 대소문자를 가리지 않습니다. 모든 변환은 브라우저에서 이루어집니다.</div>
+    <div class="rrow"><label for="arabic" data-i18n="b_roman_label_arabic">숫자</label><input id="arabic" inputmode="numeric" value="2026" autocomplete="off"/></div>
+    <div class="rrow"><label for="roman" data-i18n="b_roman_label_roman">로마 숫자</label><input id="roman" autocomplete="off"/></div>
+    <div class="note" data-i18n="b_roman_note">표준 로마 숫자 규칙(I·V·X·L·C·D·M, 뺄셈 표기 IV·IX 등)을 사용하며 1~3999 범위를 지원합니다. 로마 숫자 입력은 대소문자를 가리지 않습니다. 모든 변환은 브라우저에서 이루어집니다.</div>
   </div>
 </div>
 

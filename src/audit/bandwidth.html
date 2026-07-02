@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>대역폭·전송시간 계산기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="데이터량과 회선속도로 전송시간을, 동시사용자와 사용자당 대역으로 필요 회선 대역폭을 계산합니다. 네트워크 설계."/>
+<link rel="canonical" href="https://gemini2k.co.kr/bandwidth.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="대역폭·전송시간 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="데이터량과 회선속도로 전송시간을, 동시사용자와 사용자당 대역으로 필요 회선 대역폭을 계산합니다. 네트워크 설계."/><meta property="og:url" content="https://gemini2k.co.kr/bandwidth.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"대역폭·전송시간 계산기","description":"데이터량과 회선속도로 전송시간을, 동시사용자와 사용자당 대역으로 필요 회선 대역폭을 계산합니다. 네트워크 설계.","url":"https://gemini2k.co.kr/bandwidth.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_bandwidth_title">대역폭·전송시간 계산기</h1>
+  <p class="sub" data-i18n="b_bandwidth_sub">전송시간과 필요 회선 대역폭을 계산합니다.</p>
+  <div class="card" style="max-width:none;">
+    <div class="frm">
+    <label><span data-i18n="b_bandwidth_label_data">데이터량</span><input type="number" id="data" value="500"></label>
+    <label><span data-i18n="b_bandwidth_label_unit">단위</span><select id="unit"><option value="1">MB</option><option value="1024">GB</option></select></label>
+    <label><span data-i18n="b_bandwidth_label_speed">회선속도(Mbps)</span><input type="number" id="speed" value="100"></label>
+    <label><span data-i18n="b_bandwidth_label_eff">효율(%)</span><input type="number" id="eff" value="80"></label>
+  </div><div class="frm">
+    <label><span data-i18n="b_bandwidth_label_users">동시 사용자</span><input type="number" id="users" value="200"></label>
+    <label><span data-i18n="b_bandwidth_label_per">사용자당 대역(Kbps)</span><input type="number" id="per" value="256"></label>
+  </div><div class="res" id="res"></div>
+    <div class="note" data-i18n="b_bandwidth_note">전송시간 = 데이터량 ÷ (회선속도 × 효율). bit/byte 환산(×8)과 회선 효율을 반영합니다. 참고용 추정입니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};
+  function dur(s){if(s<60)return s.toFixed(1)+t('b_bandwidth_sec');if(s<3600)return (s/60).toFixed(1)+t('b_bandwidth_min');return (s/3600).toFixed(2)+t('b_bandwidth_hour');}
+  function run(){var mb=(+$('data').value||0)*(+$('unit').value),spd=+$('speed').value||1,eff=(+$('eff').value||100)/100;
+    var sec=(mb*8)/(spd*eff);
+    var u=+$('users').value||0,per=+$('per').value||0;var needMbps=u*per/1024;
+    $('res').innerHTML='<div class="big">'+dur(sec)+'</div><table>'+
+    '<tr><td>'+t('b_bandwidth_row_transfer').replace('{mb}',mb).replace('{speed}',spd)+'</td><td><b>'+dur(sec)+'</b></td></tr>'+
+    '<tr><td>'+t('b_bandwidth_row_need').replace('{u}',u)+'</td><td><b>'+needMbps.toFixed(1)+' Mbps</b></td></tr>'+
+    '<tr><td>'+t('b_bandwidth_row_recommend')+'</td><td><b>'+(needMbps*1.3).toFixed(1)+' Mbps</b></td></tr></table>';}
+  window.onI18n=run;
+  ['data','unit','speed','eff','users','per'].forEach(function(i){$(i).addEventListener('input',run);$(i).addEventListener('change',run);});run();
+</script>
+</body>
+</html>

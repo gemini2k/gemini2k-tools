@@ -25,14 +25,14 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:460px;">
-  <h1>사이먼 게임</h1>
-  <p class="sub">불이 들어오는 순서를 기억했다가 똑같이 눌러 보세요. 단계가 오를수록 순서가 길어집니다.</p>
+  <h1 data-i18n="b_simon_title">사이먼 게임</h1>
+  <p class="sub" data-i18n="b_simon_sub">불이 들어오는 순서를 기억했다가 똑같이 눌러 보세요. 단계가 오를수록 순서가 길어집니다.</p>
   <div class="card">
-    <div class="stat"><div class="sbox"><div class="l">단계</div><div class="v" id="level">0</div></div><div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div></div>
-    <div class="msg" id="msg">시작 버튼을 누르세요</div>
+    <div class="stat"><div class="sbox"><div class="l" data-i18n="b_simon_level_label">단계</div><div class="v" id="level">0</div></div><div class="sbox"><div class="l" data-i18n="b_simon_best_label">최고</div><div class="v" id="best">0</div></div></div>
+    <div class="msg" id="msg" data-i18n="b_simon_msg_start">시작 버튼을 누르세요</div>
     <div class="pad" id="pad"><div class="b b0" data-i="0"></div><div class="b b1" data-i="1"></div><div class="b b2" data-i="2"></div><div class="b b3" data-i="3"></div></div>
-    <button class="btn" id="start" type="button" style="width:100%;margin-top:1rem;">▶ 시작</button>
-    <div class="note">단계마다 한 칸씩 길어집니다. 틀리면 게임이 끝나요. 소리는 브라우저에서 합성됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <button class="btn" id="start" type="button" style="width:100%;margin-top:1rem;" data-i18n="b_simon_btn_start">▶ 시작</button>
+    <div class="note" data-i18n="b_simon_note">단계마다 한 칸씩 길어집니다. 틀리면 게임이 끝나요. 소리는 브라우저에서 합성됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -44,14 +44,15 @@
     var o=actx.createOscillator(),g=actx.createGain(); o.frequency.value=FREQ[i]; o.connect(g); g.connect(actx.destination);
     g.gain.setValueAtTime(0.0001,actx.currentTime); g.gain.exponentialRampToValueAtTime(0.2,actx.currentTime+0.02); g.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+0.32); o.start(); o.stop(actx.currentTime+0.34); }catch(e){} }
   function flash(i){ var el=$('pad').children[i]; el.classList.add('on'); tone(i); setTimeout(function(){el.classList.remove('on');},300); }
-  function playSeq(){ accept=false; var k=0; var iv=setInterval(function(){ if(k>=seq.length){ clearInterval(iv); accept=true; $('msg').textContent='따라 누르세요!'; return; } flash(seq[k]); k++; }, 600); }
-  function next(){ level++; $('level').textContent=level; seq.push(Math.floor(Math.random()*4)); step=0; $('msg').textContent='잘 보세요...'; setTimeout(playSeq,700); }
-  function start(){ seq=[]; level=0; playing=true; next(); }
+  function playSeq(){ accept=false; var k=0; var iv=setInterval(function(){ if(k>=seq.length){ clearInterval(iv); accept=true; $('msg').textContent=t('b_simon_msg_follow'); return; } flash(seq[k]); k++; }, 600); }
+  function next(){ level++; $('level').textContent=level; seq.push(Math.floor(Math.random()*4)); step=0; $('msg').textContent=t('b_simon_msg_watch'); setTimeout(playSeq,700); }
+  function startGame(){ seq=[]; level=0; playing=true; next(); }
   function press(i){ if(!accept||!playing)return; flash(i);
     if(seq[step]===i){ step++; if(step===seq.length){ accept=false; if(level>best){best=level;$('best').textContent=best;} setTimeout(next,700); } }
-    else { playing=false; accept=false; $('msg').textContent='💥 틀렸어요! 단계 '+level+' 도달'; } }
+    else { playing=false; accept=false; $('msg').textContent=t('b_simon_msg_fail').replace('{n}',level); } }
   $('pad').addEventListener('pointerdown',function(e){var b=e.target.closest('.b');if(b)press(+b.dataset.i);});
-  $('start').addEventListener('click',start);
+  $('start').addEventListener('click',startGame);
+  window.onI18n=function(){ if(!playing){ $('msg').textContent=t('b_simon_msg_start'); } };
 </script>
 </body>
 </html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>HTML → 이미지(PNG) 캡처 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="HTML·CSS로 만든 요소를 그대로 PNG 이미지로 캡처해 저장합니다. 카드·배지·코드 스니펫 이미지화에. dom-to-image 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/domimage.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="HTML → 이미지(PNG) 캡처 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="HTML 요소를 PNG로 캡처·저장(dom-to-image). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/domimage.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:150px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.84rem;color:var(--text);resize:vertical;}
+.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin:.6rem 0;}
+.stagewrap{background:repeating-conic-gradient(#eee 0% 25%,#fff 0% 50%) 50%/20px 20px;border:1px solid var(--border);border-radius:11px;padding:1rem;overflow:auto;}
+#stage{display:inline-block;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"HTML → 이미지(PNG) 캡처","description":"HTML 요소를 PNG 이미지로 캡처합니다(dom-to-image).","url":"https://gemini2k.co.kr/domimage.html","applicationCategory":"DesignApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:820px;">
+  <h1 data-i18n="b_domimage_title">HTML → 이미지(PNG) 캡처</h1>
+  <p class="sub" data-i18n="b_domimage_sub">HTML·CSS로 만든 요소를 그대로 PNG 이미지로 저장합니다. 카드·배지·인용구 이미지화에 좋아요.</p>
+  <div class="card">
+    <textarea id="in">&lt;div style="padding:28px 32px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border-radius:18px;font-family:sans-serif;max-width:360px;"&gt;
+  &lt;div style="font-size:13px;opacity:.85;"&gt;오늘의 한마디&lt;/div&gt;
+  &lt;div style="font-size:22px;font-weight:800;margin-top:8px;line-height:1.4;"&gt;작은 습관이 큰 변화를 만든다.&lt;/div&gt;
+&lt;/div&gt;</textarea>
+    <div class="actions"><button class="btn" id="render" type="button" data-i18n="b_domimage_btn_preview">미리보기</button><button class="btn" id="png" type="button" data-i18n="b_domimage_btn_save">⬇️ PNG 저장</button><label style="font-size:.85rem;align-self:center;"><span data-i18n="b_domimage_scale">배율</span> <select id="scale"><option>1</option><option selected>2</option><option>3</option></select></label></div>
+    <div class="stagewrap"><div id="stage"></div></div>
+    <div class="note" data-i18n-html="b_domimage_note">오픈소스 <b>dom-to-image-more</b>(MIT, <a href="https://github.com/1904labs/dom-to-image-more" target="_blank" rel="noopener">1904labs/dom-to-image-more</a>)를 자체 호스팅합니다. 외부 이미지·폰트는 보안상 포함되지 않을 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/domtoimage-3/dom-to-image-more.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function render(){ $('stage').innerHTML=$('in').value; }
+  $('render').addEventListener('click',render);
+  var _t; $('in').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(render,400);});
+  $('png').addEventListener('click',function(){ render(); var node=$('stage').firstElementChild||$('stage'); var scale=+$('scale').value;
+    domtoimage.toPng(node,{quality:1,scale:scale,width:node.offsetWidth*scale,height:node.offsetHeight*scale,style:{transform:'scale('+scale+')',transformOrigin:'top left'}}).then(function(url){
+      var a=document.createElement('a');a.href=url;a.download='capture.png';document.body.appendChild(a);a.click();a.remove(); }).catch(function(e){ alert(t('b_domimage_err_capture')+e.message); }); });
+  render();
+</script>
+</body>
+</html>

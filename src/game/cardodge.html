@@ -57,32 +57,32 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:420px;">
-  <h1>자동차 회피</h1>
-  <p class="sub">좌우로 차선을 옮겨 마주 오는 차를 피하세요. 갈수록 빨라집니다!</p>
+  <h1 data-i18n="b_cardodge_title">자동차 회피</h1>
+  <p class="sub" data-i18n="b_cardodge_sub">좌우로 차선을 옮겨 마주 오는 차를 피하세요. 갈수록 빨라집니다!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li>아래 ◀ ▶ 버튼 또는 방향키(←→)로 차를 옮깁니다</li>
-    <li>모바일은 화면 좌/우를 탭하거나 좌우로 스와이프합니다</li>
-    <li>화면을 클릭·터치하면 시작합니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_cardodge_howto_title">조작법</b><ol>
+    <li data-i18n="b_cardodge_howto1">아래 ◀ ▶ 버튼 또는 방향키(←→)로 차를 옮깁니다</li>
+    <li data-i18n="b_cardodge_howto2">모바일은 화면 좌/우를 탭하거나 좌우로 스와이프합니다</li>
+    <li data-i18n="b_cardodge_howto3">화면을 클릭·터치하면 시작합니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
-      <button class="btn" id="restart" type="button">다시 시작</button>
+      <button class="btn" id="restart" type="button" data-i18n="b_cardodge_btn_restart">다시 시작</button>
       <div class="scores">
-        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
-        <div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_cardodge_label_score">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_cardodge_label_best">최고</div><div class="v" id="best">0</div></div>
       </div>
     </div>
     <div class="stage">
       <canvas id="cv" width="360" height="540" aria-label="자동차 회피"></canvas>
-      <div class="overlay" id="ov"><div><div class="big">자동차 회피</div><div class="sm">클릭하면 시작합니다</div></div></div>
+      <div class="overlay" id="ov"><div><div class="big" id="ov-big">자동차 회피</div><div class="sm" id="ov-sm">클릭하면 시작합니다</div></div></div>
     </div>
     <div class="dpad">
       <button id="left" aria-label="왼쪽">◀</button>
       <button id="right" aria-label="오른쪽">▶</button>
     </div>
-    <div class="note">모든 진행은 브라우저에서만 이루어지며 최고 점수만 이 기기에 저장됩니다.</div>
+    <div class="note" data-i18n="b_cardodge_note">모든 진행은 브라우저에서만 이루어지며 최고 점수만 이 기기에 저장됩니다.</div>
   </div>
 </div>
 
@@ -95,12 +95,12 @@
   var lane, cars, score, best=+(localStorage.getItem('cardodge:best')||0), state='ready', last=0, spawnT=0, speed, dash=0, raf=null;
   $('best').textContent=best;
   function laneX(l){ return l*LW + LW/2; }
-  function reset(){ lane=1; cars=[]; score=0; speed=0.22; spawnT=0; dash=0; $('score').textContent=0; state='ready'; showOv('자동차 회피','클릭하면 시작합니다'); draw(); }
-  function showOv(b,s){ $('ov').querySelector('.big').textContent=b; $('ov').querySelector('.sm').textContent=s; $('ov').classList.remove('hide'); }
+  function reset(){ lane=1; cars=[]; score=0; speed=0.22; spawnT=0; dash=0; $('score').textContent=0; state='ready'; showOv(t('b_cardodge_title'),t('b_cardodge_ov_start')); draw(); }
+  function showOv(b,s){ $('ov-big').textContent=b; $('ov-sm').textContent=s; $('ov').classList.remove('hide'); }
   function start(){ if(state==='play') return; if(state==='over') reset(); state='play'; $('ov').classList.add('hide'); last=performance.now(); if(!raf) raf=requestAnimationFrame(loop); }
   function move(d){ if(state!=='play'){ start(); return; } lane=Math.max(0,Math.min(LANES-1,lane+d)); }
 
-  function loop(t){ var dt=Math.min(40,t-last); last=t;
+  function loop(ts){ var dt=Math.min(40,ts-last); last=ts;
     if(state==='play' && !gc.isPaused()){
       dash=(dash+speed*dt)%40; score+=dt*0.02; $('score').textContent=Math.floor(score);
       speed+=dt*0.00002;
@@ -111,7 +111,7 @@
       var py=H-CARH-14;
       for(var i=0;i<cars.length;i++){ var c=cars[i]; if(c.l===lane && c.y+CARH>py && c.y<py+CARH){ state='over';
         if(Math.floor(score)>best){ best=Math.floor(score); localStorage.setItem('cardodge:best',best); $('best').textContent=best; }
-        showOv('💥 충돌!','점수 '+Math.floor(score)+' · 클릭하면 다시'); break; } }
+        showOv(t('b_cardodge_ov_crash'), t('b_cardodge_ov_retry').replace('{score}', Math.floor(score))); break; } }
     }
     draw(); raf=requestAnimationFrame(loop);
   }
@@ -138,6 +138,7 @@
   cv.addEventListener('touchstart',function(e){ sx=e.touches[0].clientX; },{passive:true});
   cv.addEventListener('touchend',function(e){ if(sx==null)return; var dx=e.changedTouches[0].clientX-sx; if(state!=='play'){ start(); sx=null; return; } if(Math.abs(dx)>20) move(dx>0?1:-1); else { var rect=cv.getBoundingClientRect(); move((e.changedTouches[0].clientX-rect.left)/rect.width<0.5?-1:1); } sx=null; },{passive:true});
   $('restart').addEventListener('click', function(){ reset(); });
+  window.onI18n = function(){ if(state==='ready'){ showOv(t('b_cardodge_title'),t('b_cardodge_ov_start')); } else if(state==='over'){ showOv(t('b_cardodge_ov_crash'), t('b_cardodge_ov_retry').replace('{score}', Math.floor(score))); } };
   reset(); raf=requestAnimationFrame(loop);
 </script>
 </body>

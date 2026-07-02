@@ -27,15 +27,15 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:480px;">
-  <h1>클리커 게임</h1>
-  <p class="sub">코인을 클릭해 모으고, 업그레이드를 사서 자동으로 벌어 보세요!</p>
+  <h1 data-i18n="b_clicker_title">클리커 게임</h1>
+  <p class="sub" data-i18n="b_clicker_sub">코인을 클릭해 모으고, 업그레이드를 사서 자동으로 벌어 보세요!</p>
   <div class="card">
     <div class="count"><span id="coins">0</span> 🪙</div>
     <div class="rate" id="rate">클릭당 1 · 초당 0</div>
     <button class="coin" id="coin" type="button">🪙</button>
     <div class="ups" id="ups"></div>
-    <button class="btn btn-ghost" id="reset" type="button" style="width:100%;margin-top:.8rem;">처음부터</button>
-    <div class="note">진행 상황은 이 기기(localStorage)에 자동 저장됩니다. 가볍게 즐기는 방치형 게임이에요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <button class="btn btn-ghost" id="reset" type="button" style="width:100%;margin-top:.8rem;" data-i18n="b_clicker_reset">처음부터</button>
+    <div class="note" data-i18n="b_clicker_note">진행 상황은 이 기기(localStorage)에 자동 저장됩니다. 가볍게 즐기는 방치형 게임이에요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -43,26 +43,30 @@
   var $=function(id){return document.getElementById(id);};
   var KEY='clicker:save';
   var UPS=[
-    {id:'click',n:'강한 클릭',d:'클릭당 +1',base:15,type:'click',amt:1},
-    {id:'auto',n:'자동 채굴기',d:'초당 +1',base:50,type:'auto',amt:1},
-    {id:'factory',n:'공장',d:'초당 +8',base:500,type:'auto',amt:8},
-    {id:'bank',n:'은행',d:'초당 +50',base:5000,type:'auto',amt:50}
+    {id:'click',nk:'b_clicker_up_click_name',dk:'b_clicker_up_click_desc',base:15,type:'click',amt:1},
+    {id:'auto',nk:'b_clicker_up_auto_name',dk:'b_clicker_up_auto_desc',base:50,type:'auto',amt:1},
+    {id:'factory',nk:'b_clicker_up_factory_name',dk:'b_clicker_up_factory_desc',base:500,type:'auto',amt:8},
+    {id:'bank',nk:'b_clicker_up_bank_name',dk:'b_clicker_up_bank_desc',base:5000,type:'auto',amt:50}
   ];
   var S={coins:0, perClick:1, perSec:0, owned:{}};
   function load(){ try{var d=JSON.parse(localStorage.getItem(KEY));if(d){S=d;S.owned=S.owned||{};}}catch(e){} }
   function save(){ try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} }
   function cost(u){ var o=S.owned[u.id]||0; return Math.floor(u.base*Math.pow(1.15,o)); }
-  function render(){ $('coins').textContent=Math.floor(S.coins).toLocaleString(); $('rate').textContent='클릭당 '+S.perClick+' · 초당 '+S.perSec;
+  function render(){
+    var loc={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[window.curLang?curLang():'ko'];
+    $('coins').textContent=Math.floor(S.coins).toLocaleString(loc);
+    $('rate').textContent=t('b_clicker_rate_fmt').replace('{perClick}',S.perClick).replace('{perSec}',S.perSec);
     $('ups').innerHTML=UPS.map(function(u){ var c=cost(u), can=S.coins>=c, o=S.owned[u.id]||0;
-      return '<div class="up '+(can?'':'dis')+'" data-id="'+u.id+'"><span><span class="n">'+u.n+' <small style="color:var(--muted)">x'+o+'</small></span><br><span class="d">'+u.d+'</span></span><span class="c">'+c.toLocaleString()+' 🪙</span></div>'; }).join('');
+      return '<div class="up '+(can?'':'dis')+'" data-id="'+u.id+'"><span><span class="n">'+t(u.nk)+' <small style="color:var(--muted)">x'+o+'</small></span><br><span class="d">'+t(u.dk)+'</span></span><span class="c">'+c.toLocaleString(loc)+' 🪙</span></div>'; }).join('');
   }
   function buy(id){ var u=UPS.filter(function(x){return x.id===id;})[0]; var c=cost(u); if(S.coins<c)return; S.coins-=c; S.owned[id]=(S.owned[id]||0)+1;
     if(u.type==='click')S.perClick+=u.amt; else S.perSec+=u.amt; save(); render(); }
-  $('coin').addEventListener('click',function(){ S.coins+=S.perClick; $('coins').textContent=Math.floor(S.coins).toLocaleString(); });
-  $('ups').addEventListener('click',function(e){var u=e.target.closest('.up');if(u)buy(u.dataset.id);});
-  $('reset').addEventListener('click',function(){ if(confirm('처음부터 다시 시작할까요?')){ S={coins:0,perClick:1,perSec:0,owned:{}}; save(); render(); } });
+  $('coin').addEventListener('click',function(){ S.coins+=S.perClick; var loc={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[window.curLang?curLang():'ko']; $('coins').textContent=Math.floor(S.coins).toLocaleString(loc); });
+  $('ups').addEventListener('click',function(e){var tmp=e.target.closest('.up');if(tmp)buy(tmp.dataset.id);});
+  $('reset').addEventListener('click',function(){ if(confirm(t('b_clicker_confirm_reset'))){ S={coins:0,perClick:1,perSec:0,owned:{}}; save(); render(); } });
+  window.onI18n=render;
   load(); render();
-  setInterval(function(){ if(S.perSec>0){ S.coins+=S.perSec/10; $('coins').textContent=Math.floor(S.coins).toLocaleString(); } },100);
+  setInterval(function(){ if(S.perSec>0){ S.coins+=S.perSec/10; var loc={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[window.curLang?curLang():'ko']; $('coins').textContent=Math.floor(S.coins).toLocaleString(loc); } },100);
   setInterval(function(){ save(); render(); },3000);
 </script>
 </body>

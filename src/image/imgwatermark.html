@@ -56,32 +56,32 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:820px;">
-  <h1>이미지 워터마크 생성기</h1>
-  <p class="sub">사진에 텍스트 워터마크를 넣어 무단 도용을 막습니다. 한 곳 또는 전체 반복으로 넣을 수 있어요.</p>
+  <h1 data-i18n="b_imgwatermark_title">이미지 워터마크 생성기</h1>
+  <p class="sub" data-i18n="b_imgwatermark_sub">사진에 텍스트 워터마크를 넣어 무단 도용을 막습니다. 한 곳 또는 전체 반복으로 넣을 수 있어요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>이미지를 끌어다 놓거나 클릭해 올립니다</li>
-    <li>워터마크 문구·크기·색·투명도·위치를 조절합니다</li>
-    <li>‘PNG 다운로드’로 저장합니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_imgwatermark_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_imgwatermark_howto_1">이미지를 끌어다 놓거나 클릭해 올립니다</li>
+    <li data-i18n="b_imgwatermark_howto_2">워터마크 문구·크기·색·투명도·위치를 조절합니다</li>
+    <li data-i18n="b_imgwatermark_howto_3">'PNG 다운로드'로 저장합니다</li>
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">💧</div><div><strong>이미지를 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG · WebP</div></div>
+    <div class="drop" id="drop"><div class="big">💧</div><div><strong data-i18n="b_imgwatermark_drop_main">이미지를 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;" data-i18n="b_imgwatermark_drop_fmt">JPG · PNG · WebP</div></div>
     <input type="file" id="file" accept="image/*" class="hide"/>
     <div class="opts hide" id="opts">
       <div class="grid">
-        <label style="grid-column:1/3;">문구<input id="txt" type="text" value="© gemini2k"/></label>
-        <label>위치<select id="pos"><option value="tile">전체 반복(대각선)</option><option value="br">오른쪽 아래</option><option value="bl">왼쪽 아래</option><option value="center">가운데</option><option value="tr">오른쪽 위</option><option value="tl">왼쪽 위</option></select></label>
-        <label>글자색<input id="color" type="color" value="#ffffff"/></label>
-        <label>크기 <span id="szv" style="color:var(--accent)">5%</span><input id="size" type="range" min="2" max="20" value="5"/></label>
-        <label>투명도 <span id="opv" style="color:var(--accent)">35%</span><input id="opacity" type="range" min="5" max="100" value="35"/></label>
-        <label>회전 <span id="rotv" style="color:var(--accent)">-30°</span><input id="rot" type="range" min="-90" max="90" value="-30"/></label>
-        <label style="justify-content:flex-end;"><span style="display:inline-flex;gap:.4rem;align-items:center;"><input id="shadow" type="checkbox" checked/> 외곽선(가독성)</span></label>
+        <label style="grid-column:1/3;"><span data-i18n="b_imgwatermark_label_text">문구</span><input id="txt" type="text" value="© gemini2k"/></label>
+        <label><span data-i18n="b_imgwatermark_label_pos">위치</span><select id="pos"><option value="tile" data-i18n="b_imgwatermark_pos_tile">전체 반복(대각선)</option><option value="br" data-i18n="b_imgwatermark_pos_br">오른쪽 아래</option><option value="bl" data-i18n="b_imgwatermark_pos_bl">왼쪽 아래</option><option value="center" data-i18n="b_imgwatermark_pos_center">가운데</option><option value="tr" data-i18n="b_imgwatermark_pos_tr">오른쪽 위</option><option value="tl" data-i18n="b_imgwatermark_pos_tl">왼쪽 위</option></select></label>
+        <label><span data-i18n="b_imgwatermark_label_color">글자색</span><input id="color" type="color" value="#ffffff"/></label>
+        <label><span data-i18n="b_imgwatermark_label_size">크기</span> <span id="szv" style="color:var(--accent)">5%</span><input id="size" type="range" min="2" max="20" value="5"/></label>
+        <label><span data-i18n="b_imgwatermark_label_opacity">투명도</span> <span id="opv" style="color:var(--accent)">35%</span><input id="opacity" type="range" min="5" max="100" value="35"/></label>
+        <label><span data-i18n="b_imgwatermark_label_rot">회전</span> <span id="rotv" style="color:var(--accent)">-30°</span><input id="rot" type="range" min="-90" max="90" value="-30"/></label>
+        <label style="justify-content:flex-end;"><span style="display:inline-flex;gap:.4rem;align-items:center;"><input id="shadow" type="checkbox" checked/> <span data-i18n="b_imgwatermark_label_shadow">외곽선(가독성)</span></span></label>
       </div>
-      <button class="btn" id="dl" type="button">⬇️ PNG 다운로드</button>
+      <button class="btn" id="dl" type="button" data-i18n="b_imgwatermark_btn_dl">⬇️ PNG 다운로드</button>
     </div>
     <div class="cvwrap hide" id="cvwrap"><canvas id="cv"></canvas></div>
-    <div class="note">원본 해상도 그대로 워터마크를 새겨 저장합니다. ‘전체 반복’은 도용 시 제거가 어려워 보호에 효과적입니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
+    <div class="note" data-i18n="b_imgwatermark_note">원본 해상도 그대로 워터마크를 새겨 저장합니다. '전체 반복'은 도용 시 제거가 어려워 보호에 효과적입니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
   </div>
 </div>
 

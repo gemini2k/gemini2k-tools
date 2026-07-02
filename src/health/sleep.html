@@ -57,21 +57,21 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>수면 시간 계산기</h1>
-  <p class="sub">90분 수면 주기에 맞춰 일어나면 더 개운합니다. 취침 시각을 넣으면 추천 기상 시각을, 기상 시각을 넣으면 추천 취침 시각을 알려줍니다.</p>
+  <h1 data-i18n="b_sleep_title">수면 시간 계산기</h1>
+  <p class="sub" data-i18n="b_sleep_sub">90분 수면 주기에 맞춰 일어나면 더 개운합니다. 취침 시각을 넣으면 추천 기상 시각을, 기상 시각을 넣으면 추천 취침 시각을 알려줍니다.</p>
 
   <div class="card">
     <div class="seg">
-      <button id="mBed" class="on" type="button">잘 시각 → 기상 추천</button>
-      <button id="mWake" type="button">일어날 시각 → 취침 추천</button>
+      <button id="mBed" class="on" type="button" data-i18n="b_sleep_mode_bed">잘 시각 → 기상 추천</button>
+      <button id="mWake" type="button" data-i18n="b_sleep_mode_wake">일어날 시각 → 취침 추천</button>
     </div>
     <div class="tin">
       <input id="time" type="time" value="23:00"/>
-      <button class="btn btn-ghost" id="now" type="button">지금 잠들면?</button>
+      <button class="btn btn-ghost" id="now" type="button" data-i18n="b_sleep_now">지금 잠들면?</button>
     </div>
     <p class="lead" id="lead"></p>
     <div class="cards" id="cards"></div>
-    <div class="note">⚠️ 참고용입니다. 한 수면 주기는 약 90분, 잠드는 데 약 15분이 걸린다고 가정합니다. 주기가 끝날 때 일어나면 얕은 잠 단계라 덜 피곤합니다. 보통 성인은 5–6주기(7.5–9시간)를 권장하며, 별표가 그 구간입니다. 개인차가 있습니다.</div>
+    <div class="note" data-i18n="b_sleep_note">⚠️ 참고용입니다. 한 수면 주기는 약 90분, 잠드는 데 약 15분이 걸린다고 가정합니다. 주기가 끝날 때 일어나면 얕은 잠 단계라 덜 피곤합니다. 보통 성인은 5–6주기(7.5–9시간)를 권장하며, 별표가 그 구간입니다. 개인차가 있습니다.</div>
   </div>
 </div>
 
@@ -79,7 +79,20 @@
 <script>
   var $ = function(id){ return document.getElementById(id); };
   var CYCLE=90, FALL=15, mode='bed';
-  function fmt(min){ min=((min%1440)+1440)%1440; var h=Math.floor(min/60), m=min%60; var ap=h<12?'오전':'오후'; var h12=h%12; if(h12===0)h12=12; return ap+' '+h12+':'+String(m).padStart(2,'0'); }
+  function fmt(min){
+    min=((min%1440)+1440)%1440;
+    var h=Math.floor(min/60), m=min%60;
+    var lang=typeof curLang==='function'?curLang():'ko';
+    if(lang==='ko'){
+      var ap=h<12?t('b_sleep_am'):t('b_sleep_pm');
+      var h12=h%12; if(h12===0)h12=12;
+      return ap+' '+h12+':'+String(m).padStart(2,'0');
+    } else {
+      var ap2=h<12?'AM':'PM';
+      var h12b=h%12; if(h12b===0)h12b=12;
+      return ap2+' '+h12b+':'+String(m).padStart(2,'0');
+    }
+  }
   function parseT(v){ var p=v.split(':'); return (+p[0])*60+(+p[1]); }
 
   function render(){
@@ -87,17 +100,18 @@
     var cards=[], lead;
     for(var n=6;n>=3;n--){
       var dur=n*CYCLE;
-      var t = mode==='bed' ? base+FALL+dur : base-FALL-dur;
+      var tmp = mode==='bed' ? base+FALL+dur : base-FALL-dur;
       var hrs=(dur/60);
       var best = (n===5||n===6);
-      cards.push({t:t, n:n, hrs:hrs, best:best});
+      cards.push({t:tmp, n:n, hrs:hrs, best:best});
     }
-    lead = mode==='bed' ? '이 시각에 잠들면, 아래 시각에 일어나는 게 좋아요:' : '이 시각에 일어나려면, 아래 시각에 잠드는 게 좋아요:';
+    lead = mode==='bed' ? t('b_sleep_lead_bed') : t('b_sleep_lead_wake');
     $('lead').textContent=lead;
     $('cards').innerHTML=cards.map(function(c){
-      return '<div class="sc'+(c.best?' best':'')+'"><div class="t">'+fmt(c.t)+'</div><div class="m">'+c.n+'주기 · '+c.hrs+'시간'+(c.best?' ★':'')+'</div></div>';
+      return '<div class="sc'+(c.best?' best':'')+'"><div class="t">'+fmt(c.t)+'</div><div class="m">'+c.n+t('b_sleep_cycle_unit')+' · '+c.hrs+t('b_sleep_hour_unit')+(c.best?' ★':'')+'</div></div>';
     }).join('');
   }
+  window.onI18n=render;
   function setMode(m){ mode=m; $('mBed').classList.toggle('on',m==='bed'); $('mWake').classList.toggle('on',m==='wake'); render(); }
   $('mBed').addEventListener('click',function(){setMode('bed');});
   $('mWake').addEventListener('click',function(){setMode('wake');});

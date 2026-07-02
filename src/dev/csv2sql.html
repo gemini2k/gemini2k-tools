@@ -30,20 +30,20 @@
 <body>
 <div class="toolwrap" style="max-width:820px;">
   <h1>CSV → SQL INSERT</h1>
-  <p class="sub">CSV를 붙여넣으면 SQL INSERT 문으로 변환합니다. 첫 줄을 컬럼명으로 사용해요.</p>
+  <p class="sub" data-i18n="b_csv2sql_sub">CSV를 붙여넣으면 SQL INSERT 문으로 변환합니다. 첫 줄을 컬럼명으로 사용해요.</p>
   <div class="card">
     <textarea id="in">id,name,age,active
 1,홍길동,30,true
 2,김영희,,false</textarea>
     <div class="opts">
-      <label>테이블명 <input id="table" type="text" value="users"/></label>
-      <label><input type="checkbox" id="multi"/> 다중행 INSERT(한 문장)</label>
-      <label><input type="checkbox" id="qcol"/> 컬럼명 따옴표(")</label>
+      <label><span data-i18n="b_csv2sql_table_label">테이블명</span> <input id="table" type="text" value="users"/></label>
+      <label><input type="checkbox" id="multi"/> <span data-i18n="b_csv2sql_multi_label">다중행 INSERT(한 문장)</span></label>
+      <label><input type="checkbox" id="qcol"/> <span data-i18n="b_csv2sql_qcol_label">컬럼명 따옴표(")</span></label>
     </div>
-    <div class="actions"><button class="btn" id="run" type="button">변환</button><button class="btn btn-ghost" id="copy" type="button">📋 복사</button></div>
+    <div class="actions"><button class="btn" id="run" type="button" data-i18n="b_csv2sql_btn_run">변환</button><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_csv2sql_btn_copy">📋 복사</button></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>
-    <div class="note">숫자·true/false·null은 그대로, 그 외는 작은따옴표 문자열로 처리하고 내부 작은따옴표는 이스케이프합니다. 빈 값은 NULL. CSV 파싱은 따옴표·쉼표를 지원합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_csv2sql_note">숫자·true/false·null은 그대로, 그 외는 작은따옴표 문자열로 처리하고 내부 작은따옴표는 이스케이프합니다. 빈 값은 NULL. CSV 파싱은 따옴표·쉼표를 지원합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="csvutil.js"></script>
@@ -55,7 +55,7 @@
     if(/^-?\d+(\.\d+)?$/.test(s))return s; if(/^(true|false|null)$/i.test(s))return s.toUpperCase()==='NULL'?'NULL':s.toLowerCase();
     return "'"+s.replace(/'/g,"''")+"'"; }
   function run(){ var data = window.CSV? window.CSV.parse($('in').value) : null;
-    if(!data||!data.header||!data.header.length){ $('out').textContent='CSV를 입력하세요'; return; }
+    if(!data||!data.header||!data.header.length){ $('out').textContent=t('b_csv2sql_empty_input'); return; }
     var cols=data.header, rows=data.rows; var tbl=$('table').value||'tbl';
     var qc=$('qcol').checked? cols.map(function(c){return '"'+c+'"';}) : cols;
     var colStr='('+qc.join(', ')+')';
@@ -63,8 +63,9 @@
       $('out').textContent='INSERT INTO '+tbl+' '+colStr+' VALUES\n'+vals.join(',\n')+';'; }
     else { $('out').textContent=rows.map(function(r){ return 'INSERT INTO '+tbl+' '+colStr+' VALUES ('+cols.map(function(_,i){return val(r[i]);}).join(', ')+');'; }).join('\n'); }
   }
+  window.onI18n = run;
   ['in','table','multi','qcol'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
-  $('copy').addEventListener('click',function(){if($('out').textContent)navigator.clipboard.writeText($('out').textContent).then(function(){toast('복사됐습니다');});});
+  $('copy').addEventListener('click',function(){if($('out').textContent)navigator.clipboard.writeText($('out').textContent).then(function(){toast(t('b_csv2sql_copied'));});});
   run();
 </script>
 </body>

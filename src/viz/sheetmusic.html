@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>악보 그리기 (음표 → 오선보) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="음표를 입력하면 오선보(악보)로 그려 줍니다. 음이름·박자 지정, 이미지 저장. 음악 학습·간단 채보에. VexFlow 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/sheetmusic.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="악보 그리기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="음표 입력으로 오선보 그리기·이미지 저장(VexFlow). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/sheetmusic.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:80px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.9rem;color:var(--text);resize:vertical;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.6rem 0;}select,button.mini{padding:.5rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+#score{background:#fff;border:1px solid var(--border);border-radius:11px;padding:.5rem;overflow:auto;margin-top:.5rem;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"악보 그리기","description":"음표를 입력해 오선보(악보)로 그립니다(VexFlow).","url":"https://gemini2k.co.kr/sheetmusic.html","applicationCategory":"MultimediaApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1 data-i18n="b_sheetmusic_title">악보 그리기</h1>
+  <p class="sub" data-i18n-html="b_sheetmusic_sub">음표를 적으면 오선보로 그려 줍니다. 예: <code>C4 D4 E4 F4 | G4 A4 B4 C5</code></p>
+  <div class="card">
+    <textarea id="in">C4 D4 E4 F4 | G4 A4 B4 C5</textarea>
+    <div class="row"><span data-i18n="b_sheetmusic_time_label">박자표</span> <select id="time"><option>4/4</option><option>3/4</option><option>2/4</option><option>6/8</option></select>
+      <span data-i18n="b_sheetmusic_dur_label">음표길이</span> <select id="dur"><option value="q" data-i18n="b_sheetmusic_dur_q">4분음표</option><option value="8" data-i18n="b_sheetmusic_dur_8">8분음표</option><option value="h" data-i18n="b_sheetmusic_dur_h">2분음표</option><option value="w" data-i18n="b_sheetmusic_dur_w">온음표</option></select>
+      <button class="mini" id="png" type="button" data-i18n="b_sheetmusic_btn_png">⬇️ PNG 저장</button></div>
+    <div class="err" id="err"></div>
+    <div id="score"></div>
+    <div class="note" data-i18n-html="b_sheetmusic_note">오픈소스 <b>VexFlow</b>(MIT, <a href="https://github.com/0xfe/vexflow" target="_blank" rel="noopener">0xfe/vexflow</a>)를 자체 호스팅합니다. 음이름은 <code>C D E F G A B</code>, 반음은 <code>C#4</code>, 옥타브는 숫자(4=가운데 도), 마디 구분은 <code>|</code>. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/vexflow-3/vexflow-min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var VF=Vex.Flow;
+  function render(){ $('err').textContent=''; var host=$('score'); host.innerHTML='';
+    try{
+      var bars=$('in').value.split('|').map(function(s){return s.trim();}).filter(Boolean);
+      var dur=$('dur').value, time=$('time').value;
+      var W=Math.max(420,bars.length*220+40);
+      var renderer=new VF.Renderer(host,VF.Renderer.Backends.SVG); renderer.resize(W,160); var ctx=renderer.getContext();
+      var x=10;
+      bars.forEach(function(bar,bi){ var notesStr=bar.split(/\s+/).filter(Boolean);
+        var width=bi===0?220:200;
+        var stave=new VF.Stave(x,20,width); if(bi===0){stave.addClef('treble').addTimeSignature(time);} stave.setContext(ctx).draw();
+        var notes=notesStr.map(function(n){ var m=n.match(/^([A-Ga-g])(#|b)?(\d)$/); if(!m)throw new Error(t('b_sheetmusic_err_note')+n);
+          var key=m[1].toLowerCase()+(m[2]||'')+'/'+m[3];
+          var sn=new VF.StaveNote({clef:'treble',keys:[key],duration:dur}); if(m[2]==='#')sn.addAccidental(0,new VF.Accidental('#')); if(m[2]==='b')sn.addAccidental(0,new VF.Accidental('b')); return sn; });
+        VF.Formatter.FormatAndDraw(ctx,stave,notes); x+=width; });
+    }catch(e){ $('err').textContent='⚠️ '+(e.message||e); } }
+  var _t; ['in','time','dur'].forEach(function(id){$(id).addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(render,300);});$(id).addEventListener('change',render);});
+  $('png').addEventListener('click',function(){ var svg=$('score').querySelector('svg'); if(!svg)return;
+    var s=new XMLSerializer().serializeToString(svg); var img=new Image();
+    img.onload=function(){var c=document.createElement('canvas');c.width=img.width*2;c.height=img.height*2;var cx=c.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,c.width,c.height);cx.scale(2,2);cx.drawImage(img,0,0);var a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='score.png';document.body.appendChild(a);a.click();a.remove();};
+    img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(s))); });
+  render();
+</script>
+</body>
+</html>

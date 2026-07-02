@@ -28,12 +28,12 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:640px;">
-  <h1>숫자 영어 변환기</h1>
-  <p class="sub">숫자를 영어 단어로 바꿉니다. 수표·계약서용 금액 영문 표기도 만들어 줘요. 줄을 클릭하면 복사됩니다.</p>
+  <h1 data-i18n="b_num2en_title">숫자 영어 변환기</h1>
+  <p class="sub" data-i18n="b_num2en_sub">숫자를 영어 단어로 바꿉니다. 수표·계약서용 금액 영문 표기도 만들어 줘요. 줄을 클릭하면 복사됩니다.</p>
   <div class="card">
-    <input class="in" id="in" type="text" inputmode="decimal" value="1234.56" placeholder="숫자 입력 (예: 1234.56)"/>
+    <input class="in" id="in" type="text" inputmode="decimal" value="1234.56" data-i18n-ph="b_num2en_placeholder"/>
     <div id="res"></div>
-    <div class="note">최대 약 10^15(천조) 단위까지 지원합니다. 금액(달러) 표기는 정수부 dollars + 소수부 cents 형식입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_num2en_note">최대 약 10^15(천조) 단위까지 지원합니다. 금액(달러) 표기는 정수부 dollars + 소수부 cents 형식입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -48,15 +48,17 @@
   function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
   function render(){ var raw=$('in').value.replace(/[^0-9.\-]/g,''); var n=parseFloat(raw);
     var items;
-    if(isNaN(n)){ items=[['안내','숫자를 입력하세요']]; }
+    if(isNaN(n)){ items=[['안내',t('b_num2en_enter_number')]]; }
     else { var intp=Math.floor(Math.abs(n)); var dec=Math.round((Math.abs(n)-intp)*100);
       var w=words(n<0?-intp:intp); var amount=cap(words(intp))+' dollars'+(dec>0?' and '+words(dec)+' cents':'');
-      items=[ ['영어 단어', w], ['첫 글자 대문자', cap(w)], ['금액(달러)', amount], ['서수(ordinal)', ordinal(intp)] ]; }
+      items=[ [t('b_num2en_label_words'), w], [t('b_num2en_label_cap'), cap(w)], [t('b_num2en_label_amount'), amount], [t('b_num2en_label_ordinal'), ordinal(intp)] ]; }
     $('res').innerHTML=items.map(function(it){ return '<div class="item" data-v="'+(''+it[1]).replace(/"/g,'&quot;')+'"><div class="l">'+it[0]+'</div><div class="v">'+it[1]+'</div></div>'; }).join('');
   }
   function ordinal(n){ var w=words(n); var map={one:'first',two:'second',three:'third',five:'fifth',eight:'eighth',nine:'ninth',twelve:'twelfth'}; var last=w.split(/[\s-]/).pop();
     var rep; if(map[last])rep=map[last]; else if(/y$/.test(last))rep=last.slice(0,-1)+'ieth'; else rep=last+'th'; return w.replace(new RegExp(last+'$'),rep); }
-  $('in').addEventListener('input',render); render();
+  $('in').addEventListener('input',render);
+  window.onI18n=render;
+  render();
 </script>
 </body>
 </html>

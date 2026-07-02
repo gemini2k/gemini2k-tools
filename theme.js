@@ -40,3 +40,11 @@
   }
   apply(); // <head> 동기 실행 — 첫 페인트 전에 테마 적용
 })();
+
+/* PWA 서비스워커 등록 — 지원 브라우저에서만 동작, 미지원/미설치 시 무영향(기존과 동일) */
+(function(){
+  if (!('serviceWorker' in navigator)) return;
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).catch(function(){});
+  });
+})();

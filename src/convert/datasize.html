@@ -55,23 +55,26 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>데이터 용량 변환기</h1>
-  <p class="sub">바이트·KB·MB·GB·TB를 변환합니다. 1KB=1000인 SI 단위와 1KiB=1024인 이진 단위를 함께 보여 줍니다.</p>
+  <h1 data-i18n="b_datasize_title">데이터 용량 변환기</h1>
+  <p class="sub" data-i18n="b_datasize_sub">바이트·KB·MB·GB·TB를 변환합니다. 1KB=1000인 SI 단위와 1KiB=1024인 이진 단위를 함께 보여 줍니다.</p>
 
   <div class="card">
     <div class="inrow">
       <input id="val" type="number" value="1" min="0" step="any" aria-label="값"/>
       <select id="unit">
-        <option value="B">Byte (B)</option><option value="KB">킬로 (KB/KiB)</option>
-        <option value="MB" selected>메가 (MB/MiB)</option><option value="GB">기가 (GB/GiB)</option>
-        <option value="TB">테라 (TB/TiB)</option><option value="PB">페타 (PB/PiB)</option>
+        <option value="B" data-i18n="b_datasize_unit_B">Byte (B)</option>
+        <option value="KB" data-i18n="b_datasize_unit_KB">킬로 (KB/KiB)</option>
+        <option value="MB" selected data-i18n="b_datasize_unit_MB">메가 (MB/MiB)</option>
+        <option value="GB" data-i18n="b_datasize_unit_GB">기가 (GB/GiB)</option>
+        <option value="TB" data-i18n="b_datasize_unit_TB">테라 (TB/TiB)</option>
+        <option value="PB" data-i18n="b_datasize_unit_PB">페타 (PB/PiB)</option>
       </select>
     </div>
     <div class="grid2">
-      <div class="col"><h3>SI 십진 (1000)</h3><div class="reslist" id="si"></div></div>
-      <div class="col"><h3>이진 IEC (1024)</h3><div class="reslist" id="iec"></div></div>
+      <div class="col"><h3 data-i18n="b_datasize_col_si">SI 십진 (1000)</h3><div class="reslist" id="si"></div></div>
+      <div class="col"><h3 data-i18n="b_datasize_col_iec">이진 IEC (1024)</h3><div class="reslist" id="iec"></div></div>
     </div>
-    <div class="note">저장장치 제조사는 보통 1GB=1,000,000,000B(SI)로 표기하고, 운영체제는 1GiB=1,073,741,824B(이진)로 계산해 차이가 납니다. 입력 단위는 선택한 체계 기준으로 해석합니다(예: MB는 SI, 이진 환산도 함께 표시). 모든 계산은 브라우저에서 이루어집니다.</div>
+    <div class="note" data-i18n="b_datasize_note">저장장치 제조사는 보통 1GB=1,000,000,000B(SI)로 표기하고, 운영체제는 1GiB=1,073,741,824B(이진)로 계산해 차이가 납니다. 입력 단위는 선택한 체계 기준으로 해석합니다(예: MB는 SI, 이진 환산도 함께 표시). 모든 계산은 브라우저에서 이루어집니다.</div>
   </div>
 </div>
 
@@ -80,17 +83,18 @@
   var $ = function(id){ return document.getElementById(id); };
   function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
   var SI=['B','KB','MB','GB','TB','PB'], IEC=['B','KiB','MiB','GiB','TiB','PiB'];
-  function fmt(n){ if(n===0) return '0'; if(n<0.000001||n>=1e15) return n.toExponential(4); var s=(Math.round(n*1e6)/1e6).toString(); return (+s).toLocaleString('ko-KR',{maximumFractionDigits:6}); }
+  function fmt(n){ if(n===0) return '0'; if(n<0.000001||n>=1e15) return n.toExponential(4); var s=(Math.round(n*1e6)/1e6).toString(); var locales={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}; var loc=locales[window.curLang?curLang():'ko']||'ko-KR'; return (+s).toLocaleString(loc,{maximumFractionDigits:6}); }
   function calc(){
     var v=parseFloat($('val').value); if(!isFinite(v)){ $('si').innerHTML=''; $('iec').innerHTML=''; return; }
     var u=$('unit').value; var idx=SI.indexOf(u==='B'?'B':u); // 입력 단위 인덱스(SI 기준)
     var bytes = v * Math.pow(1000, idx);
     function rows(units, base){ return units.map(function(name,i){ var val=bytes/Math.pow(base,i);
-      return '<div class="rrow"><span class="k">'+name+'</span><span><span class="v">'+fmt(val)+'</span><button class="cp" data-v="'+fmt(val)+'">복사</button></span></div>'; }).join(''); }
+      return '<div class="rrow"><span class="k">'+name+'</span><span><span class="v">'+fmt(val)+'</span><button class="cp" data-v="'+fmt(val)+'">'+t('b_datasize_copy')+'</button></span></div>'; }).join(''); }
     $('si').innerHTML=rows(SI,1000); $('iec').innerHTML=rows(IEC,1024);
   }
   $('val').addEventListener('input', calc); $('unit').addEventListener('change', calc);
-  document.querySelector('.grid2').addEventListener('click', function(e){ var b=e.target.closest('.cp'); if(b) navigator.clipboard.writeText(b.dataset.v.replace(/,/g,'')).then(function(){toast('복사됐습니다');}); });
+  document.querySelector('.grid2').addEventListener('click', function(e){ var b=e.target.closest('.cp'); if(b) navigator.clipboard.writeText(b.dataset.v.replace(/,/g,'')).then(function(){toast(t('b_datasize_copied'));}); });
+  window.onI18n = calc;
   calc();
 </script>
 </body>

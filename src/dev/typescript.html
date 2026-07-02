@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>TypeScript → JavaScript 컴파일 (플레이그라운드) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="TypeScript 코드를 JavaScript로 컴파일하고 변환 결과를 확인합니다. 타깃(ES 버전)·모듈 선택. 학습·빠른 변환에. TypeScript 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/typescript.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="TypeScript → JavaScript 컴파일 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="TS를 JS로 컴파일(타깃·모듈 선택). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/typescript.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}@media(max-width:680px){.grid2{grid-template-columns:1fr;}}
+label.lbl{font-weight:700;font-size:.85rem;display:block;margin-bottom:.3rem;}
+textarea{width:100%;min-height:300px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.82rem;color:var(--text);resize:vertical;}
+.out{width:100%;min-height:300px;border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.7rem;font-family:ui-monospace,monospace;font-size:.82rem;color:var(--text);white-space:pre-wrap;word-break:break-word;overflow:auto;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}select{padding:.5rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DeveloperApplication","name":"TypeScript → JavaScript 컴파일","description":"TypeScript 코드를 JavaScript로 컴파일합니다(TypeScript).","url":"https://gemini2k.co.kr/typescript.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://www.apache.org/licenses/LICENSE-2.0","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:980px;">
+  <h1>TypeScript → JavaScript</h1>
+  <p class="sub" data-i18n="b_typescript_sub">TypeScript 코드를 JavaScript로 컴파일해 결과를 보여 줍니다.</p>
+  <div class="card" style="max-width:none;">
+    <div class="row"><span data-i18n="b_typescript_target_label">타깃</span> <select id="target"><option>ESNext</option><option>ES2020</option><option selected>ES2017</option><option>ES2015</option><option>ES5</option></select>
+      <span data-i18n="b_typescript_module_label">모듈</span> <select id="module"><option>ESNext</option><option selected>CommonJS</option><option>None</option></select></div>
+    <div class="grid2">
+      <div><label class="lbl" data-i18n="b_typescript_input_label">TypeScript</label><textarea id="in">interface User { name: string; age: number; }
+
+function greet(user: User): string {
+  return `Hello, ${user.name} (${user.age})`;
+}
+
+const users: User[] = [{ name: "Kim", age: 30 }];
+const msg = users.map(u =&gt; greet(u));
+console.log(msg);</textarea></div>
+      <div><label class="lbl" data-i18n="b_typescript_output_label">JavaScript 출력</label><div class="out" id="out" data-i18n="b_typescript_compiling">컴파일 중…</div></div>
+    </div>
+    <div style="margin-top:.6rem;"><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_typescript_copy_btn">📋 복사</button></div>
+    <div class="note" data-i18n-html="b_typescript_note">오픈소스 <b>TypeScript</b>(Apache-2.0, <a href="https://github.com/microsoft/TypeScript" target="_blank" rel="noopener">microsoft/TypeScript</a>)를 자체 호스팅합니다. 타입 검사 오류는 표시하지 않고 변환만 수행합니다(transpile). 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/typescript-5/typescript.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function run(){ try{
+      var tmap={ESNext:ts.ScriptTarget.ESNext,ES2020:ts.ScriptTarget.ES2020,ES2017:ts.ScriptTarget.ES2017,ES2015:ts.ScriptTarget.ES2015,ES5:ts.ScriptTarget.ES5};
+      var mmap={ESNext:ts.ModuleKind.ESNext,CommonJS:ts.ModuleKind.CommonJS,None:ts.ModuleKind.None};
+      var res=ts.transpileModule($('in').value,{compilerOptions:{target:tmap[$('target').value],module:mmap[$('module').value]}});
+      $('out').textContent=res.outputText; window._o=res.outputText;
+    }catch(e){ $('out').textContent='⚠️ '+e.message; } }
+  var _t; $('in').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(run,350);});
+  ['target','module'].forEach(function(id){$(id).addEventListener('change',run);});
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_typescript_copied'));});});
+  run();
+</script>
+</body>
+</html>

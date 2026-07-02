@@ -27,17 +27,17 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:600px;">
-  <h1>QR코드 읽기 (디코더)</h1>
-  <p class="sub">QR코드 이미지를 올리면 안에 담긴 내용을 읽어 줍니다.</p>
+  <h1 data-i18n="b_qrdecode_title">QR코드 읽기 (디코더)</h1>
+  <p class="sub" data-i18n="b_qrdecode_sub">QR코드 이미지를 올리면 안에 담긴 내용을 읽어 줍니다.</p>
   <div class="card">
-    <div class="drop" id="drop"><div class="big">🔳</div><div><strong>QR 이미지를 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG · 스크린샷</div></div>
+    <div class="drop" id="drop"><div class="big">🔳</div><div><strong data-i18n="b_qrdecode_drop_label">QR 이미지를 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;" data-i18n="b_qrdecode_drop_hint">JPG · PNG · 스크린샷</div></div>
     <input type="file" id="file" accept="image/*" class="hide"/>
     <div class="result hide" id="resultWrap">
       <div class="res" id="res"></div>
-      <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 복사</button><a class="btn btn-ghost hide" id="open" target="_blank" rel="noopener noreferrer">↗ 링크 열기</a></div>
+      <div class="actions"><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_qrdecode_btn_copy">📋 복사</button><a class="btn btn-ghost hide" id="open" target="_blank" rel="noopener noreferrer" data-i18n="b_qrdecode_btn_open">↗ 링크 열기</a></div>
     </div>
-    <div class="preview hide" id="pv"><img id="img" alt="미리보기"/></div>
-    <div class="note">QR이 또렷하고 정면에서 찍힌 이미지일수록 인식이 잘 됩니다. 인식이 안 되면 더 크고 선명한 이미지로 시도하세요. 이미지는 서버로 전송되지 않고 브라우저에서만 분석됩니다.</div>
+    <div class="preview hide" id="pv"><img id="img" data-i18n-attr="alt:b_qrdecode_img_alt" alt="미리보기"/></div>
+    <div class="note" data-i18n="b_qrdecode_note">QR이 또렷하고 정면에서 찍힌 이미지일수록 인식이 잘 됩니다. 인식이 안 되면 더 크고 선명한 이미지로 시도하세요. 이미지는 서버로 전송되지 않고 브라우저에서만 분석됩니다.</div>
   </div>
 </div>
 <script src="/vendor/jsqr-1.4.0/jsQR.min.js"></script>
@@ -49,9 +49,9 @@
     im.onload=function(){ $('img').src=u; $('pv').classList.remove('hide');
       var W=Math.min(1000,im.naturalWidth),H=Math.round(im.naturalHeight*W/im.naturalWidth);
       var cv=document.createElement('canvas');cv.width=W;cv.height=H;var x=cv.getContext('2d');x.drawImage(im,0,0,W,H);
-      var data;try{data=x.getImageData(0,0,W,H);}catch(e){show(null,'보안 정책으로 분석 불가');return;}
+      var data;try{data=x.getImageData(0,0,W,H);}catch(e){show(null,t('b_qrdecode_err_security'));return;}
       var code=null; try{ code=jsQR(data.data,W,H); }catch(e){}
-      if(code&&code.data) show(code.data); else show(null,'QR코드를 찾지 못했어요. 더 선명한 이미지로 시도해 주세요.');
+      if(code&&code.data) show(code.data); else show(null,t('b_qrdecode_err_notfound'));
     }; im.src=u;
   }
   function show(text,err){ $('resultWrap').classList.remove('hide'); var op=$('open');
@@ -63,7 +63,7 @@
   $('file').addEventListener('change',function(e){if(e.target.files[0])read(e.target.files[0]);});
   ['dragover','dragenter'].forEach(function(ev){$('drop').addEventListener(ev,function(e){e.preventDefault();});});
   $('drop').addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files[0])read(e.dataTransfer.files[0]);});
-  $('copy').addEventListener('click',function(){if(window._qr)navigator.clipboard.writeText(window._qr).then(function(){toast('복사됐습니다');});});
+  $('copy').addEventListener('click',function(){if(window._qr)navigator.clipboard.writeText(window._qr).then(function(){toast(t('b_qrdecode_toast_copied'));});});
 </script>
 </body>
 </html>

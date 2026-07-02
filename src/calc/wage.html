@@ -52,21 +52,21 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>시급 ↔ 월급 변환기</h1>
-  <p class="sub">시급과 월급을 서로 변환합니다. 주당 근로시간과 주휴수당을 반영해 계산합니다.</p>
+  <h1 data-i18n="b_wage_h1">시급 ↔ 월급 변환기</h1>
+  <p class="sub" data-i18n="b_wage_sub">시급과 월급을 서로 변환합니다. 주당 근로시간과 주휴수당을 반영해 계산합니다.</p>
 
   <div class="card">
-    <div class="seg"><button id="mH2M" class="on" type="button">시급 → 월급</button><button id="mM2H" type="button">월급 → 시급</button></div>
-    <div class="fld" id="fldHour"><label for="hour">시급 (원)</label><input id="hour" type="text" inputmode="numeric" value="10,030"/></div>
-    <div class="fld hide" id="fldMonth"><label for="month">월급 (원)</label><input id="month" type="text" inputmode="numeric" value="2,096,270"/></div>
+    <div class="seg"><button id="mH2M" class="on" type="button" data-i18n="b_wage_btn_h2m">시급 → 월급</button><button id="mM2H" type="button" data-i18n="b_wage_btn_m2h">월급 → 시급</button></div>
+    <div class="fld" id="fldHour"><label for="hour" data-i18n="b_wage_lbl_hour">시급 (원)</label><input id="hour" type="text" inputmode="numeric" value="10,030"/></div>
+    <div class="fld hide" id="fldMonth"><label for="month" data-i18n="b_wage_lbl_month">월급 (원)</label><input id="month" type="text" inputmode="numeric" value="2,096,270"/></div>
     <div class="frow">
-      <div class="fld"><label for="hpw">주당 근로시간</label><input id="hpw" type="number" value="40" min="1" max="80" step="0.5" style="text-align:center;font-size:1.05rem;"/></div>
-      <div class="fld"><label for="wpm">월 환산 주수</label><input id="wpm" type="number" value="4.345" min="4" max="5" step="0.001" style="text-align:center;font-size:1.05rem;"/></div>
+      <div class="fld"><label for="hpw" data-i18n="b_wage_lbl_hpw">주당 근로시간</label><input id="hpw" type="number" value="40" min="1" max="80" step="0.5" style="text-align:center;font-size:1.05rem;"/></div>
+      <div class="fld"><label for="wpm" data-i18n="b_wage_lbl_wpm">월 환산 주수</label><input id="wpm" type="number" value="4.345" min="4" max="5" step="0.001" style="text-align:center;font-size:1.05rem;"/></div>
     </div>
-    <div class="chk"><label><input type="checkbox" id="weekly" checked/> 주휴수당 포함(주 15시간 이상)</label></div>
+    <div class="chk"><label><input type="checkbox" id="weekly" checked/> <span data-i18n="b_wage_lbl_weekly">주휴수당 포함(주 15시간 이상)</span></label></div>
 
     <div class="reslist" id="result"></div>
-    <div class="note">⚠️ 참고용입니다. 주휴수당은 주 15시간 이상 근무 시 주 근로시간의 1/5(최대 8시간)을 유급으로 더해 계산합니다. 월 환산 주수는 평균 4.345주(주 40시간 기준 월 약 209시간)입니다. 실제 급여는 세금·4대보험·근로형태에 따라 달라지며, 최저임금·근로기준은 연도·사업장별로 확인하세요. 계산은 모두 브라우저에서 이루어집니다.</div>
+    <div class="note" data-i18n="b_wage_note">⚠️ 참고용입니다. 주휴수당은 주 15시간 이상 근무 시 주 근로시간의 1/5(최대 8시간)을 유급으로 더해 계산합니다. 월 환산 주수는 평균 4.345주(주 40시간 기준 월 약 209시간)입니다. 실제 급여는 세금·4대보험·근로형태에 따라 달라지며, 최저임금·근로기준은 연도·사업장별로 확인하세요. 계산은 모두 브라우저에서 이루어집니다.</div>
   </div>
 </div>
 
@@ -75,7 +75,10 @@
   var $ = function(id){ return document.getElementById(id); };
   var mode='h2m';
   function num(s){ var v=parseFloat(String(s).replace(/[^0-9.]/g,'')); return isFinite(v)?v:0; }
-  function won(n){ return Math.round(n).toLocaleString('ko-KR'); }
+  function won(n){
+    var loc={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[typeof curLang==='function'?curLang():'ko']||'ko-KR';
+    return Math.round(n).toLocaleString(loc);
+  }
   function monthlyHours(){
     var hpw=num($('hpw').value), wpm=num($('wpm').value), base=hpw;
     if($('weekly').checked && hpw>=15) base += Math.min(8, hpw/5);
@@ -87,13 +90,14 @@
     if(mode==='h2m'){ hour=num($('hour').value); month=hour*mh; }
     else { month=num($('month').value); hour = mh? month/mh : 0; }
     $('result').innerHTML =
-      '<div class="rrow main"><span class="k">'+(mode==='h2m'?'예상 월급':'환산 시급')+'</span><span class="v">'+won(mode==='h2m'?month:hour)+' 원</span></div>'+
-      '<div class="rrow"><span class="k">시급</span><span class="v">'+won(hour)+' 원</span></div>'+
-      '<div class="rrow"><span class="k">일급 (8시간)</span><span class="v">'+won(hour*8)+' 원</span></div>'+
-      '<div class="rrow"><span class="k">월급</span><span class="v">'+won(month)+' 원</span></div>'+
-      '<div class="rrow"><span class="k">연봉 (×12)</span><span class="v">'+won(month*12)+' 원</span></div>'+
-      '<div class="rrow"><span class="k">월 환산 시간</span><span class="v">'+(Math.round(mh*10)/10)+' 시간</span></div>';
+      '<div class="rrow main"><span class="k">'+(mode==='h2m'?t('b_wage_res_main_h2m'):t('b_wage_res_main_m2h'))+'</span><span class="v">'+won(mode==='h2m'?month:hour)+' '+t('b_wage_unit_won')+'</span></div>'+
+      '<div class="rrow"><span class="k">'+t('b_wage_res_hour')+'</span><span class="v">'+won(hour)+' '+t('b_wage_unit_won')+'</span></div>'+
+      '<div class="rrow"><span class="k">'+t('b_wage_res_daily')+'</span><span class="v">'+won(hour*8)+' '+t('b_wage_unit_won')+'</span></div>'+
+      '<div class="rrow"><span class="k">'+t('b_wage_res_month')+'</span><span class="v">'+won(month)+' '+t('b_wage_unit_won')+'</span></div>'+
+      '<div class="rrow"><span class="k">'+t('b_wage_res_annual')+'</span><span class="v">'+won(month*12)+' '+t('b_wage_unit_won')+'</span></div>'+
+      '<div class="rrow"><span class="k">'+t('b_wage_res_mh')+'</span><span class="v">'+(Math.round(mh*10)/10)+' '+t('b_wage_unit_hr')+'</span></div>';
   }
+  window.onI18n = calc;
   function setMode(m){ mode=m; $('mH2M').classList.toggle('on',m==='h2m'); $('mM2H').classList.toggle('on',m==='m2h');
     $('fldHour').classList.toggle('hide',m!=='h2m'); $('fldMonth').classList.toggle('hide',m!=='m2h'); calc(); }
   $('mH2M').addEventListener('click',function(){setMode('h2m');});

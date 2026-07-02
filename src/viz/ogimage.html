@@ -53,22 +53,22 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:760px;">
-  <h1>OG·썸네일 이미지 생성기</h1>
-  <p class="sub">제목과 부제를 넣으면 SNS 공유용 OG 이미지(1200×630)와 블로그 썸네일을 만들어 줍니다.</p>
+  <h1 data-i18n="b_ogimage_title">OG·썸네일 이미지 생성기</h1>
+  <p class="sub" data-i18n="b_ogimage_sub">제목과 부제를 넣으면 SNS 공유용 OG 이미지(1200×630)와 블로그 썸네일을 만들어 줍니다.</p>
 
   <div class="card">
-    <div class="fld"><label>제목</label><input id="title" type="text" value="필요한 도구, 바로 여기"/></div>
-    <div class="fld"><label>부제 (선택)</label><input id="sub" type="text" value="설치 없이 브라우저에서 쓰는 무료 도구"/></div>
-    <div class="fld"><label>사이트/배지 (선택)</label><input id="site" type="text" value="gemini2k.co.kr"/></div>
+    <div class="fld"><label data-i18n="b_ogimage_lbl_title">제목</label><input id="title" type="text" value="필요한 도구, 바로 여기"/></div>
+    <div class="fld"><label data-i18n="b_ogimage_lbl_sub">부제 (선택)</label><input id="sub" type="text" value="설치 없이 브라우저에서 쓰는 무료 도구"/></div>
+    <div class="fld"><label data-i18n="b_ogimage_lbl_site">사이트/배지 (선택)</label><input id="site" type="text" value="gemini2k.co.kr"/></div>
     <div class="row">
-      <label>배경<select id="bg"><option value="grad">그라데이션</option><option value="solid">단색</option></select></label>
-      <label>색 1<input id="c1" type="color" value="#5B5BF5"/></label>
-      <label>색 2<input id="c2" type="color" value="#15C39A"/></label>
-      <label>글자색<select id="fg"><option value="#ffffff">흰색</option><option value="#16181f">검정</option></select></label>
+      <label><span data-i18n="b_ogimage_lbl_bg">배경</span><select id="bg"><option value="grad" data-i18n="b_ogimage_opt_grad">그라데이션</option><option value="solid" data-i18n="b_ogimage_opt_solid">단색</option></select></label>
+      <label><span data-i18n="b_ogimage_lbl_c1">색 1</span><input id="c1" type="color" value="#5B5BF5"/></label>
+      <label><span data-i18n="b_ogimage_lbl_c2">색 2</span><input id="c2" type="color" value="#15C39A"/></label>
+      <label><span data-i18n="b_ogimage_lbl_fg">글자색</span><select id="fg"><option value="#ffffff" data-i18n="b_ogimage_opt_white">흰색</option><option value="#16181f" data-i18n="b_ogimage_opt_black">검정</option></select></label>
     </div>
     <div class="chartwrap"><canvas id="cv" width="1200" height="630"></canvas></div>
-    <div style="margin-top:.9rem;"><button class="btn" id="dl" type="button">⬇️ PNG 내려받기 (1200×630)</button></div>
-    <div class="note">표준 OG 비율(1.91:1, 1200×630)로 만듭니다. 카카오톡·페이스북·트위터 공유 카드와 블로그 썸네일에 적합합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div style="margin-top:.9rem;"><button class="btn" id="dl" type="button" data-i18n="b_ogimage_btn_dl">⬇️ PNG 내려받기 (1200×630)</button></div>
+    <div class="note" data-i18n="b_ogimage_note">표준 OG 비율(1.91:1, 1200×630)로 만듭니다. 카카오톡·페이스북·트위터 공유 카드와 블로그 썸네일에 적합합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -77,7 +77,7 @@
   var $=function(id){return document.getElementById(id);};
   var cv=$('cv'), x=cv.getContext('2d'), W=1200, H=630;
   function wrap(text, font, maxW){ x.font=font; var words=text.split(' '), lines=[], cur='';
-    for(var i=0;i<words.length;i++){ var t=cur?cur+' '+words[i]:words[i]; if(x.measureText(t).width>maxW && cur){ lines.push(cur); cur=words[i]; } else cur=t; }
+    for(var i=0;i<words.length;i++){ var tmp=cur?cur+' '+words[i]:words[i]; if(x.measureText(tmp).width>maxW && cur){ lines.push(cur); cur=words[i]; } else cur=tmp; }
     if(cur)lines.push(cur); return lines; }
   function draw(){
     var c1=$('c1').value, c2=$('c2').value, fg=$('fg').value;

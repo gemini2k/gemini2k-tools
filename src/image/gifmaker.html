@@ -25,17 +25,17 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:720px;">
-  <h1>GIF 만들기 (움짤)</h1>
-  <p class="sub">이미지 여러 장을 순서대로 합쳐 움직이는 GIF를 만듭니다.</p>
+  <h1 data-i18n="b_gifmaker_title">GIF 만들기 (움짤)</h1>
+  <p class="sub" data-i18n="b_gifmaker_sub">이미지 여러 장을 순서대로 합쳐 움직이는 GIF를 만듭니다.</p>
   <div class="card">
-    <div class="drop" id="drop"><div style="font-size:1.8rem">🎬</div><div><strong>이미지 여러 장을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">2장 이상</div></div>
+    <div class="drop" id="drop"><div style="font-size:1.8rem">🎬</div><div><strong data-i18n="b_gifmaker_drop_main">이미지 여러 장을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;" data-i18n="b_gifmaker_drop_hint">2장 이상</div></div>
     <input type="file" id="file" accept="image/*" multiple class="hide"/>
     <div class="thumbs" id="thumbs"></div>
-    <div class="opts hide" id="opts"><label>프레임 간격(ms) <input id="delay" type="number" min="50" max="2000" value="400"/></label><label>가로(px) <input id="w" type="number" min="60" max="800" value="320"/></label></div>
-    <div class="actions hide" id="actions"><button class="btn" id="make" type="button">🎬 GIF 만들기</button></div>
+    <div class="opts hide" id="opts"><label><span data-i18n="b_gifmaker_label_delay">프레임 간격(ms)</span> <input id="delay" type="number" min="50" max="2000" value="400"/></label><label><span data-i18n="b_gifmaker_label_width">가로(px)</span> <input id="w" type="number" min="60" max="800" value="320"/></label></div>
+    <div class="actions hide" id="actions"><button class="btn" id="make" type="button" data-i18n="b_gifmaker_btn_make">🎬 GIF 만들기</button></div>
     <div class="prog" id="prog"></div>
-    <div class="result hide" id="result"><img id="out" alt="GIF 결과"/><div style="margin-top:.5rem;"><a class="btn btn-ghost" id="dl" download="animation.gif">⬇️ GIF 저장</a></div></div>
-    <div class="note">오픈소스 <b>gif.js</b>(MIT, <a href="https://github.com/jnordberg/gif.js" target="_blank" rel="noopener">jnordberg/gif.js</a>)를 자체 호스팅(웹워커 포함)합니다. 이미지는 가운데 맞춤으로 배치됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="result hide" id="result"><img id="out" alt="GIF 결과"/><div style="margin-top:.5rem;"><a class="btn btn-ghost" id="dl" download="animation.gif" data-i18n="b_gifmaker_btn_dl">⬇️ GIF 저장</a></div></div>
+    <div class="note" data-i18n-html="b_gifmaker_note">오픈소스 <b>gif.js</b>(MIT, <a href="https://github.com/jnordberg/gif.js" target="_blank" rel="noopener">jnordberg/gif.js</a>)를 자체 호스팅(웹워커 포함)합니다. 이미지는 가운데 맞춤으로 배치됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/gifjs-0.2/gif.js"></script>
@@ -53,14 +53,14 @@
   ['dragover','dragenter'].forEach(function(ev){$('drop').addEventListener(ev,function(e){e.preventDefault();});});
   $('drop').addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files.length)add(e.dataTransfer.files);});
   $('thumbs').addEventListener('click',function(e){var b=e.target.closest('button');if(b){imgs.splice(+b.dataset.i,1);render();}});
-  $('make').addEventListener('click',function(){ if(imgs.length<2){toast('2장 이상 올리세요');return;}
+  $('make').addEventListener('click',function(){ if(imgs.length<2){toast(t('b_gifmaker_toast_min'));return;}
     var w=Math.max(60,Math.min(800,+$('w').value||320)); var ratios=imgs.map(function(im){return im.height/im.width;}); var h=Math.round(w*Math.max.apply(null,ratios));
-    $('prog').textContent='GIF 생성 준비 중…'; $('result').classList.add('hide');
+    $('prog').textContent=t('b_gifmaker_prog_preparing'); $('result').classList.add('hide');
     var gif=new GIF({workers:2, quality:10, width:w, height:h, workerScript:'/vendor/gifjs-0.2/gif.worker.js', background:'#fff'});
     imgs.forEach(function(im){ var c=document.createElement('canvas');c.width=w;c.height=h;var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);
       var s=Math.min(w/im.width,h/im.height),iw=im.width*s,ih=im.height*s; x.drawImage(im,(w-iw)/2,(h-ih)/2,iw,ih); gif.addFrame(c,{delay:+$('delay').value||400}); });
-    gif.on('progress',function(p){ $('prog').textContent='렌더링 '+Math.round(p*100)+'%'; });
-    gif.on('finished',function(blob){ var url=URL.createObjectURL(blob); $('out').src=url; $('dl').href=url; $('result').classList.remove('hide'); $('prog').textContent='완료! ('+Math.round(blob.size/1024)+'KB)'; });
+    gif.on('progress',function(p){ $('prog').textContent=t('b_gifmaker_prog_rendering')+Math.round(p*100)+'%'; });
+    gif.on('finished',function(blob){ var url=URL.createObjectURL(blob); $('out').src=url; $('dl').href=url; $('result').classList.remove('hide'); $('prog').textContent=t('b_gifmaker_prog_done_pre')+Math.round(blob.size/1024)+t('b_gifmaker_prog_done_post'); });
     gif.render();
   });
 </script>

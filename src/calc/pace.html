@@ -24,27 +24,34 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:540px;">
-  <h1>러닝 페이스 계산기</h1>
-  <p class="sub">달린 거리와 시간으로 페이스(분/km)와 속도를 계산하고 코스별 예상 기록을 보여 줍니다.</p>
+  <h1 data-i18n="b_pace_h1">러닝 페이스 계산기</h1>
+  <p class="sub" data-i18n="b_pace_sub">달린 거리와 시간으로 페이스(분/km)와 속도를 계산하고 코스별 예상 기록을 보여 줍니다.</p>
   <div class="card">
-    <div class="fld"><label>거리 (km)</label><input id="dist" type="number" inputmode="decimal" value="5"/></div>
-    <div class="fld"><label>시간 (시 : 분 : 초)</label><div class="trow"><input id="hh" type="number" value="0" placeholder="시"/><input id="mm" type="number" value="30" placeholder="분"/><input id="ss" type="number" value="0" placeholder="초"/></div></div>
-    <div class="big"><div class="n" id="pace">-</div><div class="u">페이스 (분/km) · <span id="speed">-</span></div></div>
-    <table class="tbl"><thead><tr><th>코스</th><th>예상 기록</th></tr></thead><tbody id="rows"></tbody></table>
-    <div class="note">예상 기록은 동일 페이스 유지를 가정한 단순 계산으로, 거리가 길수록 실제보다 빠르게 나옵니다(참고용). 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="fld"><label data-i18n="b_pace_lbl_dist">거리 (km)</label><input id="dist" type="number" inputmode="decimal" value="5"/></div>
+    <div class="fld"><label data-i18n="b_pace_lbl_time">시간 (시 : 분 : 초)</label><div class="trow"><input id="hh" type="number" value="0" data-i18n-ph="b_pace_ph_h" placeholder="시"/><input id="mm" type="number" value="30" data-i18n-ph="b_pace_ph_m" placeholder="분"/><input id="ss" type="number" value="0" data-i18n-ph="b_pace_ph_s" placeholder="초"/></div></div>
+    <div class="big"><div class="n" id="pace">-</div><div class="u"><span data-i18n="b_pace_unit_pace">페이스 (분/km)</span> · <span id="speed">-</span></div></div>
+    <table class="tbl"><thead><tr><th data-i18n="b_pace_th_course">코스</th><th data-i18n="b_pace_th_time">예상 기록</th></tr></thead><tbody id="rows"></tbody></table>
+    <div class="note" data-i18n="b_pace_note">예상 기록은 동일 페이스 유지를 가정한 단순 계산으로, 거리가 길수록 실제보다 빠르게 나옵니다(참고용). 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   function fmt(sec){ sec=Math.round(sec); var h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60; return (h>0?h+':':'')+(h>0?('0'+m).slice(-2):m)+':'+('0'+s).slice(-2); }
-  function calc(){ var d=+$('dist').value||0; var t=(+$('hh').value||0)*3600+(+$('mm').value||0)*60+(+$('ss').value||0);
-    if(d<=0||t<=0){ $('pace').textContent='-'; $('speed').textContent='-'; $('rows').innerHTML=''; return; }
-    var paceSec=t/d; var pm=Math.floor(paceSec/60),ps=Math.round(paceSec%60); if(ps===60){pm++;ps=0;}
-    $('pace').textContent=pm+"'"+('0'+ps).slice(-2)+'"'; $('speed').textContent=(d/(t/3600)).toFixed(2)+' km/h';
-    var courses=[['1K',1],['5K',5],['10K',10],['하프(21.1K)',21.0975],['풀코스(42.2K)',42.195]];
+  function calc(){ var d=+$('dist').value||0; var tmp=(+$('hh').value||0)*3600+(+$('mm').value||0)*60+(+$('ss').value||0);
+    if(d<=0||tmp<=0){ $('pace').textContent='-'; $('speed').textContent='-'; $('rows').innerHTML=''; return; }
+    var paceSec=tmp/d; var pm=Math.floor(paceSec/60),ps=Math.round(paceSec%60); if(ps===60){pm++;ps=0;}
+    $('pace').textContent=pm+"'"+('0'+ps).slice(-2)+'"'; $('speed').textContent=(d/(tmp/3600)).toFixed(2)+' km/h';
+    var courses=[
+      [t('b_pace_course_1k'),1],
+      [t('b_pace_course_5k'),5],
+      [t('b_pace_course_10k'),10],
+      [t('b_pace_course_half'),21.0975],
+      [t('b_pace_course_full'),42.195]
+    ];
     $('rows').innerHTML=courses.map(function(c){ return '<tr><td>'+c[0]+'</td><td>'+fmt(paceSec*c[1])+'</td></tr>'; }).join('');
   }
+  window.onI18n=calc;
   ['dist','hh','mm','ss'].forEach(function(id){$(id).addEventListener('input',calc);});
   calc();
 </script>

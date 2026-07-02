@@ -91,59 +91,59 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:780px;">
-  <h1>건앤슬라임 <span style="font-size:.9rem;color:var(--muted)">(3D FPS)</span></h1>
-  <p class="sub">무기를 바꿔가며 슬라임을 처치하고, 5웨이브마다 등장하는 보스를 쓰러뜨리세요! 골드로 업그레이드하며 최고 기록에 도전!</p>
+  <h1 data-i18n="b_slimefps_title">건앤슬라임 <span style="font-size:.9rem;color:var(--muted)">(3D FPS)</span></h1>
+  <p class="sub" data-i18n="b_slimefps_sub">무기를 바꿔가며 슬라임을 처치하고, 5웨이브마다 등장하는 보스를 쓰러뜨리세요! 골드로 업그레이드하며 최고 기록에 도전!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li><b>이동 WASD</b>, <b>조준</b>은 화면 클릭(마우스·ESC 해제), <b>발사 = 클릭</b>, <b>재장전 R</b>, <b>무기 전환 1·2·3</b></li>
-    <li>모바일: 왼쪽 <b>이동</b>, 화면 <b>드래그</b> 조준, 오른쪽 <b>발사</b>·재장전, 아래 <b>무기 버튼</b></li>
-    <li>웨이브 사이 <b>상점</b>에서 골드로 업그레이드·무기 해제! <b>Space/P</b>로 일시정지</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_slimefps_howto_title">조작법</b><ol>
+    <li data-i18n-html="b_slimefps_howto1"><b>이동 WASD</b>, <b>조준</b>은 화면 클릭(마우스·ESC 해제), <b>발사 = 클릭</b>, <b>재장전 R</b>, <b>무기 전환 1·2·3</b></li>
+    <li data-i18n-html="b_slimefps_howto2">모바일: 왼쪽 <b>이동</b>, 화면 <b>드래그</b> 조준, 오른쪽 <b>발사</b>·재장전, 아래 <b>무기 버튼</b></li>
+    <li data-i18n-html="b_slimefps_howto3">웨이브 사이 <b>상점</b>에서 골드로 업그레이드·무기 해제! <b>Space/P</b>로 일시정지</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
       <div class="scores">
-        <div class="sbox"><div class="l">웨이브</div><div class="v" id="wave">0</div></div>
-        <div class="sbox"><div class="l">처치</div><div class="v" id="kills">0</div></div>
-        <div class="sbox"><div class="l">골드</div><div class="v" id="gold">0</div></div>
-        <div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_slimefps_stat_wave">웨이브</div><div class="v" id="wave">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_slimefps_stat_kills">처치</div><div class="v" id="kills">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_slimefps_stat_gold">골드</div><div class="v" id="gold">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_slimefps_stat_best">최고</div><div class="v" id="best">0</div></div>
       </div>
-      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+      <button class="btn btn-ghost" id="restart" type="button" data-i18n="b_slimefps_btn_restart">다시 시작</button>
     </div>
     <div class="stage">
       <div class="view g3d-stage" id="view"></div>
       <div class="cross" id="cross" style="display:none"></div>
       <div class="vig" id="vig"></div>
-      <div class="bossbar" id="bossbar"><div class="lab" id="bossLab">👑 보스 슬라임</div><div class="bg"><div class="fg" id="bossFg"></div></div></div>
+      <div class="bossbar" id="bossbar"><div class="lab" id="bossLab">👑 <span data-i18n="b_slimefps_boss_slime">보스 슬라임</span></div><div class="bg"><div class="fg" id="bossFg"></div></div></div>
       <div class="hp" id="hpwrap" style="display:none"><i id="hp"></i></div>
       <div class="ammo" id="ammo" style="display:none"></div>
       <div class="banner" id="banner"></div>
-      <div class="hint" id="hint" style="display:none">화면을 클릭하면 마우스로 조준할 수 있어요</div>
+      <div class="hint" id="hint" style="display:none" data-i18n="b_slimefps_hint_lock">화면을 클릭하면 마우스로 조준할 수 있어요</div>
 
       <div class="over" id="gover"><div>
         <div class="big" id="goverBig">🔫 GUN &amp; SLIME</div>
-        <div class="sm" id="goverSm">난이도를 고르고 시작하세요!</div>
+        <div class="sm" id="goverSm" data-i18n="b_slimefps_ready_sm">난이도를 고르고 시작하세요!</div>
         <div class="diff" id="diff">
-          <button data-k="easy" type="button">쉬움</button>
-          <button data-k="normal" class="on" type="button">보통</button>
-          <button data-k="hard" type="button">어려움</button>
+          <button data-k="easy" type="button" data-i18n="b_slimefps_diff_easy">쉬움</button>
+          <button data-k="normal" class="on" type="button" data-i18n="b_slimefps_diff_normal">보통</button>
+          <button data-k="hard" type="button" data-i18n="b_slimefps_diff_hard">어려움</button>
         </div>
-        <button class="btn" id="goverBtn" type="button">게임 시작</button>
+        <button class="btn" id="goverBtn" type="button" data-i18n="b_slimefps_btn_start">게임 시작</button>
       </div></div>
 
       <div class="over" id="shop" style="display:none"><div>
-        <div class="big" id="shopTitle">🛒 상점</div>
-        <div class="sm">보유 골드: <b id="shopGold" style="color:#ffd86b">0</b> · 다음 웨이브를 준비하세요</div>
+        <div class="big" id="shopTitle">🛒 <span data-i18n="b_slimefps_shop_title">상점</span></div>
+        <div class="sm"><span data-i18n="b_slimefps_shop_gold_label">보유 골드:</span> <b id="shopGold" style="color:#ffd86b">0</b> · <span data-i18n="b_slimefps_shop_prep">다음 웨이브를 준비하세요</span></div>
         <div class="shopgrid" id="shopGrid"></div>
-        <button class="btn" id="nextWaveBtn" type="button">다음 웨이브 ▶</button>
+        <button class="btn" id="nextWaveBtn" type="button" data-i18n="b_slimefps_btn_next_wave">다음 웨이브 ▶</button>
       </div></div>
     </div>
     <div class="weapons" id="weaponBar"></div>
     <div class="touch">
       <div class="dpad" id="dpad"><button class="du" data-d="u">▲</button><button class="dl" data-d="l">◀</button><button class="dd" data-d="d">▼</button><button class="dr" data-d="r">▶</button></div>
-      <div class="rgrp"><button class="reloadBtn" id="reloadBtn" type="button">🔄 재장전(R)</button><button class="fire" id="fireBtn" type="button">발사</button></div>
+      <div class="rgrp"><button class="reloadBtn" id="reloadBtn" type="button" data-i18n="b_slimefps_btn_reload">🔄 재장전(R)</button><button class="fire" id="fireBtn" type="button" data-i18n="b_slimefps_btn_fire">발사</button></div>
     </div>
-    <div class="note">Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 효과음은 브라우저에서 합성되고, 최고 기록은 이 기기에 저장됩니다. 데스크톱은 마우스 조준(포인터 잠금), 모바일은 드래그 조준을 지원합니다.</div>
+    <div class="note" data-i18n="b_slimefps_note">Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 효과음은 브라우저에서 합성되고, 최고 기록은 이 기기에 저장됩니다. 데스크톱은 마우스 조준(포인터 잠금), 모바일은 드래그 조준을 지원합니다.</div>
   </div>
 </div>
 
@@ -177,9 +177,9 @@
   // ===== 사운드 =====
   var actx=null;
   function initAudio(){ try{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){} }
-  function tone(f,f2,dur,type,vol){ if(!actx)return; try{ var o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;
-    o.type=type||'square'; o.frequency.setValueAtTime(f,t); if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
-    g.gain.setValueAtTime(vol||0.15,t); g.gain.exponentialRampToValueAtTime(0.001,t+dur); o.connect(g).connect(actx.destination); o.start(t); o.stop(t+dur+0.02);}catch(e){} }
+  function tone(f,f2,dur,type,vol){ if(!actx)return; try{ var o=actx.createOscillator(),g=actx.createGain(),tm=actx.currentTime;
+    o.type=type||'square'; o.frequency.setValueAtTime(f,tm); if(f2)o.frequency.exponentialRampToValueAtTime(f2,tm+dur);
+    g.gain.setValueAtTime(vol||0.15,tm); g.gain.exponentialRampToValueAtTime(0.001,tm+dur); o.connect(g).connect(actx.destination); o.start(tm); o.stop(tm+dur+0.02);}catch(e){} }
   function sShot(){ tone(220,60,0.08,'square',0.15); }
   function sShotgun(){ tone(150,40,0.16,'sawtooth',0.2); }
   function sMg(){ tone(260,120,0.05,'square',0.1); }
@@ -192,9 +192,9 @@
 
   function defaultStats(){ return {maxHp:100,dmg:1,magBonus:0,moveSp:8}; }
   function defaultWeapons(){ return {
-    pistol:{name:'권총',icon:'🔫',mag:12,reload:1.2,rate:0.16,pellets:1,spread:0,dmgMul:1,auto:false,unlocked:true,ammo:12,cost:0},
-    shotgun:{name:'샷건',icon:'💥',mag:6,reload:1.7,rate:0.7,pellets:8,spread:0.11,dmgMul:1.1,auto:false,unlocked:false,ammo:6,cost:300},
-    mg:{name:'기관총',icon:'⚡',mag:30,reload:2.0,rate:0.075,pellets:1,spread:0.03,dmgMul:0.6,auto:true,unlocked:false,ammo:30,cost:400}
+    pistol:{name:t('b_slimefps_weapon_pistol'),icon:'🔫',mag:12,reload:1.2,rate:0.16,pellets:1,spread:0,dmgMul:1,auto:false,unlocked:true,ammo:12,cost:0},
+    shotgun:{name:t('b_slimefps_weapon_shotgun'),icon:'💥',mag:6,reload:1.7,rate:0.7,pellets:8,spread:0.11,dmgMul:1.1,auto:false,unlocked:false,ammo:6,cost:300},
+    mg:{name:t('b_slimefps_weapon_mg'),icon:'⚡',mag:30,reload:2.0,rate:0.075,pellets:1,spread:0.03,dmgMul:0.6,auto:true,unlocked:false,ammo:30,cost:400}
   }; }
   var ORDER=['pistol','shotgun','mg'];
   function effMag(w){ return w.mag+stats.magBonus; }
@@ -246,9 +246,9 @@
   }
   function spawnBoss(){ boss=makeBoss(); var ang=Math.random()*6.28; boss.position.set(Math.cos(ang)*ARENA*0.7,0,Math.sin(ang)*ARENA*0.7);
     boss._spd=1.1*DIFF[diffKey].spd; scene.add(boss); slimes.push(boss); spawnedWave++; sBoss();
-    $('bossLab').textContent='👑 보스 슬라임 (웨이브 '+wave+')'; $('bossbar').style.display='block'; $('bossFg').style.width='100%'; }
+    $('bossLab').innerHTML='👑 '+t('b_slimefps_boss_label_wave').replace('{wave}',wave); $('bossbar').style.display='block'; $('bossFg').style.width='100%'; }
   function clearSlimes(){ slimes.forEach(function(s){ scene.remove(s); }); slimes=[]; boss=null; $('bossbar').style.display='none';
-    tracers.forEach(function(t){scene.remove(t.line);}); tracers=[]; parts.forEach(function(pp){scene.remove(pp.m);}); parts=[]; }
+    tracers.forEach(function(tm){scene.remove(tm.line);}); tracers=[]; parts.forEach(function(pp){scene.remove(pp.m);}); parts=[]; }
 
   function forward(){ FWD.set(-Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),-Math.cos(yaw)*Math.cos(pitch)); return FWD; }
   function findTarget(dir){ var best2=null,bd=1e9; for(var i=0;i<slimes.length;i++){ var s=slimes[i]; tmp.set(s.position.x-px,(s.position.y+0.85)-EYE,s.position.z-pz);
@@ -261,14 +261,14 @@
     w.ammo--; updateAmmo(); fireCD=w.rate; recoil=w===weapons.shotgun?0.09:0.045; flashT=0.06; if(flashMesh){flashMesh.visible=true;flashMesh.material.rotation=Math.random()*6;}
     (cur==='shotgun'?sShotgun:cur==='mg'?sMg:sShot)();
     var f=forward(), camPos=new THREE.Vector3(px,EYE,pz), dmgMap=[];
-    for(var pdx=0;pdx<w.pellets;pdx++){ var dir=jitter(f,w.spread); var r=findTarget(dir);
-      if(pdx===0) addTracer(camPos, camPos.clone().add(dir.clone().multiplyScalar(r.s?r.d:75)));
-      if(r.s){ var e=null; for(var k=0;k<dmgMap.length;k++) if(dmgMap[k].s===r.s){e=dmgMap[k];break;} if(!e){e={s:r.s,dmg:0};dmgMap.push(e);} e.dmg+=stats.dmg*w.dmgMul; } }
+    for(var pdx=0;pdx<w.pellets;pdx++){ var dir=jitter(f,w.spread); var res=findTarget(dir);
+      if(pdx===0) addTracer(camPos, camPos.clone().add(dir.clone().multiplyScalar(res.s?res.d:75)));
+      if(res.s){ var e=null; for(var k=0;k<dmgMap.length;k++) if(dmgMap[k].s===res.s){e=dmgMap[k];break;} if(!e){e={s:res.s,dmg:0};dmgMap.push(e);} e.dmg+=stats.dmg*w.dmgMul; } }
     for(var m=0;m<dmgMap.length;m++){ var s=dmgMap[m].s; s._hp-=dmgMap[m].dmg; flash(s); sHit();
       if(s._boss) $('bossFg').style.width=Math.max(0,s._hp/s._maxhp*100)+'%';
       if(s._hp<=0){ var idx=slimes.indexOf(s); if(idx>=0) slimes.splice(idx,1); scene.remove(s);
         burst(s.position.x,(s.position.y||0)+0.8,s.position.z,s._col); kills++; gold+=(s._boss?500:TYPES[s._type].gold); sKill();
-        if(s._boss){ boss=null; $('bossbar').style.display='none'; banner('보스 처치! +500G'); }
+        if(s._boss){ boss=null; $('bossbar').style.display='none'; banner(t('b_slimefps_banner_boss_kill')); }
         $('kills').textContent=kills; $('gold').textContent=gold; } }
     if(w.ammo<=0) reload();
   }
@@ -277,7 +277,7 @@
   function addTracer(a,b){ var line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),new THREE.LineBasicMaterial({color:0xfff080})); scene.add(line); tracers.push({line:line,t:0.05}); }
   function burst(x,y,z,col){ for(var i=0;i<6;i++){ var m=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.18,0.18),new THREE.MeshBasicMaterial({color:col}));
     m.position.set(x,y,z); scene.add(m); parts.push({m:m,vx:(Math.random()-0.5)*6,vy:Math.random()*5+2,vz:(Math.random()-0.5)*6,t:0.6}); } }
-  function updateAmmo(){ var w=weapons[cur]; $('ammo').innerHTML='<span class="wn">'+w.icon+' '+w.name+'</span>'+(reloading>0?'재장전 중…':('🔫 '+w.ammo+' <small>/ '+effMag(w)+'</small>')); }
+  function updateAmmo(){ var w=weapons[cur]; $('ammo').innerHTML='<span class="wn">'+w.icon+' '+w.name+'</span>'+(reloading>0?t('b_slimefps_reloading'):('🔫 '+w.ammo+' <small>/ '+effMag(w)+'</small>')); }
   function banner(txt){ var b=$('banner'); b.textContent=txt; b.classList.add('show'); clearTimeout(b._t); b._t=setTimeout(function(){b.classList.remove('show');},1500); }
   function renderWeaponBar(){ $('weaponBar').innerHTML=ORDER.map(function(id,i){ var w=weapons[id];
     return '<button data-w="'+id+'" class="'+(id===cur?'on':'')+(w.unlocked?'':' lock')+'">'+(i+1)+' '+w.icon+' '+w.name+(w.unlocked?'':' 🔒')+'</button>'; }).join(''); }
@@ -313,22 +313,22 @@
   function hurtFx(){ var v=$('vig'); v.classList.add('hurt'); clearTimeout(v._t); v._t=setTimeout(function(){v.classList.remove('hurt');},120); if(!hurtFx._s){ sHurt(); hurtFx._s=1; setTimeout(function(){hurtFx._s=0;},250); } }
 
   function startWave(n){ wave=n; $('wave').textContent=n; spawnedWave=0; spawnTimer=0; boss=null; $('bossbar').style.display='none';
-    if(n%5===0){ toSpawn=1+3; banner('⚠ 보스 웨이브 '+n+' ⚠'); state='play'; spawnBoss(); /* 미니언 3 */ }
+    if(n%5===0){ toSpawn=1+3; banner(t('b_slimefps_banner_boss_wave').replace('{wave}',n)); state='play'; spawnBoss(); /* 미니언 3 */ }
     else { toSpawn=4+n*2; banner('WAVE '+n); state='play'; } }
   function renderShop(){ $('shopGold').textContent=gold;
     var items=[
-      {name:'체력 회복 +40',cost:60,apply:function(){ health=Math.min(stats.maxHp,health+40); $('hp').style.width=health/stats.maxHp*100+'%'; }},
-      {name:'최대 체력 +20',cost:120,apply:function(){ stats.maxHp+=20; health+=20; $('hp').style.width=health/stats.maxHp*100+'%'; }},
-      {name:'데미지 +1 (현재 '+stats.dmg+')',cost:150,apply:function(){ stats.dmg+=1; }},
-      {name:'장탄수 +3 (현재 +'+stats.magBonus+')',cost:100,apply:function(){ stats.magBonus+=3; ORDER.forEach(function(id){weapons[id].ammo=effMag(weapons[id]);}); updateAmmo(); }},
-      {name:'이동속도 +1.5',cost:110,apply:function(){ stats.moveSp+=1.5; }},
-      {name:'탄약 완충',cost:30,apply:function(){ var w=weapons[cur]; w.ammo=effMag(w); reloading=0; updateAmmo(); }}
+      {name:t('b_slimefps_shop_hp_recover'),cost:60,apply:function(){ health=Math.min(stats.maxHp,health+40); $('hp').style.width=health/stats.maxHp*100+'%'; }},
+      {name:t('b_slimefps_shop_max_hp'),cost:120,apply:function(){ stats.maxHp+=20; health+=20; $('hp').style.width=health/stats.maxHp*100+'%'; }},
+      {name:t('b_slimefps_shop_dmg').replace('{cur}',stats.dmg),cost:150,apply:function(){ stats.dmg+=1; }},
+      {name:t('b_slimefps_shop_mag').replace('{cur}',stats.magBonus),cost:100,apply:function(){ stats.magBonus+=3; ORDER.forEach(function(id){weapons[id].ammo=effMag(weapons[id]);}); updateAmmo(); }},
+      {name:t('b_slimefps_shop_movespd'),cost:110,apply:function(){ stats.moveSp+=1.5; }},
+      {name:t('b_slimefps_shop_ammo_refill'),cost:30,apply:function(){ var w=weapons[cur]; w.ammo=effMag(w); reloading=0; updateAmmo(); }}
     ];
-    ORDER.forEach(function(id){ var w=weapons[id]; if(!w.unlocked) items.push({name:'무기 해제: '+w.icon+' '+w.name,cost:w.cost,apply:function(){ w.unlocked=true; w.ammo=effMag(w); renderWeaponBar(); }}); });
+    ORDER.forEach(function(id){ var w=weapons[id]; if(!w.unlocked) items.push({name:t('b_slimefps_shop_unlock').replace('{icon}',w.icon).replace('{name}',w.name),cost:w.cost,apply:function(){ w.unlocked=true; w.ammo=effMag(w); renderWeaponBar(); }}); });
     window._shopItems=items;
     $('shopGrid').innerHTML=items.map(function(it,i){ return '<button data-i="'+i+'" '+(gold<it.cost?'disabled':'')+'>'+it.name+'<br><b>'+it.cost+' G</b></button>'; }).join(''); }
   function openShop(){ state='shop'; exitLock(); $('cross').style.display='none'; $('hint').style.display='none'; $('bossbar').style.display='none';
-    $('shopTitle').textContent='🛒 상점 — 웨이브 '+wave+' 클리어!'; renderShop(); $('shop').style.display='flex'; }
+    $('shopTitle').innerHTML='🛒 '+t('b_slimefps_shop_clear').replace('{wave}',wave); renderShop(); $('shop').style.display='flex'; }
   function nextWave(){ $('shop').style.display='none'; $('cross').style.display='block'; if(!isTouch&&!locked)$('hint').style.display='block'; startWave(wave+1); }
 
   function begin(){ initAudio(); clearSlimes(); stats=defaultStats(); weapons=defaultWeapons(); cur='pistol';
@@ -340,8 +340,9 @@
   }
   function lose(){ state='over'; exitLock(); holdFire=false;
     if(wave>best.wave || (wave===best.wave&&kills>best.kills)){ best={wave:wave,kills:kills,gold:gold}; saveBest(); $('best').textContent=best.wave; }
-    $('goverBig').textContent='💀 게임 오버'; $('goverSm').textContent='웨이브 '+wave+' 도달 · 처치 '+kills+' · 골드 '+gold+'<br>🏆 최고 기록: 웨이브 '+best.wave+' (처치 '+best.kills+')';
-    $('diff').style.display='none'; $('goverBtn').textContent='다시 시작'; $('gover').style.display='flex'; $('cross').style.display='none'; $('ammo').style.display='none'; $('hint').style.display='none'; $('bossbar').style.display='none'; }
+    $('goverBig').textContent=t('b_slimefps_gameover_big');
+    $('goverSm').innerHTML=t('b_slimefps_gameover_sm').replace('{wave}',wave).replace('{kills}',kills).replace('{gold}',gold).replace('{bwave}',best.wave).replace('{bkills}',best.kills);
+    $('diff').style.display='none'; $('goverBtn').textContent=t('b_slimefps_btn_restart'); $('gover').style.display='flex'; $('cross').style.display='none'; $('ammo').style.display='none'; $('hint').style.display='none'; $('bossbar').style.display='none'; }
 
   // ===== 입력 =====
   var isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0, locked=false;
@@ -357,7 +358,7 @@
   document.addEventListener('mousemove',function(e){ if(locked&&state==='play') look(e.movementX||0,e.movementY||0,0.0022); });
   var drag=null;
   T.dom.addEventListener('touchstart',function(e){ if(state!=='play')return; drag={x:e.touches[0].clientX,y:e.touches[0].clientY}; },{passive:true});
-  T.dom.addEventListener('touchmove',function(e){ if(!drag||state!=='play')return; var t=e.touches[0]; look(t.clientX-drag.x,t.clientY-drag.y,0.005); drag={x:t.clientX,y:t.clientY}; e.preventDefault(); },{passive:false});
+  T.dom.addEventListener('touchmove',function(e){ if(!drag||state!=='play')return; var tmv=e.touches[0]; look(tmv.clientX-drag.x,tmv.clientY-drag.y,0.005); drag={x:tmv.clientX,y:tmv.clientY}; e.preventDefault(); },{passive:false});
   T.dom.addEventListener('touchend',function(){ drag=null; });
   Array.prototype.forEach.call($('dpad').querySelectorAll('button'),function(b){ var d=b.dataset.d;
     function on(e){ e.preventDefault(); keys[d]=1; b.classList.add('on'); } function off(e){ e&&e.preventDefault(); keys[d]=0; b.classList.remove('on'); }
@@ -372,9 +373,10 @@
     if(gold>=it.cost){ gold-=it.cost; $('gold').textContent=gold; it.apply(); sReload(); renderShop(); } });
   $('nextWaveBtn').addEventListener('click',function(e){ e.stopPropagation(); nextWave(); });
   $('goverBtn').addEventListener('click',function(e){ e.stopPropagation(); begin(); });
-  $('restart').addEventListener('click',function(){ state='ready'; exitLock(); clearSlimes(); $('diff').style.display='flex'; $('goverBig').textContent='🔫 GUN & SLIME'; $('goverSm').textContent='난이도를 고르고 시작하세요!'; $('goverBtn').textContent='게임 시작'; $('gover').style.display='flex'; $('shop').style.display='none'; $('cross').style.display='none'; $('hpwrap').style.display='none'; $('ammo').style.display='none'; $('hint').style.display='none'; });
+  $('restart').addEventListener('click',function(){ state='ready'; exitLock(); clearSlimes(); $('diff').style.display='flex'; $('goverBig').textContent='🔫 GUN & SLIME'; $('goverSm').textContent=t('b_slimefps_ready_sm'); $('goverBtn').textContent=t('b_slimefps_btn_start'); $('gover').style.display='flex'; $('shop').style.display='none'; $('cross').style.display='none'; $('hpwrap').style.display='none'; $('ammo').style.display='none'; $('hint').style.display='none'; });
 
   buildOnce(); stats=defaultStats(); weapons=defaultWeapons(); cur='pistol'; $('best').textContent=best.wave; renderWeaponBar();
+  window.onI18n=function(){ weapons=defaultWeapons(); renderWeaponBar(); updateAmmo(); };
   window._dbg={ shoot:shoot, reload:reload, slimes:function(){return slimes;}, kills:function(){return kills;}, gold:function(){return gold;},
     ammo:function(){return weapons[cur].ammo;}, cur:function(){return cur;}, weapons:function(){return weapons;}, stats:function(){return stats;},
     health:function(){return health;}, state:function(){return state;}, wave:function(){return wave;}, boss:function(){return boss;}, best:function(){return best;},

@@ -69,34 +69,34 @@
 <body>
 
 <div class="toolwrap">
-  <h1>평수 계산기 (㎡ ↔ 평)</h1>
-  <p class="sub">제곱미터와 평을 양쪽 모두 바로 변환합니다. 아파트 면적, 토지 면적 어디에 넣어도 즉시 계산됩니다.</p>
+  <h1 data-i18n="b_pyeong_h1">평수 계산기 (㎡ ↔ 평)</h1>
+  <p class="sub" data-i18n="b_pyeong_sub">제곱미터와 평을 양쪽 모두 바로 변환합니다. 아파트 면적, 토지 면적 어디에 넣어도 즉시 계산됩니다.</p>
 
   <div class="card">
     <div class="conv">
       <div class="fld">
-        <label for="sqm">제곱미터 (㎡)</label>
+        <label for="sqm" data-i18n="b_pyeong_lbl_sqm">제곱미터 (㎡)</label>
         <input id="sqm" type="number" inputmode="decimal" value="84" step="0.01" min="0"/>
       </div>
       <div class="eq">↔</div>
       <div class="fld">
-        <label for="py">평</label>
+        <label for="py" data-i18n="b_pyeong_lbl_py">평</label>
         <input id="py" type="number" inputmode="decimal" value="25.41" step="0.01" min="0"/>
       </div>
     </div>
 
     <div class="extra">
-      <div class="chip"><div class="l">평 (정수 반올림)</div><div class="n" id="py-round">25평</div></div>
-      <div class="chip"><div class="l">헥타르 (㏊)</div><div class="n" id="ha">0.0084 ㏊</div></div>
-      <div class="chip"><div class="l">3.3㎡ 기준 평</div><div class="n" id="py33">25.45평</div></div>
+      <div class="chip"><div class="l" data-i18n="b_pyeong_chip_round">평 (정수 반올림)</div><div class="n" id="py-round">25평</div></div>
+      <div class="chip"><div class="l" data-i18n="b_pyeong_chip_ha">헥타르 (㏊)</div><div class="n" id="ha">0.0084 ㏊</div></div>
+      <div class="chip"><div class="l" data-i18n="b_pyeong_chip_py33">3.3㎡ 기준 평</div><div class="n" id="py33">25.45평</div></div>
     </div>
 
     <div class="ref">
-      <h3>자주 찾는 면적 (클릭하면 입력)</h3>
+      <h3 data-i18n="b_pyeong_ref_title">자주 찾는 면적 (클릭하면 입력)</h3>
       <div class="reftbl" id="ref"></div>
     </div>
 
-    <div class="note">
+    <div class="note" data-i18n="b_pyeong_note">
       1평 = 3.305785㎡ (= 400/121㎡), 1㎡ = 0.3025평으로 계산합니다. 부동산에서 흔히 쓰는 '3.3㎡당' 기준도 함께 보여 줍니다. 아파트 '전용 84㎡'는 보통 25평형으로 부르지만, 분양면적(공급면적)·전용면적은 다르니 분양 자료의 면적 구분을 확인하세요. 모든 계산은 브라우저에서 이루어집니다.
     </div>
   </div>
@@ -108,6 +108,11 @@
   var SQM_PER_PY = 400/121;            // 3.305785...
   var lock = false;
   function fmt(n){ return (Math.round(n*100)/100).toLocaleString('ko-KR'); }
+
+  function getLocale(){
+    var lang = (typeof curLang === 'function') ? curLang() : 'ko';
+    return {ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[lang] || 'ko-KR';
+  }
 
   function fromSqm(){
     if(lock) return; lock = true;
@@ -122,16 +127,21 @@
     render(p * SQM_PER_PY); lock = false;
   }
   function render(sqm){
-    $('py-round').textContent = Math.round(sqm / SQM_PER_PY).toLocaleString() + '평';
-    $('ha').textContent = (Math.round(sqm/10000*10000)/10000).toLocaleString() + ' ㏊';
-    $('py33').textContent = fmt(sqm / 3.3) + '평';
+    $('py-round').textContent = Math.round(sqm / SQM_PER_PY).toLocaleString(getLocale()) + t('b_pyeong_unit_py');
+    $('ha').textContent = (Math.round(sqm/10000*10000)/10000).toLocaleString(getLocale()) + ' ㏊';
+    $('py33').textContent = fmt(sqm / 3.3) + t('b_pyeong_unit_py');
   }
   var presets = [
-    ['전용 59㎡', 59], ['전용 74㎡', 74], ['전용 84㎡', 84], ['전용 114㎡', 114],
-    ['10평', 10*SQM_PER_PY], ['20평', 20*SQM_PER_PY], ['24평', 24*SQM_PER_PY],
-    ['32평', 32*SQM_PER_PY], ['40평', 40*SQM_PER_PY], ['100평', 100*SQM_PER_PY],
+    [t('b_pyeong_preset_59'), 59], [t('b_pyeong_preset_74'), 74],
+    [t('b_pyeong_preset_84'), 84], [t('b_pyeong_preset_114'), 114],
+    [t('b_pyeong_preset_10py'), 10*SQM_PER_PY], [t('b_pyeong_preset_20py'), 20*SQM_PER_PY],
+    [t('b_pyeong_preset_24py'), 24*SQM_PER_PY], [t('b_pyeong_preset_32py'), 32*SQM_PER_PY],
+    [t('b_pyeong_preset_40py'), 40*SQM_PER_PY], [t('b_pyeong_preset_100py'), 100*SQM_PER_PY],
   ];
-  $('ref').innerHTML = presets.map(function(p,i){ return '<button data-i="'+i+'">'+p[0]+'</button>'; }).join('');
+  function buildRef(){
+    $('ref').innerHTML = presets.map(function(p,i){ return '<button data-i="'+i+'">'+p[0]+'</button>'; }).join('');
+  }
+  buildRef();
   $('ref').addEventListener('click', function(e){
     var b = e.target.closest('button'); if(!b) return;
     $('sqm').value = fmt(presets[b.dataset.i][1]); fromSqm();
@@ -139,6 +149,19 @@
   $('sqm').addEventListener('input', fromSqm);
   $('py').addEventListener('input', fromPy);
   fromSqm();
+
+  window.onI18n = function(){
+    presets = [
+      [t('b_pyeong_preset_59'), 59], [t('b_pyeong_preset_74'), 74],
+      [t('b_pyeong_preset_84'), 84], [t('b_pyeong_preset_114'), 114],
+      [t('b_pyeong_preset_10py'), 10*SQM_PER_PY], [t('b_pyeong_preset_20py'), 20*SQM_PER_PY],
+      [t('b_pyeong_preset_24py'), 24*SQM_PER_PY], [t('b_pyeong_preset_32py'), 32*SQM_PER_PY],
+      [t('b_pyeong_preset_40py'), 40*SQM_PER_PY], [t('b_pyeong_preset_100py'), 100*SQM_PER_PY],
+    ];
+    buildRef();
+    var sqm = parseFloat($('sqm').value) || 0;
+    render(sqm);
+  };
 </script>
 </body>
 </html>

@@ -52,14 +52,14 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>텍스트 통계·읽기 시간</h1>
-  <p class="sub">문장·단어·문단 수와 평균 문장 길이, 예상 읽기 시간을 실시간으로 보여 줍니다. 글자 수 세기와 달리 ‘읽는 데 걸리는 시간’에 초점을 둡니다.</p>
+  <h1 data-i18n="b_textstats_title">텍스트 통계·읽기 시간</h1>
+  <p class="sub" data-i18n="b_textstats_sub">문장·단어·문단 수와 평균 문장 길이, 예상 읽기 시간을 실시간으로 보여 줍니다. 글자 수 세기와 달리 '읽는 데 걸리는 시간'에 초점을 둡니다.</p>
 
   <div class="card">
-    <textarea id="t" placeholder="여기에 글을 붙여 넣으면 자동으로 분석됩니다."></textarea>
+    <textarea id="t" data-i18n-ph="b_textstats_placeholder" placeholder="여기에 글을 붙여 넣으면 자동으로 분석됩니다."></textarea>
     <div class="grid" id="grid"></div>
     <div class="read" id="read"></div>
-    <div class="note">문장은 마침표·물음표·느낌표(. ? ! 。)로, 문단은 빈 줄로 나눕니다. 읽기 시간은 낭독 약 300자/분, 묵독 약 500자/분(한국어 기준)으로 추정하며 글에 따라 달라집니다. 모든 분석은 브라우저에서 이루어집니다.</div>
+    <div class="note" data-i18n="b_textstats_note">문장은 마침표·물음표·느낌표(. ? ! 。)로, 문단은 빈 줄로 나눕니다. 읽기 시간은 낭독 약 300자/분, 묵독 약 500자/분(한국어 기준)으로 추정하며 글에 따라 달라집니다. 모든 분석은 브라우저에서 이루어집니다.</div>
   </div>
 </div>
 
@@ -67,17 +67,25 @@
 <script>
   var $ = function(id){ return document.getElementById(id); };
   function calc(){
-    var t=$('t').value;
-    var chars=t.length, noSpace=t.replace(/\s/g,'').length;
-    var words=(t.trim().match(/\S+/g)||[]).length;
-    var sentences=(t.match(/[^.!?。\n]+[.!?。]+|\S[^.!?。\n]*$/g)||[]).filter(function(s){return s.trim();}).length;
-    var paras=t.split(/\n\s*\n/).filter(function(p){return p.trim();}).length;
+    var tmp=$('t').value;
+    var chars=tmp.length, noSpace=tmp.replace(/\s/g,'').length;
+    var words=(tmp.trim().match(/\S+/g)||[]).length;
+    var sentences=(tmp.match(/[^.!?。\n]+[.!?。]+|\S[^.!?。\n]*$/g)||[]).filter(function(s){return s.trim();}).length;
+    var paras=tmp.split(/\n\s*\n/).filter(function(p){return p.trim();}).length;
     var avg = sentences? Math.round(words/sentences*10)/10 : 0;
-    $('grid').innerHTML=[['단어',words],['문장',sentences],['문단',paras],['글자',chars],['공백 제외',noSpace],['문장당 단어',avg]]
-      .map(function(s){return '<div class="stat"><div class="v">'+s[1].toLocaleString('ko-KR')+'</div><div class="l">'+s[0]+'</div></div>';}).join('');
-    function tm(cpm){ var sec=Math.round(noSpace/cpm*60); if(sec<60) return sec+'초'; var m=Math.floor(sec/60); return m+'분 '+(sec%60)+'초'; }
-    $('read').innerHTML='<span class="pill">🗣️ 낭독 약 '+tm(300)+'</span><span class="pill">👀 묵독 약 '+tm(500)+'</span>';
+    var loc = {ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[window.curLang?curLang():'ko'];
+    $('grid').innerHTML=[
+      [t('b_textstats_stat_words'),words],
+      [t('b_textstats_stat_sentences'),sentences],
+      [t('b_textstats_stat_paras'),paras],
+      [t('b_textstats_stat_chars'),chars],
+      [t('b_textstats_stat_nospace'),noSpace],
+      [t('b_textstats_stat_words_per_sentence'),avg]
+    ].map(function(s){return '<div class="stat"><div class="v">'+s[1].toLocaleString(loc)+'</div><div class="l">'+s[0]+'</div></div>';}).join('');
+    function tm(cpm){ var sec=Math.round(noSpace/cpm*60); if(sec<60) return sec+t('b_textstats_sec'); var m=Math.floor(sec/60); return m+t('b_textstats_min')+' '+(sec%60)+t('b_textstats_sec'); }
+    $('read').innerHTML='<span class="pill">🗣️ '+t('b_textstats_read_aloud')+tm(300)+'</span><span class="pill">👀 '+t('b_textstats_read_silent')+tm(500)+'</span>';
   }
+  window.onI18n = calc;
   $('t').addEventListener('input', calc);
   calc();
 </script>

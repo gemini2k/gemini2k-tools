@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>LZ-String 압축기 (URL 공유용 문자열) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="긴 텍스트·JSON을 LZ-String으로 압축해 URL이나 localStorage에 담기 좋은 짧은 문자열로 만듭니다. 상태 공유에. LZ-String 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/lzstring.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="LZ-String 압축기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="텍스트를 URL-safe 문자열로 압축·해제(LZ-String). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/lzstring.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:.7rem;}.seg button{padding:.5rem .9rem;border:0;background:var(--surface);color:var(--text);font-family:inherit;font-weight:700;cursor:pointer;}.seg button.on{background:var(--accent);color:#fff;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;font-size:.9rem;}select{padding:.5rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);}
+textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.meta{font-size:.85rem;color:var(--muted);margin:.4rem 0;}.arrow{text-align:center;color:var(--muted);font-size:1.3rem;}
+.out{width:100%;min-height:90px;border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);white-space:pre-wrap;word-break:break-all;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DeveloperApplication","name":"LZ-String 압축기","description":"텍스트를 URL-safe 문자열로 압축·해제합니다(LZ-String).","url":"https://gemini2k.co.kr/lzstring.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:780px;">
+  <h1 data-i18n="b_lzstring_title">LZ-String 압축기</h1>
+  <p class="sub" data-i18n="b_lzstring_sub">긴 텍스트·JSON을 짧은 문자열로 압축합니다. URL 파라미터나 localStorage에 담기 좋아요.</p>
+  <div class="card">
+    <div class="seg" id="seg"><button data-d="c" class="on" type="button" data-i18n="b_lzstring_btn_compress">압축</button><button data-d="d" type="button" data-i18n="b_lzstring_btn_decompress">해제</button></div>
+    <div class="row"><span data-i18n="b_lzstring_label_mode">방식</span> <select id="mode"><option value="EncodedURIComponent" data-i18n="b_lzstring_mode_url">URL용(UTF-safe)</option><option value="Base64" data-i18n="b_lzstring_mode_base64">Base64</option><option value="UTF16" data-i18n="b_lzstring_mode_utf16">UTF16(최소크기)</option></select></div>
+    <textarea id="in">{"user":"홍길동","prefs":{"theme":"dark","lang":"ko"},"items":[1,2,3,4,5,6,7,8,9,10]}</textarea>
+    <div class="meta" id="meta"></div>
+    <div class="arrow">↓</div>
+    <div class="out" id="out"></div>
+    <button class="btn btn-ghost" id="copy" type="button" style="margin-top:.5rem;" data-i18n="b_lzstring_btn_copy">📋 복사</button>
+    <div class="note" data-i18n-html="b_lzstring_note">오픈소스 <b>LZ-String</b>(MIT, <a href="https://github.com/pieroxy/lz-string" target="_blank" rel="noopener">pieroxy/lz-string</a>)을 자체 호스팅합니다. 압축·해제 방식은 양쪽이 같아야 합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/lzstring-1/lz-string.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var dir='c';
+  function run(){ var s=$('in').value, m=$('mode').value, out='';
+    try{ if(dir==='c'){ out=LZString['compressTo'+m](s); var b1=new Blob([s]).size, b2=out.length;
+        $('meta').textContent=t('b_lzstring_meta_compress').replace('{b1}',b1).replace('{b2}',b2).replace('{pct}',(b1?Math.round((1-b2/(b1))*100):0)); }
+      else { out=LZString['decompressFrom'+m](s)||(t('b_lzstring_decomp_fail')); $('meta').textContent=''; }
+      $('out').textContent=out; window._o=out;
+    }catch(e){ $('out').textContent='⚠️ '+e.message; } }
+  window.onI18n=run;
+  $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;dir=b.dataset.d;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});run();});
+  ['in','mode'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_lzstring_toast_copied'));});});
+  run();
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>JSONata 쿼리·변환기 (JSON 가공) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="JSONata 표현식으로 JSON 데이터를 질의·필터·집계·재구성합니다. API 응답 가공·데이터 변환에. JSONata 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/jsonata.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="JSONata 쿼리·변환기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="JSONata 표현식으로 JSON 질의·변환. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/jsonata.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>label.lbl{font-weight:700;font-size:.85rem;display:block;margin:.6rem 0 .3rem;}
+textarea,input[type=text]{width:100%;padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:ui-monospace,monospace;font-size:.85rem;}
+textarea{min-height:150px;resize:vertical;}#expr{font-weight:600;}
+.out{width:100%;min-height:90px;border:1px solid var(--border);border-radius:10px;background:var(--ground);padding:.7rem;font-family:ui-monospace,monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-word;overflow:auto;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DeveloperApplication","name":"JSONata 쿼리·변환기","description":"JSONata 표현식으로 JSON을 질의·변환합니다.","url":"https://gemini2k.co.kr/jsonata.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:820px;">
+  <h1 data-i18n="b_jsonata_title">JSONata 쿼리·변환기</h1>
+  <p class="sub" data-i18n="b_jsonata_sub">JSONata 표현식으로 JSON을 질의·필터·집계·재구성합니다.</p>
+  <div class="card">
+    <label class="lbl" data-i18n="b_jsonata_lbl_data">JSON 데이터</label>
+    <textarea id="data">{
+  "orders": [
+    { "item": "사과", "qty": 3, "price": 1000 },
+    { "item": "바나나", "qty": 5, "price": 500 },
+    { "item": "체리", "qty": 2, "price": 3000 }
+  ]
+}</textarea>
+    <label class="lbl" data-i18n="b_jsonata_lbl_expr">JSONata 표현식</label>
+    <input type="text" id="expr" value="$sum(orders.(qty * price))"/>
+    <label class="lbl" data-i18n="b_jsonata_lbl_result">결과</label>
+    <div class="err" id="err"></div>
+    <div class="out" id="out"></div>
+    <div class="note" data-i18n-html="b_jsonata_note">오픈소스 <b>JSONata</b>(MIT, <a href="https://github.com/jsonata-js/jsonata" target="_blank" rel="noopener">jsonata-js/jsonata</a>)를 자체 호스팅합니다. 예: <code>orders[qty&gt;2].item</code>, <code>orders{item: price}</code>. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/jsonata-2/jsonata.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function run(){ $('err').textContent='';
+    var data; try{ data=JSON.parse($('data').value); }catch(e){ $('err').textContent='⚠️ '+t('b_jsonata_err_json')+e.message; $('out').textContent=''; return; }
+    try{ var ex=jsonata($('expr').value); ex.evaluate(data).then(function(res){ $('out').textContent=res===undefined?t('b_jsonata_no_result'):JSON.stringify(res,null,2); })
+        .catch(function(e){ $('err').textContent='⚠️ '+e.message; $('out').textContent=''; }); }
+    catch(e){ $('err').textContent='⚠️ '+t('b_jsonata_err_expr')+e.message; $('out').textContent=''; } }
+  window.onI18n=run;
+  var _t; ['data','expr'].forEach(function(id){$(id).addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(run,300);});});
+  run();
+</script>
+</body>
+</html>

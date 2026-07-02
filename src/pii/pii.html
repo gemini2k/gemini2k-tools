@@ -22,7 +22,7 @@
 <meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
 <title>개인정보 탐지·마스킹기 — 빛의여행(gemini2k) 도구</title>
 <script src="ga.js"></script>
-<script src="theme.js"></script>
+<script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script><script src="tool-shell.js"></script>
 <style>
   :root{
     --bg:#0A0F1C; --panel:#0F1A2E; --panel-2:#13223C; --line:#1E3050;
@@ -104,7 +104,7 @@
   footer code{font-family:var(--mono);color:var(--muted)}
   @media (max-width:560px){ .wrap{padding:20px 14px 60px} .panel{padding:16px} }
   @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
-</style>
+input[type="file"].hidden,input[type="file"][hidden]{display:block!important;position:absolute!important;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0,0,0,0);margin:-1px;border:0;}</style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
 <script type="application/ld+json">
 {
@@ -132,38 +132,38 @@
 </head>
 <body>
 <div class="wrap">
-  <a href="index.html" style="display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);text-decoration:none;font-size:.9rem;margin-bottom:1rem">← 전체 도구</a>
+  <a href="index.html" style="display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);text-decoration:none;font-size:.9rem;margin-bottom:1rem" data-i18n="b_mask_back">← 전체 도구</a>
   <header>
     <div>
       <span class="eyebrow">PII Detection &amp; Masking</span>
-      <h1>개인정보 탐지·마스킹기<span class="sub">체크섬으로 검증해 오탐을 줄입니다</span></h1>
+      <h1 data-i18n="b_mask_title">개인정보 탐지·마스킹기<span class="sub" data-i18n="b_mask_subtitle">체크섬으로 검증해 오탐을 줄입니다</span></h1>
     </div>
-    <span class="privacy-badge"><span class="dot"></span> 텍스트는 이 브라우저를 떠나지 않습니다</span>
+    <span class="privacy-badge"><span class="dot"></span> <span data-i18n="b_mask_privacy_badge">텍스트는 이 브라우저를 떠나지 않습니다</span></span>
   </header>
-  <p class="lede">문서나 로그를 붙여넣으면 주민등록번호·사업자번호·카드·전화·이메일·IP를 찾아 마스킹합니다. 단순 패턴이 아니라 주민번호·사업자번호 체크섬과 카드 Luhn 검증을 적용해, 형식만 비슷한 숫자의 오탐을 걸러냅니다. 모든 처리는 기기 안에서만 이뤄지고 전송 통신은 없습니다.</p>
+  <p class="lede" data-i18n="b_mask_lede">문서나 로그를 붙여넣으면 주민등록번호·사업자번호·카드·전화·이메일·IP를 찾아 마스킹합니다. 단순 패턴이 아니라 주민번호·사업자번호 체크섬과 카드 Luhn 검증을 적용해, 형식만 비슷한 숫자의 오탐을 걸러냅니다. 모든 처리는 기기 안에서만 이뤄지고 전송 통신은 없습니다.</p>
 
   <!-- STEP 1 -->
   <section class="panel">
-    <div class="panel-head"><span class="num">1</span><h2>텍스트 입력</h2><span class="hint">붙여넣기 또는 텍스트 파일</span></div>
-    <textarea id="input" placeholder="여기에 텍스트를 붙여넣으세요. (.txt, .csv, .log, .json, .md 파일도 끌어다 놓거나 선택할 수 있습니다)"></textarea>
+    <div class="panel-head"><span class="num">1</span><h2 data-i18n="b_mask_step1_title">텍스트 입력</h2><span class="hint" data-i18n="b_mask_step1_hint">붙여넣기 또는 텍스트 파일</span></div>
+    <textarea id="input" data-i18n-ph="b_mask_input_ph">여기에 텍스트를 붙여넣으세요. (.txt, .csv, .log, .json, .md 파일도 끌어다 놓거나 선택할 수 있습니다)</textarea>
     <div class="row">
-      <button type="button" class="primary" id="runBtn">탐지·마스킹 실행</button>
-      <button type="button" class="ghost" id="fileBtn">파일 선택</button>
-      <button type="button" class="ghost" id="sampleBtn">샘플 텍스트</button>
-      <button type="button" class="ghost" id="clearBtn">지우기</button>
+      <button type="button" class="primary" id="runBtn" data-i18n="b_mask_run_btn">탐지·마스킹 실행</button>
+      <label class="ghost" id="fileBtn" for="file" role="button" tabindex="0" style="display:inline-block;cursor:pointer" data-i18n="b_mask_file_btn">파일 선택</label>
+      <button type="button" class="ghost" id="sampleBtn" data-i18n="b_mask_sample_btn">샘플 텍스트</button>
+      <button type="button" class="ghost" id="clearBtn" data-i18n="b_mask_clear_btn">지우기</button>
       <input type="file" id="file" accept=".txt,.csv,.tsv,.log,.json,.md,.text,text/plain" class="hidden">
     </div>
 
     <fieldset>
-      <legend>탐지 항목</legend>
+      <legend data-i18n="b_mask_detect_legend">탐지 항목</legend>
       <div class="opts" id="opts"></div>
     </fieldset>
     <fieldset>
-      <legend>마스킹 방식</legend>
+      <legend data-i18n="b_mask_mask_legend">마스킹 방식</legend>
       <div class="styleseg" id="styleseg">
-        <label class="on"><input type="radio" name="mstyle" value="partial" checked><span>부분 마스킹</span></label>
-        <label><input type="radio" name="mstyle" value="full"><span>전체 마스킹 [유형]</span></label>
-        <label><input type="radio" name="mstyle" value="token"><span>가명 토큰 [유형_1]</span></label>
+        <label class="on"><input type="radio" name="mstyle" value="partial" checked><span data-i18n="b_mask_style_partial">부분 마스킹</span></label>
+        <label><input type="radio" name="mstyle" value="full"><span data-i18n="b_mask_style_full">전체 마스킹 [유형]</span></label>
+        <label><input type="radio" name="mstyle" value="token"><span data-i18n="b_mask_style_token">가명 토큰 [유형_1]</span></label>
       </div>
     </fieldset>
     <div id="err"></div>
@@ -171,31 +171,31 @@
 
   <!-- STEP 2 -->
   <section class="panel hidden" id="resultPanel">
-    <div class="panel-head"><span class="num">2</span><h2>결과</h2><span class="hint" id="resHint"></span></div>
+    <div class="panel-head"><span class="num">2</span><h2 data-i18n="b_mask_step2_title">결과</h2><span class="hint" id="resHint"></span></div>
     <div class="chips" id="chips"></div>
 
-    <h3 style="font-size:13px;margin:18px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">탐지 위치 미리보기 (원본 강조)</h3>
+    <h3 style="font-size:13px;margin:18px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em" data-i18n="b_mask_preview_label">탐지 위치 미리보기 (원본 강조)</h3>
     <div class="preview" id="preview"></div>
 
-    <h3 style="font-size:13px;margin:20px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">마스킹 결과</h3>
+    <h3 style="font-size:13px;margin:20px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em" data-i18n="b_mask_output_label">마스킹 결과</h3>
     <textarea class="out" id="output" readonly></textarea>
     <div class="actions">
-      <button type="button" class="primary" id="copyBtn">마스킹 결과 복사</button>
-      <button type="button" class="ghost" id="downloadBtn">텍스트로 내려받기</button>
+      <button type="button" class="primary" id="copyBtn" data-i18n="b_mask_copy_btn">마스킹 결과 복사</button>
+      <button type="button" class="ghost" id="downloadBtn" data-i18n="b_mask_download_btn">텍스트로 내려받기</button>
     </div>
 
-    <h3 style="font-size:13px;margin:22px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">탐지 요약</h3>
+    <h3 style="font-size:13px;margin:22px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em" data-i18n="b_mask_summary_label">탐지 요약</h3>
     <div class="tbl-scroll"><table id="summary"></table></div>
     <p class="note" id="resultNote"></p>
   </section>
 
   <footer>
-    <strong style="color:var(--muted)">검증 방식 ·</strong>
-    <code>주민등록번호</code>·<code>사업자등록번호</code>는 가중치 합 기반 체크섬, <code>신용카드</code>는 Luhn 알고리즘, <code>IP</code>는 옥텟 범위(0–255)로 형식 일치 여부를 검증합니다. 전화·이메일·계좌(추정)는 패턴 기반이라 오탐·미탐 여지가 있으니 결과를 확인하세요.
+    <strong style="color:var(--muted)" data-i18n="b_mask_footer_method_label">검증 방식 ·</strong>
+    <span data-i18n-html="b_mask_footer_method_desc"><code>주민등록번호</code>·<code>사업자등록번호</code>는 가중치 합 기반 체크섬, <code>신용카드</code>는 Luhn 알고리즘, <code>IP</code>는 옥텟 범위(0–255)로 형식 일치 여부를 검증합니다. 전화·이메일·계좌(추정)는 패턴 기반이라 오탐·미탐 여지가 있으니 결과를 확인하세요.</span>
     <br><br>
-    탐지는 알려진 형식에 한정되며 모든 개인정보를 보장하지 않습니다. 비정형 표현(이름·주소 등)이나 변형된 표기는 놓칠 수 있으므로, 중요한 처리에는 사람의 검토를 병행하세요.
+    <span data-i18n="b_mask_footer_disclaimer">탐지는 알려진 형식에 한정되며 모든 개인정보를 보장하지 않습니다. 비정형 표현(이름·주소 등)이나 변형된 표기는 놓칠 수 있으므로, 중요한 처리에는 사람의 검토를 병행하세요.</span>
     <br><br>
-    © 빛의여행(gemini2k) 도구 · 문의 <a href="mailto:gemini2k@naver.com" style="color:var(--teal)">gemini2k@naver.com</a> · <a href="privacy.html" style="color:var(--muted)">개인정보처리방침</a> · <a href="index.html" style="color:var(--muted)">전체 도구 →</a>
+    © 빛의여행(gemini2k) 도구 · 문의 <a href="mailto:gemini2k@naver.com" style="color:var(--teal)">gemini2k@naver.com</a> · <a href="privacy.html" style="color:var(--muted)" data-i18n="b_mask_privacy_link">개인정보처리방침</a> · <a href="index.html" style="color:var(--muted)" data-i18n="b_mask_all_tools_link">전체 도구 →</a>
   </footer>
 </div>
 
@@ -226,7 +226,16 @@ function validLuhn(s){
 }
 function validIPv4(a,b,c,d){ return [a,b,c,d].every(x=>{const n=+x; return /^\d{1,3}$/.test(x)&&n>=0&&n<=255;}); }
 
-const LABELS={rrn:'주민등록번호',brn:'사업자등록번호',card:'신용카드번호',phone:'전화번호',email:'이메일',ip:'IP주소',account:'계좌번호(추정)'};
+const LABELS={
+  rrn: ()=>t('b_mask_label_rrn'),
+  brn: ()=>t('b_mask_label_brn'),
+  card: ()=>t('b_mask_label_card'),
+  phone: ()=>t('b_mask_label_phone'),
+  email: ()=>t('b_mask_label_email'),
+  ip: ()=>t('b_mask_label_ip'),
+  account: ()=>t('b_mask_label_account')
+};
+function getLabel(type){ return LABELS[type] ? LABELS[type]() : type; }
 const COLORS={rrn:'var(--red)',brn:'var(--orange)',card:'var(--purple)',phone:'var(--teal)',email:'var(--sky)',ip:'var(--yellow)',account:'var(--faint)'};
 const PRIORITY=['rrn','brn','card','phone','email','ip','account'];
 
@@ -281,10 +290,10 @@ function maskPartial(type,value){
   }
 }
 function maskValue(type,value,style,tokenMap,counters){
-  if(style==='full') return '['+LABELS[type]+']';
+  if(style==='full') return '['+getLabel(type)+']';
   if(style==='token'){
     const key=type+'|'+value;
-    if(!(key in tokenMap)){ counters[type]=(counters[type]||0)+1; tokenMap[key]='['+LABELS[type]+'_'+counters[type]+']'; }
+    if(!(key in tokenMap)){ counters[type]=(counters[type]||0)+1; tokenMap[key]='['+getLabel(type)+'_'+counters[type]+']'; }
     return tokenMap[key];
   }
   return maskPartial(type,value);
@@ -305,7 +314,7 @@ let LASTTEXT='', LASTMATCHES=null;
 function buildOpts(){
   $('opts').innerHTML=DETECTORS.map(d=>
     '<label class="opt"><input type="checkbox" data-type="'+d.type+'"'+(d.def?' checked':'')+'>'+
-    '<span>'+LABELS[d.type]+'</span><span class="tag" style="background:'+COLORS[d.type]+'"></span></label>'
+    '<span>'+getLabel(d.type)+'</span><span class="tag" style="background:'+COLORS[d.type]+'"></span></label>'
   ).join('');
 }
 function enabledMap(){
@@ -318,7 +327,7 @@ function currentStyle(){ return ($('styleseg').querySelector('input[name=mstyle]
 function run(){
   errBox('');
   const text=$('input').value;
-  if(!text.trim()){ errBox('분석할 텍스트가 없습니다. 붙여넣거나 파일을 선택하세요.'); return; }
+  if(!text.trim()){ errBox(t('b_mask_err_empty')); return; }
   const matches=detect(text, enabledMap());
   LASTTEXT=text; LASTMATCHES=matches;
   render();
@@ -328,10 +337,10 @@ function render(){
   const style=currentStyle();
   // counts
   const counts={}; matches.forEach(m=>counts[m.type]=(counts[m.type]||0)+1);
-  $('resHint').textContent='총 '+matches.length+'건';
+  $('resHint').textContent=t('b_mask_total_count').replace('{n}', matches.length);
   // chips
-  let chips='<span class="chip chip-total">탐지 합계 <b>'+matches.length+'</b></span>';
-  PRIORITY.forEach(t=>{ if(counts[t]) chips+='<span class="chip"><i style="background:'+COLORS[t]+'"></i>'+LABELS[t]+' <b>'+counts[t]+'</b></span>'; });
+  let chips='<span class="chip chip-total">'+t('b_mask_chip_total')+' <b>'+matches.length+'</b></span>';
+  PRIORITY.forEach(tp=>{ if(counts[tp]) chips+='<span class="chip"><i style="background:'+COLORS[tp]+'"></i>'+getLabel(tp)+' <b>'+counts[tp]+'</b></span>'; });
   $('chips').innerHTML=chips;
 
   // highlighted preview (truncate very long text)
@@ -342,12 +351,12 @@ function render(){
     if(m.start>=previewText.length) break;
     html+=esc(previewText.slice(idx,m.start));
     const shown = m.end<=previewText.length ? m.value : previewText.slice(m.start);
-    html+='<mark class="pii '+m.type+'" title="'+esc(LABELS[m.type])+'">'+esc(shown)+'</mark>';
+    html+='<mark class="pii '+m.type+'" title="'+esc(getLabel(m.type))+'">'+esc(shown)+'</mark>';
     idx=Math.min(m.end,previewText.length);
   }
   html+=esc(previewText.slice(idx));
-  if(text.length>LIMIT) html+='<span style="color:var(--faint)">… (미리보기는 앞부분 '+LIMIT.toLocaleString()+'자까지만 표시 — 마스킹 결과는 전체에 적용됩니다)</span>';
-  $('preview').innerHTML = matches.length? html : '<div class="empty">탐지된 개인정보가 없습니다. 탐지 항목 설정을 확인해 보세요.</div>';
+  if(text.length>LIMIT) html+='<span style="color:var(--faint)">'+t('b_mask_preview_truncated').replace('{n}', LIMIT.toLocaleString({ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[typeof curLang==='function'?curLang():'ko']))+'</span>';
+  $('preview').innerHTML = matches.length? html : '<div class="empty">'+t('b_mask_no_pii')+'</div>';
 
   // masked output (full text)
   const tokenMap={}, counters={};
@@ -360,19 +369,19 @@ function render(){
   // summary table (masked example per type — never shows raw)
   const firstByType={}; matches.forEach(m=>{ if(!firstByType[m.type]) firstByType[m.type]=m.value; });
   const tm2={}, c2={};
-  let rows='<tr><th>유형</th><th>건수</th><th>검증</th><th>마스킹 예시</th></tr>';
-  PRIORITY.forEach(t=>{
-    if(!counts[t]) return;
-    const validated = (t==='rrn'||t==='brn'||t==='card'||t==='ip');
-    rows+='<tr><td><span class="tag" style="background:'+COLORS[t]+'"></span>'+esc(LABELS[t])+'</td>'+
-      '<td>'+counts[t]+'</td>'+
-      '<td style="color:'+(validated?'var(--teal)':'var(--faint)')+'">'+(validated?'체크섬/범위':'패턴')+'</td>'+
-      '<td>'+esc(maskValue(t,firstByType[t],style,tm2,c2))+'</td></tr>';
+  let rows='<tr><th>'+t('b_mask_th_type')+'</th><th>'+t('b_mask_th_count')+'</th><th>'+t('b_mask_th_validation')+'</th><th>'+t('b_mask_th_example')+'</th></tr>';
+  PRIORITY.forEach(tp=>{
+    if(!counts[tp]) return;
+    const validated = (tp==='rrn'||tp==='brn'||tp==='card'||tp==='ip');
+    rows+='<tr><td><span class="tag" style="background:'+COLORS[tp]+'"></span>'+esc(getLabel(tp))+'</td>'+
+      '<td>'+counts[tp]+'</td>'+
+      '<td style="color:'+(validated?'var(--teal)':'var(--faint)')+'">'+(validated?t('b_mask_val_checksum'):t('b_mask_val_pattern'))+'</td>'+
+      '<td>'+esc(maskValue(tp,firstByType[tp],style,tm2,c2))+'</td></tr>';
   });
   $('summary').innerHTML=rows;
 
   $('resultNote').innerHTML = matches.length
-    ? '검증 컬럼이 "체크섬/범위"인 항목은 형식 검증을 통과한 결과라 신뢰도가 높습니다. "패턴" 항목은 형식만 맞으면 잡히므로 오탐이 있을 수 있어요.'
+    ? t('b_mask_result_note')
     : '';
   $('resultPanel').classList.remove('hidden');
   $('resultPanel').scrollIntoView({behavior:'smooth',block:'start'});
@@ -393,20 +402,20 @@ const SAMPLE=`[상담 메모]
 function readFile(f){
   const reader=new FileReader();
   reader.onload=()=>{ $('input').value=reader.result; run(); };
-  reader.onerror=()=>errBox('파일을 읽지 못했습니다.');
+  reader.onerror=()=>errBox(t('b_mask_err_file'));
   reader.readAsText(f);
 }
-function download(name,content){
+function download(fname,content){
   const blob=new Blob([content],{type:'text/plain;charset=utf-8'});
   const url=URL.createObjectURL(blob); const a=document.createElement('a');
-  a.href=url; a.download=name; document.body.appendChild(a); a.click();
+  a.href=url; a.download=fname; document.body.appendChild(a); a.click();
   setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},100);
 }
 
 /* wiring */
 buildOpts();
 $('runBtn').addEventListener('click',run);
-$('fileBtn').addEventListener('click',()=>$('file').click());
+/* fileBtn 은 label[for=file] 로 네이티브 트리거 (인앱 호환) */
 $('file').addEventListener('change',e=>{ const f=e.target.files[0]; if(f)readFile(f); });
 $('sampleBtn').addEventListener('click',()=>{ $('input').value=SAMPLE; run(); });
 $('clearBtn').addEventListener('click',()=>{ $('input').value=''; LASTMATCHES=null; $('resultPanel').classList.add('hidden'); errBox(''); $('input').focus(); });
@@ -417,12 +426,17 @@ $('styleseg').addEventListener('change',e=>{
   if(LASTMATCHES!==null) render();   // restyle only, no re-detect
 });
 $('copyBtn').addEventListener('click',()=>{
-  const t=$('output').value; if(!t) return;
-  navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>{
-    $('copyBtn').textContent='복사됨'; setTimeout(()=>$('copyBtn').textContent='마스킹 결과 복사',1200);
+  const txt=$('output').value; if(!txt) return;
+  navigator.clipboard&&navigator.clipboard.writeText(txt).then(()=>{
+    $('copyBtn').textContent=t('b_mask_copied'); setTimeout(()=>$('copyBtn').textContent=t('b_mask_copy_btn'),1200);
   }).catch(()=>{ $('output').select(); document.execCommand&&document.execCommand('copy'); });
 });
-$('downloadBtn').addEventListener('click',()=>{ const t=$('output').value; if(t)download('마스킹_결과.txt',t); });
+$('downloadBtn').addEventListener('click',()=>{ const txt=$('output').value; if(txt)download(t('b_mask_dl_filename'),txt); });
+
+window.onI18n = ()=>{
+  buildOpts();
+  if(LASTMATCHES!==null) render();
+};
 </script>
 </body>
 </html>

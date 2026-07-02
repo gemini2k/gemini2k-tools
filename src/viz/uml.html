@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>UML 다이어그램 생성기 (텍스트 → 도식) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="간단한 텍스트로 UML 클래스·관계 다이어그램을 그리고 SVG·PNG로 저장합니다. 설계 문서·아키텍처 정리에. nomnoml 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/uml.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="UML 다이어그램 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="텍스트로 UML 다이어그램 작성·SVG/PNG 저장(nomnoml). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/uml.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:180px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.6rem 0;}button.mini{padding:.5rem .7rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;cursor:pointer;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.prev{border:1px solid var(--border);border-radius:11px;background:#fff;padding:1rem;text-align:center;overflow:auto;}.prev svg{max-width:100%;height:auto;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"UML 다이어그램 생성기","description":"텍스트로 UML 다이어그램을 그립니다(nomnoml).","url":"https://gemini2k.co.kr/uml.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:860px;">
+  <h1 data-i18n="b_uml_title">UML 다이어그램 생성기</h1>
+  <p class="sub" data-i18n="b_uml_sub">간단한 텍스트로 클래스·관계 다이어그램을 그립니다.</p>
+  <div class="card" style="max-width:none;">
+    <textarea id="in">[회원|+이름;+이메일|+로그인();+로그아웃()]
+[주문|+번호;+금액|+결제()]
+[상품|+이름;+가격]
+[회원]1-*[주문]
+[주문]*-*[상품]
+[관리자]->[회원]</textarea>
+    <div class="row"><button class="mini" id="render" type="button" data-i18n="b_uml_btn_render">그리기</button><button class="mini" id="svg" type="button" data-i18n="b_uml_btn_svg">⬇️ SVG</button><button class="mini" id="png" type="button" data-i18n="b_uml_btn_png">⬇️ PNG</button></div>
+    <div class="err" id="err"></div>
+    <div class="prev" id="prev"></div>
+    <div class="note" data-i18n-html="b_uml_note">오픈소스 <b>nomnoml</b>(MIT, <a href="https://github.com/skanaar/nomnoml" target="_blank" rel="noopener">skanaar/nomnoml</a>)을 자체 호스팅합니다. <code>[클래스|속성|메서드]</code>, 관계는 <code>-&gt;</code> <code>1-*</code> <code>--</code> 등으로 표현합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/nomnoml-1/graphre.js"></script>
+<script src="/vendor/nomnoml-1/nomnoml.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function render(){ $('err').textContent='';
+    try{ var svg=nomnoml.renderSvg($('in').value); $('prev').innerHTML=svg; window._svg=$('prev').querySelector('svg'); }
+    catch(e){ $('err').textContent='⚠️ '+(e.message||e); } }
+  var _t; $('in').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(render,400);});
+  $('render').addEventListener('click',render);
+  $('svg').addEventListener('click',function(){ if(!window._svg)return; var s=new XMLSerializer().serializeToString(window._svg);
+    var blob=new Blob([s],{type:'image/svg+xml'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='uml.svg';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); });
+  $('png').addEventListener('click',function(){ if(!window._svg)return; var s=new XMLSerializer().serializeToString(window._svg); var img=new Image();
+    img.onload=function(){var c=document.createElement('canvas');c.width=img.width*2;c.height=img.height*2;var cx=c.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,c.width,c.height);cx.scale(2,2);cx.drawImage(img,0,0);var a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='uml.png';document.body.appendChild(a);a.click();a.remove();};
+    img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(s))); });
+  render();
+</script>
+</body>
+</html>

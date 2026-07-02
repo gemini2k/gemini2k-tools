@@ -23,14 +23,14 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>랜덤 닉네임 생성기</h1>
-  <p class="sub">버튼을 누르면 귀엽고 재미있는 닉네임을 만들어 줍니다. 클릭하면 복사돼요.</p>
+  <h1 data-i18n="b_nickname_title">랜덤 닉네임 생성기</h1>
+  <p class="sub" data-i18n="b_nickname_sub">버튼을 누르면 귀엽고 재미있는 닉네임을 만들어 줍니다. 클릭하면 복사돼요.</p>
   <div class="card">
-    <div class="big" id="main">생성 버튼을 누르세요</div>
-    <div class="opts"><label><input type="checkbox" id="num"/> 숫자 붙이기</label><label><input type="checkbox" id="space"/> 띄어쓰기</label></div>
-    <button class="btn" id="gen" type="button" style="width:100%;">🎲 닉네임 10개 생성</button>
+    <div class="big" id="main" data-i18n="b_nickname_placeholder">생성 버튼을 누르세요</div>
+    <div class="opts"><label><input type="checkbox" id="num"/> <span data-i18n="b_nickname_opt_num">숫자 붙이기</span></label><label><input type="checkbox" id="space"/> <span data-i18n="b_nickname_opt_space">띄어쓰기</span></label></div>
+    <button class="btn" id="gen" type="button" style="width:100%;" data-i18n="b_nickname_btn_gen">🎲 닉네임 10개 생성</button>
     <div class="list" id="list"></div>
-    <div class="note">형용사와 명사 목록에서 무작위로 조합합니다. 재미용 아이디어 도구예요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_nickname_note">형용사와 명사 목록에서 무작위로 조합합니다. 재미용 아이디어 도구예요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -44,8 +44,9 @@
   function gen(){ $('main').textContent=one(); var arr=[]; for(var i=0;i<10;i++)arr.push(one());
     $('list').innerHTML=arr.map(function(n){return '<div>'+n+'</div>';}).join(''); }
   $('gen').addEventListener('click',gen);
-  $('main').addEventListener('click',function(){navigator.clipboard.writeText($('main').textContent).then(function(){toast('복사됐습니다');});});
-  $('list').addEventListener('click',function(e){var d=e.target.closest('div');if(d&&d.textContent){navigator.clipboard.writeText(d.textContent).then(function(){toast('복사: '+d.textContent);});}});
+  $('main').addEventListener('click',function(){navigator.clipboard.writeText($('main').textContent).then(function(){toast(t('b_nickname_copied'));});});
+  $('list').addEventListener('click',function(e){var d=e.target.closest('div');if(d&&d.textContent){navigator.clipboard.writeText(d.textContent).then(function(){toast(t('b_nickname_copied_item')+d.textContent);}); }});
+  window.onI18n=function(){$('main').textContent=t('b_nickname_placeholder');};
   gen();
 </script>
 </body>

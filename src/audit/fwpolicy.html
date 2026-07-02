@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>방화벽 정책 정의표 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="출발지·목적지·포트·프로토콜·허용여부로 방화벽 정책을 정의표로 작성하고 중복/광범위(any) 정책을 점검합니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/fwpolicy.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="방화벽 정책 정의표 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="출발지·목적지·포트·프로토콜·허용여부로 방화벽 정책을 정의표로 작성하고 중복/광범위(any) 정책을 점검합니다."/><meta property="og:url" content="https://gemini2k.co.kr/fwpolicy.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"방화벽 정책 정의표","description":"출발지·목적지·포트·프로토콜·허용여부로 방화벽 정책을 정의표로 작성하고 중복/광범위(any) 정책을 점검합니다.","url":"https://gemini2k.co.kr/fwpolicy.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_fwpolicy_title">방화벽 정책 정의표</h1>
+  <p class="sub" data-i18n="b_fwpolicy_sub">방화벽 정책을 정리하고 중복·과도한 허용을 점검합니다.</p>
+  <div class="card" style="max-width:none;">
+    <div id="app"></div>
+    <div class="note" data-i18n="b_fwpolicy_note">출발지·목적지·포트가 모두 any인 허용 정책은 보안 위험으로 표시됩니다. 데이터는 브라우저에만 저장됩니다.</div>
+  </div>
+</div>
+<script src="audit-kit.js"></script><script src="tool-shell.js"></script>
+<script>
+function fwpolicyRender(){
+AuditKit.register({mount:'#app',key:'fwpolicy',cols:[
+    {k:'no',label:t('b_fwpolicy_col_no'),w:'50px',type:'num'},{k:'src',label:t('b_fwpolicy_col_src'),w:'110px'},{k:'dst',label:t('b_fwpolicy_col_dst'),w:'110px'},
+    {k:'port',label:t('b_fwpolicy_col_port'),w:'80px'},{k:'proto',label:t('b_fwpolicy_col_proto'),type:'select',opts:['TCP','UDP','ICMP','ANY']},
+    {k:'action',label:t('b_fwpolicy_col_action'),type:'select',opts:[t('b_fwpolicy_allow'),t('b_fwpolicy_deny')]},{k:'desc',label:t('b_fwpolicy_col_desc'),w:'120px',type:'area'}],
+    seed:[{no:'1',src:'192.168.1.0/24',dst:'10.0.0.10',port:'443',proto:'TCP',action:t('b_fwpolicy_allow'),desc:t('b_fwpolicy_seed_desc')}],
+    summary:function(rows){var allow=rows.filter(function(r){return r.action===t('b_fwpolicy_allow');}).length;
+      var risky=rows.filter(function(r){return r.action===t('b_fwpolicy_allow')&&/any/i.test(r.src)&&/any/i.test(r.dst)&&(/any/i.test(r.port)||!r.port);}).length;
+      return '<div class="ak-rate"><b>'+rows.length+t('b_fwpolicy_count_unit')+'</b> <span>· '+t('b_fwpolicy_allow')+' '+allow+' · '+t('b_fwpolicy_deny')+' '+(rows.length-allow)+(risky?' · <span style="color:#dc2626">⚠️ '+t('b_fwpolicy_risky')+' '+risky+t('b_fwpolicy_count_unit')+'</span>':'')+'</span></div>';}});
+}
+window.onI18n = fwpolicyRender;
+fwpolicyRender();
+</script>
+</body>
+</html>

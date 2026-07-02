@@ -59,22 +59,22 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:880px;">
-  <h1>CSV 스키마 검증기</h1>
-  <p class="sub">열마다 규칙(필수·자료형·정규식·고유)을 정해 두고, 그 규칙을 어긴 행을 찾아 줍니다.</p>
+  <h1 data-i18n="b_csvschema_title">CSV 스키마 검증기</h1>
+  <p class="sub" data-i18n="b_csvschema_sub">열마다 규칙(필수·자료형·정규식·고유)을 정해 두고, 그 규칙을 어긴 행을 찾아 줍니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>CSV를 붙여 넣으면 열 목록이 자동으로 나옵니다</li>
-    <li>각 열에 필수·자료형·정규식·고유 규칙을 설정합니다</li>
-    <li>‘검증’을 누르면 규칙을 어긴 행과 이유가 표로 나옵니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_csvschema_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_csvschema_howto_1">CSV를 붙여 넣으면 열 목록이 자동으로 나옵니다</li>
+    <li data-i18n="b_csvschema_howto_2">각 열에 필수·자료형·정규식·고유 규칙을 설정합니다</li>
+    <li data-i18n="b_csvschema_howto_3">'검증'을 누르면 규칙을 어긴 행과 이유가 표로 나옵니다</li>
   </ol></div></div>
 
   <div class="card">
-    <label for="input" style="font-weight:700;font-size:.85rem;">CSV 입력</label>
-    <textarea id="input" placeholder="email,age,id&#10;a@x.com,30,1&#10;bad,200,1"></textarea>
+    <label for="input" style="font-weight:700;font-size:.85rem;" data-i18n="b_csvschema_label_input">CSV 입력</label>
+    <textarea id="input" data-i18n-ph="b_csvschema_ph_input" placeholder="email,age,id&#10;a@x.com,30,1&#10;bad,200,1"></textarea>
     <div class="rules hide" id="rules"></div>
-    <div class="actions"><button class="btn" id="run" type="button">검증</button><button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
+    <div class="actions"><button class="btn" id="run" type="button" data-i18n="b_csvschema_btn_run">검증</button><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_csvschema_btn_sample">샘플</button></div>
     <div id="result"></div>
-    <div class="note">자료형: 정수·숫자·날짜(YYYY-MM-DD)·이메일. 정규식은 비워 두면 검사하지 않습니다(예: <code>^010-\d{4}-\d{4}$</code>). 고유는 열 안에서 값 중복을 검사합니다. 모든 검증은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_csvschema_note">자료형: 정수·숫자·날짜(YYYY-MM-DD)·이메일. 정규식은 비워 두면 검사하지 않습니다(예: <code>^010-\d{4}-\d{4}$</code>). 고유는 열 안에서 값 중복을 검사합니다. 모든 검증은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -86,15 +86,15 @@
   var INT=/^-?\d+$/, NUM=/^-?\d+(\.\d+)?$/, DATE=/^\d{4}-\d{1,2}-\d{1,2}$/, EMAIL=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   function buildRules(){
-    var t=$('input').value.trim(); if(!t){ $('rules').classList.add('hide'); return; }
-    parsed=CSV.parse(t,{header:true,delimiter:'auto'});
+    var inp=$('input').value.trim(); if(!inp){ $('rules').classList.add('hide'); return; }
+    parsed=CSV.parse(inp,{header:true,delimiter:'auto'});
     $('rules').classList.remove('hide');
     $('rules').innerHTML=parsed.header.map(function(h,i){
       return '<div class="rrow" data-i="'+i+'"><span class="cn">'+esc(h)+'</span>'
-        +'<label><input type="checkbox" class="req"/> 필수</label>'
-        +'<select class="ty"><option value="">자료형 무관</option><option value="int">정수</option><option value="num">숫자</option><option value="date">날짜</option><option value="email">이메일</option></select>'
-        +'<input type="text" class="re" placeholder="정규식(선택)"/>'
-        +'<label><input type="checkbox" class="uniq"/> 고유</label></div>';
+        +'<label><input type="checkbox" class="req"/> '+t('b_csvschema_rule_required')+'</label>'
+        +'<select class="ty"><option value="">'+t('b_csvschema_ty_any')+'</option><option value="int">'+t('b_csvschema_ty_int')+'</option><option value="num">'+t('b_csvschema_ty_num')+'</option><option value="date">'+t('b_csvschema_ty_date')+'</option><option value="email">'+t('b_csvschema_ty_email')+'</option></select>'
+        +'<input type="text" class="re" placeholder="'+t('b_csvschema_re_ph')+'"/>'
+        +'<label><input type="checkbox" class="uniq"/> '+t('b_csvschema_rule_unique')+'</label></div>';
     }).join('');
   }
   function run(){
@@ -106,20 +106,21 @@
     parsed.rows.forEach(function(r,ri){
       rules.forEach(function(rule,ci){
         var v=(r[ci]==null?'':String(r[ci])).trim(), col=parsed.header[ci];
-        if(v===''){ if(rule.req) viol.push([ri+2,col,'(빈값)','필수 누락']); return; }
-        if(rule.ty==='int'&&!INT.test(v)) viol.push([ri+2,col,v,'정수 아님']);
-        else if(rule.ty==='num'&&!NUM.test(v)) viol.push([ri+2,col,v,'숫자 아님']);
-        else if(rule.ty==='date'&&!DATE.test(v)) viol.push([ri+2,col,v,'날짜 형식 아님']);
-        else if(rule.ty==='email'&&!EMAIL.test(v)) viol.push([ri+2,col,v,'이메일 아님']);
-        if(rule.re){ try{ if(!(new RegExp(rule.re)).test(v)) viol.push([ri+2,col,v,'정규식 불일치']); }catch(e){} }
-        if(rule.uniq){ if(seen[ci][v]) viol.push([ri+2,col,v,'중복(고유 위반)']); else seen[ci][v]=1; }
+        if(v===''){ if(rule.req) viol.push([ri+2,col,t('b_csvschema_empty_val'),t('b_csvschema_err_required')]); return; }
+        if(rule.ty==='int'&&!INT.test(v)) viol.push([ri+2,col,v,t('b_csvschema_err_not_int')]);
+        else if(rule.ty==='num'&&!NUM.test(v)) viol.push([ri+2,col,v,t('b_csvschema_err_not_num')]);
+        else if(rule.ty==='date'&&!DATE.test(v)) viol.push([ri+2,col,v,t('b_csvschema_err_not_date')]);
+        else if(rule.ty==='email'&&!EMAIL.test(v)) viol.push([ri+2,col,v,t('b_csvschema_err_not_email')]);
+        if(rule.re){ try{ if(!(new RegExp(rule.re)).test(v)) viol.push([ri+2,col,v,t('b_csvschema_err_regex')]); }catch(e){} }
+        if(rule.uniq){ if(seen[ci][v]) viol.push([ri+2,col,v,t('b_csvschema_err_duplicate')]); else seen[ci][v]=1; }
       });
     });
-    if(!viol.length){ $('result').innerHTML='<span class="pill ok">✓ 위반 없음 — 모든 규칙 통과 ('+parsed.rows.length+'행)</span>'; return; }
-    $('result').innerHTML='<span class="pill ng">위반 '+viol.length+'건 / '+parsed.rows.length+'행</span>'
-      +'<div class="tbl-scroll"><table><tr><th>행</th><th>열</th><th>값</th><th>이유</th></tr>'
+    if(!viol.length){ $('result').innerHTML='<span class="pill ok">✓ '+t('b_csvschema_ok').replace('{n}',parsed.rows.length)+'</span>'; return; }
+    $('result').innerHTML='<span class="pill ng">'+t('b_csvschema_violations').replace('{v}',viol.length).replace('{n}',parsed.rows.length)+'</span>'
+      +'<div class="tbl-scroll"><table><tr><th>'+t('b_csvschema_th_row')+'</th><th>'+t('b_csvschema_th_col')+'</th><th>'+t('b_csvschema_th_val')+'</th><th>'+t('b_csvschema_th_reason')+'</th></tr>'
       +viol.slice(0,200).map(function(v){return '<tr><td>'+v[0]+'</td><td>'+esc(v[1])+'</td><td>'+esc(v[2])+'</td><td>'+v[3]+'</td></tr>';}).join('')+'</table></div>';
   }
+  window.onI18n = function(){ if(parsed) buildRules(); };
   $('input').addEventListener('input', buildRules);
   $('run').addEventListener('click', run);
   $('sample').addEventListener('click', function(){ $('input').value='email,age,id\na@x.com,30,1\nbad-email,200,1\nb@y.com,,2'; buildRules();

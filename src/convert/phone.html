@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>국제 전화번호 형식 변환·검증기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="전화번호를 국가별 표준 형식·국제표기(E.164)로 변환하고 유효성을 확인합니다. 통신사/유형 표시. libphonenumber-js 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/phone.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="국제 전화번호 형식 변환·검증기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="전화번호를 표준·국제(E.164) 형식으로 변환·검증. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/phone.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.8rem;}
+select,input[type=text]{padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-size:1rem;color:var(--text);font-family:inherit;}
+#num{flex:1;min-width:200px;}
+table{width:100%;border-collapse:collapse;font-size:.95rem;}td{padding:.55rem .6rem;border-bottom:1px solid var(--border);}td:first-child{color:var(--muted);width:42%;}td b{font-family:ui-monospace,monospace;}
+.valid{font-weight:800;}.valid.y{color:#16a34a;}.valid.n{color:#e0563b;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"국제 전화번호 형식 변환·검증기","description":"전화번호를 표준·국제(E.164) 형식으로 변환하고 유효성을 검사합니다.","url":"https://gemini2k.co.kr/phone.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:640px;">
+  <h1 data-i18n="b_phone_title">국제 전화번호 변환·검증</h1>
+  <p class="sub" data-i18n="b_phone_sub">전화번호를 국가별 표준 표기와 국제표기(E.164)로 바꾸고, 유효한 번호인지 확인합니다.</p>
+  <div class="card">
+    <div class="row">
+      <select id="cc">
+        <option value="KR" data-i18n="b_phone_opt_kr">🇰🇷 대한민국</option>
+        <option value="US" data-i18n="b_phone_opt_us">🇺🇸 미국</option>
+        <option value="JP" data-i18n="b_phone_opt_jp">🇯🇵 일본</option>
+        <option value="CN" data-i18n="b_phone_opt_cn">🇨🇳 중국</option>
+        <option value="GB" data-i18n="b_phone_opt_gb">🇬🇧 영국</option>
+        <option value="DE" data-i18n="b_phone_opt_de">🇩🇪 독일</option>
+        <option value="FR" data-i18n="b_phone_opt_fr">🇫🇷 프랑스</option>
+        <option value="AU" data-i18n="b_phone_opt_au">🇦🇺 호주</option>
+      </select>
+      <input type="text" id="num" value="01012345678" data-i18n-ph="b_phone_input_ph" placeholder="전화번호 입력"/>
+    </div>
+    <table><tbody id="tb"></tbody></table>
+    <div class="note" data-i18n-html="b_phone_note">오픈소스 <b>libphonenumber-js</b>(MIT, <a href="https://github.com/catamphetamine/libphonenumber-js" target="_blank" rel="noopener">catamphetamine/libphonenumber-js</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/libphone-1/libphonenumber-max.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var L=window.libphonenumber;
+  function row(k,v){return '<tr><td>'+k+'</td><td><b>'+(v||'—')+'</b></td></tr>';}
+  function run(){ var cc=$('cc').value, raw=$('num').value, tb=$('tb');
+    var html='';
+    try{ var p=L.parsePhoneNumber(raw,cc);
+      var valid=p&&p.isValid();
+      html+='<tr><td>'+t('b_phone_row_validity')+'</td><td><span class="valid '+(valid?'y':'n')+'">'+(valid?t('b_phone_valid_ok'):t('b_phone_valid_fail'))+'</span></td></tr>';
+      if(p){ html+=row(t('b_phone_row_country'),p.country||'—');
+        html+=row(t('b_phone_row_e164'),p.number);
+        html+=row(t('b_phone_row_national'),p.formatNational());
+        html+=row(t('b_phone_row_international'),p.formatInternational());
+        html+=row(t('b_phone_row_callingcode'),'+'+p.countryCallingCode);
+        var ptype=p.getType(); var tmap={MOBILE:t('b_phone_type_mobile'),FIXED_LINE:t('b_phone_type_fixed'),FIXED_LINE_OR_MOBILE:t('b_phone_type_fixed_or_mobile'),TOLL_FREE:t('b_phone_type_toll_free'),PREMIUM_RATE:t('b_phone_type_premium')};
+        html+=row(t('b_phone_row_type'),tmap[ptype]||ptype||'—');
+        html+=row(t('b_phone_row_uri'),p.getURI()); }
+    }catch(e){ html='<tr><td>'+t('b_phone_row_validity')+'</td><td><span class="valid n">'+t('b_phone_format_error')+'</span></td></tr>'; }
+    tb.innerHTML=html; }
+  window.onI18n=run;
+  ['cc','num'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
+  run();
+</script>
+</body>
+</html>

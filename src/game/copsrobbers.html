@@ -63,13 +63,13 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:760px;">
-  <h1>경찰과 도둑 <span style="font-size:.9rem;color:var(--muted)">(2인용)</span></h1>
-  <p class="sub">한 화면에서 둘이 대결! 역할은 시작할 때 랜덤으로 정해집니다. 도둑은 보석 5개를 먼저 모으면, 경찰은 도둑을 잡으면 승리!</p>
+  <h1><span data-i18n="b_copsrobbers_title">경찰과 도둑</span> <span style="font-size:.9rem;color:var(--muted)" data-i18n="b_copsrobbers_title_2p">(2인용)</span></h1>
+  <p class="sub" data-i18n="b_copsrobbers_sub">한 화면에서 둘이 대결! 역할은 시작할 때 랜덤으로 정해집니다. 도둑은 보석 5개를 먼저 모으면, 경찰은 도둑을 잡으면 승리!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li><b>플레이어 1 = W A S D</b>, <b>플레이어 2 = 방향키 ↑ ↓ ← →</b> (또는 아래 화면 버튼)</li>
-    <li>역할은 매판 랜덤! 🦹 도둑은 노란 <b>보석 5개</b>를 모으고, 👮 경찰은 도둑에게 <b>몸으로 닿으면</b> 승리</li>
-    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_copsrobbers_howto_title">조작법</b><ol>
+    <li data-i18n-html="b_copsrobbers_howto1"><b>플레이어 1 = W A S D</b>, <b>플레이어 2 = 방향키 ↑ ↓ ← →</b> (또는 아래 화면 버튼)</li>
+    <li data-i18n-html="b_copsrobbers_howto2">역할은 매판 랜덤! 🦹 도둑은 노란 <b>보석 5개</b>를 모으고, 👮 경찰은 도둑에게 <b>몸으로 닿으면</b> 승리</li>
+    <li data-i18n-html="b_copsrobbers_howto3"><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지</li>
   </ol></div></div>
 
   <div class="card">
@@ -78,19 +78,19 @@
         <div class="rbox" id="r1"><span class="k">P1 (WASD)</span><span id="r1v">-</span></div>
         <div class="rbox" id="r2"><span class="k">P2 (←↑↓→)</span><span id="r2v">-</span></div>
       </div>
-      <button class="btn btn-ghost" id="restart" type="button">새 게임</button>
+      <button class="btn btn-ghost" id="restart" type="button" data-i18n="b_copsrobbers_btn_newgame">새 게임</button>
     </div>
     <div class="stage">
       <canvas id="cv" width="720" height="520"></canvas>
-      <div class="over" id="gover"><div><div class="big" id="goverBig">🚔 경찰과 도둑</div><div class="sm" id="goverSm">시작하면 역할이 랜덤으로 정해집니다!</div><button class="btn" id="goverBtn" type="button">게임 시작</button></div></div>
+      <div class="over" id="gover"><div><div class="big" id="goverBig">🚔 경찰과 도둑</div><div class="sm" id="goverSm" data-i18n="b_copsrobbers_intro_sm">시작하면 역할이 랜덤으로 정해집니다!</div><button class="btn" id="goverBtn" type="button" data-i18n="b_copsrobbers_btn_start">게임 시작</button></div></div>
     </div>
     <div class="pads">
       <div class="pad"><div class="pl">P1 (WASD)</div>
         <div class="dpad" data-p="1"><button class="du" data-d="u">▲</button><button class="dl" data-d="l">◀</button><button class="dd" data-d="d">▼</button><button class="dr" data-d="r">▶</button></div></div>
-      <div class="pad"><div class="pl">P2 (방향키)</div>
+      <div class="pad"><div class="pl" data-i18n="b_copsrobbers_p2_label">P2 (방향키)</div>
         <div class="dpad" data-p="2"><button class="du" data-d="u">▲</button><button class="dl" data-d="l">◀</button><button class="dd" data-d="d">▼</button><button class="dr" data-d="r">▶</button></div></div>
     </div>
-    <div class="note">두 사람이 한 기기로 함께 즐기는 게임입니다(PC 키보드 권장, 모바일은 화면 버튼). 벽은 통과할 수 없어요. 역할이 랜덤이라 매판 긴장감이 다릅니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_copsrobbers_note">두 사람이 한 기기로 함께 즐기는 게임입니다(PC 키보드 권장, 모바일은 화면 버튼). 벽은 통과할 수 없어요. 역할이 랜덤이라 매판 긴장감이 다릅니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -102,7 +102,7 @@
   var cv=$('cv'), x=cv.getContext('2d'); var W=cv.width, H=cv.height;
   var gc=GameCore.init({mount:document.querySelector('.card')});
   var R=15, NEED=5, THIEF_SP=158, POLICE_SP=170;
-  var walls, gems, p1, p2, state='ready', result='', elapsed=0;
+  var walls, gems, p1, p2, state='ready', elapsed=0;
   var keys={1:{u:0,d:0,l:0,r:0},2:{u:0,d:0,l:0,r:0}};
 
   function rndRange(a,b){ return a+Math.random()*(b-a); }
@@ -110,7 +110,7 @@
   function hitWall(px,py,r){ for(var i=0;i<walls.length;i++){ var w=walls[i]; if(rectsOverlap(px-r,py-r,2*r,2*r,w[0],w[1],w[2],w[3])) return true; } return false; }
 
   function buildWalls(){
-    var t=16; walls=[[0,0,W,t],[0,H-t,W,t],[0,0,t,H],[W-t,0,t,H]];
+    var tmp=16; walls=[[0,0,W,tmp],[0,H-tmp,W,tmp],[0,0,tmp,H],[W-tmp,0,tmp,H]];
     // 대칭 장애물 배치(공정)
     walls.push([150,90,60,160]); walls.push([W-150-60,90,60,160]);
     walls.push([150,H-90-160,60,160]); walls.push([W-150-60,H-90-160,60,160]);
@@ -127,9 +127,9 @@
     p2={x:W-40,y:H-40,role:p1Thief?'police':'thief',gems:0,color:p1Thief?'#3b82f6':'#e0563b'};
     // 보석(도둑용) — 충분히 흩뿌림
     gems=[]; for(var i=0;i<8;i++){ var g=placeFree(10); gems.push(g); }
-    result=''; elapsed=0;
-    $('r1v').textContent=(p1.role==='thief'?'🦹 도둑':'👮 경찰');
-    $('r2v').textContent=(p2.role==='thief'?'🦹 도둑':'👮 경찰');
+    elapsed=0;
+    $('r1v').textContent=(p1.role==='thief'?t('b_copsrobbers_role_thief'):t('b_copsrobbers_role_police'));
+    $('r2v').textContent=(p2.role==='thief'?t('b_copsrobbers_role_thief'):t('b_copsrobbers_role_police'));
     $('r1').style.borderColor=p1.color; $('r2').style.borderColor=p2.color;
   }
   function thief(){ return p1.role==='thief'?p1:p2; }
@@ -155,9 +155,14 @@
   }
   function win(who){ state='over';
     var thiefIsP1=p1.role==='thief';
-    if(who==='thief'){ result='🦹 도둑 승리!'; $('goverBig').textContent='🦹 도둑 승리!'; $('goverSm').textContent='보석 5개를 모두 모았습니다! ('+(thiefIsP1?'P1':'P2')+' 승)'; }
-    else { result='👮 경찰 승리!'; $('goverBig').textContent='👮 경찰 승리!'; $('goverSm').textContent='도둑을 잡았습니다! ('+(thiefIsP1?'P2':'P1')+' 승)'; }
-    $('goverBtn').textContent='다시 (역할 랜덤)'; $('gover').style.display='flex';
+    if(who==='thief'){
+      $('goverBig').textContent=t('b_copsrobbers_win_thief');
+      $('goverSm').textContent=t('b_copsrobbers_win_thief_sm').replace('{pnum}', thiefIsP1?'P1':'P2');
+    } else {
+      $('goverBig').textContent=t('b_copsrobbers_win_police');
+      $('goverSm').textContent=t('b_copsrobbers_win_police_sm').replace('{pnum}', thiefIsP1?'P2':'P1');
+    }
+    $('goverBtn').textContent=t('b_copsrobbers_btn_retry'); $('gover').style.display='flex';
   }
 
   function draw(){
@@ -173,7 +178,7 @@
     // 보석 진행(도둑)
     var th=thief();
     x.fillStyle='#fff'; x.font='bold 16px Pretendard,sans-serif'; x.textAlign='left';
-    x.fillText('🦹 보석 '+th.gems+' / '+NEED, 24, 30);
+    x.fillText(t('b_copsrobbers_hud_gems').replace('{cur}',th.gems).replace('{need}',NEED), 24, 30);
     x.textAlign='right'; x.fillText('⏱ '+elapsed.toFixed(1)+'s', W-24, 30);
   }
   function drawPlayer(p){ x.fillStyle=p.color; x.beginPath(); x.arc(p.x,p.y,R,0,7); x.fill();
@@ -184,7 +189,7 @@
     x.strokeStyle='rgba(255,255,255,.6)'; x.lineWidth=1; x.stroke(); }
 
   var last=0, raf=0;
-  function loop(t){ raf=requestAnimationFrame(loop); var dt=Math.min(0.04,((t-last)/1000)||0); last=t; if(!gc.isPaused()) update(dt); draw(); }
+  function loop(tmp){ raf=requestAnimationFrame(loop); var dt=Math.min(0.04,((tmp-last)/1000)||0); last=tmp; if(!gc.isPaused()) update(dt); draw(); }
   function startLoop(){ if(!raf){ last=performance.now(); raf=requestAnimationFrame(loop); } }
 
   function begin(){ newGame(); state='play'; $('gover').style.display='none'; }
@@ -200,9 +205,28 @@
       b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off);
     }); });
   $('goverBtn').addEventListener('click',function(e){ e.stopPropagation(); begin(); });
-  $('restart').addEventListener('click',function(){ state='ready'; $('goverBig').textContent='🚔 경찰과 도둑'; $('goverSm').textContent='시작하면 역할이 랜덤으로 정해집니다!'; $('goverBtn').textContent='게임 시작'; $('gover').style.display='flex'; newGame(); });
+  $('restart').addEventListener('click',function(){
+    state='ready';
+    $('goverBig').textContent=t('b_copsrobbers_intro_title');
+    $('goverSm').textContent=t('b_copsrobbers_intro_sm');
+    $('goverBtn').textContent=t('b_copsrobbers_btn_start');
+    $('gover').style.display='flex'; newGame();
+  });
+
+  window.onI18n=function(){
+    if(state==='ready'){
+      $('goverBig').textContent=t('b_copsrobbers_intro_title');
+      $('goverSm').textContent=t('b_copsrobbers_intro_sm');
+      $('goverBtn').textContent=t('b_copsrobbers_btn_start');
+    }
+    if(p1&&p2){
+      $('r1v').textContent=(p1.role==='thief'?t('b_copsrobbers_role_thief'):t('b_copsrobbers_role_police'));
+      $('r2v').textContent=(p2.role==='thief'?t('b_copsrobbers_role_thief'):t('b_copsrobbers_role_police'));
+    }
+  };
+
   newGame(); startLoop();
-  window._dbg={ p1:function(){return p1;}, p2:function(){return p2;}, gems:function(){return gems;}, state:function(){return state;}, result:function(){return result;}, begin:begin, thief:thief, police:police };
+  window._dbg={ p1:function(){return p1;}, p2:function(){return p2;}, gems:function(){return gems;}, state:function(){return state;}, begin:begin, thief:thief, police:police };
 })();
 </script>
 </body>

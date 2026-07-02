@@ -55,29 +55,29 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:820px;">
-  <h1>엑셀 → CSV·JSON 변환기</h1>
-  <p class="sub">엑셀 파일(.xlsx·.xls)을 올려 원하는 시트를 CSV 또는 JSON으로 변환·다운로드합니다.</p>
+  <h1 data-i18n="b_excel2csv_title">엑셀 → CSV·JSON 변환기</h1>
+  <p class="sub" data-i18n="b_excel2csv_sub">엑셀 파일(.xlsx·.xls)을 올려 원하는 시트를 CSV 또는 JSON으로 변환·다운로드합니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>엑셀 파일을 끌어다 놓거나 클릭해 올립니다</li>
-    <li>변환할 시트와 출력 형식(CSV/JSON)을 고릅니다</li>
-    <li>미리보기를 확인하고 ‘다운로드’ 또는 ‘복사’합니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_excel2csv_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_excel2csv_howto_1">엑셀 파일을 끌어다 놓거나 클릭해 올립니다</li>
+    <li data-i18n="b_excel2csv_howto_2">변환할 시트와 출력 형식(CSV/JSON)을 고릅니다</li>
+    <li data-i18n="b_excel2csv_howto_3">미리보기를 확인하고 '다운로드' 또는 '복사'합니다</li>
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">📊</div><div><strong>엑셀 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.xlsx · .xls · .ods</div></div>
+    <div class="drop" id="drop"><div class="big">📊</div><div><strong data-i18n="b_excel2csv_drop_main">엑셀 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.xlsx · .xls · .ods</div></div>
     <input type="file" id="file" accept=".xlsx,.xls,.ods,.csv" class="hide"/>
     <div class="meta hide" id="meta"></div>
     <div class="opts hide" id="opts">
-      <label>시트 <select id="sheet"></select></label>
-      <label>형식 <select id="fmt"><option value="csv">CSV</option><option value="json">JSON</option></select></label>
+      <label><span data-i18n="b_excel2csv_label_sheet">시트</span> <select id="sheet"></select></label>
+      <label><span data-i18n="b_excel2csv_label_fmt">형식</span> <select id="fmt"><option value="csv">CSV</option><option value="json">JSON</option></select></label>
     </div>
     <div class="actions hide" id="actions">
-      <button class="btn" id="dl" type="button">⬇️ 다운로드</button>
-      <button class="btn btn-ghost" id="copy" type="button">📋 복사</button>
+      <button class="btn" id="dl" type="button" data-i18n="b_excel2csv_btn_dl">⬇️ 다운로드</button>
+      <button class="btn btn-ghost" id="copy" type="button" data-i18n="b_excel2csv_btn_copy">📋 복사</button>
     </div>
     <div class="out hide" id="out"></div>
-    <div class="note">파일은 서버로 전송되지 않고 브라우저 안에서만 변환됩니다. CSV는 UTF-8(BOM 포함)로 저장되어 엑셀에서 한글이 깨지지 않습니다. 여러 시트가 있으면 시트를 바꿔 각각 변환할 수 있습니다.</div>
+    <div class="note" data-i18n="b_excel2csv_note">파일은 서버로 전송되지 않고 브라우저 안에서만 변환됩니다. CSV는 UTF-8(BOM 포함)로 저장되어 엑셀에서 한글이 깨지지 않습니다. 여러 시트가 있으면 시트를 바꿔 각각 변환할 수 있습니다.</div>
   </div>
 </div>
 
@@ -90,14 +90,14 @@
   function readFile(f){ if(!f) return; baseName=f.name.replace(/\.[^.]+$/,'')||'data';
     var fr=new FileReader();
     fr.onload=function(e){ try{ wb=XLSX.read(e.target.result,{type:'array'}); buildSheets(); }
-      catch(err){ $('meta').classList.remove('hide'); $('meta').textContent='파일을 읽을 수 없습니다. 엑셀 형식이 맞는지 확인해 주세요.'; } };
-    fr.onerror=function(){ $('meta').classList.remove('hide'); $('meta').textContent='파일 읽기에 실패했습니다.'; };
+      catch(err){ $('meta').classList.remove('hide'); $('meta').textContent=t('b_excel2csv_err_read'); } };
+    fr.onerror=function(){ $('meta').classList.remove('hide'); $('meta').textContent=t('b_excel2csv_err_load'); };
     fr.readAsArrayBuffer(f);
   }
   function buildSheets(){
     var names=wb.SheetNames;
     $('sheet').innerHTML=names.map(function(n){return '<option>'+n.replace(/</g,'&lt;')+'</option>';}).join('');
-    $('meta').classList.remove('hide'); $('meta').textContent='시트 '+names.length+'개를 읽었습니다.';
+    $('meta').classList.remove('hide'); $('meta').textContent=t('b_excel2csv_sheets_read').replace('{n}',names.length);
     $('opts').classList.remove('hide'); $('actions').classList.remove('hide'); $('out').classList.remove('hide');
     render();
   }
@@ -106,9 +106,9 @@
     if($('fmt').value==='json'){ return JSON.stringify(XLSX.utils.sheet_to_json(ws,{defval:''}),null,2); }
     return XLSX.utils.sheet_to_csv(ws);
   }
-  function render(){ if(!wb) return; var t=curText(); $('out').textContent = t.length>20000 ? t.slice(0,20000)+'\n… (미리보기 일부, 다운로드는 전체)' : t; }
-  function download(){ if(!wb) return; var fmt=$('fmt').value, t=curText();
-    var blob = fmt==='json' ? new Blob([t],{type:'application/json'}) : new Blob(['﻿'+t],{type:'text/csv;charset=utf-8'});
+  function render(){ if(!wb) return; var tmp=curText(); $('out').textContent = tmp.length>20000 ? tmp.slice(0,20000)+'\n'+t('b_excel2csv_preview_truncated') : tmp; }
+  function download(){ if(!wb) return; var fmt=$('fmt').value, tmp=curText();
+    var blob = fmt==='json' ? new Blob([tmp],{type:'application/json'}) : new Blob(['﻿'+tmp],{type:'text/csv;charset=utf-8'});
     var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=baseName+'_'+$('sheet').value.replace(/[^\w가-힣\-]+/g,'_')+'.'+fmt;
     document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); }
   $('drop').addEventListener('click',function(){ $('file').click(); });
@@ -118,7 +118,8 @@
   $('drop').addEventListener('drop',function(e){ if(e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]); });
   $('sheet').addEventListener('change',render); $('fmt').addEventListener('change',render);
   $('dl').addEventListener('click',download);
-  $('copy').addEventListener('click',function(){ if(wb) navigator.clipboard.writeText(curText()).then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click',function(){ if(wb) navigator.clipboard.writeText(curText()).then(function(){toast(t('b_excel2csv_toast_copied'));}); });
+  window.onI18n=function(){ render(); };
 </script>
 </body>
 </html>

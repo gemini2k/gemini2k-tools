@@ -56,25 +56,25 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:820px;">
-  <h1>목업·더미 데이터 생성기</h1>
-  <p class="sub">열과 타입을 정해 가짜 테스트 데이터를 CSV·JSON으로 만듭니다. 개발·테스트·시연용 데이터를 빠르게 채우세요.</p>
+  <h1 data-i18n="b_mockdata_title">목업·더미 데이터 생성기</h1>
+  <p class="sub" data-i18n="b_mockdata_sub">열과 타입을 정해 가짜 테스트 데이터를 CSV·JSON으로 만듭니다. 개발·테스트·시연용 데이터를 빠르게 채우세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>열 이름과 타입(이름·이메일·날짜·숫자·UUID 등)을 정합니다 (＋로 추가)</li>
-    <li>행 수와 출력 형식(CSV/JSON)을 고릅니다</li>
-    <li>‘생성’ 후 복사하거나 내려받습니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_mockdata_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_mockdata_howto_1">열 이름과 타입(이름·이메일·날짜·숫자·UUID 등)을 정합니다 (＋로 추가)</li>
+    <li data-i18n="b_mockdata_howto_2">행 수와 출력 형식(CSV/JSON)을 고릅니다</li>
+    <li data-i18n="b_mockdata_howto_3">'생성' 후 복사하거나 내려받습니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="cols" id="cols"></div>
-    <button class="btn btn-ghost" id="addCol" type="button" style="margin-bottom:1rem;">＋ 열 추가</button>
+    <button class="btn btn-ghost" id="addCol" type="button" style="margin-bottom:1rem;" data-i18n="b_mockdata_btn_add_col">＋ 열 추가</button>
     <div class="opts">
-      <label>행 수 <input id="rows" type="number" value="10" min="1" max="1000"/></label>
-      <label>형식 <select id="fmt"><option value="csv">CSV</option><option value="json">JSON</option></select></label>
+      <label><span data-i18n="b_mockdata_label_rows">행 수</span> <input id="rows" type="number" value="10" min="1" max="1000"/></label>
+      <label><span data-i18n="b_mockdata_label_fmt">형식</span> <select id="fmt"><option value="csv">CSV</option><option value="json">JSON</option></select></label>
     </div>
-    <div class="actions"><button class="btn" id="gen" type="button">생성</button><button class="btn btn-ghost" id="copy" type="button">📋 복사</button><button class="btn btn-ghost" id="dl" type="button">⬇️ 내려받기</button></div>
+    <div class="actions"><button class="btn" id="gen" type="button" data-i18n="b_mockdata_btn_gen">생성</button><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_mockdata_btn_copy">📋 복사</button><button class="btn btn-ghost" id="dl" type="button" data-i18n="b_mockdata_btn_dl">⬇️ 내려받기</button></div>
     <div class="out" id="out"></div>
-    <div class="note">생성되는 데이터는 무작위 가짜 값입니다(실제 개인정보 아님). 같은 설정이라도 매번 다른 값이 나옵니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_mockdata_note">생성되는 데이터는 무작위 가짜 값입니다(실제 개인정보 아님). 같은 설정이라도 매번 다른 값이 나옵니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -87,7 +87,20 @@
   var CITY='서울 부산 대구 인천 광주 대전 울산 세종 수원 창원 고양 용인 성남 청주 전주 천안'.split(' ');
   var COMP='가온 누리 한빛 미래 대성 정보 테크 소프트 데이터 글로벌 시스템 네트웍스'.split(' ');
   var DOM='example.com test.org sample.net mail.com demo.io'.split(' ');
-  var TYPES=[['id','순번 ID'],['name','이름'],['email','이메일'],['phone','전화번호'],['int','정수'],['float','소수'],['date','날짜'],['bool','참/거짓'],['uuid','UUID'],['city','도시'],['company','회사'],['sentence','문장']];
+  var TYPES=[
+    ['id',t('b_mockdata_type_id')],
+    ['name',t('b_mockdata_type_name')],
+    ['email',t('b_mockdata_type_email')],
+    ['phone',t('b_mockdata_type_phone')],
+    ['int',t('b_mockdata_type_int')],
+    ['float',t('b_mockdata_type_float')],
+    ['date',t('b_mockdata_type_date')],
+    ['bool',t('b_mockdata_type_bool')],
+    ['uuid','UUID'],
+    ['city',t('b_mockdata_type_city')],
+    ['company',t('b_mockdata_type_company')],
+    ['sentence',t('b_mockdata_type_sentence')]
+  ];
   function rnd(a){ return a[(Math.random()*a.length)|0]; }
   function uuid(){ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){ var r=(Math.random()*16)|0, v=c==='x'?r:(r&0x3|0x8); return v.toString(16); }); }
   function pad(n){ return n<10?'0'+n:''+n; }
@@ -104,22 +117,36 @@
       case 'uuid': return uuid();
       case 'city': return rnd(CITY);
       case 'company': return rnd(COMP)+rnd(['','테크','소프트','정보']);
-      case 'sentence': return rnd(['빠른 갈색 여우','테스트 문장입니다','샘플 데이터 값','임의의 텍스트','예시 내용'])+' '+((Math.random()*100)|0);
+      case 'sentence': return rnd([t('b_mockdata_sent1'),t('b_mockdata_sent2'),t('b_mockdata_sent3'),t('b_mockdata_sent4'),t('b_mockdata_sent5')])+' '+((Math.random()*100)|0);
       default: return '';
     }
   }
+  function rebuildTypes(){
+    TYPES[0][1]=t('b_mockdata_type_id');
+    TYPES[1][1]=t('b_mockdata_type_name');
+    TYPES[2][1]=t('b_mockdata_type_email');
+    TYPES[3][1]=t('b_mockdata_type_phone');
+    TYPES[4][1]=t('b_mockdata_type_int');
+    TYPES[5][1]=t('b_mockdata_type_float');
+    TYPES[6][1]=t('b_mockdata_type_date');
+    TYPES[7][1]=t('b_mockdata_type_bool');
+    TYPES[8][1]='UUID';
+    TYPES[9][1]=t('b_mockdata_type_city');
+    TYPES[10][1]=t('b_mockdata_type_company');
+    TYPES[11][1]=t('b_mockdata_type_sentence');
+  }
   function addCol(name,type){
     var d=document.createElement('div'); d.className='crow';
-    d.innerHTML='<input class="cn" type="text" value="'+(name||'')+'" placeholder="열 이름"/>'
-      +'<select class="ct">'+TYPES.map(function(t){return '<option value="'+t[0]+'"'+(t[0]===type?' selected':'')+'>'+t[1]+'</option>';}).join('')+'</select>'
-      +'<button class="del" type="button" title="삭제">✕</button>';
+    d.innerHTML='<input class="cn" type="text" value="'+(name||'')+'" placeholder="'+t('b_mockdata_col_ph')+'"/>'
+      +'<select class="ct">'+TYPES.map(function(tmp){return '<option value="'+tmp[0]+'"'+(tmp[0]===type?' selected':'')+'>'+tmp[1]+'</option>';}).join('')+'</select>'
+      +'<button class="del" type="button" title="'+t('b_mockdata_del_title')+'">✕</button>';
     $('cols').appendChild(d);
   }
   function getCols(){ return [].map.call($('cols').children,function(r){ return {name:r.querySelector('.cn').value.trim()||'col', type:r.querySelector('.ct').value}; }); }
   function csvCell(v){ v=String(v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
   var last='';
   function gen(){
-    var cols=getCols(); if(!cols.length){ toast('열을 추가하세요'); return; }
+    var cols=getCols(); if(!cols.length){ toast(t('b_mockdata_toast_no_col')); return; }
     var n=Math.max(1,Math.min(1000,parseInt($('rows').value)||10));
     var data=[]; for(var i=0;i<n;i++){ var o={}; cols.forEach(function(c){ o[c.name]=gen1(c.type,i); }); data.push(o); }
     if($('fmt').value==='json'){ last=JSON.stringify(data,null,2); }
@@ -131,10 +158,20 @@
   $('cols').addEventListener('click',function(e){ if(e.target.closest('.del')){ e.target.closest('.crow').remove(); } });
   $('addCol').addEventListener('click',function(){ addCol('col'+($('cols').children.length+1),'name'); });
   $('gen').addEventListener('click', gen);
-  $('copy').addEventListener('click',function(){ if(last) navigator.clipboard.writeText(last).then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click',function(){ if(last) navigator.clipboard.writeText(last).then(function(){toast(t('b_mockdata_toast_copied'));}); });
   $('dl').addEventListener('click',function(){ if(!last)return; var json=$('fmt').value==='json';
     var blob=new Blob([(json?'':'﻿')+last],{type:(json?'application/json':'text/csv')+';charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');
     a.href=u; a.download='mockdata.'+(json?'json':'csv'); document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(u);a.remove();},100); });
+  window.onI18n=function(){
+    rebuildTypes();
+    [].forEach.call($('cols').querySelectorAll('.crow'),function(row){
+      var sel=row.querySelector('.ct'); var cur=sel.value;
+      sel.innerHTML=TYPES.map(function(tmp){return '<option value="'+tmp[0]+'"'+(tmp[0]===cur?' selected':'')+'>'+tmp[1]+'</option>';}).join('');
+      row.querySelector('.del').title=t('b_mockdata_del_title');
+      row.querySelector('.cn').placeholder=t('b_mockdata_col_ph');
+    });
+    $('addCol').textContent=t('b_mockdata_btn_add_col');
+  };
   // 기본 열
   addCol('id','id'); addCol('name','name'); addCol('email','email'); addCol('created','date'); gen();
 </script>

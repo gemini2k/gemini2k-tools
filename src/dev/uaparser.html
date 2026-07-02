@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>User-Agent 분석기 (브라우저·OS·기기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="User-Agent 문자열을 분석해 브라우저·버전·운영체제·기기 종류를 알려 줍니다. 내 브라우저 정보도 바로 확인. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/uaparser.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="User-Agent 분석기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="User-Agent로 브라우저·OS·기기 분석 + 내 브라우저 정보. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/uaparser.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:70px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.84rem;color:var(--text);resize:vertical;}
+.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin:.6rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.95rem;}td{padding:.55rem .6rem;border-bottom:1px solid var(--border);}td:first-child{color:var(--muted);width:38%;}td b{font-size:1.02rem;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"User-Agent 분석기","description":"User-Agent 문자열로 브라우저·운영체제·기기를 분석합니다.","url":"https://gemini2k.co.kr/uaparser.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:680px;">
+  <h1 data-i18n="b_uaparser_title">User-Agent 분석기</h1>
+  <p class="sub" data-i18n="b_uaparser_sub">User-Agent 문자열에서 브라우저·버전·운영체제·기기 종류를 분석합니다.</p>
+  <div class="card">
+    <textarea id="ua"></textarea>
+    <div class="actions"><button class="btn btn-ghost" id="mine" type="button" data-i18n="b_uaparser_btn_mine">내 브라우저 넣기</button></div>
+    <table><tbody id="tb"></tbody></table>
+    <div class="note" data-i18n="b_uaparser_note">널리 알려진 브라우저·OS 패턴을 기준으로 추정합니다. User-Agent는 위조될 수 있어 정확성을 보장하지 않습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function parse(ua){
+    var br=t('b_uaparser_unknown'), bv='', os=t('b_uaparser_unknown'), osv='', dev=t('b_uaparser_desktop'), engine='', m;
+    // engine
+    if(/Gecko\/|rv:.*Gecko/.test(ua)&&/Firefox/.test(ua))engine='Gecko';
+    else if(/AppleWebKit/.test(ua))engine='WebKit/Blink';
+    else if(/Trident/.test(ua))engine='Trident';
+    // browser (order matters)
+    if((m=ua.match(/Edg(?:A|iOS)?\/([\d.]+)/))){br='Microsoft Edge';bv=m[1];}
+    else if((m=ua.match(/SamsungBrowser\/([\d.]+)/))){br='Samsung Internet';bv=m[1];}
+    else if((m=ua.match(/OPR\/([\d.]+)/))||(m=ua.match(/Opera[ /]([\d.]+)/))){br='Opera';bv=m[1];}
+    else if((m=ua.match(/Whale\/([\d.]+)/))){br=t('b_uaparser_browser_whale');bv=m[1];}
+    else if((m=ua.match(/Edge\/([\d.]+)/))){br='Edge (Legacy)';bv=m[1];}
+    else if(/Chrome\//.test(ua)&&!/Chromium/.test(ua)&&(m=ua.match(/Chrome\/([\d.]+)/))){br='Google Chrome';bv=m[1];}
+    else if((m=ua.match(/Chromium\/([\d.]+)/))){br='Chromium';bv=m[1];}
+    else if((m=ua.match(/Firefox\/([\d.]+)/))){br='Mozilla Firefox';bv=m[1];}
+    else if(/Safari/.test(ua)&&(m=ua.match(/Version\/([\d.]+)/))){br='Safari';bv=m[1];}
+    else if((m=ua.match(/MSIE ([\d.]+)/))||/Trident/.test(ua)){br='Internet Explorer';bv=(m&&m[1])||(ua.match(/rv:([\d.]+)/)||[])[1]||'';}
+    // os
+    if((m=ua.match(/Windows NT ([\d.]+)/))){os='Windows';var wn={'10.0':'10/11','6.3':'8.1','6.2':'8','6.1':'7','6.0':'Vista','5.1':'XP'};osv=wn[m[1]]||m[1];}
+    else if(/iPhone|iPad|iPod/.test(ua)){os='iOS';if((m=ua.match(/OS ([\d_]+)/)))osv=m[1].replace(/_/g,'.');}
+    else if((m=ua.match(/Android ([\d.]+)/))){os='Android';osv=m[1];}
+    else if(/Mac OS X/.test(ua)){os='macOS';if((m=ua.match(/Mac OS X ([\d_]+)/)))osv=m[1].replace(/_/g,'.');}
+    else if(/CrOS/.test(ua))os='ChromeOS';
+    else if(/Linux/.test(ua))os='Linux';
+    // device
+    if(/iPad|Tablet|PlayBook/.test(ua)||(/Android/.test(ua)&&!/Mobile/.test(ua)))dev=t('b_uaparser_tablet');
+    else if(/Mobi|iPhone|iPod|Android.*Mobile|Windows Phone/.test(ua))dev=t('b_uaparser_mobile');
+    var bot=/bot|crawler|spider|slurp|googlebot|bingbot/i.test(ua);
+    if(bot)dev=t('b_uaparser_bot');
+    return {br:br,bv:bv,os:os,osv:osv,dev:dev,engine:engine||'—'};
+  }
+  function run(){ var ua=$('ua').value.trim(); var tb=$('tb'); if(!ua){tb.innerHTML='';return;}
+    var r=parse(ua);
+    tb.innerHTML=
+      '<tr><td>'+t('b_uaparser_row_browser')+'</td><td><b>'+r.br+' '+r.bv+'</b></td></tr>'+
+      '<tr><td>'+t('b_uaparser_row_engine')+'</td><td>'+r.engine+'</td></tr>'+
+      '<tr><td>'+t('b_uaparser_row_os')+'</td><td><b>'+r.os+' '+r.osv+'</b></td></tr>'+
+      '<tr><td>'+t('b_uaparser_row_device')+'</td><td><b>'+r.dev+'</b></td></tr>'; }
+  $('ua').addEventListener('input',run);
+  $('mine').addEventListener('click',function(){$('ua').value=navigator.userAgent;run();});
+  $('ua').value=navigator.userAgent; run();
+  window.onI18n=run;
+</script>
+</body>
+</html>

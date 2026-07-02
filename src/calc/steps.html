@@ -23,18 +23,18 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:540px;">
-  <h1>걸음 수 → 거리·칼로리</h1>
-  <p class="sub">하루 걸음 수로 걸은 거리와 소모 칼로리를 계산합니다(참고용).</p>
+  <h1 data-i18n="b_steps_title">걸음 수 → 거리·칼로리</h1>
+  <p class="sub" data-i18n="b_steps_sub">하루 걸음 수로 걸은 거리와 소모 칼로리를 계산합니다(참고용).</p>
   <div class="card">
-    <div class="fld"><label>걸음 수</label><input id="steps" type="number" inputmode="numeric" value="8000"/></div>
-    <div class="row"><div class="fld"><label>키 (cm)</label><input id="h" type="number" value="170"/></div><div class="fld"><label>체중 (kg)</label><input id="wt" type="number" value="65"/></div></div>
+    <div class="fld"><label data-i18n="b_steps_label_steps">걸음 수</label><input id="steps" type="number" inputmode="numeric" value="8000"/></div>
+    <div class="row"><div class="fld"><label data-i18n="b_steps_label_height">키 (cm)</label><input id="h" type="number" value="170"/></div><div class="fld"><label data-i18n="b_steps_label_weight">체중 (kg)</label><input id="wt" type="number" value="65"/></div></div>
     <div class="grid">
-      <div class="item"><div class="l">이동 거리</div><div class="v" id="dist">-</div></div>
-      <div class="item"><div class="l">소모 칼로리</div><div class="v" id="kcal">-</div></div>
-      <div class="item"><div class="l">보폭(추정)</div><div class="v" id="stride">-</div></div>
-      <div class="item"><div class="l">예상 시간</div><div class="v" id="time">-</div></div>
+      <div class="item"><div class="l" data-i18n="b_steps_res_dist">이동 거리</div><div class="v" id="dist">-</div></div>
+      <div class="item"><div class="l" data-i18n="b_steps_res_kcal">소모 칼로리</div><div class="v" id="kcal">-</div></div>
+      <div class="item"><div class="l" data-i18n="b_steps_res_stride">보폭(추정)</div><div class="v" id="stride">-</div></div>
+      <div class="item"><div class="l" data-i18n="b_steps_res_time">예상 시간</div><div class="v" id="time">-</div></div>
     </div>
-    <div class="note">보폭 ≈ 키 × 0.415, 칼로리 ≈ 체중(kg) × 거리(km) × 0.9(걷기) 기준의 <b>추정치</b>입니다. 실제는 속도·지형에 따라 달라집니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_steps_note">보폭 ≈ 키 × 0.415, 칼로리 ≈ 체중(kg) × 거리(km) × 0.9(걷기) 기준의 <b>추정치</b>입니다. 실제는 속도·지형에 따라 달라집니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -43,8 +43,9 @@
   function calc(){ var st=+$('steps').value||0, h=+$('h').value||170, wt=+$('wt').value||65;
     var stride=h*0.415/100; var km=st*stride/1000; var kcal=wt*km*0.9; var min=km/4.8*60;
     $('dist').textContent=km.toFixed(2)+' km'; $('kcal').textContent=Math.round(kcal)+' kcal'; $('stride').textContent=Math.round(stride*100)+' cm';
-    $('time').textContent=(min>=60?Math.floor(min/60)+'시간 ':'')+Math.round(min%60)+'분';
+    $('time').textContent=(min>=60?Math.floor(min/60)+t('b_steps_hour')+' ':'')+Math.round(min%60)+t('b_steps_min');
   }
+  window.onI18n=calc;
   ['steps','h','wt'].forEach(function(id){$(id).addEventListener('input',calc);});
   calc();
 </script>

@@ -55,32 +55,32 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>칼로리 계산기</h1>
-  <p class="sub">기초대사량(BMR)과 하루 권장 섭취 칼로리(TDEE), 그리고 감량·유지·증량 목표 칼로리를 계산합니다.</p>
+  <h1 data-i18n="b_calorie_title">칼로리 계산기</h1>
+  <p class="sub" data-i18n="b_calorie_sub">기초대사량(BMR)과 하루 권장 섭취 칼로리(TDEE), 그리고 감량·유지·증량 목표 칼로리를 계산합니다.</p>
 
   <div class="card">
-    <label>성별</label>
+    <label data-i18n="b_calorie_label_sex">성별</label>
     <div class="seg" style="margin-bottom:1rem;">
-      <button id="male" class="on" type="button">남성</button>
-      <button id="female" type="button">여성</button>
+      <button id="male" class="on" type="button" data-i18n="b_calorie_male">남성</button>
+      <button id="female" type="button" data-i18n="b_calorie_female">여성</button>
     </div>
     <div class="frow">
-      <div class="fld"><label for="age">나이</label><input id="age" type="number" value="40" min="1" max="120"/></div>
-      <div class="fld"><label for="h">키 (cm)</label><input id="h" type="number" value="170" min="80" max="250"/></div>
-      <div class="fld"><label for="w">몸무게 (kg)</label><input id="w" type="number" value="68" min="20" max="400"/></div>
+      <div class="fld"><label for="age" data-i18n="b_calorie_label_age">나이</label><input id="age" type="number" value="40" min="1" max="120"/></div>
+      <div class="fld"><label for="h" data-i18n="b_calorie_label_height">키 (cm)</label><input id="h" type="number" value="170" min="80" max="250"/></div>
+      <div class="fld"><label for="w" data-i18n="b_calorie_label_weight">몸무게 (kg)</label><input id="w" type="number" value="68" min="20" max="400"/></div>
     </div>
-    <div class="fld" style="margin-bottom:.5rem;"><label for="act">활동량</label>
+    <div class="fld" style="margin-bottom:.5rem;"><label for="act" data-i18n="b_calorie_label_activity">활동량</label>
       <select id="act">
-        <option value="1.2">거의 안 함 (좌식 생활)</option>
-        <option value="1.375">가벼운 운동 (주 1–3회)</option>
-        <option value="1.55" selected>보통 운동 (주 3–5회)</option>
-        <option value="1.725">활발한 운동 (주 6–7회)</option>
-        <option value="1.9">매우 활발 (육체노동·운동선수)</option>
+        <option value="1.2" data-i18n="b_calorie_act_sedentary">거의 안 함 (좌식 생활)</option>
+        <option value="1.375" data-i18n="b_calorie_act_light">가벼운 운동 (주 1–3회)</option>
+        <option value="1.55" selected data-i18n="b_calorie_act_moderate">보통 운동 (주 3–5회)</option>
+        <option value="1.725" data-i18n="b_calorie_act_active">활발한 운동 (주 6–7회)</option>
+        <option value="1.9" data-i18n="b_calorie_act_veryactive">매우 활발 (육체노동·운동선수)</option>
       </select>
     </div>
 
     <div class="reslist" id="result"></div>
-    <div class="note">⚠️ 참고용입니다 — 의료·영양 조언이 아닙니다. 기초대사량은 Mifflin-St Jeor 공식, 권장 섭취량은 BMR×활동계수(TDEE)로 추정하며 개인차가 있습니다. 감량은 약 −500kcal/일(주 약 0.5kg), 증량은 +400kcal/일 기준입니다. 체중 관리는 전문가와 상담하세요.</div>
+    <div class="note" data-i18n="b_calorie_note">⚠️ 참고용입니다 — 의료·영양 조언이 아닙니다. 기초대사량은 Mifflin-St Jeor 공식, 권장 섭취량은 BMR×활동계수(TDEE)로 추정하며 개인차가 있습니다. 감량은 약 −500kcal/일(주 약 0.5kg), 증량은 +400kcal/일 기준입니다. 체중 관리는 전문가와 상담하세요.</div>
   </div>
 </div>
 
@@ -88,19 +88,23 @@
 <script>
   var $ = function(id){ return document.getElementById(id); };
   var sex='male';
-  function r0(x){ return Math.round(x).toLocaleString('ko-KR'); }
+  function r0(x){
+    var loc = {ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[window.curLang?curLang():'ko'];
+    return Math.round(x).toLocaleString(loc);
+  }
   function calc(){
     var age=+$('age').value, h=+$('h').value, w=+$('w').value, act=+$('act').value;
     if(!(age>0&&h>0&&w>0)){ $('result').innerHTML=''; return; }
     var bmr = 10*w + 6.25*h - 5*age + (sex==='male'?5:-161);
     var tdee = bmr*act;
     $('result').innerHTML =
-      '<div class="rrow"><span class="k">기초대사량 (BMR)</span><span class="v">'+r0(bmr)+' kcal</span></div>'+
-      '<div class="rrow main"><span class="k">하루 권장 섭취 (TDEE)</span><span class="v">'+r0(tdee)+' kcal</span></div>'+
-      '<div class="rrow"><span class="k">체중 감량</span><span class="v">'+r0(tdee-500)+' kcal</span></div>'+
-      '<div class="rrow"><span class="k">체중 유지</span><span class="v">'+r0(tdee)+' kcal</span></div>'+
-      '<div class="rrow"><span class="k">체중 증량</span><span class="v">'+r0(tdee+400)+' kcal</span></div>';
+      '<div class="rrow"><span class="k">'+t('b_calorie_res_bmr')+'</span><span class="v">'+r0(bmr)+' kcal</span></div>'+
+      '<div class="rrow main"><span class="k">'+t('b_calorie_res_tdee')+'</span><span class="v">'+r0(tdee)+' kcal</span></div>'+
+      '<div class="rrow"><span class="k">'+t('b_calorie_res_loss')+'</span><span class="v">'+r0(tdee-500)+' kcal</span></div>'+
+      '<div class="rrow"><span class="k">'+t('b_calorie_res_maintain')+'</span><span class="v">'+r0(tdee)+' kcal</span></div>'+
+      '<div class="rrow"><span class="k">'+t('b_calorie_res_gain')+'</span><span class="v">'+r0(tdee+400)+' kcal</span></div>';
   }
+  window.onI18n = calc;
   $('male').addEventListener('click',function(){ sex='male'; $('male').classList.add('on'); $('female').classList.remove('on'); calc(); });
   $('female').addEventListener('click',function(){ sex='female'; $('female').classList.add('on'); $('male').classList.remove('on'); calc(); });
   ['age','h','w','act'].forEach(function(id){ $(id).addEventListener('input',calc); });

@@ -54,14 +54,14 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:720px;">
-  <h1>이모지 모음·검색</h1>
-  <p class="sub">이모지를 클릭하면 바로 복사됩니다. 검색어로 찾거나 카테고리 탭으로 둘러보세요.</p>
+  <h1 data-i18n="b_emoji_title">이모지 모음·검색</h1>
+  <p class="sub" data-i18n="b_emoji_sub">이모지를 클릭하면 바로 복사됩니다. 검색어로 찾거나 카테고리 탭으로 둘러보세요.</p>
 
   <div class="card">
-    <input class="search" id="q" type="search" placeholder="검색: 웃음, heart, 강아지, 별, fire …"/>
+    <input class="search" id="q" type="search" data-i18n-ph="b_emoji_search_ph" placeholder="검색: 웃음, heart, 강아지, 별, fire …"/>
     <div class="tabs" id="tabs"></div>
     <div class="grid" id="grid"></div>
-    <div class="note">클릭하면 클립보드에 복사됩니다. 최근 사용한 이모지는 이 기기에 기억됩니다. 검색은 한글·영문 키워드를 지원합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_emoji_note">클릭하면 클립보드에 복사됩니다. 최근 사용한 이모지는 이 기기에 기억됩니다. 검색은 한글·영문 키워드를 지원합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -78,23 +78,26 @@
     '활동·여행':[['⚽','축구 soccer'],['🏀','농구 basketball'],['⚾','야구 baseball'],['🎾','테니스'],['🏐','배구'],['🎮','게임 game'],['🎯','다트 target'],['🎲','주사위 dice'],['🎸','기타 guitar'],['🎹','피아노'],['🎤','마이크 노래'],['🎧','헤드폰'],['🎨','그림 art'],['📷','카메라 camera'],['🎬','영화 movie'],['🏆','트로피 우승 win'],['🥇','금메달 1등'],['✈️','비행기 plane'],['🚗','자동차 car'],['🚀','로켓 rocket'],['🏠','집 house'],['🗺️','지도 map'],['🏖️','해변 beach'],['🏔️','산 mountain'],['🌈','무지개 rainbow'],['☀️','해 sun'],['🌙','달 moon'],['⛄','눈사람 snow'],['🎄','크리스마스 tree'],['🎁','선물 gift']],
     '사물·기호':[['💡','전구 아이디어 idea'],['📱','폰 phone'],['💻','노트북 laptop'],['🖥️','컴퓨터'],['⌚','시계 watch'],['📦','상자 box'],['✉️','편지 mail'],['📌','핀 pin'],['📎','클립'],['🔑','열쇠 key'],['🔒','잠금 lock'],['💰','돈 money 골드'],['💳','카드 card'],['🛒','장바구니 cart'],['🔔','알림 bell'],['📢','확성기'],['⏰','알람 alarm'],['✅','체크 check 완료'],['❌','엑스 x 취소'],['⚠️','경고 warning'],['❓','물음표 question'],['❗','느낌표'],['➡️','오른쪽 arrow'],['⬅️','왼쪽'],['⬆️','위'],['⬇️','아래'],['🔄','새로고침 refresh'],['➕','플러스 plus'],['➖','마이너스'],['✔️','체크'],['©️','저작권'],['™️','상표'],['🔴','빨강원'],['🟢','초록원'],['🔵','파랑원']]
   };
-  var CATS=Object.keys(DATA), active='최근';
+  var CATS=Object.keys(DATA), active=t('b_emoji_tab_recent');
+  var CATLABEL={'표정':'b_emoji_cat_face','사람':'b_emoji_cat_people','동물':'b_emoji_cat_animal','음식':'b_emoji_cat_food','활동·여행':'b_emoji_cat_activity','사물·기호':'b_emoji_cat_object'};
+  function catLabel(c){ return CATLABEL[c]?t(CATLABEL[c]):c; }
   function recent(){ try{ return JSON.parse(localStorage.getItem('emoji:recent'))||[]; }catch(e){ return []; } }
-  function pushRecent(e){ var r=recent().filter(function(x){return x!==e;}); r.unshift(e); r=r.slice(0,24); try{ localStorage.setItem('emoji:recent',JSON.stringify(r)); }catch(e2){} }
-  function renderTabs(){ var tabs=['최근'].concat(CATS); $('tabs').innerHTML=tabs.map(function(c){ return '<button data-c="'+c+'" class="'+(c===active?'on':'')+'">'+c+'</button>'; }).join(''); }
-  function cell(e){ return '<button data-e="'+e+'" title="복사">'+e+'</button>'; }
+  function pushRecent(em){ var r=recent().filter(function(x){return x!==em;}); r.unshift(em); r=r.slice(0,24); try{ localStorage.setItem('emoji:recent',JSON.stringify(r)); }catch(e2){} }
+  function renderTabs(){ var tabs=[t('b_emoji_tab_recent')].concat(CATS); $('tabs').innerHTML=tabs.map(function(c){ return '<button data-c="'+c+'" class="'+(c===active?'on':'')+'">'+catLabel(c)+'</button>'; }).join(''); }
+  function cell(em){ return '<button data-e="'+em+'" title="'+t('b_emoji_copy_btn')+'">'+em+'</button>'; }
   function render(){
     var q=$('q').value.trim().toLowerCase();
     if(q){ var out=''; CATS.forEach(function(c){ var hits=DATA[c].filter(function(it){ return it[0].indexOf(q)>=0 || it[1].toLowerCase().indexOf(q)>=0; });
       if(hits.length) out+='<div class="cat-h" style="grid-column:1/-1">'+c+'</div>'+hits.map(function(it){return cell(it[0]);}).join(''); });
-      $('grid').innerHTML=out||'<div class="empty" style="grid-column:1/-1">검색 결과가 없어요</div>'; return; }
-    if(active==='최근'){ var r=recent(); $('grid').innerHTML= r.length? r.map(cell).join('') : '<div class="empty" style="grid-column:1/-1">이모지를 클릭하면 최근 목록에 쌓여요</div>'; return; }
+      $('grid').innerHTML=out||'<div class="empty" style="grid-column:1/-1">'+t('b_emoji_no_result')+'</div>'; return; }
+    if(active===t('b_emoji_tab_recent')){ var r=recent(); $('grid').innerHTML= r.length? r.map(cell).join('') : '<div class="empty" style="grid-column:1/-1">'+t('b_emoji_recent_empty')+'</div>'; return; }
     $('grid').innerHTML=DATA[active].map(function(it){return cell(it[0]);}).join('');
   }
   $('tabs').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; active=b.dataset.c; $('q').value=''; renderTabs(); render(); });
   $('grid').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; var em=b.dataset.e;
-    navigator.clipboard.writeText(em).then(function(){toast(em+' 복사됨');}).catch(function(){toast(em+' (복사 실패)');}); pushRecent(em); if(active==='최근'&&!$('q').value) render(); });
+    navigator.clipboard.writeText(em).then(function(){toast(em+' '+t('b_emoji_copied'));}).catch(function(){toast(em+' '+t('b_emoji_copy_fail'));}); pushRecent(em); if(active===t('b_emoji_tab_recent')&&!$('q').value) render(); });
   $('q').addEventListener('input',render);
+  window.onI18n=function(){ active=t('b_emoji_tab_recent'); renderTabs(); render(); };
   renderTabs(); render();
 </script>
 </body>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>파일 무결성 체크섬(다중 해시) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="파일이나 텍스트의 MD5·SHA-1·SHA-256·SHA-512·SHA3-256·BLAKE2b·CRC32 해시를 한 번에 계산해 무결성을 검증합니다. 자체 호스팅 hash-wasm. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/checksum.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="파일 무결성 체크섬(다중 해시) — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="파일·텍스트 다중 해시(무결성 검증, hash-wasm). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/checksum.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"파일 무결성 체크섬(다중 해시)","description":"파일이나 텍스트의 MD5·SHA-1·SHA-256·SHA-512·SHA3-256·BLAKE2b·CRC32 해시를 한 번에 계산해 무결성을 검증합니다. 자체 호스팅 hash-wasm. 업로드 없이 브라우저에서만 처리됩니다.","url":"https://gemini2k.co.kr/checksum.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_checksum_title">파일 무결성 체크섬</h1>
+  <p class="sub" data-i18n="b_checksum_sub">파일 또는 텍스트의 여러 해시를 한 번에 계산합니다.</p>
+  <div class="card" style="max-width:none;">
+    <label class="drop" id="drop" for="file">📁 <span data-i18n="b_checksum_drop_label">파일을 끌어다 놓거나 클릭해서 선택</span><input type="file" id="file" hidden/></label><div style="text-align:center;color:var(--muted);font-size:.85rem;margin:.4rem 0"><span data-i18n="b_checksum_or_text">— 또는 텍스트 —</span></div><textarea class="in" id="txt" spellcheck="false" style="min-height:70px">Hello, 빛의여행!</textarea><div class="meta" id="meta" style="font-size:.85rem;color:var(--muted);margin:.4rem 0"></div><div class="res" id="res" style="overflow-x:auto"></div>
+    <div class="note" data-i18n-html="b_checksum_note">오픈소스 <b>hash-wasm</b>(MIT, <a href="https://github.com/Daninet/hash-wasm" target="_blank" rel="noopener">Daninet/hash-wasm</a>)을 자체 호스팅합니다. 파일은 업로드되지 않고 브라우저에서만 해시됩니다. 배포파일 검증·다운로드 무결성 확인에 사용하세요.</div>
+  </div>
+</div>
+<script src="/vendor/hashwasm-4/hash-wasm.min.js"></script><script src="audit-kit.js"></script><script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};var HW=window.hashwasm;function calc(bytes){var jobs=[["MD5",HW.md5(bytes)],["SHA-1",HW.sha1(bytes)],["SHA-256",HW.sha256(bytes)],["SHA-512",HW.sha512(bytes)],["SHA3-256",HW.sha3(bytes,256)],["BLAKE2b-256",HW.blake2b(bytes,256)],["CRC32",HW.crc32(bytes)]];Promise.all(jobs.map(function(j){return j[1];})).then(function(vals){$("res").innerHTML="<table>"+jobs.map(function(j,i){return "<tr><td style=\"white-space:nowrap\">"+j[0]+"</td><td style=\"font-family:ui-monospace,monospace;font-size:.8rem;word-break:break-all;cursor:pointer\" onclick=\"navigator.clipboard&&navigator.clipboard.writeText(this.textContent)\">"+vals[i]+"</td></tr>";}).join("")+"</table>";}).catch(function(e){$("res").textContent="⚠️ "+e.message;});}function fromText(){$("meta").textContent=t('b_checksum_meta_text')+(new Blob([$("txt").value]).size)+t('b_checksum_meta_bytes');calc(new TextEncoder().encode($("txt").value));}$("txt").addEventListener("input",fromText);$("file").addEventListener("change",function(){var f=$("file").files[0];if(!f)return;$("meta").textContent=t('b_checksum_meta_file')+f.name+" ("+(f.size/1024).toFixed(1)+"KB)";var r=new FileReader();r.onload=function(){calc(new Uint8Array(r.result));};r.readAsArrayBuffer(f);$("drop").firstChild&&($("drop").childNodes[0].nodeValue="📁 "+f.name);});window.onI18n=fromText;fromText();
+</script>
+</body>
+</html>

@@ -60,26 +60,26 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:920px;">
-  <h1>PDF → 이미지(PNG) 변환기</h1>
-  <p class="sub">PDF의 각 페이지를 PNG 이미지로 바꿉니다. 발표 자료·문서를 이미지로 공유하거나 캡처할 때 좋아요.</p>
+  <h1 data-i18n="b_pdf2img_title">PDF → 이미지(PNG) 변환기</h1>
+  <p class="sub" data-i18n="b_pdf2img_sub">PDF의 각 페이지를 PNG 이미지로 바꿉니다. 발표 자료·문서를 이미지로 공유하거나 캡처할 때 좋아요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>PDF 파일을 끌어다 놓거나 클릭해 올립니다</li>
-    <li>화질(해상도)을 고르면 페이지별 이미지가 생성됩니다</li>
-    <li>각 페이지를 ‘저장’하거나 ‘전체 저장’으로 한꺼번에 내려받습니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_pdf2img_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_pdf2img_howto_1">PDF 파일을 끌어다 놓거나 클릭해 올립니다</li>
+    <li data-i18n="b_pdf2img_howto_2">화질(해상도)을 고르면 페이지별 이미지가 생성됩니다</li>
+    <li data-i18n="b_pdf2img_howto_3">각 페이지를 '저장'하거나 '전체 저장'으로 한꺼번에 내려받습니다</li>
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">🖼️</div><div><strong>PDF 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.pdf</div></div>
+    <div class="drop" id="drop"><div class="big">🖼️</div><div><strong data-i18n="b_pdf2img_drop_label">PDF 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.pdf</div></div>
     <input type="file" id="file" accept=".pdf,application/pdf" class="hide"/>
     <div class="opts hide" id="opts">
-      <label>화질 <select id="scale"><option value="1.5">보통</option><option value="2" selected>높음</option><option value="3">아주 높음</option></select></label>
-      <button class="btn" id="all" type="button">⬇️ 전체 저장</button>
+      <label><span data-i18n="b_pdf2img_quality_label">화질</span> <select id="scale"><option value="1.5" data-i18n="b_pdf2img_quality_normal">보통</option><option value="2" selected data-i18n="b_pdf2img_quality_high">높음</option><option value="3" data-i18n="b_pdf2img_quality_highest">아주 높음</option></select></label>
+      <button class="btn" id="all" type="button" data-i18n="b_pdf2img_save_all">⬇️ 전체 저장</button>
     </div>
     <div class="bar hide" id="barwrap"><i id="bar"></i></div>
     <div class="meta hide" id="meta"></div>
     <div class="pages" id="pages"></div>
-    <div class="note">화질을 높이면 더 선명하지만 시간과 메모리를 더 씁니다. 페이지가 매우 많은 PDF는 처음 50페이지까지 변환합니다. 파일은 서버로 전송되지 않고 브라우저 안에서만 처리됩니다.</div>
+    <div class="note" data-i18n="b_pdf2img_note">화질을 높이면 더 선명하지만 시간과 메모리를 더 씁니다. 페이지가 매우 많은 PDF는 처음 50페이지까지 변환합니다. 파일은 서버로 전송되지 않고 브라우저 안에서만 처리됩니다.</div>
   </div>
 </div>
 
@@ -92,34 +92,37 @@
   var pdfDoc=null, baseName='document', MAXP=50;
   function fail(m){ $('meta').classList.remove('hide'); $('meta').textContent=m; $('opts').classList.add('hide'); $('barwrap').classList.add('hide'); $('pages').innerHTML=''; }
   function readFile(f){ if(!f) return; baseName=f.name.replace(/\.[^.]+$/,'')||'document';
-    if(!/\.pdf$/i.test(f.name) && f.type!=='application/pdf'){ fail('PDF 파일만 지원합니다.'); return; }
-    $('meta').classList.remove('hide'); $('meta').textContent='읽는 중…';
+    if(!/\.pdf$/i.test(f.name) && f.type!=='application/pdf'){ fail(t('b_pdf2img_err_not_pdf')); return; }
+    $('meta').classList.remove('hide'); $('meta').textContent=t('b_pdf2img_reading');
     f.arrayBuffer().then(function(buf){ return pdfjsLib.getDocument({data:buf}).promise; }).then(function(pdf){
       pdfDoc=pdf; $('opts').classList.remove('hide'); renderAll();
-    }).catch(function(){ fail('파일을 읽을 수 없습니다. 올바른 PDF인지(암호 PDF는 미지원) 확인해 주세요.'); });
+    }).catch(function(){ fail(t('b_pdf2img_err_read_fail')); });
   }
   function renderAll(){
     if(!pdfDoc) return; var n=Math.min(pdfDoc.numPages,MAXP), scale=parseFloat($('scale').value);
     $('pages').innerHTML=''; $('barwrap').classList.remove('hide'); $('bar').style.width='0';
-    $('meta').classList.remove('hide'); $('meta').textContent='변환 중… 0/'+n+' 페이지';
+    $('meta').classList.remove('hide'); $('meta').textContent=t('b_pdf2img_converting_progress').replace('{done}','0').replace('{n}',n);
     var done=0;
-    function next(i){ if(i>n){ $('meta').textContent='페이지 '+n+'개 변환 완료'+(pdfDoc.numPages>MAXP?' (전체 '+pdfDoc.numPages+'중 '+MAXP+'페이지)':''); return; }
+    function next(i){ if(i>n){
+      var msg=t('b_pdf2img_done').replace('{n}',n);
+      if(pdfDoc.numPages>MAXP) msg+=t('b_pdf2img_done_partial').replace('{total}',pdfDoc.numPages).replace('{max}',MAXP);
+      $('meta').textContent=msg; return; }
       pdfDoc.getPage(i).then(function(page){
         var vp=page.getViewport({scale:scale});
         var card=document.createElement('div'); card.className='pg';
         var cv=document.createElement('canvas'); cv.width=Math.round(vp.width); cv.height=Math.round(vp.height);
-        var lab=document.createElement('div'); lab.className='lab'; lab.innerHTML='<span>'+i+'페이지</span>';
-        var btn=document.createElement('button'); btn.textContent='저장'; btn.onclick=function(){ saveCanvas(cv,i); };
+        var lab=document.createElement('div'); lab.className='lab'; lab.innerHTML='<span>'+t('b_pdf2img_page_label').replace('{n}',i)+'</span>';
+        var btn=document.createElement('button'); btn.textContent=t('b_pdf2img_save_btn'); btn.onclick=function(){ saveCanvas(cv,i); };
         lab.appendChild(btn); card.appendChild(cv); card.appendChild(lab); $('pages').appendChild(card);
         return page.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;
-      }).then(function(){ done++; $('bar').style.width=Math.round(done/n*100)+'%'; $('meta').textContent='변환 중… '+done+'/'+n+' 페이지'; next(i+1); })
+      }).then(function(){ done++; $('bar').style.width=Math.round(done/n*100)+'%'; $('meta').textContent=t('b_pdf2img_converting_progress').replace('{done}',done).replace('{n}',n); next(i+1); })
       .catch(function(){ done++; next(i+1); });
     }
     next(1);
   }
   function saveCanvas(cv,i){ cv.toBlob(function(blob){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
     a.download=baseName+'_p'+i+'.png'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); }); }
-  function saveAll(){ var cvs=$('pages').querySelectorAll('canvas'); if(!cvs.length){ toast('먼저 PDF를 올려 주세요'); return; }
+  function saveAll(){ var cvs=$('pages').querySelectorAll('canvas'); if(!cvs.length){ toast(t('b_pdf2img_toast_no_pdf')); return; }
     var i=0; (function step(){ if(i>=cvs.length) return; saveCanvas(cvs[i], i+1); i++; setTimeout(step,300); })(); }
   $('drop').addEventListener('click',function(){ $('file').click(); });
   $('file').addEventListener('change',function(e){ if(e.target.files[0]) readFile(e.target.files[0]); });
@@ -128,6 +131,7 @@
   $('drop').addEventListener('drop',function(e){ if(e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]); });
   $('scale').addEventListener('change',renderAll);
   $('all').addEventListener('click',saveAll);
+  window.onI18n=function(){ if(pdfDoc) renderAll(); };
 </script>
 </body>
 </html>

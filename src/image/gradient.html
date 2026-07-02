@@ -61,32 +61,32 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>CSS 그라데이션 생성기</h1>
-  <p class="sub">선형·원형 그라데이션을 눈으로 보며 만들고, 그대로 쓸 수 있는 CSS를 복사하거나 PNG 이미지로 내려받습니다.</p>
+  <h1 data-i18n="b_gradient_title">CSS 그라데이션 생성기</h1>
+  <p class="sub" data-i18n="b_gradient_sub">선형·원형 그라데이션을 눈으로 보며 만들고, 그대로 쓸 수 있는 CSS를 복사하거나 PNG 이미지로 내려받습니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>유형(선형/원형)과 각도를 고릅니다</li>
-    <li>색상 정지점의 색과 위치를 조절하거나 ‘＋ 색상 추가’로 늘립니다</li>
-    <li>아래 CSS를 복사하거나 PNG로 내려받습니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_gradient_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_gradient_howto_1">유형(선형/원형)과 각도를 고릅니다</li>
+    <li data-i18n="b_gradient_howto_2">색상 정지점의 색과 위치를 조절하거나 '＋ 색상 추가'로 늘립니다</li>
+    <li data-i18n="b_gradient_howto_3">아래 CSS를 복사하거나 PNG로 내려받습니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="preview" id="preview"></div>
     <div class="row">
-      <label>유형 <select id="type"><option value="linear">선형(linear)</option><option value="radial">원형(radial)</option></select></label>
-      <label id="angleWrap">각도 <input id="angle" type="range" min="0" max="360" value="90"/> <span class="pos" id="angleVal">90°</span></label>
+      <label><span data-i18n="b_gradient_lbl_type">유형</span> <select id="type"><option value="linear" data-i18n="b_gradient_opt_linear">선형(linear)</option><option value="radial" data-i18n="b_gradient_opt_radial">원형(radial)</option></select></label>
+      <label id="angleWrap"><span data-i18n="b_gradient_lbl_angle">각도</span> <input id="angle" type="range" min="0" max="360" value="90"/> <span class="pos" id="angleVal">90°</span></label>
     </div>
     <div class="stops" id="stops"></div>
     <div class="actions">
-      <button class="btn btn-ghost" id="add" type="button">＋ 색상 추가</button>
-      <button class="btn btn-ghost" id="random" type="button">🎲 랜덤</button>
+      <button class="btn btn-ghost" id="add" type="button" data-i18n="b_gradient_btn_add">＋ 색상 추가</button>
+      <button class="btn btn-ghost" id="random" type="button" data-i18n="b_gradient_btn_random">🎲 랜덤</button>
     </div>
     <textarea class="css-out" id="css" readonly></textarea>
     <div class="actions" style="margin-top:.8rem;margin-bottom:0;">
-      <button class="btn" id="copy" type="button">📋 CSS 복사</button>
-      <button class="btn btn-ghost" id="dl" type="button">⬇️ PNG 내려받기</button>
+      <button class="btn" id="copy" type="button" data-i18n="b_gradient_btn_copy">📋 CSS 복사</button>
+      <button class="btn btn-ghost" id="dl" type="button" data-i18n="b_gradient_btn_dl">⬇️ PNG 내려받기</button>
     </div>
-    <div class="note">생성된 <code>background</code> 값을 그대로 CSS에 붙여 넣으면 됩니다. PNG는 1200×600 크기로 저장됩니다. 모든 처리는 브라우저에서 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_gradient_note">생성된 <code>background</code> 값을 그대로 CSS에 붙여 넣으면 됩니다. PNG는 1200×600 크기로 저장됩니다. 모든 처리는 브라우저에서 이루어집니다.</div>
   </div>
 </div>
 
@@ -104,12 +104,12 @@
         +'<input type="text" value="'+st.c.toUpperCase()+'"/>'
         +'<input type="range" min="0" max="100" value="'+st.p+'"/>'
         +'<span class="pos">'+st.p+'%</span>'
-        +'<button class="del" title="삭제" type="button">✕</button>';
+        +'<button class="del" title="'+t('b_gradient_del_title')+'" type="button">✕</button>';
       var col=row.children[0], hex=row.children[1], rng=row.children[2], pos=row.children[3], del=row.children[4];
       col.addEventListener('input', function(){ st.c=col.value; hex.value=col.value.toUpperCase(); update(); });
       hex.addEventListener('input', function(){ if(/^#?[0-9a-fA-F]{6}$/.test(hex.value)){ st.c=(hex.value[0]==='#'?'':'#')+hex.value; col.value=st.c; update(); } });
       rng.addEventListener('input', function(){ st.p=+rng.value; pos.textContent=rng.value+'%'; update(); });
-      del.addEventListener('click', function(){ if(stops.length<=2){ toast('정지점은 최소 2개입니다'); return; } stops.splice(i,1); renderStops(); update(); });
+      del.addEventListener('click', function(){ if(stops.length<=2){ toast(t('b_gradient_toast_min')); return; } stops.splice(i,1); renderStops(); update(); });
       $('stops').appendChild(row);
     });
   }
@@ -126,13 +126,13 @@
   }
   $('type').addEventListener('change', update);
   $('angle').addEventListener('input', function(){ $('angleVal').textContent=this.value+'°'; update(); });
-  $('add').addEventListener('click', function(){ if(stops.length>=8){ toast('정지점은 최대 8개입니다'); return; } stops.push({c:'#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'),p:50}); renderStops(); update(); });
+  $('add').addEventListener('click', function(){ if(stops.length>=8){ toast(t('b_gradient_toast_max')); return; } stops.push({c:'#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'),p:50}); renderStops(); update(); });
   $('random').addEventListener('click', function(){
     var n=2+Math.floor(Math.random()*3); stops=[];
     for(var i=0;i<n;i++) stops.push({c:'#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'), p:Math.round(i/(n-1)*100)});
     $('angle').value=Math.floor(Math.random()*360); $('angleVal').textContent=$('angle').value+'°'; renderStops(); update();
   });
-  $('copy').addEventListener('click', function(){ navigator.clipboard.writeText($('css').value).then(function(){ toast('CSS를 복사했습니다'); }); });
+  $('copy').addEventListener('click', function(){ navigator.clipboard.writeText($('css').value).then(function(){ toast(t('b_gradient_toast_copied')); }); });
   $('dl').addEventListener('click', function(){
     var W=1200,H=600, cv=document.createElement('canvas'); cv.width=W; cv.height=H; var x=cv.getContext('2d');
     var ordered=stops.slice().sort(function(a,b){return a.p-b.p;}), g;
@@ -143,6 +143,7 @@
     x.fillStyle=g; x.fillRect(0,0,W,H);
     var url=cv.toDataURL('image/png'), aEl=document.createElement('a'); aEl.href=url; aEl.download='gradient.png'; document.body.appendChild(aEl); aEl.click(); setTimeout(function(){aEl.remove();},100);
   });
+  window.onI18n = function(){ renderStops(); };
   renderStops(); update();
 </script>
 </body>

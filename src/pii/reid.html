@@ -22,7 +22,7 @@
 <meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
 <title>재식별 위험성 평가기 — 빛의여행(gemini2k) 도구</title>
 <script src="ga.js"></script>
-<script src="theme.js"></script>
+<script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script><script src="tool-shell.js"></script>
 <style>
   :root{
     --bg:#0A0F1C; --panel:#0F1A2E; --panel-2:#13223C; --line:#1E3050;
@@ -202,7 +202,7 @@
   @media (prefers-reduced-motion:reduce){
     *{transition:none!important}
   }
-</style>
+input[type="file"].hidden,input[type="file"][hidden]{display:block!important;position:absolute!important;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0,0,0,0);margin:-1px;border:0;}</style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
 <script type="application/ld+json">
 {
@@ -230,42 +230,42 @@
 </head>
 <body>
 <div class="wrap">
-  <a href="index.html" style="display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);text-decoration:none;font-size:.9rem;margin-bottom:1rem">← 전체 도구</a>
+  <a href="index.html" style="display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);text-decoration:none;font-size:.9rem;margin-bottom:1rem" data-i18n="b_reid_back">← 전체 도구</a>
   <header>
     <div class="title-block">
       <span class="eyebrow">Re-identification Risk</span>
-      <h1>재식별 위험성 평가기
-        <span class="sub">k-익명성 · l-다양성 · t-근접성을 한 번에</span>
+      <h1 data-i18n="b_reid_title">재식별 위험성 평가기
+        <span class="sub" data-i18n="b_reid_subtitle">k-익명성 · l-다양성 · t-근접성을 한 번에</span>
       </h1>
     </div>
-    <span class="privacy-badge"><span class="dot"></span> 데이터는 이 브라우저를 떠나지 않습니다</span>
+    <span class="privacy-badge"><span class="dot"></span> <span data-i18n="b_reid_privacy_badge">데이터는 이 브라우저를 떠나지 않습니다</span></span>
   </header>
-  <p class="lede">데이터셋을 올리고 어떤 열이 준식별자·민감정보인지 지정하면, 가명·익명처리 적정성 검토에 쓰는 세 가지 핵심 지표를 정확히 계산합니다. 모든 연산은 기기 안에서만 이뤄지며 서버로 전송하는 통신은 없습니다.</p>
+  <p class="lede" data-i18n="b_reid_lede">데이터셋을 올리고 어떤 열이 준식별자·민감정보인지 지정하면, 가명·익명처리 적정성 검토에 쓰는 세 가지 핵심 지표를 정확히 계산합니다. 모든 연산은 기기 안에서만 이뤄지며 서버로 전송하는 통신은 없습니다.</p>
 
   <!-- STEP 1: input -->
   <section class="panel">
-    <div class="panel-head"><span class="num">1</span><h2>데이터 불러오기</h2><span class="hint">Excel · CSV · TSV · 붙여넣기</span></div>
+    <div class="panel-head"><span class="num">1</span><h2 data-i18n="b_reid_step1_title">데이터 불러오기</h2><span class="hint" data-i18n="b_reid_step1_hint">Excel · CSV · TSV · 붙여넣기</span></div>
     <div id="drop" class="drop" tabindex="0" role="button" aria-label="파일을 선택하거나 끌어다 놓기">
-      <strong>파일을 끌어다 놓거나 눌러서 선택</strong>
-      <div class="small">Excel / CSV / TSV 파일 (.xlsx, .xls, .csv, .tsv, .txt)</div>
-      <div class="or">— 또는 —</div>
+      <label for="file" style="cursor:pointer;display:inline-block"><strong data-i18n="b_reid_drop_label">파일을 끌어다 놓거나 눌러서 선택</strong></label>
+      <div class="small" data-i18n="b_reid_drop_small">Excel / CSV / TSV 파일 (.xlsx, .xls, .csv, .tsv, .txt)</div>
+      <div class="or" data-i18n="b_reid_drop_or">— 또는 —</div>
       <div class="btn-row">
-        <button type="button" class="ghost" id="pasteToggle">데이터 붙여넣기</button>
-        <button type="button" class="ghost" id="sampleBtn">샘플 데이터로 체험</button>
-        <button type="button" class="ghost" id="sampleGeoBtn">위치 샘플로 체험</button>
+        <button type="button" class="ghost" id="pasteToggle" data-i18n="b_reid_btn_paste">데이터 붙여넣기</button>
+        <button type="button" class="ghost" id="sampleBtn" data-i18n="b_reid_btn_sample">샘플 데이터로 체험</button>
+        <button type="button" class="ghost" id="sampleGeoBtn" data-i18n="b_reid_btn_sample_geo">위치 샘플로 체험</button>
       </div>
     </div>
     <input type="file" id="file" accept=".xlsx,.xls,.csv,.tsv,.txt,text/csv,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="hidden">
     <div id="sheetPick" class="hidden" style="margin-top:14px">
       <div class="data-summary">
-        <span style="color:var(--muted)">엑셀에 시트가 여러 개입니다. 분석할 시트를 고르세요:</span>
+        <span style="color:var(--muted)" data-i18n="b_reid_sheet_pick">엑셀에 시트가 여러 개입니다. 분석할 시트를 고르세요:</span>
         <select id="sheetSelect" style="background:#0A1322;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--mono);font-size:13px"></select>
       </div>
     </div>
     <div id="pasteArea" class="hidden" style="margin-top:14px">
-      <textarea id="pasteInput" placeholder="첫 줄은 헤더(열 이름). 쉼표 또는 탭으로 구분된 표 형태로 붙여넣으세요."></textarea>
+      <textarea id="pasteInput" data-i18n-ph="b_reid_paste_ph" placeholder="첫 줄은 헤더(열 이름). 쉼표 또는 탭으로 구분된 표 형태로 붙여넣으세요."></textarea>
       <div class="btn-row" style="justify-content:flex-start;margin-top:10px">
-        <button type="button" class="primary" id="parsePaste">불러오기</button>
+        <button type="button" class="primary" id="parsePaste" data-i18n="b_reid_btn_load">불러오기</button>
       </div>
     </div>
     <div id="loadErr"></div>
@@ -274,36 +274,36 @@
 
   <!-- STEP 2: configure -->
   <section class="panel hidden" id="configPanel">
-    <div class="panel-head"><span class="num">2</span><h2>열 역할 지정</h2><span class="hint">준식별자를 2개 이상 고르면 정확도가 올라갑니다</span></div>
+    <div class="panel-head"><span class="num">2</span><h2 data-i18n="b_reid_step2_title">열 역할 지정</h2><span class="hint" data-i18n="b_reid_step2_hint">준식별자를 2개 이상 고르면 정확도가 올라갑니다</span></div>
     <div class="legend">
-      <span><i style="background:var(--purple)"></i>준식별자(QI) — 조합하면 재식별 가능</span>
-      <span><i style="background:var(--orange)"></i>민감정보 — 보호 대상</span>
-      <span><i style="background:var(--red)"></i>직접식별자 — 제외</span>
-      <span><i style="background:var(--faint)"></i>분석 제외</span>
+      <span><i style="background:var(--purple)"></i><span data-i18n="b_reid_legend_qi">준식별자(QI) — 조합하면 재식별 가능</span></span>
+      <span><i style="background:var(--orange)"></i><span data-i18n="b_reid_legend_sa">민감정보 — 보호 대상</span></span>
+      <span><i style="background:var(--red)"></i><span data-i18n="b_reid_legend_di">직접식별자 — 제외</span></span>
+      <span><i style="background:var(--faint)"></i><span data-i18n="b_reid_legend_ig">분석 제외</span></span>
     </div>
     <div id="cols" class="cols"></div>
     <div class="controls">
-      <div class="target">목표 k 값
+      <div class="target"><span data-i18n="b_reid_target_k">목표 k 값</span>
         <input type="number" id="targetK" value="5" min="2" max="9999">
-        <span class="tip" title="이 값 미만의 동질집합에 속한 레코드를 '위험'으로 집계합니다. 국내 실무에서는 통상 k≥3~5를 권고합니다.">＊</span>
+        <span class="tip" data-i18n-html="b_reid_tip_k" title="이 값 미만의 동질집합에 속한 레코드를 '위험'으로 집계합니다. 국내 실무에서는 통상 k≥3~5를 권고합니다.">＊</span>
       </div>
-      <div class="target" id="gridWrap" style="display:none">공간 그리드 크기(m)
+      <div class="target" id="gridWrap" style="display:none"><span data-i18n="b_reid_grid_size">공간 그리드 크기(m)</span>
         <input type="number" id="gridSize" value="1000" min="1">
-        <span class="tip" title="위도·경도를 이 크기의 격자 셀로 일반화한 뒤, 셀을 준식별자로 삼아 공간 k-익명성을 평가합니다.">＊</span>
+        <span class="tip" data-i18n-html="b_reid_tip_grid" title="위도·경도를 이 크기의 격자 셀로 일반화한 뒤, 셀을 준식별자로 삼아 공간 k-익명성을 평가합니다.">＊</span>
       </div>
-      <button type="button" class="primary" id="analyzeBtn">위험성 분석</button>
+      <button type="button" class="primary" id="analyzeBtn" data-i18n="b_reid_btn_analyze">위험성 분석</button>
     </div>
     <div id="cfgErr"></div>
   </section>
 
   <!-- STEP 3: results -->
   <section class="panel hidden" id="resultPanel">
-    <div class="panel-head"><span class="num">3</span><h2>분석 결과</h2><span class="hint" id="basisHint"></span></div>
+    <div class="panel-head"><span class="num">3</span><h2 data-i18n="b_reid_step3_title">분석 결과</h2><span class="hint" id="basisHint"></span></div>
 
     <div class="verdict">
       <div class="gauge">
         <div class="spectrum"><div class="marker" id="marker" style="left:0%"></div></div>
-        <div class="gauge-label"><span>k=1 · 고유 노출</span><span>목표 충족</span></div>
+        <div class="gauge-label"><span data-i18n="b_reid_gauge_min">k=1 · 고유 노출</span><span data-i18n="b_reid_gauge_max">목표 충족</span></div>
       </div>
       <div class="verdict-text">
         <span class="verdict-tag" id="verdictTag"></span>
@@ -315,60 +315,60 @@
 
     <div class="metrics" id="metrics"></div>
 
-    <h3 style="font-size:14px;margin:26px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">동질집합 크기 분포</h3>
+    <h3 style="font-size:14px;margin:26px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em" data-i18n="b_reid_hist_title">동질집합 크기 분포</h3>
     <div class="hist" id="hist"></div>
-    <div style="font-size:12px;color:var(--faint);text-align:center">막대 = 해당 크기 구간에 속한 동질집합 수 · 붉을수록 작은(위험한) 집합</div>
+    <div style="font-size:12px;color:var(--faint);text-align:center" data-i18n="b_reid_hist_caption">막대 = 해당 크기 구간에 속한 동질집합 수 · 붉을수록 작은(위험한) 집합</div>
 
     <div id="geoBlock" class="hidden">
-      <h3 style="font-size:14px;margin:26px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">공간 분포 · 격자 셀 위험</h3>
+      <h3 style="font-size:14px;margin:26px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em" data-i18n="b_reid_geo_title">공간 분포 · 격자 셀 위험</h3>
       <svg id="scatter" class="scatter" viewBox="0 0 600 380" preserveAspectRatio="xMidYMid meet" role="img" aria-label="좌표 산점도"></svg>
       <div class="scatter-legend">
-        <span><i style="background:var(--red)"></i>목표 k 미만 셀 (위험)</span>
-        <span><i style="background:var(--teal)"></i>목표 k 이상 셀</span>
-        <span style="color:var(--faint)">지도 타일 없이 좌표만 표시 — 데이터는 전송되지 않습니다</span>
+        <span><i style="background:var(--red)"></i><span data-i18n="b_reid_scatter_risky">목표 k 미만 셀 (위험)</span></span>
+        <span><i style="background:var(--teal)"></i><span data-i18n="b_reid_scatter_safe">목표 k 이상 셀</span></span>
+        <span style="color:var(--faint)" data-i18n="b_reid_scatter_note">지도 타일 없이 좌표만 표시 — 데이터는 전송되지 않습니다</span>
       </div>
     </div>
 
-    <h3 style="font-size:14px;margin:26px 0 8px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em">가장 위험한 동질집합 (상위 12개)</h3>
+    <h3 style="font-size:14px;margin:26px 0 8px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em" data-i18n="b_reid_risk_table_title">가장 위험한 동질집합 (상위 12개)</h3>
     <div class="tbl-scroll"><table id="riskTable"></table></div>
 
     <div class="actions">
-      <button type="button" id="exportCsv">집합별 리포트 CSV 내려받기</button>
-      <button type="button" class="ghost" id="exportJson">요약 JSON 내려받기</button>
+      <button type="button" id="exportCsv" data-i18n="b_reid_btn_export_csv">집합별 리포트 CSV 내려받기</button>
+      <button type="button" class="ghost" id="exportJson" data-i18n="b_reid_btn_export_json">요약 JSON 내려받기</button>
     </div>
     <p class="note" id="resultNote"></p>
   </section>
 
   <!-- STEP 4: de-identification simulation -->
   <section class="panel hidden" id="simPanel">
-    <div class="panel-head"><span class="num">4</span><h2>비식별 처리 시뮬레이션</h2><span class="hint">일반화·억제를 적용해 효과를 미리 확인</span></div>
-    <p style="color:var(--muted);font-size:14px;margin:0 0 16px">각 준식별자에 처리 방식을 정하고 실행하면, 처리 전후의 지표 변화를 비교하고 처리된 데이터셋을 내려받을 수 있습니다.</p>
+    <div class="panel-head"><span class="num">4</span><h2 data-i18n="b_reid_step4_title">비식별 처리 시뮬레이션</h2><span class="hint" data-i18n="b_reid_step4_hint">일반화·억제를 적용해 효과를 미리 확인</span></div>
+    <p style="color:var(--muted);font-size:14px;margin:0 0 16px" data-i18n="b_reid_sim_desc">각 준식별자에 처리 방식을 정하고 실행하면, 처리 전후의 지표 변화를 비교하고 처리된 데이터셋을 내려받을 수 있습니다.</p>
     <div id="simCols"></div>
     <div class="sim-opts">
-      <label id="dropDiWrap"><input type="checkbox" id="dropDi" checked> 직접식별자 열 제거</label>
-      <label><input type="checkbox" id="suppress"> 위험 레코드 삭제 (k=목표 미만 동질집합 억제)</label>
+      <label id="dropDiWrap"><input type="checkbox" id="dropDi" checked> <span data-i18n="b_reid_opt_drop_di">직접식별자 열 제거</span></label>
+      <label><input type="checkbox" id="suppress"> <span data-i18n="b_reid_opt_suppress">위험 레코드 삭제 (k=목표 미만 동질집합 억제)</span></label>
     </div>
     <div class="btn-row" style="justify-content:flex-start;margin-top:14px">
-      <button type="button" class="primary" id="runSim">시뮬레이션 실행</button>
+      <button type="button" class="primary" id="runSim" data-i18n="b_reid_btn_run_sim">시뮬레이션 실행</button>
     </div>
     <div id="simResult" class="hidden">
       <div class="tbl-scroll" style="margin-top:18px"><table class="cmp" id="cmpTable"></table></div>
       <div class="sim-summary" id="simSummary"></div>
       <div class="actions">
-        <button type="button" id="exportDeid">처리된 데이터셋 CSV 내려받기</button>
+        <button type="button" id="exportDeid" data-i18n="b_reid_btn_export_deid">처리된 데이터셋 CSV 내려받기</button>
       </div>
     </div>
   </section>
 
   <footer>
-    <strong style="color:var(--muted)">지표 정의 ·</strong>
-    <code>k-익명성</code> 동일 준식별자 조합(동질집합) 중 가장 작은 집합의 크기.
-    <code>l-다양성</code> 각 동질집합의 민감정보 값 다양성(고유값 수 및 엔트로피 기반).
-    <code>t-근접성</code> 각 집합의 민감정보 분포와 전체 분포의 거리 — 범주형은 총변동거리(TVD), 수치·순서형은 정렬 EMD를 사용. 값이 작을수록 안전합니다.
+    <strong style="color:var(--muted)" data-i18n="b_reid_footer_def_label">지표 정의 ·</strong>
+    <code>k-익명성</code> <span data-i18n="b_reid_footer_k">동일 준식별자 조합(동질집합) 중 가장 작은 집합의 크기.</span>
+    <code>l-다양성</code> <span data-i18n="b_reid_footer_l">각 동질집합의 민감정보 값 다양성(고유값 수 및 엔트로피 기반).</span>
+    <code>t-근접성</code> <span data-i18n="b_reid_footer_t">각 집합의 민감정보 분포와 전체 분포의 거리 — 범주형은 총변동거리(TVD), 수치·순서형은 정렬 EMD를 사용. 값이 작을수록 안전합니다.</span>
     <br><br>
-    이 도구는 적정성 판단을 보조하기 위한 정량 지표를 제공하며, 가명·익명처리의 법적 적정성에 대한 최종 판단을 대신하지 않습니다. 실제 처리·결합 시에는 관련 고시와 기관 심의를 함께 따르세요.
+    <span data-i18n="b_reid_footer_disclaimer">이 도구는 적정성 판단을 보조하기 위한 정량 지표를 제공하며, 가명·익명처리의 법적 적정성에 대한 최종 판단을 대신하지 않습니다. 실제 처리·결합 시에는 관련 고시와 기관 심의를 함께 따르세요.</span>
     <br><br>
-    © 빛의여행(gemini2k) 도구 · 문의 <a href="mailto:gemini2k@naver.com" style="color:var(--teal)">gemini2k@naver.com</a> · <a href="privacy.html" style="color:var(--muted)">개인정보처리방침</a> · <a href="index.html" style="color:var(--muted)">전체 도구 →</a>
+    © 빛의여행(gemini2k) 도구 · <span data-i18n="b_reid_footer_contact">문의</span> <a href="mailto:gemini2k@naver.com" style="color:var(--teal)">gemini2k@naver.com</a> · <a href="privacy.html" style="color:var(--muted)" data-i18n="b_reid_footer_privacy">개인정보처리방침</a> · <a href="index.html" style="color:var(--muted)" data-i18n="b_reid_footer_all_tools">전체 도구 →</a>
   </footer>
 </div>
 
@@ -458,7 +458,7 @@ function loadText(text){
   try{
     const delim=detectDelim(text);
     const grid=parseCSV(text,delim);
-    if(grid.length<2){ errBox($('loadErr'),'헤더 한 줄과 데이터 한 줄 이상이 필요합니다. 표 형태인지 확인하세요.'); return; }
+    if(grid.length<2){ errBox($('loadErr'),t('b_reid_err_need_rows')); return; }
     let headers=grid[0].map(h=>String(h).trim());
     // dedupe empty/duplicate headers
     const seen={};
@@ -469,11 +469,11 @@ function loadText(text){
       const o={}; for(let j=0;j<headers.length;j++) o[headers[j]] = g[j]!==undefined? g[j] : '';
       rows.push(o);
     }
-    if(rows.length===0){ errBox($('loadErr'),'데이터 행이 없습니다.'); return; }
+    if(rows.length===0){ errBox($('loadErr'),t('b_reid_err_no_rows')); return; }
     DATA={headers,rows};
-    if(rows.length>200000) errBox($('loadErr'),'행이 20만 개를 넘습니다. 계산은 가능하나 브라우저가 느려질 수 있습니다.');
+    if(rows.length>200000) errBox($('loadErr'),t('b_reid_warn_large'));
     initConfig();
-  }catch(e){ errBox($('loadErr'),'파일을 해석하지 못했습니다: '+e.message); }
+  }catch(e){ errBox($('loadErr'),t('b_reid_err_parse')+': '+e.message); }
 }
 function looksNumeric(header){
   let count=0,ok=0;
@@ -482,7 +482,7 @@ function looksNumeric(header){
 }
 function sampleVals(header){
   const out=[]; for(const r of DATA.rows){ const v=String(r[header]).trim(); if(v!==''){out.push(v); if(out.length>=3)break;} }
-  return out.join(' · ')||'(빈 값)';
+  return out.join(' · ')||t('b_reid_empty_val');
 }
 
 /* ============ 설정 UI ============ */
@@ -490,9 +490,9 @@ function initConfig(){
   // summary
   show($('dataSummary'));
   $('dataSummary').innerHTML =
-    '<span class="pill"><b>'+DATA.rows.length.toLocaleString()+'</b> 행</span>'+
-    '<span class="pill"><b>'+DATA.headers.length+'</b> 열</span>'+
-    '<span style="color:var(--faint)">아래에서 열의 역할을 지정하세요.</span>';
+    '<span class="pill"><b>'+DATA.rows.length.toLocaleString()+'</b> '+t('b_reid_unit_rows')+'</span>'+
+    '<span class="pill"><b>'+DATA.headers.length+'</b> '+t('b_reid_unit_cols')+'</span>'+
+    '<span style="color:var(--faint)">'+t('b_reid_hint_assign_roles')+'</span>';
   // default roles: guess
   ROLES={}; SATYPE={};
   const isLat=h=>/^(위도|lat|latitude|y좌표|y_coord|y)$/i.test(h.trim())||/위도|latitude/i.test(h);
@@ -518,17 +518,17 @@ function renderCols(){
       '<div class="col-name">'+esc(h)+'</div>'+
       '<div class="col-sample">'+esc(sampleVals(h))+'</div>'+
       '<div class="role-seg" data-h="'+esc(h)+'">'+
-        roleBtn(h,'qi','준식별자',role)+
-        roleBtn(h,'sa','민감정보',role)+
-        roleBtn(h,'di','직접식별자',role)+
-        roleBtn(h,'ig','제외',role)+
-        roleBtn(h,'lat','위도',role)+
-        roleBtn(h,'lng','경도',role)+
+        roleBtn(h,'qi',t('b_reid_role_qi'),role)+
+        roleBtn(h,'sa',t('b_reid_role_sa'),role)+
+        roleBtn(h,'di',t('b_reid_role_di'),role)+
+        roleBtn(h,'ig',t('b_reid_role_ig'),role)+
+        roleBtn(h,'lat',t('b_reid_role_lat'),role)+
+        roleBtn(h,'lng',t('b_reid_role_lng'),role)+
       '</div>'+
-      '<div class="sa-type'+(role==='sa'?'':' hidden')+'" data-sat="'+esc(h)+'">유형'+
+      '<div class="sa-type'+(role==='sa'?'':' hidden')+'" data-sat="'+esc(h)+'">'+t('b_reid_sa_type_label')+
         '<select>'+
-          '<option value="cat"'+(SATYPE[h]==='cat'?' selected':'')+'>범주형</option>'+
-          '<option value="num"'+(SATYPE[h]==='num'?' selected':'')+'>수치·순서형</option>'+
+          '<option value="cat"'+(SATYPE[h]==='cat'?' selected':'')+'>'+t('b_reid_sa_cat')+'</option>'+
+          '<option value="num"'+(SATYPE[h]==='num'?' selected':'')+'>'+t('b_reid_sa_num')+'</option>'+
         '</select></div>';
     wrap.appendChild(card);
   });
@@ -559,12 +559,12 @@ function analyze(){
   const sas=DATA.headers.filter(h=>ROLES[h]==='sa');
   const latCols=DATA.headers.filter(h=>ROLES[h]==='lat');
   const lngCols=DATA.headers.filter(h=>ROLES[h]==='lng');
-  if(latCols.length>1||lngCols.length>1){ errBox($('cfgErr'),'위도·경도는 각각 한 개의 열만 지정하세요.'); return; }
-  if(latCols.length!==lngCols.length){ errBox($('cfgErr'),'위도와 경도는 함께 지정해야 합니다(둘 다 또는 둘 다 아님).'); return; }
+  if(latCols.length>1||lngCols.length>1){ errBox($('cfgErr'),t('b_reid_err_geo_multi')); return; }
+  if(latCols.length!==lngCols.length){ errBox($('cfgErr'),t('b_reid_err_geo_pair')); return; }
   const geoActive=latCols.length===1;
   const latCol=latCols[0]||null, lngCol=lngCols[0]||null;
-  if(qis.length===0 && !geoActive){ errBox($('cfgErr'),'준식별자(QI)를 1개 이상 선택하거나 위도·경도를 지정하세요.'); return; }
-  if(sas.length>1){ errBox($('cfgErr'),'l-다양성·t-근접성은 민감정보 1개에 대해 계산합니다. 민감정보는 하나만 지정하세요.'); return; }
+  if(qis.length===0 && !geoActive){ errBox($('cfgErr'),t('b_reid_err_no_qi')); return; }
+  if(sas.length>1){ errBox($('cfgErr'),t('b_reid_err_multi_sa')); return; }
   const sa=sas[0]||null;
   const targetK=Math.max(2,parseInt($('targetK').value)||5);
 
@@ -620,7 +620,7 @@ function analyze(){
     lDistinct=minDistinct;
     lEntropy=Math.pow(2,minEnt); // implied l
     tClose=maxT;
-    saInfo={name:sa,type:isNum?'수치·순서형':'범주형'};
+    saInfo={name:sa,type:isNum?t('b_reid_sa_num'):t('b_reid_sa_cat')};
   }
 
   LAST={qis,sa,saInfo,k,targetK,total:rows.length,classes:classArr.length,uniqueClasses,riskyRecords,avg,
@@ -630,16 +630,16 @@ function analyze(){
 }
 
 function riskLevel(k,target){
-  if(k<=1) return {tag:'고위험',color:'var(--bad)',pct:3};
-  if(k<target) return {tag:'주의',color:'var(--warn)',pct: Math.min(45, 8+ (k/target)*37)};
-  if(k<target*2) return {tag:'양호',color:'#FACC15',pct:60};
-  return {tag:'목표 충족',color:'var(--good)',pct:92};
+  if(k<=1) return {tag:t('b_reid_verdict_high'),color:'var(--bad)',pct:3};
+  if(k<target) return {tag:t('b_reid_verdict_warn'),color:'var(--warn)',pct: Math.min(45, 8+ (k/target)*37)};
+  if(k<target*2) return {tag:t('b_reid_verdict_ok'),color:'#FACC15',pct:60};
+  return {tag:t('b_reid_verdict_good'),color:'var(--good)',pct:92};
 }
 
 function renderResults(){
   const R=LAST;
   show($('resultPanel'));
-  $('basisHint').textContent = '준식별자 '+(R.qis.length-(R.geoActive?1:0))+'개'+(R.geoActive?' + 위치셀('+R.gridM+'m)':'')+(R.sa?' · 민감정보 '+R.sa:'');
+  $('basisHint').textContent = t('b_reid_basis_qi')+' '+(R.qis.length-(R.geoActive?1:0))+(R.geoActive?' + '+t('b_reid_basis_geocell')+'('+R.gridM+'m)':'')+(R.sa?' · '+t('b_reid_basis_sa')+' '+R.sa:'');
 
   // gauge + verdict
   const lvl=riskLevel(R.k,R.targetK);
@@ -649,29 +649,27 @@ function renderResults(){
   vt.style.color=lvl.color; vt.style.border='1px solid '+lvl.color;
   const riskPct=(R.riskyRecords/R.total*100);
   let msg='';
-  if(R.k<=1) msg='고유하게 식별되는 레코드가 존재합니다(k=1). 해당 준식별자 조합만으로 특정 개인이 가려지지 않으므로, 일반화·범주화·삭제 등 추가 처리가 필요합니다.';
-  else if(R.k<R.targetK) msg='가장 작은 동질집합의 크기가 목표 k='+R.targetK+'에 못 미칩니다. 위험 레코드 '+R.riskyRecords.toLocaleString()+'개('+riskPct.toFixed(1)+'%)에 대한 보강이 권장됩니다.';
-  else msg='모든 동질집합이 목표 k='+R.targetK+' 이상을 만족합니다. 준식별자 조합 기준으로는 양호하나, 민감정보 분포(l·t)도 함께 확인하세요.';
+  if(R.k<=1) msg=t('b_reid_msg_k1');
+  else if(R.k<R.targetK) msg=t('b_reid_msg_klow').replace('{k}',R.targetK).replace('{n}',R.riskyRecords.toLocaleString()).replace('{pct}',riskPct.toFixed(1));
+  else msg=t('b_reid_msg_kgood').replace('{k}',R.targetK);
   $('verdictMsg').textContent=msg;
 
   // residual risk — there is no zero risk
   const kprob = R.k>=1 ? (100/R.k) : 100;
-  $('residualNote').innerHTML='<b style="color:var(--orange)">잔존 위험</b> · '+
-    'k='+R.k+'인 동질집합에서는 같은 그룹 안에서 특정 개인일 확률이 최대 1/'+R.k+'('+kprob.toFixed(R.k>=10?1:0)+'%)로 남습니다. '+
-    '또한 배경지식 공격, 다른 데이터셋과의 결합, 준식별자로 지정하지 않은 열로 인한 재식별은 이 지표가 측정하지 않습니다. '+
-    '위험을 0으로 만드는 처리는 없으므로, 활용 맥락에서 허용 가능한 수준인지 함께 판단하세요.';
+  $('residualNote').innerHTML='<b style="color:var(--orange)">'+t('b_reid_residual_label')+'</b> · '+
+    t('b_reid_residual_body').replace('{k}',R.k).replace('{prob}','1/'+R.k).replace('{pct}',kprob.toFixed(R.k>=10?1:0));
 
   // metric cards
   const cards=[];
-  cards.push(metricCard('teal','k-익명성', R.k, '가장 작은 동질집합 크기', 'k 값이 작을수록 개인이 좁은 그룹으로 특정됩니다.'));
-  cards.push(metricCard('purple','동질집합 수', R.classes.toLocaleString(), '준식별자 조합의 가짓수','평균 크기 '+R.avg.toFixed(1)+'명/집합'));
-  cards.push(metricCard(R.uniqueClasses>0?'red':'teal','고유 레코드', R.uniqueClasses.toLocaleString(), 'k=1 인 레코드 수','전체의 '+(R.uniqueClasses/R.total*100).toFixed(1)+'%'));
-  cards.push(metricCard(R.riskyRecords>0?'orange':'teal','위험 레코드', R.riskyRecords.toLocaleString(), 'k='+R.targetK+' 미만 집합의 레코드','전체의 '+(R.riskyRecords/R.total*100).toFixed(1)+'%'));
+  cards.push(metricCard('teal',t('b_reid_mc_k_anon'), R.k, t('b_reid_mc_k_anon_d'), t('b_reid_mc_k_anon_tip')));
+  cards.push(metricCard('purple',t('b_reid_mc_classes'), R.classes.toLocaleString(), t('b_reid_mc_classes_d'),t('b_reid_mc_classes_tip').replace('{avg}',R.avg.toFixed(1))));
+  cards.push(metricCard(R.uniqueClasses>0?'red':'teal',t('b_reid_mc_unique'), R.uniqueClasses.toLocaleString(), t('b_reid_mc_unique_d'),t('b_reid_mc_pct').replace('{pct}',(R.uniqueClasses/R.total*100).toFixed(1))));
+  cards.push(metricCard(R.riskyRecords>0?'orange':'teal',t('b_reid_mc_risky'), R.riskyRecords.toLocaleString(), t('b_reid_mc_risky_d').replace('{k}',R.targetK),t('b_reid_mc_pct').replace('{pct}',(R.riskyRecords/R.total*100).toFixed(1))));
   if(R.sa){
-    cards.push(metricCard('purple','l-다양성(고유)', R.lDistinct, '최소 민감정보 고유값 수','각 집합이 가진 서로 다른 '+R.sa+' 값'));
-    cards.push(metricCard('purple','l-다양성(엔트로피)', R.lEntropy.toFixed(2), '엔트로피 환산 l','2^(최소 엔트로피). 분포 쏠림까지 반영'));
+    cards.push(metricCard('purple',t('b_reid_mc_l_distinct'), R.lDistinct, t('b_reid_mc_l_distinct_d'),t('b_reid_mc_l_distinct_tip').replace('{sa}',R.sa)));
+    cards.push(metricCard('purple',t('b_reid_mc_l_entropy'), R.lEntropy.toFixed(2), t('b_reid_mc_l_entropy_d'),t('b_reid_mc_l_entropy_tip')));
     const tcolor = R.tClose<=0.15?'teal':(R.tClose<=0.3?'orange':'red');
-    cards.push(metricCard(tcolor,'t-근접성', R.tClose.toFixed(3), R.saInfo.type+' · 최대 거리','0에 가까울수록 전체 분포와 유사(안전)'));
+    cards.push(metricCard(tcolor,t('b_reid_mc_t_close'), R.tClose.toFixed(3), R.saInfo.type+' · '+t('b_reid_mc_t_close_d'),t('b_reid_mc_t_close_tip')));
   }
   $('metrics').innerHTML=cards.join('');
 
@@ -685,9 +683,7 @@ function renderResults(){
   renderTable(R);
 
   // note
-  $('resultNote').innerHTML = R.sa
-    ? '엔트로피 l-다양성은 동질집합 안에서 민감정보가 한쪽으로 쏠려 있을 때 고유값 수보다 위험을 더 잘 드러냅니다. t-근접성은 통상 0.2 이하를 권고 기준으로 참고합니다(데이터 특성에 따라 조정).'
-    : '민감정보 열을 지정하면 l-다양성·t-근접성까지 함께 평가합니다.';
+  $('resultNote').innerHTML = R.sa ? t('b_reid_note_sa') : t('b_reid_note_no_sa');
 
   renderSimConfig();
   $('resultPanel').scrollIntoView({behavior:'smooth',block:'start'});
@@ -720,7 +716,7 @@ function renderScatter(R){
   });
   const W=600,H=380,pad=34;
   const svg=$('scatter');
-  if(pts.length===0){ svg.innerHTML='<text x="300" y="190" fill="#8FA3C0" font-size="14" text-anchor="middle" font-family="monospace">유효한 좌표가 없습니다</text>'; return; }
+  if(pts.length===0){ svg.innerHTML='<text x="300" y="190" fill="#8FA3C0" font-size="14" text-anchor="middle" font-family="monospace">'+t('b_reid_no_coords')+'</text>'; return; }
   if(pts.length>4000){ const step=Math.ceil(pts.length/4000); pts=pts.filter((_,i)=>i%step===0); }
   const xs=pts.map(p=>p.x), ys=pts.map(p=>p.y);
   let minX=Math.min.apply(null,xs),maxX=Math.max.apply(null,xs),minY=Math.min.apply(null,ys),maxY=Math.max.apply(null,ys);
@@ -732,19 +728,19 @@ function renderScatter(R){
   const circles=pts.map(p=>'<circle cx="'+sx(p.x).toFixed(1)+'" cy="'+sy(p.y).toFixed(1)+'" r="3.4" fill="'+(p.risky?'#F87171':'#2DD4BF')+'" fill-opacity="'+(p.risky?0.85:0.5)+'"/>').join('');
   const ls='fill="#5B7196" font-size="10" font-family="monospace"';
   const labels=
-    '<text x="'+pad+'" y="'+(H-12)+'" '+ls+'>경도 '+minX.toFixed(4)+'</text>'+
+    '<text x="'+pad+'" y="'+(H-12)+'" '+ls+'>'+t('b_reid_lng_label')+' '+minX.toFixed(4)+'</text>'+
     '<text x="'+(W-pad)+'" y="'+(H-12)+'" '+ls+' text-anchor="end">'+maxX.toFixed(4)+'</text>'+
-    '<text x="8" y="'+(H-pad)+'" '+ls+'>위도 '+minY.toFixed(4)+'</text>'+
+    '<text x="8" y="'+(H-pad)+'" '+ls+'>'+t('b_reid_lat_label')+' '+minY.toFixed(4)+'</text>'+
     '<text x="8" y="'+(pad+2)+'" '+ls+'>'+maxY.toFixed(4)+'</text>';
   svg.innerHTML=labels+circles;
 }
 function renderTable(R){
   const t=$('riskTable');
-  const colLbl=q=> q===GEOCOL?'위치셀':q;
-  const head='<tr><th>#</th>'+R.qis.map(q=>'<th>'+esc(colLbl(q))+'</th>').join('')+'<th>크기</th>'+(R.sa?'<th>'+esc(R.sa)+' 분포</th><th>고유값</th>':'')+'</tr>';
+  const colLbl=q=> q===GEOCOL?t('b_reid_geocell_col'):q;
+  const head='<tr><th>#</th>'+R.qis.map(q=>'<th>'+esc(colLbl(q))+'</th>').join('')+'<th>'+t('b_reid_th_size')+'</th>'+(R.sa?'<th>'+esc(R.sa)+' '+t('b_reid_th_sa_dist')+'</th><th>'+t('b_reid_th_unique')+'</th>':'')+'</tr>';
   const top=R.classArr.slice(0,12);
   const body=top.map((c,idx)=>{
-    const vals=JSON.parse(c.key).map(v=> v===NULLT?'<span style="color:var(--faint)">(빈값)</span>':esc(v));
+    const vals=JSON.parse(c.key).map(v=> v===NULLT?'<span style="color:var(--faint)">('+t('b_reid_null_val')+')</span>':esc(v));
     const rcls=c.size<=1?'risk-1':(c.size<R.targetK?'risk-low':'risk-ok');
     let saCell='';
     if(R.sa){
@@ -768,12 +764,12 @@ function download(name,content,type){
 }
 function exportCsv(){
   if(!LAST)return; const R=LAST;
-  const cols=['집합번호',...R.qis,'크기','위험여부'];
+  const cols=[t('b_reid_csv_class_no'),...R.qis,t('b_reid_csv_size'),t('b_reid_csv_risk')];
   if(R.sa){cols.push(R.sa+'_고유값수',R.sa+'_t거리',R.sa+'_분포');}
   const lines=[cols.map(csvCell).join(',')];
   R.classArr.forEach((c,i)=>{
     const vals=JSON.parse(c.key).map(v=>v===NULLT?'':v);
-    const row=[i+1,...vals,c.size,(c.size<R.targetK?'위험':'적정')];
+    const row=[i+1,...vals,c.size,(c.size<R.targetK?t('b_reid_csv_risk_yes'):t('b_reid_csv_risk_no'))];
     if(R.sa){
       const dist=Object.entries(c._sa.counts).map(([v,n])=>v+':'+n).join('; ');
       row.push(c._sa.distinct, c._sa.dist.toFixed(4), dist);
@@ -875,23 +871,23 @@ function renderSimConfig(){
     row.innerHTML=
       '<span class="sim-name">'+esc(q)+'</span>'+
       '<select class="sim-strat" data-q="'+esc(q)+'">'+
-        '<option value="none">처리 안 함</option>'+
-        '<option value="bin"'+(defStrat==='bin'?' selected':'')+'>수치 구간화</option>'+
-        '<option value="prefix"'+(defStrat==='prefix'?' selected':'')+'>앞자리 유지</option>'+
-        '<option value="mask">전체 마스킹</option>'+
+        '<option value="none">'+t('b_reid_strat_none')+'</option>'+
+        '<option value="bin"'+(defStrat==='bin'?' selected':'')+'>'+t('b_reid_strat_bin')+'</option>'+
+        '<option value="prefix"'+(defStrat==='prefix'?' selected':'')+'>'+t('b_reid_strat_prefix')+'</option>'+
+        '<option value="mask">'+t('b_reid_strat_mask')+'</option>'+
       '</select>'+
       '<input class="sim-param" data-q="'+esc(q)+'" type="number" min="0" value="'+defParam+'">'+
-      '<span class="sim-paramlbl">'+(defStrat==='bin'?'구간 폭':'유지 자릿수')+'</span>';
+      '<span class="sim-paramlbl">'+(defStrat==='bin'?t('b_reid_param_bin'):t('b_reid_param_prefix'))+'</span>';
     host.appendChild(row);
   });
   // spatial grid row (좌표 그리드화)
   if(R.geoActive){
     const row=document.createElement('div'); row.className='sim-row';
     row.innerHTML=
-      '<span class="sim-name" style="color:#7DD3FC">위치(위도·경도)</span>'+
-      '<select disabled><option>좌표 그리드화</option></select>'+
+      '<span class="sim-name" style="color:#7DD3FC">'+t('b_reid_geo_row_label')+'</span>'+
+      '<select disabled><option>'+t('b_reid_geo_row_opt')+'</option></select>'+
       '<input id="simGeoGrid" type="number" min="1" value="'+R.gridM+'">'+
-      '<span class="sim-paramlbl">그리드 크기(m)</span>';
+      '<span class="sim-paramlbl">'+t('b_reid_geo_row_param')+'</span>';
     host.appendChild(row);
   }
   // param label/visibility reacts to strategy
@@ -900,8 +896,8 @@ function renderSimConfig(){
       const row=e.target.closest('.sim-row');
       const inp=row.querySelector('.sim-param'); const lbl=row.querySelector('.sim-paramlbl');
       const s=e.target.value;
-      if(s==='bin'){inp.style.visibility='visible';lbl.textContent='구간 폭';if(!inp.value||inp.value<1)inp.value=10;}
-      else if(s==='prefix'){inp.style.visibility='visible';lbl.textContent='유지 자릿수';if(inp.value==='')inp.value=3;}
+      if(s==='bin'){inp.style.visibility='visible';lbl.textContent=t('b_reid_param_bin');if(!inp.value||inp.value<1)inp.value=10;}
+      else if(s==='prefix'){inp.style.visibility='visible';lbl.textContent=t('b_reid_param_prefix');if(inp.value==='')inp.value=3;}
       else {inp.style.visibility='hidden';lbl.textContent='';}
     });
   });
@@ -949,25 +945,25 @@ function runSim(){
   if(newRows.length===0){
     $('simResult').classList.remove('hidden');
     $('cmpTable').innerHTML='';
-    $('simSummary').textContent='모든 레코드가 억제되었습니다. 목표 k를 낮추거나 일반화 수준을 조정하세요.';
+    $('simSummary').textContent=t('b_reid_sim_all_suppressed');
     DEID=null; return;
   }
   const before={k:R.k,classes:R.classes,total:R.total,uniqueClasses:R.uniqueClasses,riskyRecords:R.riskyRecords,lDistinct:R.lDistinct,lEntropy:R.lEntropy,tClose:R.tClose};
-  const after=computeMetrics(newRows,R.qis,R.sa,R.saInfo?(R.saInfo.type==='수치·순서형'?'num':'cat'):null,targetK);
+  const after=computeMetrics(newRows,R.qis,R.sa,R.saInfo?(R.saInfo.type===t('b_reid_sa_num')?'num':'cat'):null,targetK);
   renderCmp(before,after);
   // summary
   let parts=[];
   const redAbs=before.riskyRecords-after.riskyRecords;
   const redPct=before.riskyRecords>0?(redAbs/before.riskyRecords*100):0;
   const uniRed=before.uniqueClasses-after.uniqueClasses;
-  parts.push('목표 k='+targetK+' 미만 위험 레코드 '+before.riskyRecords.toLocaleString()+' → '+after.riskyRecords.toLocaleString()+
-    ' (<b style="color:var(--teal)">'+redAbs.toLocaleString()+'건 해소'+(before.riskyRecords>0?', '+redPct.toFixed(0)+'%↓':'')+'</b>).');
-  if(uniRed>0) parts.push('고유 노출 레코드 '+uniRed.toLocaleString()+'건 제거.');
-  parts.push('k-익명성 '+before.k+' → <b style="color:var(--teal)">'+after.k+'</b>.');
-  if(R.geoActive) parts.push('위치 그리드 '+R.gridM+'m → '+geoGrid+'m.');
-  if($('suppress').checked) parts.push('레코드 '+suppressed.toLocaleString()+'개 억제(잔존 '+newRows.length.toLocaleString()+'개).');
-  if(after.k>=targetK) parts.push('모든 동질집합이 목표 k='+targetK+' 이상입니다(위험 제거가 아니라 목표 수준 도달).');
-  else parts.push('아직 목표 k='+targetK+' 미만 — 일반화를 강화하거나 레코드 억제를 켜보세요.');
+  parts.push(t('b_reid_sim_risky_change').replace('{k}',targetK).replace('{before}',before.riskyRecords.toLocaleString()).replace('{after}',after.riskyRecords.toLocaleString())+
+    ' (<b style="color:var(--teal)">'+redAbs.toLocaleString()+t('b_reid_sim_resolved')+(before.riskyRecords>0?', '+redPct.toFixed(0)+'%↓':'')+'</b>).');
+  if(uniRed>0) parts.push(t('b_reid_sim_unique_removed').replace('{n}',uniRed.toLocaleString()));
+  parts.push(t('b_reid_sim_k_change').replace('{before}',before.k).replace('{after}','<b style="color:var(--teal)">'+after.k+'</b>'));
+  if(R.geoActive) parts.push(t('b_reid_sim_geo_grid').replace('{before}',R.gridM).replace('{after}',geoGrid));
+  if($('suppress').checked) parts.push(t('b_reid_sim_suppressed').replace('{n}',suppressed.toLocaleString()).replace('{rem}',newRows.length.toLocaleString()));
+  if(after.k>=targetK) parts.push(t('b_reid_sim_goal_met').replace('{k}',targetK));
+  else parts.push(t('b_reid_sim_goal_not_met').replace('{k}',targetK));
   $('simSummary').innerHTML=parts.join(' ');
   // prepare export dataset (synthetic 위치셀 컬럼은 출력에서 제외; 좌표는 셀 중심으로 일반화됨)
   const dropDi=$('dropDi').checked && $('dropDiWrap').style.display!=='none';
@@ -988,7 +984,7 @@ function cmpRow(lbl,b,a,betterLower,fmt,isCount){
       const dstr = isCount ? sign+delta.toLocaleString() : sign+(Math.round(delta*1000)/1000);
       let pct=''; if(b!==0) pct=' ('+(delta>0?'+':'')+(delta/b*100).toFixed(0)+'%)';
       change=dstr+pct;
-    } else { change='변화 없음'; }
+    } else { change=t('b_reid_cmp_no_change'); }
   }
   return '<tr><td class="lbl">'+lbl+'</td><td class="before">'+bv+'</td>'+
     '<td class="after '+cls+'">'+av+' <span style="font-size:12px">'+arrow+'</span></td>'+
@@ -998,15 +994,15 @@ function renderCmp(b,a){
   const f2=x=>x==null?'—':Number(x).toFixed(2);
   const f3=x=>x==null?'—':Number(x).toFixed(3);
   const n=x=>x==null?'—':Number(x).toLocaleString();
-  let rows='<tr><th>지표</th><th>처리 전</th><th>처리 후</th><th>변화</th></tr>';
-  rows+=cmpRow('k-익명성',b.k,a.k,false,n,true);
-  rows+=cmpRow('고유 레코드(k=1)',b.uniqueClasses,a.uniqueClasses,true,n,true);
-  rows+=cmpRow('위험 레코드',b.riskyRecords,a.riskyRecords,true,n,true);
-  rows+=cmpRow('동질집합 수',b.classes,a.classes,true,n,true);
-  rows+=cmpRow('전체 레코드',b.total,a.total,false,n,true);
-  if(b.lDistinct!=null) rows+=cmpRow('l-다양성(고유)',b.lDistinct,a.lDistinct,false,n,true);
-  if(b.lEntropy!=null) rows+=cmpRow('l-다양성(엔트로피)',b.lEntropy,a.lEntropy,false,f2,false);
-  if(b.tClose!=null) rows+=cmpRow('t-근접성',b.tClose,a.tClose,true,f3,false);
+  let rows='<tr><th>'+t('b_reid_cmp_metric')+'</th><th>'+t('b_reid_cmp_before')+'</th><th>'+t('b_reid_cmp_after')+'</th><th>'+t('b_reid_cmp_change')+'</th></tr>';
+  rows+=cmpRow(t('b_reid_mc_k_anon'),b.k,a.k,false,n,true);
+  rows+=cmpRow(t('b_reid_mc_unique'),b.uniqueClasses,a.uniqueClasses,true,n,true);
+  rows+=cmpRow(t('b_reid_mc_risky'),b.riskyRecords,a.riskyRecords,true,n,true);
+  rows+=cmpRow(t('b_reid_mc_classes'),b.classes,a.classes,true,n,true);
+  rows+=cmpRow(t('b_reid_cmp_total_rows'),b.total,a.total,false,n,true);
+  if(b.lDistinct!=null) rows+=cmpRow(t('b_reid_mc_l_distinct'),b.lDistinct,a.lDistinct,false,n,true);
+  if(b.lEntropy!=null) rows+=cmpRow(t('b_reid_mc_l_entropy'),b.lEntropy,a.lEntropy,false,f2,false);
+  if(b.tClose!=null) rows+=cmpRow(t('b_reid_mc_t_close'),b.tClose,a.tClose,true,f3,false);
   $('cmpTable').innerHTML=rows;
 }
 function exportDeid(){
@@ -1030,39 +1026,39 @@ function readFile(f){
   const name=(f.name||'').toLowerCase();
   hide($('sheetPick')); WB=null;
   if(name.endsWith('.xlsx')||name.endsWith('.xls')){
-    if(typeof XLSX==='undefined'){ errBox($('loadErr'),'엑셀 모듈을 불러오지 못했습니다. CSV로 저장해 다시 시도하세요.'); return; }
+    if(typeof XLSX==='undefined'){ errBox($('loadErr'),t('b_reid_err_xlsx_module')); return; }
     const reader=new FileReader();
     reader.onload=()=>{
       try{
         WB=XLSX.read(new Uint8Array(reader.result),{type:'array'});
-        if(!WB.SheetNames.length){ errBox($('loadErr'),'시트가 없는 엑셀 파일입니다.'); return; }
+        if(!WB.SheetNames.length){ errBox($('loadErr'),t('b_reid_err_no_sheets')); return; }
         if(WB.SheetNames.length>1){
           $('sheetSelect').innerHTML=WB.SheetNames.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join('');
           show($('sheetPick')); errBox($('loadErr'),'');
           loadSheet(WB.SheetNames[0]);
         } else { loadSheet(WB.SheetNames[0]); }
-      }catch(e){ errBox($('loadErr'),'엑셀 파일을 해석하지 못했습니다: '+e.message); }
+      }catch(e){ errBox($('loadErr'),t('b_reid_err_xlsx_parse')+': '+e.message); }
     };
-    reader.onerror=()=>errBox($('loadErr'),'파일을 읽지 못했습니다.');
+    reader.onerror=()=>errBox($('loadErr'),t('b_reid_err_file_read'));
     reader.readAsArrayBuffer(f);
   } else {
     const reader=new FileReader();
     reader.onload=()=>loadText(reader.result);
-    reader.onerror=()=>errBox($('loadErr'),'파일을 읽지 못했습니다.');
+    reader.onerror=()=>errBox($('loadErr'),t('b_reid_err_file_read'));
     reader.readAsText(f);
   }
 }
 function loadSheet(name){
   try{
     const ws=WB.Sheets[name];
-    if(!ws){ errBox($('loadErr'),'시트를 찾을 수 없습니다.'); return; }
+    if(!ws){ errBox($('loadErr'),t('b_reid_err_no_sheet')); return; }
     const csv=XLSX.utils.sheet_to_csv(ws,{FS:',',blankrows:false});
     loadText(csv);
-  }catch(e){ errBox($('loadErr'),'시트를 변환하지 못했습니다: '+e.message); }
+  }catch(e){ errBox($('loadErr'),t('b_reid_err_sheet_convert')+': '+e.message); }
 }
 $('sheetSelect').addEventListener('change',e=>{ if(WB)loadSheet(e.target.value); });
 $('pasteToggle').addEventListener('click',()=>{ $('pasteArea').classList.toggle('hidden'); $('pasteInput').focus(); });
-$('parsePaste').addEventListener('click',()=>{ const v=$('pasteInput').value.trim(); if(v)loadText(v); else errBox($('loadErr'),'붙여넣은 내용이 없습니다.'); });
+$('parsePaste').addEventListener('click',()=>{ const v=$('pasteInput').value.trim(); if(v)loadText(v); else errBox($('loadErr'),t('b_reid_err_paste_empty')); });
 $('sampleBtn').addEventListener('click',()=>{ loadText(SAMPLE); });
 $('sampleGeoBtn').addEventListener('click',()=>{ loadText(SAMPLE_GEO); });
 $('analyzeBtn').addEventListener('click',analyze);
@@ -1070,6 +1066,10 @@ $('exportCsv').addEventListener('click',exportCsv);
 $('exportJson').addEventListener('click',exportJson);
 $('runSim').addEventListener('click',runSim);
 $('exportDeid').addEventListener('click',exportDeid);
+window.onI18n=function(){
+  if(DATA) renderCols();
+  if(LAST){ renderResults(); }
+};
 </script>
 </body>
 </html>

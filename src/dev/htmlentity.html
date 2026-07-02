@@ -50,23 +50,23 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>HTML 엔티티 인코딩/디코딩</h1>
-  <p class="sub">HTML 특수문자를 안전한 엔티티로 바꾸거나 되돌립니다. 코드를 글에 그대로 보여줄 때 태그가 깨지지 않게 해 줍니다.</p>
+  <h1 data-i18n="b_htmlentity_title">HTML 엔티티 인코딩/디코딩</h1>
+  <p class="sub" data-i18n="b_htmlentity_sub">HTML 특수문자를 안전한 엔티티로 바꾸거나 되돌립니다. 코드를 글에 그대로 보여줄 때 태그가 깨지지 않게 해 줍니다.</p>
 
   <div class="card">
-    <label for="input" style="font-weight:700;font-size:.85rem;">입력</label>
+    <label for="input" style="font-weight:700;font-size:.85rem;" data-i18n="b_htmlentity_label_input">입력</label>
     <textarea id="input">&lt;div class="box"&gt;안녕 &amp; 환영&lt;/div&gt;</textarea>
-    <div class="opts"><label><input type="checkbox" id="all"/> 모든 비ASCII 문자도 인코딩(숫자 엔티티)</label></div>
+    <div class="opts"><label><input type="checkbox" id="all"/> <span data-i18n="b_htmlentity_opt_all">모든 비ASCII 문자도 인코딩(숫자 엔티티)</span></label></div>
     <div class="actions">
-      <button class="btn" id="enc" type="button">인코딩 ↓</button>
-      <button class="btn" id="dec" type="button">디코딩 ↓</button>
-      <button class="btn btn-ghost" id="swap" type="button">⇅ 입력↔출력</button>
-      <button class="btn btn-ghost" id="copy" type="button">📋 복사</button>
+      <button class="btn" id="enc" type="button" data-i18n="b_htmlentity_btn_enc">인코딩 ↓</button>
+      <button class="btn" id="dec" type="button" data-i18n="b_htmlentity_btn_dec">디코딩 ↓</button>
+      <button class="btn btn-ghost" id="swap" type="button" data-i18n="b_htmlentity_btn_swap">⇅ 입력↔출력</button>
+      <button class="btn btn-ghost" id="copy" type="button" data-i18n="b_htmlentity_btn_copy">📋 복사</button>
     </div>
     <div class="arrow">↓</div>
-    <label for="out" style="font-weight:700;font-size:.85rem;">결과</label>
+    <label for="out" style="font-weight:700;font-size:.85rem;" data-i18n="b_htmlentity_label_output">결과</label>
     <textarea id="out" readonly></textarea>
-    <div class="note">기본 인코딩은 <code>&amp; &lt; &gt; " '</code>를 엔티티로 바꿉니다. 옵션을 켜면 한글 등 비ASCII 문자도 숫자 엔티티(&amp;#xxxx;)로 변환합니다. 디코딩은 명명·숫자 엔티티를 모두 원래 문자로 되돌립니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_htmlentity_note">기본 인코딩은 <code>&amp; &lt; &gt; " '</code>를 엔티티로 바꿉니다. 옵션을 켜면 한글 등 비ASCII 문자도 숫자 엔티티(&amp;#xxxx;)로 변환합니다. 디코딩은 명명·숫자 엔티티를 모두 원래 문자로 되돌립니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -83,7 +83,7 @@
   $('enc').addEventListener('click', function(){ $('out').value=encode($('input').value, $('all').checked); });
   $('dec').addEventListener('click', function(){ $('out').value=decode($('input').value); });
   $('swap').addEventListener('click', function(){ $('input').value=$('out').value; $('out').value=''; });
-  $('copy').addEventListener('click', function(){ if($('out').value) navigator.clipboard.writeText($('out').value).then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click', function(){ if($('out').value) navigator.clipboard.writeText($('out').value).then(function(){toast(t('b_htmlentity_toast_copied'));}); });
   $('dec').click();
 </script>
 </body>

@@ -61,29 +61,33 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>지뢰찾기</h1>
-  <p class="sub">숫자는 주변 8칸의 지뢰 개수입니다. 추리해서 지뢰가 아닌 칸을 모두 여세요.</p>
+  <h1 data-i18n="b_minesweeper_title">지뢰찾기</h1>
+  <p class="sub" data-i18n="b_minesweeper_sub">숫자는 주변 8칸의 지뢰 개수입니다. 추리해서 지뢰가 아닌 칸을 모두 여세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li>칸을 클릭(터치)하면 열립니다. 첫 클릭은 항상 안전합니다</li>
-    <li>지뢰가 의심되면 깃발: PC는 <b>우클릭</b>, 모바일은 <b>🚩 깃발 모드</b>를 켜고 탭</li>
-    <li>지뢰를 누르면 끝, 지뢰 아닌 칸을 모두 열면 승리!</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_minesweeper_howto_title">조작법</b><ol>
+    <li data-i18n="b_minesweeper_howto1">칸을 클릭(터치)하면 열립니다. 첫 클릭은 항상 안전합니다</li>
+    <li data-i18n-html="b_minesweeper_howto2">지뢰가 의심되면 깃발: PC는 <b>우클릭</b>, 모바일은 <b>🚩 깃발 모드</b>를 켜고 탭</li>
+    <li data-i18n="b_minesweeper_howto3">지뢰를 누르면 끝, 지뢰 아닌 칸을 모두 열면 승리!</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
       <div class="left">
-        <select id="level"><option value="9,9,10">쉬움 9×9 (10)</option><option value="12,12,24" selected>보통 12×12 (24)</option><option value="14,14,45">어려움 14×14 (45)</option></select>
-        <button class="flagbtn" id="flagmode" type="button">🚩 깃발 모드</button>
+        <select id="level">
+          <option value="9,9,10" data-i18n="b_minesweeper_level_easy">쉬움 9×9 (10)</option>
+          <option value="12,12,24" selected data-i18n="b_minesweeper_level_normal">보통 12×12 (24)</option>
+          <option value="14,14,45" data-i18n="b_minesweeper_level_hard">어려움 14×14 (45)</option>
+        </select>
+        <button class="flagbtn" id="flagmode" type="button" data-i18n="b_minesweeper_flagmode">🚩 깃발 모드</button>
       </div>
       <div class="scores">
-        <div class="sbox"><div class="l">지뢰</div><div class="v" id="mines">0</div></div>
-        <div class="sbox"><div class="l">시간</div><div class="v" id="time">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_minesweeper_label_mines">지뢰</div><div class="v" id="mines">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_minesweeper_label_time">시간</div><div class="v" id="time">0</div></div>
       </div>
     </div>
     <div class="wrap-ms"><div class="ms" id="ms"></div></div>
     <div class="msg" id="msg"></div>
-    <div class="note">모든 진행은 브라우저에서만 이루어집니다. 데이터는 전송되지 않습니다.</div>
+    <div class="note" data-i18n="b_minesweeper_note">모든 진행은 브라우저에서만 이루어집니다. 데이터는 전송되지 않습니다.</div>
   </div>
 </div>
 
@@ -123,8 +127,8 @@
     if(revealed===cells.length-M && !over){ win(); }
   }
   function toggleFlag(i){ var cell=cells[i]; if(cell.rev||over) return; cell.flag=!cell.flag; cell.el.textContent=cell.flag?'🚩':''; flags+=cell.flag?1:-1; $('mines').textContent=M-flags; }
-  function lose(){ over=true; stopTimer(); cells.forEach(function(c){ if(c.mine&&!c.rev){ c.el.textContent='💣'; c.el.classList.add('rev'); } }); $('msg').textContent='💥 지뢰! 다시 시도하세요'; }
-  function win(){ over=true; won=true; stopTimer(); cells.forEach(function(c){ if(c.mine&&!c.flag){ c.el.textContent='🚩'; } }); $('msg').textContent='🎉 클리어! '+sec+'초'; }
+  function lose(){ over=true; stopTimer(); cells.forEach(function(c){ if(c.mine&&!c.rev){ c.el.textContent='💣'; c.el.classList.add('rev'); } }); $('msg').textContent=t('b_minesweeper_msg_lose'); }
+  function win(){ over=true; won=true; stopTimer(); cells.forEach(function(c){ if(c.mine&&!c.flag){ c.el.textContent='🚩'; } }); $('msg').textContent=t('b_minesweeper_msg_win').replace('{sec}',sec); }
 
   msEl.addEventListener('click', function(e){ var b=e.target.closest('.ms-c'); if(!b) return; var i=idx(+b.dataset.r,+b.dataset.c);
     if(!started){ started=true; place(i); startTimer(); }

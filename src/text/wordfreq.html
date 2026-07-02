@@ -60,34 +60,34 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:760px;">
-  <h1>단어 빈도 분석기</h1>
-  <p class="sub">글에서 어떤 단어가 자주 쓰였는지 세어 빈도순으로 보여 줍니다. 글쓰기 점검·키워드 분석에 좋아요.</p>
+  <h1 data-i18n="b_wordfreq_title">단어 빈도 분석기</h1>
+  <p class="sub" data-i18n="b_wordfreq_sub">글에서 어떤 단어가 자주 쓰였는지 세어 빈도순으로 보여 줍니다. 글쓰기 점검·키워드 분석에 좋아요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>분석할 글을 붙여넣습니다</li>
-    <li>최소 글자수·불용어 제외 등을 조절하면 표가 갱신됩니다</li>
-    <li>‘CSV 복사/다운로드’로 결과를 가져갈 수 있어요</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_wordfreq_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_wordfreq_howto_1">분석할 글을 붙여넣습니다</li>
+    <li data-i18n="b_wordfreq_howto_2">최소 글자수·불용어 제외 등을 조절하면 표가 갱신됩니다</li>
+    <li data-i18n="b_wordfreq_howto_3">'CSV 복사/다운로드'로 결과를 가져갈 수 있어요</li>
   </ol></div></div>
 
   <div class="card">
     <textarea id="input">분석은 글의 단어를 세는 일입니다. 단어 빈도 분석은 글쓰기에 도움이 됩니다. 같은 단어를 너무 자주 쓰면 글이 단조로워집니다. 분석 결과로 단어 사용을 점검하세요.</textarea>
     <div class="opts">
-      <label>최소 글자수 <input id="minlen" type="number" min="1" max="10" value="2"/></label>
-      <label><input type="checkbox" id="stop" checked/> 흔한 조사·불용어 제외</label>
-      <label><input type="checkbox" id="lower" checked/> 영문 대소문자 통합</label>
-      <label>상위 <select id="top"><option value="50">50</option><option value="100">100</option><option value="0">전체</option></select></label>
+      <label><span data-i18n="b_wordfreq_opt_minlen">최소 글자수</span> <input id="minlen" type="number" min="1" max="10" value="2"/></label>
+      <label><input type="checkbox" id="stop" checked/> <span data-i18n="b_wordfreq_opt_stop">흔한 조사·불용어 제외</span></label>
+      <label><input type="checkbox" id="lower" checked/> <span data-i18n="b_wordfreq_opt_lower">영문 대소문자 통합</span></label>
+      <label><span data-i18n="b_wordfreq_opt_top">상위</span> <select id="top"><option value="50">50</option><option value="100">100</option><option value="0" data-i18n="b_wordfreq_opt_all">전체</option></select></label>
     </div>
     <div class="stat">
-      <div class="sbox"><div class="l">전체 단어</div><div class="v" id="totalW">0</div></div>
-      <div class="sbox"><div class="l">고유 단어</div><div class="v" id="uniqW">0</div></div>
-      <div class="sbox"><div class="l">글자수</div><div class="v" id="chars">0</div></div>
+      <div class="sbox"><div class="l" data-i18n="b_wordfreq_stat_total">전체 단어</div><div class="v" id="totalW">0</div></div>
+      <div class="sbox"><div class="l" data-i18n="b_wordfreq_stat_uniq">고유 단어</div><div class="v" id="uniqW">0</div></div>
+      <div class="sbox"><div class="l" data-i18n="b_wordfreq_stat_chars">글자수</div><div class="v" id="chars">0</div></div>
     </div>
     <div class="actions">
-      <button class="btn btn-ghost" id="copy" type="button">📋 CSV 복사</button>
-      <button class="btn btn-ghost" id="dl" type="button">⬇️ CSV 다운로드</button>
+      <button class="btn btn-ghost" id="copy" type="button" data-i18n="b_wordfreq_btn_copy">📋 CSV 복사</button>
+      <button class="btn btn-ghost" id="dl" type="button" data-i18n="b_wordfreq_btn_dl">⬇️ CSV 다운로드</button>
     </div>
-    <div class="tblwrap"><table><thead><tr><th style="width:40px">#</th><th>단어</th><th class="n">횟수</th><th style="width:34%">비율</th></tr></thead><tbody id="tbody"></tbody></table></div>
-    <div class="note">단어는 공백·문장부호 기준으로 나눕니다(한국어는 형태소 분석이 아니라 어절 단위 근사). 불용어 제외는 자주 쓰는 조사·접속사 일부를 거릅니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="tblwrap"><table><thead><tr><th style="width:40px">#</th><th data-i18n="b_wordfreq_th_word">단어</th><th class="n" data-i18n="b_wordfreq_th_count">횟수</th><th style="width:34%" data-i18n="b_wordfreq_th_ratio">비율</th></tr></thead><tbody id="tbody"></tbody></table></div>
+    <div class="note" data-i18n="b_wordfreq_note">단어는 공백·문장부호 기준으로 나눕니다(한국어는 형태소 분석이 아니라 어절 단위 근사). 불용어 제외는 자주 쓰는 조사·접속사 일부를 거릅니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -98,9 +98,9 @@
   var STOP={'은':1,'는':1,'이':1,'가':1,'을':1,'를':1,'의':1,'에':1,'에서':1,'으로':1,'로':1,'와':1,'과':1,'도':1,'만':1,'고':1,'며':1,'하다':1,'있다':1,'그리고':1,'그러나':1,'하지만':1,'또는':1,'the':1,'a':1,'an':1,'and':1,'or':1,'of':1,'to':1,'in':1,'is':1,'are':1,'for':1,'on':1,'with':1,'it':1,'this':1,'that':1};
   var rows=[];
   function analyze(){
-    var t=$('input').value, minlen=parseInt($('minlen').value,10)||1, useStop=$('stop').checked, low=$('lower').checked;
-    $('chars').textContent=t.length.toLocaleString();
-    var toks=t.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+    var tmp=$('input').value, minlen=parseInt($('minlen').value,10)||1, useStop=$('stop').checked, low=$('lower').checked;
+    $('chars').textContent=tmp.length.toLocaleString();
+    var toks=tmp.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
     var total=toks.length, map={};
     for(var i=0;i<toks.length;i++){ var w=toks[i]; if(low && /^[A-Za-z]+$/.test(w)) w=w.toLowerCase();
       if(w.length<minlen) continue; if(useStop && STOP[w]) continue;
@@ -111,14 +111,15 @@
     var max=show.length?show[0][1]:1;
     $('tbody').innerHTML=show.map(function(r,i){ var pct=Math.round(r[1]/max*100);
       return '<tr><td class="n">'+(i+1)+'</td><td>'+esc(r[0])+'</td><td class="n">'+r[1]+'</td><td><div class="bar" style="width:'+pct+'%"></div></td></tr>'; }).join('')
-      || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1rem">분석할 단어가 없습니다</td></tr>';
+      || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1rem">'+t('b_wordfreq_empty')+'</td></tr>';
   }
   function esc(s){ return String(s).replace(/[&<>]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]);}); }
-  function csv(){ return '단어,횟수\n'+rows.map(function(r){ var w=/[",\n]/.test(r[0])?'"'+r[0].replace(/"/g,'""')+'"':r[0]; return w+','+r[1]; }).join('\n'); }
+  function csv(){ return t('b_wordfreq_csv_header')+'\n'+rows.map(function(r){ var w=/[",\n]/.test(r[0])?'"'+r[0].replace(/"/g,'""')+'"':r[0]; return w+','+r[1]; }).join('\n'); }
   ['input','minlen','stop','lower','top'].forEach(function(id){ $(id).addEventListener('input',analyze); $(id).addEventListener('change',analyze); });
-  $('copy').addEventListener('click',function(){ if(rows.length) navigator.clipboard.writeText(csv()).then(function(){toast('CSV 복사됨');}); });
-  $('dl').addEventListener('click',function(){ if(!rows.length){toast('데이터가 없어요');return;} var blob=new Blob(['﻿'+csv()],{type:'text/csv;charset=utf-8'});
+  $('copy').addEventListener('click',function(){ if(rows.length) navigator.clipboard.writeText(csv()).then(function(){toast(t('b_wordfreq_toast_copied'));}); });
+  $('dl').addEventListener('click',function(){ if(!rows.length){toast(t('b_wordfreq_toast_nodata'));return;} var blob=new Blob(['﻿'+csv()],{type:'text/csv;charset=utf-8'});
     var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='wordfreq.csv'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); });
+  window.onI18n=analyze;
   analyze();
 </script>
 </body>

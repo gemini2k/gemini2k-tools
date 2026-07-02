@@ -60,30 +60,30 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>퍼센트 계산기</h1>
-  <p class="sub">비율·증감률·할인·인상을 네 가지 방식으로 바로 계산합니다. 숫자를 입력하면 즉시 결과가 나옵니다.</p>
+  <h1 data-i18n="pct.h1">퍼센트 계산기</h1>
+  <p class="sub" data-i18n="pct.sub">비율·증감률·할인·인상을 네 가지 방식으로 바로 계산합니다. 숫자를 입력하면 즉시 결과가 나옵니다.</p>
 
   <div class="card">
     <div class="pcard">
-      <h3>① A는 B의 몇 %인가</h3>
-      <div class="pline"><input id="a1" type="number" value="30"/> 는 <input id="b1" type="number" value="200"/> 의 <span class="eq">=</span> <span class="out" id="o1">15%</span></div>
+      <h3 data-i18n="pct.q1">① A는 B의 몇 %인가</h3>
+      <div class="pline"><input id="a1" type="number" value="30"/> <span data-i18n="pct.c1a">는</span> <input id="b1" type="number" value="200"/> <span data-i18n="pct.c1b">의</span> <span class="eq">=</span> <span class="out" id="o1">15%</span></div>
     </div>
     <div class="pcard">
-      <h3>② B의 A%는 얼마인가</h3>
-      <div class="pline"><input id="a2" type="number" value="15"/> % 의 <input id="b2" type="number" value="200"/> <span class="eq">=</span> <span class="out" id="o2">30</span></div>
+      <h3 data-i18n="pct.q2">② B의 A%는 얼마인가</h3>
+      <div class="pline"><input id="a2" type="number" value="15"/> <span data-i18n="pct.c2">% 의</span> <input id="b2" type="number" value="200"/> <span class="eq">=</span> <span class="out" id="o2">30</span></div>
     </div>
     <div class="pcard">
-      <h3>③ A에서 B로 몇 % 증감</h3>
-      <div class="pline"><input id="a3" type="number" value="200"/> 에서 <input id="b3" type="number" value="260"/> 로 <span class="eq">=</span> <span class="out" id="o3">+30%</span></div>
+      <h3 data-i18n="pct.q3">③ A에서 B로 몇 % 증감</h3>
+      <div class="pline"><input id="a3" type="number" value="200"/> <span data-i18n="pct.c3a">에서</span> <input id="b3" type="number" value="260"/> <span data-i18n="pct.c3b">로</span> <span class="eq">=</span> <span class="out" id="o3">+30%</span></div>
     </div>
     <div class="pcard">
-      <h3>④ A를 N% 증가/감소</h3>
-      <div class="pline"><input id="a4" type="number" value="200"/> 를
+      <h3 data-i18n="pct.q4">④ A를 N% 증가/감소</h3>
+      <div class="pline"><input id="a4" type="number" value="200"/> <span data-i18n="pct.c4">를</span>
         <input id="n4" type="number" value="10"/> %
-        <select id="m4"><option value="up">증가</option><option value="down">감소</option></select>
+        <select id="m4"><option value="up" data-i18n="pct.up">증가</option><option value="down" data-i18n="pct.down">감소</option></select>
         <span class="eq">=</span> <span class="out" id="o4">220</span></div>
     </div>
-    <div class="note">
+    <div class="note" data-i18n="pct.note">
       ③ 증감률은 (B−A)÷A×100, 양수면 증가(+) 음수면 감소(−)입니다. ④는 할인가(감소)·인상가(증가) 계산에 쓰세요. 소수점은 둘째 자리까지 반올림해 보여 줍니다. 모든 계산은 브라우저에서 이루어집니다.
     </div>
   </div>
@@ -93,7 +93,8 @@
 <script>
   var $ = function(id){ return document.getElementById(id); };
   function n(id){ var v=parseFloat($(id).value); return isFinite(v)?v:0; }
-  function r2(x){ return (Math.round(x*100)/100).toLocaleString('ko-KR'); }
+  function loc(){ var l=window.curLang?curLang():'ko'; return {ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[l]||'ko-KR'; }
+  function r2(x){ return (Math.round(x*100)/100).toLocaleString(loc()); }
   function calc(){
     var b1=n('b1'); $('o1').textContent = (b1? r2(n('a1')/b1*100):0) + '%';
     $('o2').textContent = r2(n('b2')*n('a2')/100);
@@ -101,6 +102,7 @@
     var f = $('m4').value==='up' ? 1+n('n4')/100 : 1-n('n4')/100; $('o4').textContent = r2(n('a4')*f);
   }
   ['a1','b1','a2','b2','a3','b3','a4','n4','m4'].forEach(function(id){ $(id).addEventListener('input', calc); });
+  window.onI18n = calc;   // 언어 전환 시 숫자 포맷(locale) 갱신
   calc();
 </script>
 </body>

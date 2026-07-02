@@ -58,30 +58,30 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:820px;">
-  <h1>스크린샷 꾸미기</h1>
-  <p class="sub">밋밋한 스크린샷에 배경 여백·둥근 모서리·그림자를 더해 발표나 SNS에 어울리는 이미지로 만듭니다.</p>
+  <h1 data-i18n="b_imgframe_title">스크린샷 꾸미기</h1>
+  <p class="sub" data-i18n="b_imgframe_sub">밋밋한 스크린샷에 배경 여백·둥근 모서리·그림자를 더해 발표나 SNS에 어울리는 이미지로 만듭니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>스크린샷을 끌어다 놓거나 클릭해 올립니다</li>
-    <li>배경·여백·모서리·그림자를 조절합니다</li>
-    <li>‘PNG 다운로드’로 저장합니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_imgframe_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_imgframe_howto_step1">스크린샷을 끌어다 놓거나 클릭해 올립니다</li>
+    <li data-i18n="b_imgframe_howto_step2">배경·여백·모서리·그림자를 조절합니다</li>
+    <li data-i18n="b_imgframe_howto_step3">'PNG 다운로드'로 저장합니다</li>
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">🎀</div><div><strong>스크린샷을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG · WebP</div></div>
+    <div class="drop" id="drop"><div class="big">🎀</div><div><strong data-i18n="b_imgframe_drop_label">스크린샷을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;" data-i18n="b_imgframe_drop_hint">JPG · PNG · WebP</div></div>
     <input type="file" id="file" accept="image/*" class="hide"/>
     <div class="opts hide" id="opts">
       <div class="grid">
         <div class="swatches" id="swatches"></div>
-        <label>여백 <span id="padv" style="color:var(--accent)">8%</span><input id="pad" type="range" min="0" max="25" value="8"/></label>
-        <label>모서리 둥글기 <span id="radv" style="color:var(--accent)">2%</span><input id="rad" type="range" min="0" max="12" value="2"/></label>
-        <label>그림자 <span id="shv" style="color:var(--accent)">30</span><input id="sh" type="range" min="0" max="80" value="30"/></label>
-        <label>배경 종류 <select id="bgtype"><option value="grad">그라데이션</option><option value="solid">단색</option></select></label>
+        <label><span data-i18n="b_imgframe_label_pad">여백</span> <span id="padv" style="color:var(--accent)">8%</span><input id="pad" type="range" min="0" max="25" value="8"/></label>
+        <label><span data-i18n="b_imgframe_label_rad">모서리 둥글기</span> <span id="radv" style="color:var(--accent)">2%</span><input id="rad" type="range" min="0" max="12" value="2"/></label>
+        <label><span data-i18n="b_imgframe_label_sh">그림자</span> <span id="shv" style="color:var(--accent)">30</span><input id="sh" type="range" min="0" max="80" value="30"/></label>
+        <label><span data-i18n="b_imgframe_label_bgtype">배경 종류</span> <select id="bgtype"><option value="grad" data-i18n="b_imgframe_opt_grad">그라데이션</option><option value="solid" data-i18n="b_imgframe_opt_solid">단색</option></select></label>
       </div>
-      <button class="btn" id="dl" type="button">⬇️ PNG 다운로드</button>
+      <button class="btn" id="dl" type="button" data-i18n="b_imgframe_btn_dl">⬇️ PNG 다운로드</button>
     </div>
     <div class="cvwrap hide" id="cvwrap"><canvas id="cv"></canvas></div>
-    <div class="note">여백은 원본 너비 기준 비율로 적용됩니다. 그림자와 둥근 모서리로 입체감을 줍니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
+    <div class="note" data-i18n="b_imgframe_note">여백은 원본 너비 기준 비율로 적용됩니다. 그림자와 둥근 모서리로 입체감을 줍니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 서버로 전송되지 않습니다.</div>
   </div>
 </div>
 

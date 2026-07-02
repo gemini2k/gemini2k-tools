@@ -55,27 +55,27 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:600px;">
-  <h1>3D 우주 비행</h1>
-  <p class="sub">우주선을 조종해 빛나는 링을 통과하고 소행성을 피하세요. 속도가 점점 빨라집니다!</p>
+  <h1 data-i18n="b_space3d_title">3D 우주 비행</h1>
+  <p class="sub" data-i18n="b_space3d_sub">우주선을 조종해 빛나는 링을 통과하고 소행성을 피하세요. 속도가 점점 빨라집니다!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li><b>방향키 / WASD</b> 또는 아래 버튼·화면 드래그로 우주선을 상하좌우로 움직입니다</li>
-    <li>파란 <b>링</b>을 통과하면 +10점, 갈색 <b>소행성</b>에 부딪히면 생명이 줄어요</li>
-    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_space3d_howto_title">조작법</b><ol>
+    <li data-i18n="b_space3d_howto1"><b>방향키 / WASD</b> 또는 아래 버튼·화면 드래그로 우주선을 상하좌우로 움직입니다</li>
+    <li data-i18n="b_space3d_howto2">파란 <b>링</b>을 통과하면 +10점, 갈색 <b>소행성</b>에 부딪히면 생명이 줄어요</li>
+    <li data-i18n="b_space3d_howto3"><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
       <div class="scores">
-        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
-        <div class="sbox"><div class="l">생명</div><div class="v" id="lives">3</div></div>
-        <div class="sbox"><div class="l">속도</div><div class="v" id="spd">1.0x</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_space3d_lbl_score">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_space3d_lbl_lives">생명</div><div class="v" id="lives">3</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_space3d_lbl_speed">속도</div><div class="v" id="spd">1.0x</div></div>
       </div>
-      <button class="btn btn-ghost" id="restart" type="button">다시 시작</button>
+      <button class="btn btn-ghost" id="restart" type="button" data-i18n="b_space3d_btn_restart">다시 시작</button>
     </div>
     <div class="g3d-wrap">
       <div class="g3d-stage" id="stage"></div>
-      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig">🚀 우주 비행</div><div class="sm" id="goverSm">링을 통과하고 소행성을 피하세요!</div><button class="btn" id="goverBtn" type="button">시작하기</button></div></div>
+      <div class="g3d-over" id="gover"><div><div class="big" id="goverBig">🚀 <span data-i18n="b_space3d_over_title_ready">우주 비행</span></div><div class="sm" id="goverSm" data-i18n="b_space3d_over_sm_ready">링을 통과하고 소행성을 피하세요!</div><button class="btn" id="goverBtn" type="button" data-i18n="b_space3d_btn_start">시작하기</button></div></div>
     </div>
     <div class="joy">
       <button class="j-up" data-d="u" aria-label="위">▲</button>
@@ -83,7 +83,7 @@
       <button class="j-down" data-d="d" aria-label="아래">▼</button>
       <button class="j-right" data-d="r" aria-label="오른쪽">▶</button>
     </div>
-    <div class="note">우주선은 자동으로 전진합니다. 좌우상하로 움직여 링을 통과하세요. Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_space3d_note">우주선은 자동으로 전진합니다. 좌우상하로 움직여 링을 통과하세요. Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -149,7 +149,7 @@
 
   function hit(){ lives--; $('lives').textContent=lives; if(lives<=0) lose(); }
   function begin(){ reset(); state='play'; $('gover').style.display='none'; }
-  function lose(){ state='over'; $('goverBig').textContent='💥 게임 오버'; $('goverSm').textContent='점수 '+score+' — 다시 도전해 보세요!'; $('goverBtn').textContent='다시 시작'; $('gover').style.display=''; }
+  function lose(){ state='over'; $('goverBig').textContent='💥 '+t('b_space3d_over_title_lose'); $('goverSm').textContent=t('b_space3d_over_sm_lose_pre')+score+t('b_space3d_over_sm_lose_post'); $('goverBtn').textContent=t('b_space3d_btn_restart'); $('gover').style.display=''; }
 
   var KEYMAP={ArrowUp:'u',ArrowDown:'d',ArrowLeft:'l',ArrowRight:'r',w:'u',s:'d',a:'l',d:'r',W:'u',S:'d',A:'l',D:'r'};
   document.addEventListener('keydown',function(e){ var k=KEYMAP[e.key]; if(k){ e.preventDefault(); keys[k]=true; } });
@@ -162,7 +162,7 @@
   T.dom.addEventListener('pointermove',function(e){ if(!origin)return; var dx=e.clientX-origin.x,dy=e.clientY-origin.y,th=12; keys.l=dx<-th;keys.r=dx>th;keys.u=dy<-th;keys.d=dy>th; });
   function de(){ origin=null; keys.l=keys.r=keys.u=keys.d=false; } T.dom.addEventListener('pointerup',de); T.dom.addEventListener('pointercancel',de);
   $('goverBtn').addEventListener('click',function(e){ e.stopPropagation(); begin(); });
-  $('restart').addEventListener('click',function(){ state='ready'; $('goverBig').textContent='🚀 우주 비행'; $('goverSm').textContent='링을 통과하고 소행성을 피하세요!'; $('goverBtn').textContent='시작하기'; $('gover').style.display=''; reset(); });
+  $('restart').addEventListener('click',function(){ state='ready'; $('goverBig').textContent='🚀 '+t('b_space3d_over_title_ready'); $('goverSm').textContent=t('b_space3d_over_sm_ready'); $('goverBtn').textContent=t('b_space3d_btn_start'); $('gover').style.display=''; reset(); });
   buildOnce(); reset();
 })();
 </script>

@@ -51,20 +51,20 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:820px;">
-  <h1>통계 분석기</h1>
-  <p class="sub">숫자 목록을 붙여넣으면 기술통계(평균·중앙값·표준편차·사분위수 등)와 히스토그램을 보여 줍니다.</p>
+  <h1 data-i18n="b_stats_title">통계 분석기</h1>
+  <p class="sub" data-i18n="b_stats_sub">숫자 목록을 붙여넣으면 기술통계(평균·중앙값·표준편차·사분위수 등)와 히스토그램을 보여 줍니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>숫자를 붙여넣습니다(줄바꿈·쉼표·공백 모두 구분자로 인식)</li>
-    <li>아래에 평균·표준편차·분위수 등 통계와 히스토그램이 자동 계산됩니다</li>
-    <li>표본/모집단 표준편차를 함께 표시합니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_stats_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_stats_howto_1">숫자를 붙여넣습니다(줄바꿈·쉼표·공백 모두 구분자로 인식)</li>
+    <li data-i18n="b_stats_howto_2">아래에 평균·표준편차·분위수 등 통계와 히스토그램이 자동 계산됩니다</li>
+    <li data-i18n="b_stats_howto_3">표본/모집단 표준편차를 함께 표시합니다</li>
   </ol></div></div>
 
   <div class="card">
     <textarea id="data">23, 45, 12, 67, 34, 89, 21, 45, 56, 78, 33, 45, 60, 28, 41</textarea>
     <div class="grid" id="grid"></div>
     <canvas id="cv" width="820" height="280"></canvas>
-    <div class="note">최빈값은 가장 자주 나온 값(여러 개면 모두), 사분위수는 Q1·Q2(중앙값)·Q3입니다. 표준편차/분산은 표본(n−1)과 모집단(n) 두 가지를 제공합니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_stats_note">최빈값은 가장 자주 나온 값(여러 개면 모두), 사분위수는 Q1·Q2(중앙값)·Q3입니다. 표준편차/분산은 표본(n−1)과 모집단(n) 두 가지를 제공합니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -74,19 +74,31 @@
   var cv=$('cv'), x=cv.getContext('2d'), W=820, H=280;
   function nums(){ return ($('data').value.match(/-?\d+(\.\d+)?/g)||[]).map(Number); }
   function quantile(s,q){ var pos=(s.length-1)*q, b=Math.floor(pos), r=pos-b; return s[b+1]!==undefined? s[b]+r*(s[b+1]-s[b]) : s[b]; }
-  function r2(v){ return (Math.round(v*1000)/1000).toLocaleString('ko-KR'); }
+  var localeMap={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'};
+  function r2(v){ var loc=localeMap[typeof curLang==='function'?curLang():'ko']||'ko-KR'; return (Math.round(v*1000)/1000).toLocaleString(loc); }
   function calc(){
-    var a=nums(); if(!a.length){ $('grid').innerHTML='<div class="stat"><div class="v">—</div><div class="l">데이터 없음</div></div>'; clearC(); return; }
+    var a=nums(); if(!a.length){ $('grid').innerHTML='<div class="stat"><div class="v">—</div><div class="l">'+t('b_stats_no_data')+'</div></div>'; clearC(); return; }
     var n=a.length, sum=a.reduce(function(p,c){return p+c;},0), mean=sum/n;
     var s=a.slice().sort(function(p,c){return p-c;});
     var med=quantile(s,0.5), q1=quantile(s,0.25), q3=quantile(s,0.75);
     var varP=a.reduce(function(p,c){return p+(c-mean)*(c-mean);},0)/n, varS=n>1?varP*n/(n-1):0;
     // 최빈값
     var freq={}; a.forEach(function(v){freq[v]=(freq[v]||0)+1;}); var mx=Math.max.apply(null,Object.keys(freq).map(function(k){return freq[k];}));
-    var modes=Object.keys(freq).filter(function(k){return freq[k]===mx;}); var mode = mx>1 ? (modes.length>3?modes.slice(0,3).join(', ')+'…':modes.join(', ')) : '없음';
-    var cards=[['개수',n],['합계',r2(sum)],['평균',r2(mean)],['중앙값',r2(med)],['최빈값',mode],
-      ['최소',r2(s[0])],['최대',r2(s[n-1])],['범위',r2(s[n-1]-s[0])],['Q1',r2(q1)],['Q3',r2(q3)],
-      ['표준편차(표본)',r2(Math.sqrt(varS))],['표준편차(모)',r2(Math.sqrt(varP))]];
+    var modes=Object.keys(freq).filter(function(k){return freq[k]===mx;}); var modeVal = mx>1 ? (modes.length>3?modes.slice(0,3).join(', ')+'…':modes.join(', ')) : t('b_stats_none');
+    var cards=[
+      [t('b_stats_card_count'),n],
+      [t('b_stats_card_sum'),r2(sum)],
+      [t('b_stats_card_mean'),r2(mean)],
+      [t('b_stats_card_median'),r2(med)],
+      [t('b_stats_card_mode'),modeVal],
+      [t('b_stats_card_min'),r2(s[0])],
+      [t('b_stats_card_max'),r2(s[n-1])],
+      [t('b_stats_card_range'),r2(s[n-1]-s[0])],
+      [t('b_stats_card_q1'),r2(q1)],
+      [t('b_stats_card_q3'),r2(q3)],
+      [t('b_stats_card_std_sample'),r2(Math.sqrt(varS))],
+      [t('b_stats_card_std_pop'),r2(Math.sqrt(varP))]
+    ];
     $('grid').innerHTML=cards.map(function(c){return '<div class="stat"><div class="v">'+c[1]+'</div><div class="l">'+c[0]+'</div></div>';}).join('');
     hist(a,s[0],s[n-1]);
   }
@@ -101,6 +113,7 @@
       if(counts[i]) { x.fillStyle='#16181f'; x.fillText(counts[i], bx+W0/bins/2, P.t+H0-h-5); } }
     x.fillStyle='#6b7280'; x.fillText(r2(mn), P.l, H-10); x.fillText(r2(mx), W-P.r, H-10);
   }
+  window.onI18n = calc;
   $('data').addEventListener('input', calc);
   calc();
 </script>

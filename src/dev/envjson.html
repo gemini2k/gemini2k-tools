@@ -29,20 +29,20 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:780px;">
-  <h1>.env ↔ JSON 변환기</h1>
-  <p class="sub">.env 환경변수 파일과 JSON을 서로 변환합니다.</p>
+  <h1 data-i18n="b_envjson_title">.env ↔ JSON 변환기</h1>
+  <p class="sub" data-i18n="b_envjson_sub">.env 환경변수 파일과 JSON을 서로 변환합니다.</p>
   <div class="card">
-    <div class="seg" id="seg"><button data-d="e2j" class="on" type="button">.env → JSON</button><button data-d="j2e" type="button">JSON → .env</button></div>
+    <div class="seg" id="seg"><button data-d="e2j" class="on" type="button" data-i18n="b_envjson_btn_e2j">.env → JSON</button><button data-d="j2e" type="button" data-i18n="b_envjson_btn_j2e">JSON → .env</button></div>
     <textarea id="in"># 예시 환경변수
 DB_HOST=localhost
 DB_PORT=5432
 API_KEY="se cret-123"
 DEBUG=true</textarea>
-    <div class="actions"><button class="btn" id="copy" type="button">📋 복사</button></div>
+    <div class="actions"><button class="btn" id="copy" type="button" data-i18n="b_envjson_copy">📋 복사</button></div>
     <div class="err" id="err"></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>
-    <div class="note">.env → JSON: KEY=VALUE 라인을 파싱하고 # 주석·빈 줄을 무시하며 따옴표를 제거합니다. JSON → .env: 값에 공백·특수문자가 있으면 따옴표로 감쌉니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_envjson_note">.env → JSON: KEY=VALUE 라인을 파싱하고 # 주석·빈 줄을 무시하며 따옴표를 제거합니다. JSON → .env: 값에 공백·특수문자가 있으면 따옴표로 감쌉니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -50,8 +50,10 @@ DEBUG=true</textarea>
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
   var dir='e2j';
-  function e2j(s){ var o={}; s.split(/\r?\n/).forEach(function(line){ var t=line.trim(); if(!t||t[0]==='#')return;
-    var m=t.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/); if(!m)return; var v=m[2].trim();
+  var envExample_e2j='# 예시 환경변수\nDB_HOST=localhost\nDB_PORT=5432\nAPI_KEY="se cret-123"\nDEBUG=true';
+  var envExample_j2e='{\n  "DB_HOST": "localhost",\n  "DB_PORT": "5432",\n  "DEBUG": true\n}';
+  function e2j(s){ var o={}; s.split(/\r?\n/).forEach(function(line){ var tmp=line.trim(); if(!tmp||tmp[0]==='#')return;
+    var m=tmp.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/); if(!m)return; var v=m[2].trim();
     if((v[0]==='"'&&v.slice(-1)==='"')||(v[0]==="'"&&v.slice(-1)==="'")) v=v.slice(1,-1);
     o[m[1]]=v; }); return JSON.stringify(o,null,2); }
   function j2e(s){ var o=JSON.parse(s); return Object.keys(o).map(function(k){ var v=o[k]; if(v===null)v='';
@@ -59,9 +61,13 @@ DEBUG=true</textarea>
   function run(){ $('err').textContent=''; try{ $('out').textContent = dir==='e2j'? e2j($('in').value) : j2e($('in').value); }
     catch(e){ $('out').textContent=''; $('err').textContent='⚠️ '+e.message; } }
   $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;dir=b.dataset.d;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
-    $('in').value = dir==='e2j'?'# 예시 환경변수\nDB_HOST=localhost\nDB_PORT=5432\nAPI_KEY="se cret-123"\nDEBUG=true':'{\n  "DB_HOST": "localhost",\n  "DB_PORT": "5432",\n  "DEBUG": true\n}';run();});
+    $('in').value = dir==='e2j'? envExample_e2j : envExample_j2e; run();});
   $('in').addEventListener('input',run);
-  $('copy').addEventListener('click',function(){if($('out').textContent)navigator.clipboard.writeText($('out').textContent).then(function(){toast('복사됐습니다');});});
+  $('copy').addEventListener('click',function(){if($('out').textContent)navigator.clipboard.writeText($('out').textContent).then(function(){toast(t('b_envjson_copied'));});});
+  window.onI18n=function(){
+    if(dir==='e2j'){$('in').value=envExample_e2j;}else{$('in').value=envExample_j2e;}
+    run();
+  };
   run();
 </script>
 </body>

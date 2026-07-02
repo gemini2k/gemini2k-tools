@@ -56,59 +56,63 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:520px;">
-  <h1>할인 계산기</h1>
-  <p class="sub">정가와 할인율로 실제 낼 금액과 얼마를 아끼는지 알려 줍니다. 추가 할인·할인율 역산도 가능해요.</p>
+  <h1 data-i18n="b_discount_h1">할인 계산기</h1>
+  <p class="sub" data-i18n="b_discount_sub">정가와 할인율로 실제 낼 금액과 얼마를 아끼는지 알려 줍니다. 추가 할인·할인율 역산도 가능해요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>모드를 고릅니다 — 할인가 계산 / 할인율 역산</li>
-    <li>금액과 할인율(또는 추가 할인·쿠폰)을 입력합니다</li>
-    <li>최종 가격과 절약 금액이 바로 계산됩니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_discount_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_discount_howto1">모드를 고릅니다 — 할인가 계산 / 할인율 역산</li>
+    <li data-i18n="b_discount_howto2">금액과 할인율(또는 추가 할인·쿠폰)을 입력합니다</li>
+    <li data-i18n="b_discount_howto3">최종 가격과 절약 금액이 바로 계산됩니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="seg" id="seg">
-      <button data-m="price" class="on" type="button">할인가 계산</button>
-      <button data-m="rate" type="button">할인율 역산</button>
+      <button data-m="price" class="on" type="button" data-i18n="b_discount_mode_price">할인가 계산</button>
+      <button data-m="rate" type="button" data-i18n="b_discount_mode_rate">할인율 역산</button>
     </div>
 
     <div id="m-price">
-      <div class="fld"><label for="orig">정가 (원)</label><input id="orig" type="number" min="0" value="50000" inputmode="numeric"/></div>
-      <div class="fld"><label for="rate1">할인율 (%)</label><input id="rate1" type="number" min="0" max="100" value="30" inputmode="decimal"/></div>
-      <div class="fld"><label for="rate2">추가 할인 (%) — 선택</label><input id="rate2" type="number" min="0" max="100" value="0" inputmode="decimal"/></div>
-      <div class="fld"><label for="coupon">쿠폰 정액 할인 (원) — 선택</label><input id="coupon" type="number" min="0" value="0" inputmode="numeric"/></div>
-      <div class="big"><div class="n" id="finalP">-</div><div class="u">최종 가격</div></div>
+      <div class="fld"><label for="orig" data-i18n="b_discount_lbl_orig">정가 (원)</label><input id="orig" type="number" min="0" value="50000" inputmode="numeric"/></div>
+      <div class="fld"><label for="rate1" data-i18n="b_discount_lbl_rate1">할인율 (%)</label><input id="rate1" type="number" min="0" max="100" value="30" inputmode="decimal"/></div>
+      <div class="fld"><label for="rate2" data-i18n="b_discount_lbl_rate2">추가 할인 (%) — 선택</label><input id="rate2" type="number" min="0" max="100" value="0" inputmode="decimal"/></div>
+      <div class="fld"><label for="coupon" data-i18n="b_discount_lbl_coupon">쿠폰 정액 할인 (원) — 선택</label><input id="coupon" type="number" min="0" value="0" inputmode="numeric"/></div>
+      <div class="big"><div class="n" id="finalP">-</div><div class="u" data-i18n="b_discount_res_final">최종 가격</div></div>
       <div class="lines">
-        <div class="r"><span>절약 금액</span><span class="save" id="saveAmt">-</span></div>
-        <div class="r"><span>총 할인율</span><span id="effRate">-</span></div>
+        <div class="r"><span data-i18n="b_discount_res_save">절약 금액</span><span class="save" id="saveAmt">-</span></div>
+        <div class="r"><span data-i18n="b_discount_res_effrate">총 할인율</span><span id="effRate">-</span></div>
       </div>
     </div>
 
     <div id="m-rate" class="hide">
-      <div class="fld"><label for="origR">정가 (원)</label><input id="origR" type="number" min="0" value="50000" inputmode="numeric"/></div>
-      <div class="fld"><label for="saleR">할인가 (원)</label><input id="saleR" type="number" min="0" value="35000" inputmode="numeric"/></div>
-      <div class="big"><div class="n" id="outRate">-</div><div class="u">할인율</div></div>
-      <div class="lines"><div class="r"><span>절약 금액</span><span class="save" id="saveR">-</span></div></div>
+      <div class="fld"><label for="origR" data-i18n="b_discount_lbl_orig">정가 (원)</label><input id="origR" type="number" min="0" value="50000" inputmode="numeric"/></div>
+      <div class="fld"><label for="saleR" data-i18n="b_discount_lbl_sale">할인가 (원)</label><input id="saleR" type="number" min="0" value="35000" inputmode="numeric"/></div>
+      <div class="big"><div class="n" id="outRate">-</div><div class="u" data-i18n="b_discount_res_rate">할인율</div></div>
+      <div class="lines"><div class="r"><span data-i18n="b_discount_res_save">절약 금액</span><span class="save" id="saveR">-</span></div></div>
     </div>
 
-    <div class="note">총 할인율은 정가 대비 최종 가격으로 계산합니다. 이중 할인은 ‘할인 후 다시 추가 할인’ 방식(곱연산)이며, 쿠폰 정액 할인은 마지막에 차감합니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_discount_note">총 할인율은 정가 대비 최종 가격으로 계산합니다. 이중 할인은 '할인 후 다시 추가 할인' 방식(곱연산)이며, 쿠폰 정액 할인은 마지막에 차감합니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
-  function won(n){ return Math.round(n).toLocaleString()+'원'; }
+  function wonFmt(n){
+    var locale={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[typeof curLang==='function'?curLang():'ko']||'ko-KR';
+    var unit=t('b_discount_unit_won');
+    return Math.round(n).toLocaleString(locale)+unit;
+  }
   function calcPrice(){
     var o=+$('orig').value||0, r1=+$('rate1').value||0, r2=+$('rate2').value||0, c=+$('coupon').value||0;
     var p=o*(1-r1/100)*(1-r2/100)-c; if(p<0)p=0;
-    $('finalP').textContent=won(p);
-    $('saveAmt').textContent=won(o-p);
+    $('finalP').textContent=wonFmt(p);
+    $('saveAmt').textContent=wonFmt(o-p);
     $('effRate').textContent= o>0? (Math.round((1-p/o)*1000)/10)+'%' : '-';
   }
   function calcRate(){
     var o=+$('origR').value||0, s=+$('saleR').value||0;
     if(o<=0){ $('outRate').textContent='-'; $('saveR').textContent='-'; return; }
-    var rate=(1-s/o)*100; $('outRate').textContent=(Math.round(rate*10)/10)+'%'; $('saveR').textContent=won(o-s);
+    var rate=(1-s/o)*100; $('outRate').textContent=(Math.round(rate*10)/10)+'%'; $('saveR').textContent=wonFmt(o-s);
   }
   $('seg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; var m=b.dataset.m;
     Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
@@ -117,6 +121,7 @@
   ['orig','rate1','rate2','coupon'].forEach(function(id){ $(id).addEventListener('input',calcPrice); });
   ['origR','saleR'].forEach(function(id){ $(id).addEventListener('input',calcRate); });
   calcPrice();
+  window.onI18n=function(){ calcPrice(); if(!$('m-rate').classList.contains('hide'))calcRate(); };
 </script>
 </body>
 </html>

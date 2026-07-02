@@ -55,26 +55,26 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>3D 미로 찾기</h1>
-  <p class="sub">공을 굴려 미로를 빠져나가 초록색 목표 지점에 도착하세요. 단계가 오를수록 미로가 커집니다.</p>
+  <h1 data-i18n="b_maze3d_title">3D 미로 찾기</h1>
+  <p class="sub" data-i18n="b_maze3d_sub">공을 굴려 미로를 빠져나가 초록색 목표 지점에 도착하세요. 단계가 오를수록 미로가 커집니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li>방향키(↑↓←→), 아래 방향 버튼, 또는 화면 스와이프로 공을 굴립니다</li>
-    <li>벽은 통과할 수 없어요 — 길을 따라 초록 목표까지 가세요</li>
-    <li><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지할 수 있어요</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_maze3d_howto_title">조작법</b><ol>
+    <li data-i18n="b_maze3d_howto1">방향키(↑↓←→), 아래 방향 버튼, 또는 화면 스와이프로 공을 굴립니다</li>
+    <li data-i18n="b_maze3d_howto2">벽은 통과할 수 없어요 — 길을 따라 초록 목표까지 가세요</li>
+    <li data-i18n-html="b_maze3d_howto3"><b>Space/P</b> 또는 ⏸ 버튼으로 일시정지할 수 있어요</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
       <div class="scores">
-        <div class="sbox"><div class="l">단계</div><div class="v" id="level">1</div></div>
-        <div class="sbox"><div class="l">이동</div><div class="v" id="moves">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_maze3d_lbl_level">단계</div><div class="v" id="level">1</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_maze3d_lbl_moves">이동</div><div class="v" id="moves">0</div></div>
       </div>
-      <button class="btn btn-ghost" id="newgame" type="button">새 미로</button>
+      <button class="btn btn-ghost" id="newgame" type="button" data-i18n="b_maze3d_btn_new">새 미로</button>
     </div>
     <div class="g3d-wrap">
       <div class="g3d-stage" id="stage"></div>
-      <div class="g3d-over" id="gover" style="display:none;"><div><div class="big" id="goverBig">🎉 탈출 성공!</div><div class="sm" id="goverSm"></div><button class="btn" id="goverBtn" type="button">다음 미로</button></div></div>
+      <div class="g3d-over" id="gover" style="display:none;"><div><div class="big" id="goverBig" data-i18n="b_maze3d_win_big">🎉 탈출 성공!</div><div class="sm" id="goverSm"></div><button class="btn" id="goverBtn" type="button" data-i18n="b_maze3d_btn_next">다음 미로</button></div></div>
     </div>
     <div class="dpad">
       <button class="d-up" data-d="u" aria-label="위">▲</button>
@@ -82,7 +82,7 @@
       <button class="d-down" data-d="d" aria-label="아래">▼</button>
       <button class="d-right" data-d="r" aria-label="오른쪽">▶</button>
     </div>
-    <div class="note">미로는 매번 무작위로 생성됩니다. Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_maze3d_note">미로는 매번 무작위로 생성됩니다. Three.js 3D 그래픽을 사용하며, 3D 미지원 환경에서는 안내 메시지가 표시됩니다. 진행은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -138,7 +138,8 @@
     row=nr; col=nc; moves++; $('moves').textContent=moves;
     fromV.copy(ball.position); toV.copy(world(col,row,0.34)); mp=0; moving=true;
   }
-  function win(){ over=true; level++; $('goverSm').textContent='단계 '+(level-1)+' · '+moves+'번 이동'; $('gover').style.display=''; if(N<10) N++; }
+  function win(){ over=true; level++; $('goverSm').textContent=t('b_maze3d_win_sm').replace('{lv}',level-1).replace('{mv}',moves); $('gover').style.display=''; if(N<10) N++; }
+  window.onI18n=function(){ if(over){ $('goverSm').textContent=t('b_maze3d_win_sm').replace('{lv}',level-1).replace('{mv}',moves); } };
 
   T.start(function(dt){
     if(moving){ mp+=dt*6.5; if(mp>=1){ mp=1; moving=false; } ball.position.lerpVectors(fromV,toV,mp);

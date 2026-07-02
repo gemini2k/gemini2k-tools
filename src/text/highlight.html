@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>키워드 하이라이터 (텍스트 강조) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="긴 글에서 원하는 키워드를 찾아 형광펜처럼 강조하고 일치 개수를 셉니다. 여러 단어·대소문자 옵션. 검토·교정에. mark.js 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/highlight.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="키워드 하이라이터 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="글에서 키워드를 형광펜처럼 강조·카운트(mark.js). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/highlight.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:150px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-size:.95rem;color:var(--text);resize:vertical;line-height:1.7;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.6rem 0;}input[type=text]{flex:1;min-width:180px;padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.9rem;line-height:1.9;white-space:pre-wrap;word-break:break-word;}
+.out mark{background:#fde047;color:#111;border-radius:3px;padding:0 1px;}
+.cnt{font-size:.88rem;color:var(--muted);margin:.4rem 0;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"키워드 하이라이터","description":"글에서 키워드를 강조하고 개수를 셉니다(mark.js).","url":"https://gemini2k.co.kr/highlight.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:780px;">
+  <h1 data-i18n="b_highlight_title">키워드 하이라이터</h1>
+  <p class="sub" data-i18n="b_highlight_sub">긴 글에서 원하는 단어를 형광펜처럼 강조하고 몇 번 나오는지 세어 줍니다.</p>
+  <div class="card">
+    <textarea id="in" data-i18n-ph="b_highlight_input_ph">검색은 정보를 찾는 핵심 기능입니다. 좋은 검색은 빠르고 정확해야 하며, 사용자가 원하는 결과를 검색 결과 상단에서 바로 찾을 수 있어야 합니다. 검색 품질이 곧 서비스 품질입니다.</textarea>
+    <div class="row"><input type="text" id="kw" value="검색" data-i18n-ph="b_highlight_kw_ph">
+      <label style="font-size:.9rem;font-weight:600;"><input type="checkbox" id="case"> <span data-i18n="b_highlight_case">대소문자 구분</span></label>
+      <label style="font-size:.9rem;font-weight:600;"><input type="checkbox" id="acc" checked> <span data-i18n="b_highlight_acc">부분 단어 포함</span></label></div>
+    <div class="cnt" id="cnt"></div>
+    <div class="out" id="out"></div>
+    <div class="note" data-i18n-html="b_highlight_note">오픈소스 <b>mark.js</b>(MIT, <a href="https://github.com/julkue/mark.js" target="_blank" rel="noopener">julkue/mark.js</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/markjs-8/mark.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function esc(s){return String(s).replace(/[&<>]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]);});}
+  function run(){ $('out').innerHTML=esc($('in').value); var marker=new Mark($('out'));
+    var kws=$('kw').value.split(/\s+/).filter(Boolean); var total=0;
+    marker.unmark({done:function(){ marker.mark(kws,{caseSensitive:$('case').checked,separateWordSearch:true,accuracy:$('acc').checked?'partially':'exactly',
+      done:function(n){ $('cnt').textContent=t('b_highlight_cnt').replace('{n}',n); }}); }}); }
+  window.onI18n=run;
+  ['in','kw','case','acc'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
+  run();
+</script>
+</body>
+</html>

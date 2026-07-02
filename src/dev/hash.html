@@ -68,29 +68,29 @@
 <body>
 
 <div class="toolwrap">
-  <h1>해시 생성기</h1>
-  <p class="sub">텍스트나 파일의 MD5 · SHA-1 · SHA-256 · SHA-512 해시값을 만듭니다. 파일이 변조되지 않았는지 체크섬 확인에 쓰세요.</p>
+  <h1 data-i18n="b_hash_title">해시 생성기</h1>
+  <p class="sub" data-i18n="b_hash_sub">텍스트나 파일의 MD5 · SHA-1 · SHA-256 · SHA-512 해시값을 만듭니다. 파일이 변조되지 않았는지 체크섬 확인에 쓰세요.</p>
 
   <div class="card">
     <div class="tabs">
-      <button id="tab-text" class="on">텍스트</button>
-      <button id="tab-file">파일</button>
+      <button id="tab-text" class="on" data-i18n="b_hash_tab_text">텍스트</button>
+      <button id="tab-file" data-i18n="b_hash_tab_file">파일</button>
     </div>
 
     <div id="pane-text">
-      <textarea id="txt" placeholder="해시를 만들 텍스트를 입력하세요…"></textarea>
+      <textarea id="txt" data-i18n-ph="b_hash_txt_ph" placeholder="해시를 만들 텍스트를 입력하세요…"></textarea>
     </div>
     <div id="pane-file" style="display:none;">
       <div class="drop" id="drop">
         <div style="font-size:1.6rem;">📄</div>
-        <div>파일을 끌어다 놓거나 클릭해서 선택</div>
+        <div data-i18n="b_hash_drop_hint">파일을 끌어다 놓거나 클릭해서 선택</div>
         <div id="fname" style="font-size:.82rem;margin-top:.3rem;"></div>
         <input id="file" type="file" hidden/>
       </div>
     </div>
 
     <div class="hres" id="hres"></div>
-    <div class="note">
+    <div class="note" data-i18n="b_hash_note">
       파일 무결성·체크섬 확인에 SHA-256을 주로 씁니다. MD5·SHA-1은 충돌 위험이 있어 보안 용도(비밀번호 저장 등)에는 권장하지 않습니다. 모든 해시는 브라우저에서만 계산되며 입력·파일은 서버로 전송되지 않습니다.
     </div>
   </div>
@@ -105,11 +105,11 @@
   function md5(str){
     function rl(n,c){return(n<<c)|(n>>>(32-c));}
     function add(x,y){var l=(x&0xFFFF)+(y&0xFFFF),m=(x>>16)+(y>>16)+(l>>16);return(m<<16)|(l&0xFFFF);}
-    function cmn(q,a,b,x,s,t){return add(rl(add(add(a,q),add(x,t)),s),b);}
-    function ff(a,b,c,d,x,s,t){return cmn((b&c)|((~b)&d),a,b,x,s,t);}
-    function gg(a,b,c,d,x,s,t){return cmn((b&d)|(c&(~d)),a,b,x,s,t);}
-    function hh(a,b,c,d,x,s,t){return cmn(b^c^d,a,b,x,s,t);}
-    function ii(a,b,c,d,x,s,t){return cmn(c^(b|(~d)),a,b,x,s,t);}
+    function cmn(q,a,b,x,s,tmp){return add(rl(add(add(a,q),add(x,tmp)),s),b);}
+    function ff(a,b,c,d,x,s,tmp){return cmn((b&c)|((~b)&d),a,b,x,s,tmp);}
+    function gg(a,b,c,d,x,s,tmp){return cmn((b&d)|(c&(~d)),a,b,x,s,tmp);}
+    function hh(a,b,c,d,x,s,tmp){return cmn(b^c^d,a,b,x,s,tmp);}
+    function ii(a,b,c,d,x,s,tmp){return cmn(c^(b|(~d)),a,b,x,s,tmp);}
     function b2l(s){var b=[],i;for(i=0;i<s.length*8;i+=8)b[i>>5]|=(s.charCodeAt(i/8)&0xFF)<<(i%32);return b;}
     function l2h(b){var h='0123456789abcdef',o='',i,x;for(i=0;i<b.length*4;i++){x=(b[i>>2]>>((i%4)*8))&0xFF;o+=h.charAt((x>>4)&0xF)+h.charAt(x&0xF);}return o;}
     var x=b2l(str),len=str.length*8,a=1732584193,b=-271733879,c=-1732584194,d=271733878,i,olda,oldb,oldc,oldd;
@@ -160,14 +160,16 @@
   }
   function renderRows(rows){
     $('hres').innerHTML = rows.map(function(r){
-      return '<div class="hrow"><div class="alg"><span>'+r[0]+'</span><span class="cp" data-v="'+r[1]+'">복사</span></div><div class="val">'+(r[1]||'')+'</div></div>';
+      return '<div class="hrow"><div class="alg"><span>'+r[0]+'</span><span class="cp" data-v="'+r[1]+'">'+t('b_hash_copy')+'</span></div><div class="val">'+(r[1]||'')+'</div></div>';
     }).join('');
   }
   function toast(m){ var el=$('toast'); el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
 
+  window.onI18n = function(){ if($('hres').innerHTML) { if($('pane-text').style.display!=='none' && $('txt').value) hashText(); else if($('pane-file').style.display!=='none') { /* file re-render triggered by hash itself */ } } };
+
   $('txt').addEventListener('input', function(){ if($('txt').value) hashText(); else $('hres').innerHTML=''; });
   $('hres').addEventListener('click', function(e){ var c=e.target.closest('.cp'); if(!c) return;
-    navigator.clipboard.writeText(c.dataset.v).then(function(){ toast('복사됐습니다'); }); });
+    navigator.clipboard.writeText(c.dataset.v).then(function(){ toast(t('b_hash_copied')); }); });
   $('tab-text').addEventListener('click', function(){ $('tab-text').classList.add('on'); $('tab-file').classList.remove('on');
     $('pane-text').style.display=''; $('pane-file').style.display='none'; $('hres').innerHTML=''; if($('txt').value) hashText(); });
   $('tab-file').addEventListener('click', function(){ $('tab-file').classList.add('on'); $('tab-text').classList.remove('on');

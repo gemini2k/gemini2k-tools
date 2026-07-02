@@ -57,42 +57,43 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>목표 심박수 계산기</h1>
-  <p class="sub">나이로 최대 심박수와 운동 강도별 목표 심박수 구간을 계산합니다. 안정 시 심박수를 넣으면 더 정확한(카보넨) 값을 보여 줍니다.</p>
+  <h1 data-i18n="b_heartrate_title">목표 심박수 계산기</h1>
+  <p class="sub" data-i18n="b_heartrate_sub">나이로 최대 심박수와 운동 강도별 목표 심박수 구간을 계산합니다. 안정 시 심박수를 넣으면 더 정확한(카보넨) 값을 보여 줍니다.</p>
 
   <div class="card">
     <div class="frow">
-      <div class="fld"><label for="age">나이</label><input id="age" type="number" value="40" min="1" max="120"/></div>
-      <div class="fld"><label for="rest">안정 시 심박수 (선택)</label><input id="rest" type="number" placeholder="예: 65" min="30" max="120"/><div class="hint">아침 기상 직후 1분 측정값. 넣으면 카보넨 공식 적용.</div></div>
+      <div class="fld"><label for="age" data-i18n="b_heartrate_label_age">나이</label><input id="age" type="number" value="40" min="1" max="120"/></div>
+      <div class="fld"><label for="rest" data-i18n="b_heartrate_label_rest">안정 시 심박수 (선택)</label><input id="rest" type="number" data-i18n-ph="b_heartrate_ph_rest" placeholder="예: 65" min="30" max="120"/><div class="hint" data-i18n="b_heartrate_hint_rest">아침 기상 직후 1분 측정값. 넣으면 카보넨 공식 적용.</div></div>
     </div>
-    <div class="maxhr"><span class="v" id="maxhr">180</span> <span class="u">bpm · 최대 심박수</span></div>
+    <div class="maxhr"><span class="v" id="maxhr">180</span> <span class="u" data-i18n="b_heartrate_maxhr_unit">bpm · 최대 심박수</span></div>
     <div class="zones" id="zones"></div>
-    <div class="note">⚠️ 참고용입니다 — 의료 조언이 아닙니다. 최대 심박수는 ‘220−나이’ 추정식이며 개인차가 큽니다. 심장 질환·복용 약이 있거나 고강도 운동 전에는 의사와 상담하세요. 운동 중 어지럼·통증이 있으면 즉시 중단하세요.</div>
+    <div class="note" data-i18n="b_heartrate_note">⚠️ 참고용입니다 — 의료 조언이 아닙니다. 최대 심박수는 '220−나이' 추정식이며 개인차가 큽니다. 심장 질환·복용 약이 있거나 고강도 운동 전에는 의사와 상담하세요. 운동 중 어지럼·통증이 있으면 즉시 중단하세요.</div>
   </div>
 </div>
 
 <script src="tool-shell.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
-  var ZONES=[
-    ['워밍업·회복',0.5,0.6,'#3b82f6'],
-    ['지방 연소',0.6,0.7,'#22c55e'],
-    ['유산소',0.7,0.8,'#eab308'],
-    ['무산소',0.8,0.9,'#f97316'],
-    ['최대 강도',0.9,1.0,'#ef4444']
+  var ZONES_DATA=[
+    ['b_heartrate_zone_warmup',0.5,0.6,'#3b82f6'],
+    ['b_heartrate_zone_fat',0.6,0.7,'#22c55e'],
+    ['b_heartrate_zone_cardio',0.7,0.8,'#eab308'],
+    ['b_heartrate_zone_anaerobic',0.8,0.9,'#f97316'],
+    ['b_heartrate_zone_max',0.9,1.0,'#ef4444']
   ];
   function calc(){
     var age=+$('age').value, rest=parseInt($('rest').value);
     if(!(age>0)){ return; }
-    var max=220-age; $('maxhr').textContent=max;
-    var useK = rest>0 && rest<max;
-    function bpm(p){ return useK ? Math.round((max-rest)*p+rest) : Math.round(max*p); }
-    $('zones').innerHTML=ZONES.map(function(z){
+    var maxVal=220-age; $('maxhr').textContent=maxVal;
+    var useK = rest>0 && rest<maxVal;
+    function bpm(p){ return useK ? Math.round((maxVal-rest)*p+rest) : Math.round(maxVal*p); }
+    $('zones').innerHTML=ZONES_DATA.map(function(z){
       return '<div class="zone"><span class="zn"><span class="dot" style="background:'+z[3]+'"></span>'
-        +'<span><span class="nm">'+z[0]+'</span> <span class="pct">'+Math.round(z[1]*100)+'–'+Math.round(z[2]*100)+'%</span></span></span>'
+        +'<span><span class="nm">'+t(z[0])+'</span> <span class="pct">'+Math.round(z[1]*100)+'–'+Math.round(z[2]*100)+'%</span></span></span>'
         +'<span class="bpm">'+bpm(z[1])+'–'+bpm(z[2])+' bpm</span></div>';
-    }).join('') + (useK ? '<div class="zone"><span class="pct" style="margin:0 auto;">카보넨(여유 심박) 공식 적용</span></div>' : '');
+    }).join('') + (useK ? '<div class="zone"><span class="pct" style="margin:0 auto;">'+t('b_heartrate_karvonen_label')+'</span></div>' : '');
   }
+  window.onI18n = calc;
   ['age','rest'].forEach(function(id){ $(id).addEventListener('input',calc); });
   calc();
 </script>

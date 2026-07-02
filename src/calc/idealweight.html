@@ -29,26 +29,26 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:540px;">
-  <h1>표준체중·적정체중 계산기</h1>
-  <p class="sub">키로 BMI 정상 범위 체중과 여러 공식의 표준체중을 계산합니다(참고용).</p>
+  <h1 data-i18n="b_idealweight_title">표준체중·적정체중 계산기</h1>
+  <p class="sub" data-i18n="b_idealweight_sub">키로 BMI 정상 범위 체중과 여러 공식의 표준체중을 계산합니다(참고용).</p>
   <div class="card">
-    <div class="row"><div class="fld"><label>키 (cm)</label><input id="h" type="number" inputmode="decimal" value="170"/></div>
-    <div class="fld"><label>성별</label><select id="sex"><option value="m">남성</option><option value="f">여성</option></select></div></div>
-    <div class="big"><div class="n" id="range">-</div><div class="u">BMI 정상 범위(18.5~23) 체중</div></div>
+    <div class="row"><div class="fld"><label data-i18n="b_idealweight_label_height">키 (cm)</label><input id="h" type="number" inputmode="decimal" value="170"/></div>
+    <div class="fld"><label data-i18n="b_idealweight_label_sex">성별</label><select id="sex"><option value="m" data-i18n="b_idealweight_opt_male">남성</option><option value="f" data-i18n="b_idealweight_opt_female">여성</option></select></div></div>
+    <div class="big"><div class="n" id="range">-</div><div class="u" data-i18n="b_idealweight_bmi_range_label">BMI 정상 범위(18.5~23) 체중</div></div>
     <div class="grid">
-      <div class="item"><div class="l">표준체중(BMI 22)</div><div class="v" id="bmi22">-</div></div>
-      <div class="item"><div class="l">Broca 보정</div><div class="v" id="broca">-</div></div>
-      <div class="item"><div class="l">Devine</div><div class="v" id="devine">-</div></div>
-      <div class="item"><div class="l">미용 체중(BMI 20)</div><div class="v" id="bmi20">-</div></div>
+      <div class="item"><div class="l" data-i18n="b_idealweight_lbl_bmi22">표준체중(BMI 22)</div><div class="v" id="bmi22">-</div></div>
+      <div class="item"><div class="l" data-i18n="b_idealweight_lbl_broca">Broca 보정</div><div class="v" id="broca">-</div></div>
+      <div class="item"><div class="l" data-i18n="b_idealweight_lbl_devine">Devine</div><div class="v" id="devine">-</div></div>
+      <div class="item"><div class="l" data-i18n="b_idealweight_lbl_bmi20">미용 체중(BMI 20)</div><div class="v" id="bmi20">-</div></div>
     </div>
-    <div class="note">표준체중 공식은 참고용이며, 근육량·체형을 반영하지 않습니다. 건강 판단은 전문의와 상담하세요. 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_idealweight_note">표준체중 공식은 참고용이며, 근육량·체형을 반영하지 않습니다. 건강 판단은 전문의와 상담하세요. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   function kg(n){return n.toFixed(1)+' kg';}
-  function calc(){ var h=+$('h').value||0, sex=$('sex').value; if(h<100){$('range').textContent='키 확인';return;}
+  function calc(){ var h=+$('h').value||0, sex=$('sex').value; if(h<100){$('range').textContent=t('b_idealweight_err_height');return;}
     var m=h/100;
     $('range').textContent=(18.5*m*m).toFixed(1)+' ~ '+(23*m*m).toFixed(1)+' kg';
     $('bmi22').textContent=kg(22*m*m);
@@ -56,6 +56,7 @@
     $('broca').textContent=kg((h-100)*(sex==='m'?0.9:0.85));
     var inch=(h-152.4)/2.54; var dev=(sex==='m'?50:45.5)+2.3*Math.max(0,inch); $('devine').textContent=kg(dev);
   }
+  window.onI18n=calc;
   ['h','sex'].forEach(function(id){$(id).addEventListener('input',calc);$(id).addEventListener('change',calc);});
   calc();
 </script>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<title>오프라인 — 빛의여행(gemini2k) 도구</title>
+<style>
+  :root{color-scheme:light dark;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    background:#f4f6f9;color:#0f1e2d;padding:1.5rem;text-align:center;line-height:1.6;}
+  @media(prefers-color-scheme:dark){body{background:#0f1622;color:#e6edf5;}}
+  .box{max-width:24rem;}
+  .ic{width:84px;height:84px;border-radius:22px;margin:0 auto 1.3rem;
+    background:linear-gradient(135deg,#15C39A,#1AA3E0 50%,#3D7BF0);display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:800;font-size:1.7rem;letter-spacing:-.02em;}
+  h1{font-size:1.45rem;font-weight:800;letter-spacing:-.02em;margin:0 0 .6rem;}
+  p{color:#5b6b7a;margin:0 0 1.6rem;font-size:.98rem;}
+  @media(prefers-color-scheme:dark){p{color:#9fb0c0;}}
+  button{font:inherit;font-weight:700;border:0;border-radius:999px;padding:.7rem 1.5rem;cursor:pointer;
+    background:#1AA3E0;color:#fff;font-size:1rem;}
+  button:hover{filter:brightness(1.05);}
+  .hint{margin-top:1.2rem;font-size:.82rem;color:#8493a2;}
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="ic">G2K</div>
+    <h1>오프라인 상태예요</h1>
+    <p>지금은 인터넷에 연결되어 있지 않습니다. 연결을 확인한 뒤 다시 시도해 주세요. 이전에 방문한 도구는 오프라인에서도 열릴 수 있어요.</p>
+    <button type="button" onclick="location.reload()">다시 시도</button>
+    <div class="hint">빛의여행(gemini2k) 도구 · 모든 처리는 브라우저에서</div>
+  </div>
+</body>
+</html>

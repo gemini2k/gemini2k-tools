@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>SVG 최적화·압축기 (용량 줄이기) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="SVG 코드에서 주석·메타데이터·불필요한 공백을 제거해 용량을 줄이고 미리보기로 확인합니다. 아이콘·로고 최적화에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/svgmin.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="SVG 최적화·압축기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="SVG 주석·메타·공백 제거로 용량 축소 + 미리보기. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/svgmin.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:140px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.84rem;color:var(--text);resize:vertical;}
+.meta{font-size:.85rem;color:var(--muted);margin:.5rem 0;}.actions{display:flex;gap:.6rem;flex-wrap:wrap;}
+.out{width:100%;min-height:90px;border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-all;overflow:auto;}
+.prev{border:1px solid var(--border);border-radius:11px;background:#fff;padding:1rem;text-align:center;margin-top:.6rem;}.prev svg{max-width:160px;max-height:160px;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"SVG 최적화·압축기","description":"SVG의 주석·메타데이터·공백을 제거해 용량을 줄입니다.","url":"https://gemini2k.co.kr/svgmin.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:820px;">
+  <h1 data-i18n="b_svgmin_title">SVG 최적화·압축기</h1>
+  <p class="sub" data-i18n="b_svgmin_sub">SVG의 주석·메타데이터·불필요한 공백을 제거해 용량을 줄입니다.</p>
+  <div class="card">
+    <textarea id="in">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!-- 주석 --&gt;
+&lt;svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"&gt;
+  &lt;metadata&gt;made by editor&lt;/metadata&gt;
+  &lt;circle cx="50" cy="50" r="40" fill="#5B5BF5" /&gt;
+&lt;/svg&gt;</textarea>
+    <div class="meta" id="meta"></div>
+    <div class="actions"><button class="btn" id="opt" type="button" data-i18n="b_svgmin_btn_optimize">최적화</button><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_svgmin_btn_copy">📋 복사</button></div>
+    <div class="out" id="out"></div>
+    <div class="prev" id="prev"></div>
+    <div class="note" data-i18n="b_svgmin_note">XML 선언·주석·&lt;metadata&gt;·&lt;title&gt;·&lt;desc&gt;·태그 사이 공백·소수점 자릿수를 정리합니다(안전한 범위). 복잡한 패스 최적화까지는 하지 않습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function optimize(s){ return s
+    .replace(/<\?xml[\s\S]*?\?>/g,'')
+    .replace(/<!--[\s\S]*?-->/g,'')
+    .replace(/<metadata[\s\S]*?<\/metadata>/g,'')
+    .replace(/<title[\s\S]*?<\/title>/g,'').replace(/<desc[\s\S]*?<\/desc>/g,'')
+    .replace(/>\s+</g,'><').replace(/\s{2,}/g,' ')
+    .replace(/(\d+\.\d{3})\d+/g,'$1')
+    .replace(/\s*\/>/g,'/>').trim(); }
+  function run(){ var raw=$('in').value, out=optimize(raw);
+    $('out').textContent=out; window._o=out; $('prev').innerHTML=out;
+    var b1=new Blob([raw]).size, b2=new Blob([out]).size;
+    $('meta').textContent=t('b_svgmin_original')+' '+b1+'B → '+t('b_svgmin_optimized')+' '+b2+'B ('+(b1?Math.round((1-b2/b1)*100):0)+'% '+t('b_svgmin_saved')+')'; }
+  window.onI18n=run;
+  $('opt').addEventListener('click',run); $('in').addEventListener('input',run);
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_svgmin_copied'));});});
+  run();
+</script>
+</body>
+</html>

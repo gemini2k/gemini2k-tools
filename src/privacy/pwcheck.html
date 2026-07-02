@@ -9,7 +9,7 @@
 <meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
 <meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
 <title>비밀번호 강도 측정기 (엔트로피·해킹 시간) — 빛의여행(gemini2k) 도구</title>
-<meta name="description" content="비밀번호의 강도를 엔트로피와 예상 해킹 소요 시간으로 평가합니다. 구성 조건 점검, 흔한 패턴 경고. 입력값은 전송·저장되지 않습니다. 브라우저에서만 처리됩니다."/>
+<meta name="description" content="비밀번호의 강도를 엔트로피와 예상 해킹 시간으로 평가합니다. 구성 조건 점검, 흔한 패턴 경고. 입력값은 전송·저장되지 않습니다. 브라우저에서만 처리됩니다."/>
 <link rel="canonical" href="https://gemini2k.co.kr/pwcheck.html"/>
 <meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
 <meta property="og:title" content="비밀번호 강도 측정기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="엔트로피·예상 해킹 시간으로 비밀번호 강도 평가. 전송 없음."/>
@@ -32,40 +32,54 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>비밀번호 강도 측정기</h1>
-  <p class="sub">비밀번호의 강도를 엔트로피와 예상 해킹 시간으로 평가합니다. 입력값은 전송·저장되지 않습니다.</p>
+  <h1 data-i18n="b_pwcheck_title">비밀번호 강도 측정기</h1>
+  <p class="sub" data-i18n="b_pwcheck_sub">비밀번호의 강도를 엔트로피와 예상 해킹 시간으로 평가합니다. 입력값은 전송·저장되지 않습니다.</p>
   <div class="card">
-    <div class="pwbox"><input id="pw" type="password" placeholder="비밀번호 입력" value="Tiger-River-42"/><button class="btn btn-ghost" id="show" type="button">👁</button></div>
+    <div class="pwbox"><input id="pw" type="password" data-i18n-ph="b_pwcheck_placeholder" placeholder="비밀번호 입력" value="Tiger-River-42"/><button class="btn btn-ghost" id="show" type="button">👁</button></div>
     <div class="lbl" id="lbl">-</div>
     <div class="bar"><i id="fill"></i></div>
     <div class="grid" id="checks"></div>
     <div class="lines">
-      <div class="r"><span>엔트로피</span><span id="ent">-</span></div>
-      <div class="r"><span>예상 해킹 시간</span><span id="crack">-</span></div>
+      <div class="r"><span data-i18n="b_pwcheck_entropy_label">엔트로피</span><span id="ent">-</span></div>
+      <div class="r"><span data-i18n="b_pwcheck_crack_label">예상 해킹 시간</span><span id="crack">-</span></div>
     </div>
-    <div class="note">엔트로피 = 길이 × log2(문자 종류 수). 해킹 시간은 초당 100억 회 추측(오프라인 공격) 가정의 <b>대략적 추정</b>입니다. 흔한 단어·반복·연속 패턴은 실제로 훨씬 빨리 뚫리니 주의하세요. 입력은 브라우저에서만 처리되며 어디에도 전송되지 않습니다.</div>
+    <div class="note" data-i18n-html="b_pwcheck_note">엔트로피 = 길이 × log2(문자 종류 수). 해킹 시간은 초당 100억 회 추측(오프라인 공격) 가정의 <b>대략적 추정</b>입니다. 흔한 단어·반복·연속 패턴은 실제로 훨씬 빨리 뚫리니 주의하세요. 입력은 브라우저에서만 처리되며 어디에도 전송되지 않습니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
-  function fmtTime(sec){ if(sec<1)return '즉시'; var u=[['년',31557600],['일',86400],['시간',3600],['분',60],['초',1]];
-    for(var i=0;i<u.length;i++){ if(sec>=u[i][1]){ var v=sec/u[i][1]; if(v>1e9)return Math.round(v/1e9).toLocaleString()+'억 '+u[i][0]+'+'; return Math.round(v).toLocaleString()+' '+u[i][0]; } } return '즉시'; }
+  function fmtTime(sec){
+    if(sec<1)return t('b_pwcheck_instant');
+    var u=[
+      [t('b_pwcheck_unit_year'),31557600],
+      [t('b_pwcheck_unit_day'),86400],
+      [t('b_pwcheck_unit_hour'),3600],
+      [t('b_pwcheck_unit_min'),60],
+      [t('b_pwcheck_unit_sec'),1]
+    ];
+    for(var i=0;i<u.length;i++){ if(sec>=u[i][1]){ var v=sec/u[i][1]; if(v>1e9)return Math.round(v/1e9).toLocaleString()+t('b_pwcheck_unit_100m')+' '+u[i][0]+'+'; return Math.round(v).toLocaleString()+' '+u[i][0]; } } return t('b_pwcheck_instant');
+  }
   function run(){ var p=$('pw').value; var sets=[[/[a-z]/,26],[/[A-Z]/,26],[/[0-9]/,10],[/[^A-Za-z0-9]/,33]];
     var pool=0,c=[]; sets.forEach(function(s){ var has=s[0].test(p); if(has)pool+=s[1]; c.push(has); });
     var len=p.length, bits=len? Math.round(len*Math.log2(pool||1)) : 0;
-    // 흔한 패턴 페널티
+    // common pattern penalty
     var weak=/(.)\1\1/.test(p)||/(0123|1234|abcd|qwer|password|admin|1111)/i.test(p);
     if(weak)bits=Math.max(0,bits-20);
     var pct=Math.min(100,Math.round(bits/100*100));
-    var lvl,col; if(bits<40){lvl='약함';col='#ef4444';} else if(bits<60){lvl='보통';col='#f59e0b';} else if(bits<90){lvl='강함';col='#22c55e';} else {lvl='매우 강함';col='#16a34a';}
+    var lvl,col;
+    if(bits<40){lvl=t('b_pwcheck_lvl_weak');col='#ef4444';}
+    else if(bits<60){lvl=t('b_pwcheck_lvl_fair');col='#f59e0b';}
+    else if(bits<90){lvl=t('b_pwcheck_lvl_strong');col='#22c55e';}
+    else{lvl=t('b_pwcheck_lvl_vstrong');col='#16a34a';}
     if(!len){lvl='-';col='var(--border)';pct=0;}
     $('lbl').textContent=lvl; $('lbl').style.color=col; $('fill').style.width=pct+'%'; $('fill').style.background=col;
-    $('ent').textContent=bits+' 비트'; var sec=Math.pow(2,bits)/1e10; $('crack').textContent=len?fmtTime(sec):'-';
-    var labels=['소문자','대문자','숫자','특수문자','8자 이상'];
+    $('ent').textContent=bits+' '+t('b_pwcheck_bits'); var sec=Math.pow(2,bits)/1e10; $('crack').textContent=len?fmtTime(sec):'-';
+    var labels=[t('b_pwcheck_chk_lower'),t('b_pwcheck_chk_upper'),t('b_pwcheck_chk_digit'),t('b_pwcheck_chk_special'),t('b_pwcheck_chk_len8')];
     var states=[c[0],c[1],c[2],c[3],len>=8];
     $('checks').innerHTML=labels.map(function(l,i){ return '<div class="chk '+(states[i]?'ok':'no')+'">'+(states[i]?'✓':'○')+' '+l+'</div>'; }).join('');
   }
+  window.onI18n=run;
   $('pw').addEventListener('input',run);
   $('show').addEventListener('click',function(){ $('pw').type=$('pw').type==='password'?'text':'password'; });
   run();

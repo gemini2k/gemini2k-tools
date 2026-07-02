@@ -24,14 +24,14 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:640px;">
-  <h1>중국어 병음(핀인) 변환기</h1>
-  <p class="sub">중국어 한자를 입력하면 병음으로 바꿔 줍니다. 한자 위에 병음을 달아 볼 수도 있어요.</p>
+  <h1 data-i18n="b_pinyin_title">중국어 병음(핀인) 변환기</h1>
+  <p class="sub" data-i18n="b_pinyin_sub">중국어 한자를 입력하면 병음으로 바꿔 줍니다. 한자 위에 병음을 달아 볼 수도 있어요.</p>
   <div class="card">
     <textarea id="in">你好，世界！欢迎使用拼音转换器。</textarea>
-    <div class="opts"><label>성조 <select id="tone"><option value="symbol">기호(nǐ)</option><option value="num">숫자(ni3)</option><option value="none">없음(ni)</option></select></label><label><input type="checkbox" id="ruby" checked/> 한자 위 병음</label></div>
+    <div class="opts"><label><span data-i18n="b_pinyin_tone_label">성조</span> <select id="tone"><option value="symbol" data-i18n="b_pinyin_tone_symbol">기호(nǐ)</option><option value="num" data-i18n="b_pinyin_tone_num">숫자(ni3)</option><option value="none" data-i18n="b_pinyin_tone_none">없음(ni)</option></select></label><label><input type="checkbox" id="ruby" checked/> <span data-i18n="b_pinyin_ruby_label">한자 위 병음</span></label></div>
     <div class="out" id="out"></div>
-    <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 병음 복사</button></div>
-    <div class="note">오픈소스 <b>pinyin-pro</b>(MIT, <a href="https://github.com/zh-lx/pinyin-pro" target="_blank" rel="noopener">zh-lx/pinyin-pro</a>)를 자체 호스팅합니다. 다음자(多音字)는 문맥에 따라 다를 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 <span data-i18n="b_pinyin_copy_btn">병음 복사</span></button></div>
+    <div class="note" data-i18n-html="b_pinyin_note">오픈소스 <b>pinyin-pro</b>(MIT, <a href="https://github.com/zh-lx/pinyin-pro" target="_blank" rel="noopener">zh-lx/pinyin-pro</a>)를 자체 호스팅합니다. 다음자(多音字)는 문맥에 따라 다를 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/pinyinpro-3/pinyin-pro.js"></script>
@@ -40,16 +40,17 @@
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
   var P=window.pinyinPro||window.pinyin_pro||window['pinyin-pro'];
-  function run(){ var t=$('in').value, tone=$('tone').value;
-    try{ var flat=P.pinyin(t,{toneType:tone}); window._o=flat;
-      if($('ruby').checked){ var arr=P.pinyin(t,{toneType:tone,type:'array'}); var chars=[...t]; var h='';
+  function run(){ var tmp=$('in').value, tone=$('tone').value;
+    try{ var flat=P.pinyin(tmp,{toneType:tone}); window._o=flat;
+      if($('ruby').checked){ var arr=P.pinyin(tmp,{toneType:tone,type:'array'}); var chars=[...tmp]; var h='';
         for(var i=0;i<chars.length;i++){ var py=arr[i]; if(py&&/[一-鿿]/.test(chars[i])) h+='<ruby>'+chars[i]+'<rt>'+py+'</rt></ruby>'; else h+=chars[i]==='\n'?'<br>':chars[i]; }
         $('out').innerHTML=h; }
       else $('out').textContent=flat;
-    }catch(e){ $('out').textContent='변환 오류'; }
+    }catch(e){ $('out').textContent=t('b_pinyin_error'); }
   }
   ['in','tone','ruby'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
-  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast('복사됐습니다');});});
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_pinyin_copied'));});});
+  window.onI18n=run;
   run();
 </script>
 </body>

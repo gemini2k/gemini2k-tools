@@ -61,21 +61,21 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>UUID 생성기 (v4)</h1>
-  <p class="sub">암호학적 난수로 UUID 버전 4를 한 번에 여러 개 만듭니다. 개발·테스트 데이터의 고유 식별자로 쓰세요.</p>
+  <h1 data-i18n="b_uuid_title">UUID 생성기 (v4)</h1>
+  <p class="sub" data-i18n="b_uuid_sub">암호학적 난수로 UUID 버전 4를 한 번에 여러 개 만듭니다. 개발·테스트 데이터의 고유 식별자로 쓰세요.</p>
 
   <div class="card">
     <div class="opts">
-      <label class="fld">개수 <input id="count" type="number" value="5" min="1" max="100"/></label>
-      <label class="fld"><input id="upper" type="checkbox"/> 대문자</label>
-      <label class="fld"><input id="nohyphen" type="checkbox"/> 하이픈 제거</label>
+      <label class="fld"><span data-i18n="b_uuid_label_count">개수</span> <input id="count" type="number" value="5" min="1" max="100"/></label>
+      <label class="fld"><input id="upper" type="checkbox"/> <span data-i18n="b_uuid_label_upper">대문자</span></label>
+      <label class="fld"><input id="nohyphen" type="checkbox"/> <span data-i18n="b_uuid_label_nohyphen">하이픈 제거</span></label>
     </div>
     <div class="row">
-      <button class="btn" id="gen">새로 생성</button>
-      <button class="btn btn-ghost" id="copyall">📋 전체 복사</button>
+      <button class="btn" id="gen" data-i18n="b_uuid_btn_gen">새로 생성</button>
+      <button class="btn btn-ghost" id="copyall">📋 <span data-i18n="b_uuid_btn_copyall">전체 복사</span></button>
     </div>
     <div class="list" id="list" style="margin-top:1rem;"></div>
-    <div class="note">
+    <div class="note" data-i18n="b_uuid_note">
       UUID v4는 122비트 난수로 만들어져 사실상 중복되지 않는 식별자입니다. 이 도구는 브라우저의 암호학적 난수 생성기(crypto)를 사용하며, 생성된 값은 서버로 전송되지 않습니다.
     </div>
   </div>
@@ -100,16 +100,17 @@
   }
   function render(){
     $('list').innerHTML = current.map(function(u){ var v=fmt(u);
-      return '<div class="urow"><span>'+v+'</span><span class="cp" data-v="'+v+'">복사</span></div>'; }).join('');
+      return '<div class="urow"><span>'+v+'</span><span class="cp" data-v="'+v+'">'+t('b_uuid_copy')+'</span></div>'; }).join('');
   }
+  window.onI18n = render;
   function toast(m){ var el=$('toast'); el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
   $('gen').addEventListener('click', gen);
   $('upper').addEventListener('change', render);
   $('nohyphen').addEventListener('change', render);
   $('copyall').addEventListener('click', function(){ if(!current.length) return;
-    navigator.clipboard.writeText(current.map(fmt).join('\n')).then(function(){ toast(current.length+'개 복사됐습니다'); }); });
+    navigator.clipboard.writeText(current.map(fmt).join('\n')).then(function(){ toast(t('b_uuid_toast_copyall').replace('{n}', current.length)); }); });
   $('list').addEventListener('click', function(e){ var c=e.target.closest('.cp'); if(!c) return;
-    navigator.clipboard.writeText(c.dataset.v).then(function(){ toast('복사됐습니다'); }); });
+    navigator.clipboard.writeText(c.dataset.v).then(function(){ toast(t('b_uuid_toast_copy')); }); });
   gen();
 </script>
 </body>

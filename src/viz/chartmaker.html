@@ -55,22 +55,22 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:880px;">
-  <h1>차트 메이커</h1>
-  <p class="sub">데이터를 붙여넣으면 막대·선·원·산점도 차트를 바로 그려 줍니다. PNG로 내려받아 보고서·블로그에 쓰세요.</p>
+  <h1 data-i18n="b_chartmaker_title">차트 메이커</h1>
+  <p class="sub" data-i18n="b_chartmaker_sub">데이터를 붙여넣으면 막대·선·원·산점도 차트를 바로 그려 줍니다. PNG로 내려받아 보고서·블로그에 쓰세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>차트 종류를 고르고, 데이터를 한 줄에 하나씩 입력합니다(<code>이름,값</code> · 산점도는 <code>x,y</code>)</li>
-    <li>제목·색을 지정하면 실시간으로 차트가 갱신됩니다</li>
-    <li>‘PNG 내려받기’로 이미지를 저장합니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_chartmaker_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_chartmaker_howto_1">차트 종류를 고르고, 데이터를 한 줄에 하나씩 입력합니다(<code>이름,값</code> · 산점도는 <code>x,y</code>)</li>
+    <li data-i18n="b_chartmaker_howto_2">제목·색을 지정하면 실시간으로 차트가 갱신됩니다</li>
+    <li data-i18n="b_chartmaker_howto_3">'PNG 내려받기'로 이미지를 저장합니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="opts">
-      <div class="fld"><label>종류</label><select id="type"><option value="bar">막대</option><option value="line">선</option><option value="pie">원형</option><option value="scatter">산점도</option></select></div>
-      <div class="fld" style="flex:1;min-width:160px;"><label>제목</label><input id="title" type="text" value="월별 매출" style="width:100%;"/></div>
-      <div class="fld"><label>색</label><input id="color" type="color" value="#5B5BF5"/></div>
+      <div class="fld"><label data-i18n="b_chartmaker_lbl_type">종류</label><select id="type"><option value="bar" data-i18n="b_chartmaker_opt_bar">막대</option><option value="line" data-i18n="b_chartmaker_opt_line">선</option><option value="pie" data-i18n="b_chartmaker_opt_pie">원형</option><option value="scatter" data-i18n="b_chartmaker_opt_scatter">산점도</option></select></div>
+      <div class="fld" style="flex:1;min-width:160px;"><label data-i18n="b_chartmaker_lbl_title">제목</label><input id="title" type="text" value="월별 매출" style="width:100%;"/></div>
+      <div class="fld"><label data-i18n="b_chartmaker_lbl_color">색</label><input id="color" type="color" value="#5B5BF5"/></div>
     </div>
-    <label for="data" style="font-weight:700;font-size:.85rem;">데이터</label>
+    <label for="data" style="font-weight:700;font-size:.85rem;" data-i18n="b_chartmaker_lbl_data">데이터</label>
     <textarea id="data">1월,120
 2월,180
 3월,150
@@ -78,8 +78,8 @@
 5월,260</textarea>
     <div class="err" id="err"></div>
     <div class="chartwrap"><canvas id="cv" width="820" height="460"></canvas></div>
-    <div class="actions"><button class="btn" id="dl" type="button">⬇️ PNG 내려받기</button><button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
-    <div class="note">막대·선·원형은 <code>이름,값</code>, 산점도는 <code>x,y</code> 형식입니다. 라이브러리 없이 캔버스로 직접 그리므로 빠르고 외부 전송이 없습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="actions"><button class="btn" id="dl" type="button" data-i18n="b_chartmaker_btn_dl">⬇️ PNG 내려받기</button><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_chartmaker_btn_sample">샘플</button></div>
+    <div class="note" data-i18n="b_chartmaker_note">막대·선·원형은 <code>이름,값</code>, 산점도는 <code>x,y</code> 형식입니다. 라이브러리 없이 캔버스로 직접 그리므로 빠르고 외부 전송이 없습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -94,21 +94,21 @@
     return rows;
   }
   function clear(){ x.fillStyle='#ffffff'; x.fillRect(0,0,W,H); }
-  function err(m){ $('err').textContent=m||''; }
+  function errMsg(m){ $('err').textContent=m||''; }
   function niceMax(v){ if(v<=0) return 1; var e=Math.pow(10,Math.floor(Math.log10(v))); var n=v/e; var s=n<=1?1:n<=2?2:n<=5?5:10; return s*e; }
 
   function draw(){
-    err(''); clear();
+    errMsg(''); clear();
     var type=$('type').value, color=$('color').value, title=$('title').value, rows=parse();
     x.fillStyle='#16181f'; x.font='bold 22px Pretendard,system-ui,sans-serif'; x.textAlign='center';
     if(title) x.fillText(title, W/2, 34);
     var PAD={l:60,r:24,t:54,b:54};
-    if(!rows.length){ err('데이터를 입력하세요.'); return; }
+    if(!rows.length){ errMsg(t('b_chartmaker_err_nodata')); return; }
     try{
       if(type==='pie'){ drawPie(rows); }
       else if(type==='scatter'){ drawScatter(rows,color,PAD); }
       else { drawBarLine(rows,type,color,PAD); }
-    }catch(e){ err('데이터 형식을 확인하세요 (이름,값).'); }
+    }catch(e){ errMsg(t('b_chartmaker_err_format')); }
   }
   function drawBarLine(rows,type,color,P){
     var labels=rows.map(function(r){return r[0];}), vals=rows.map(function(r){return parseFloat(r[1])||0;});
@@ -119,7 +119,7 @@
     function Y(v){ return P.t + H0*(1-(v-min)/range); }
     // 그리드 + y라벨
     x.strokeStyle='#e8e9f0'; x.fillStyle='#6b7280'; x.font='12px system-ui'; x.textAlign='right'; x.lineWidth=1;
-    for(var t=0;t<=5;t++){ var v=min+range*t/5, yy=Y(v); x.beginPath(); x.moveTo(P.l,yy); x.lineTo(W-P.r,yy); x.stroke(); x.fillText((Math.round(v*100)/100).toLocaleString(), P.l-8, yy+4); }
+    for(var tmp=0;tmp<=5;tmp++){ var v=min+range*tmp/5, yy=Y(v); x.beginPath(); x.moveTo(P.l,yy); x.lineTo(W-P.r,yy); x.stroke(); x.fillText((Math.round(v*100)/100).toLocaleString(), P.l-8, yy+4); }
     // x라벨
     x.textAlign='center'; x.fillStyle='#6b7280';
     rows.forEach(function(r,i){ x.fillText(String(labels[i]), X(i), H-P.b+20); });
@@ -138,7 +138,7 @@
     var xmin=Math.min.apply(null,xs),xmax=Math.max.apply(null,xs),ymin=Math.min.apply(null,ys),ymax=Math.max.apply(null,ys);
     var xr=(xmax-xmin)||1, yr=(ymax-ymin)||1; var W0=W-P.l-P.r,H0=H-P.t-P.b;
     function X(v){return P.l+W0*(v-xmin)/xr;} function Y(v){return P.t+H0*(1-(v-ymin)/yr);}
-    x.strokeStyle='#e8e9f0'; x.lineWidth=1; for(var t=0;t<=5;t++){ var yy=P.t+H0*t/5; x.beginPath(); x.moveTo(P.l,yy); x.lineTo(W-P.r,yy); x.stroke(); }
+    x.strokeStyle='#e8e9f0'; x.lineWidth=1; for(var tmp=0;tmp<=5;tmp++){ var yy=P.t+H0*tmp/5; x.beginPath(); x.moveTo(P.l,yy); x.lineTo(W-P.r,yy); x.stroke(); }
     x.fillStyle='#6b7280'; x.font='12px system-ui'; x.textAlign='right';
     x.fillText((Math.round(ymax*100)/100).toLocaleString(),P.l-8,P.t+12); x.fillText((Math.round(ymin*100)/100).toLocaleString(),P.l-8,P.t+H0+4);
     x.fillStyle=color; pts.forEach(function(p){ x.beginPath(); x.arc(X(p[0]),Y(p[1]),5,0,7); x.fill(); });
@@ -154,7 +154,8 @@
   }
   ['type','title','color','data'].forEach(function(id){ $(id).addEventListener('input',draw); $(id).addEventListener('change',draw); });
   $('dl').addEventListener('click', function(){ var a=document.createElement('a'); a.href=cv.toDataURL('image/png'); a.download='chart.png'; document.body.appendChild(a); a.click(); setTimeout(function(){a.remove();},100); });
-  $('sample').addEventListener('click', function(){ $('type').value='bar'; $('title').value='분기별 사용자'; $('data').value='1분기,3200\n2분기,4100\n3분기,3800\n4분기,5200'; draw(); });
+  $('sample').addEventListener('click', function(){ $('type').value='bar'; $('title').value=t('b_chartmaker_sample_title'); $('data').value=t('b_chartmaker_sample_data'); draw(); });
+  window.onI18n = draw;
   draw();
 </script>
 </body>

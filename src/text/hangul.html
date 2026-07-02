@@ -29,12 +29,12 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:680px;">
-  <h1>한글 자모 분해·초성 추출</h1>
-  <p class="sub">한글을 초성·중성·종성으로 나누고, 초성만 뽑거나 자모로 풀어 줍니다. 각 줄을 클릭하면 복사돼요.</p>
+  <h1 data-i18n="b_hangul_title">한글 자모 분해·초성 추출</h1>
+  <p class="sub" data-i18n="b_hangul_sub">한글을 초성·중성·종성으로 나누고, 초성만 뽑거나 자모로 풀어 줍니다. 각 줄을 클릭하면 복사돼요.</p>
   <div class="card">
-    <textarea id="in" placeholder="한글을 입력하세요...">빛의여행 gemini2k</textarea>
+    <textarea id="in" data-i18n-ph="b_hangul_placeholder" placeholder="한글을 입력하세요...">빛의여행 gemini2k</textarea>
     <div class="res" id="res"></div>
-    <div class="note">유니코드 한글 음절을 표준 자모(초성 19·중성 21·종성 28)로 분해합니다. ‘타수’는 두벌식 자판 입력 수 근사치입니다. 한글 외 문자는 그대로 둡니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_hangul_note">유니코드 한글 음절을 표준 자모(초성 19·중성 21·종성 28)로 분해합니다. '타수'는 두벌식 자판 입력 수 근사치입니다. 한글 외 문자는 그대로 둡니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -50,11 +50,17 @@
     var decomp=each(s,function(a,b,c){ return CHO[a]+JUNG[b]+(JONG[c]||''); });
     var cho=each(s,function(a){ return CHO[a]; });
     var taps=0; for(var i=0;i<s.length;i++){ var c=s.charCodeAt(i); if(c>=0xAC00&&c<=0xD7A3){ var x=c-0xAC00; taps+=KC[Math.floor(x/588)]+KJ[Math.floor((x%588)/28)]+KG[x%28]; } else taps+=1; }
-    var items=[['초성 추출(ㅊㅅ)',cho],['자모 분해',decomp],['타수(자판 입력 수)',String(taps)+'타'],['글자 수',String([].concat.apply([],s.split('')).length)+'자']];
+    var items=[
+      [t('b_hangul_item_cho'),cho],
+      [t('b_hangul_item_decomp'),decomp],
+      [t('b_hangul_item_taps'),String(taps)+t('b_hangul_unit_taps')],
+      [t('b_hangul_item_chars'),String([].concat.apply([],s.split('')).length)+t('b_hangul_unit_chars')]
+    ];
     $('res').innerHTML=items.map(function(it){ return '<div class="item" data-v="'+(''+it[1]).replace(/"/g,'&quot;')+'"><div class="l">'+it[0]+'</div><div class="v">'+(it[1]||'…')+'</div></div>'; }).join('');
   }
+  window.onI18n=render;
   $('in').addEventListener('input',render);
-  $('res').addEventListener('click',function(e){ var it=e.target.closest('.item'); if(it){ navigator.clipboard.writeText(it.dataset.v).then(function(){toast('복사됐습니다');}); } });
+  $('res').addEventListener('click',function(e){ var it=e.target.closest('.item'); if(it){ navigator.clipboard.writeText(it.dataset.v).then(function(){toast(t('b_hangul_toast_copied'));}); } });
   render();
 </script>
 </body>

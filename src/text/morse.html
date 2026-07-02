@@ -31,15 +31,15 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:720px;">
-  <h1>모스부호 변환기</h1>
-  <p class="sub">텍스트를 모스부호로, 모스부호를 텍스트로 변환하고 소리로 들어볼 수 있어요.</p>
+  <h1 data-i18n="b_morse_title">모스부호 변환기</h1>
+  <p class="sub" data-i18n="b_morse_sub">텍스트를 모스부호로, 모스부호를 텍스트로 변환하고 소리로 들어볼 수 있어요.</p>
   <div class="card">
-    <div class="seg" id="seg"><button data-d="t2m" class="on" type="button">텍스트 → 모스</button><button data-d="m2t" type="button">모스 → 텍스트</button></div>
-    <textarea id="input" placeholder="입력...">SOS gemini2k</textarea>
-    <div class="actions"><button class="btn" id="copy" type="button">📋 복사</button><button class="btn btn-ghost" id="play" type="button">🔊 소리 재생</button></div>
+    <div class="seg" id="seg"><button data-d="t2m" class="on" type="button" data-i18n="b_morse_dir_t2m">텍스트 → 모스</button><button data-d="m2t" type="button" data-i18n="b_morse_dir_m2t">모스 → 텍스트</button></div>
+    <textarea id="input" data-i18n-ph="b_morse_input_ph" placeholder="입력...">SOS gemini2k</textarea>
+    <div class="actions"><button class="btn" id="copy" type="button" data-i18n="b_morse_btn_copy">📋 복사</button><button class="btn btn-ghost" id="play" type="button" data-i18n="b_morse_btn_play">🔊 소리 재생</button></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>
-    <div class="note">점(.)=짧게, 선(-)=길게, 글자 사이는 공백, 단어 사이는 / 로 구분합니다. 한글은 지원하지 않으며 영문·숫자·일부 기호만 변환됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_morse_note">점(.)=짧게, 선(-)=길게, 글자 사이는 공백, 단어 사이는 / 로 구분합니다. 한글은 지원하지 않으며 영문·숫자·일부 기호만 변환됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -55,13 +55,13 @@
   $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;dir=b.dataset.d;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
     $('input').value = dir==='t2m'?'SOS gemini2k':'... --- ... / --. . -- .. -. ..';run();});
   $('input').addEventListener('input',run);
-  $('copy').addEventListener('click',function(){ if($('out').textContent) navigator.clipboard.writeText($('out').textContent).then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click',function(){ if($('out').textContent) navigator.clipboard.writeText($('out').textContent).then(function(){toast(t('b_morse_toast_copied'));}); });
   var actx=null;
   $('play').addEventListener('click',function(){ var code = dir==='t2m'? $('out').textContent : t2m(m2t($('input').value));
-    if(!code){toast('재생할 내용이 없어요');return;} try{ if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended')actx.resume(); }catch(e){return;}
-    var unit=0.09, t=actx.currentTime;
-    function beep(dur){ var o=actx.createOscillator(),g=actx.createGain(); o.frequency.value=620; o.connect(g); g.connect(actx.destination); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.25,t+0.005); g.gain.setValueAtTime(0.25,t+dur); g.gain.exponentialRampToValueAtTime(0.0001,t+dur+0.01); o.start(t); o.stop(t+dur+0.02); t+=dur; }
-    for(var i=0;i<code.length;i++){ var c=code[i]; if(c==='.'){beep(unit);t+=unit;} else if(c==='-'){beep(unit*3);t+=unit;} else if(c===' ')t+=unit*2; else if(c==='/')t+=unit*4; }
+    if(!code){toast(t('b_morse_toast_empty'));return;} try{ if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended')actx.resume(); }catch(e){return;}
+    var unit=0.09, tmp=actx.currentTime;
+    function beep(dur){ var o=actx.createOscillator(),g=actx.createGain(); o.frequency.value=620; o.connect(g); g.connect(actx.destination); g.gain.setValueAtTime(0.0001,tmp); g.gain.exponentialRampToValueAtTime(0.25,tmp+0.005); g.gain.setValueAtTime(0.25,tmp+dur); g.gain.exponentialRampToValueAtTime(0.0001,tmp+dur+0.01); o.start(tmp); o.stop(tmp+dur+0.02); tmp+=dur; }
+    for(var i=0;i<code.length;i++){ var c=code[i]; if(c==='.'){beep(unit);tmp+=unit;} else if(c==='-'){beep(unit*3);tmp+=unit;} else if(c===' ')tmp+=unit*2; else if(c==='/')tmp+=unit*4; }
   });
   run();
 </script>

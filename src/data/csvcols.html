@@ -56,22 +56,22 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:760px;">
-  <h1>CSV 열 편집기</h1>
-  <p class="sub">필요한 열만 고르고, 순서를 바꾸고, 이름을 바꿔 새 CSV를 만듭니다.</p>
+  <h1 data-i18n="b_csvcols_title">CSV 열 편집기</h1>
+  <p class="sub" data-i18n="b_csvcols_sub">필요한 열만 고르고, 순서를 바꾸고, 이름을 바꿔 새 CSV를 만듭니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>CSV를 붙여 넣으면 열 목록이 나옵니다</li>
-    <li>체크로 포함할 열을 고르고, ▲▼로 순서를, 입력칸으로 이름을 바꿉니다</li>
-    <li>‘적용’ 후 결과를 복사하거나 내려받습니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_csvcols_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_csvcols_howto_1">CSV를 붙여 넣으면 열 목록이 나옵니다</li>
+    <li data-i18n="b_csvcols_howto_2">체크로 포함할 열을 고르고, ▲▼로 순서를, 입력칸으로 이름을 바꿉니다</li>
+    <li data-i18n="b_csvcols_howto_3">'적용' 후 결과를 복사하거나 내려받습니다</li>
   </ol></div></div>
 
   <div class="card">
-    <label for="input" style="font-weight:700;font-size:.85rem;">CSV 입력</label>
-    <textarea id="input" placeholder="id,name,age,city"></textarea>
+    <label for="input" style="font-weight:700;font-size:.85rem;" data-i18n="b_csvcols_label_input">CSV 입력</label>
+    <textarea id="input" data-i18n-ph="b_csvcols_placeholder_input" placeholder="id,name,age,city"></textarea>
     <div class="collist hide" id="collist"></div>
-    <div class="actions"><button class="btn" id="run" type="button">적용</button><button class="btn btn-ghost" id="sample" type="button">샘플</button><button class="btn btn-ghost" id="copy" type="button">📋 복사</button><button class="btn btn-ghost" id="dl" type="button">⬇️ CSV</button></div>
+    <div class="actions"><button class="btn" id="run" type="button" data-i18n="b_csvcols_btn_run">적용</button><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_csvcols_btn_sample">샘플</button><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_csvcols_btn_copy">📋 복사</button><button class="btn btn-ghost" id="dl" type="button" data-i18n="b_csvcols_btn_dl">⬇️ CSV</button></div>
     <textarea id="out" class="out" readonly></textarea>
-    <div class="note">체크 해제한 열은 빠지고, 표시된 순서대로 출력됩니다. 이름을 비워 두면 원래 이름을 사용합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_csvcols_note">체크 해제한 열은 빠지고, 표시된 순서대로 출력됩니다. 이름을 비워 두면 원래 이름을 사용합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -83,8 +83,8 @@
   var parsed=null, order=[];
 
   function build(){
-    var t=$('input').value.trim(); if(!t){ $('collist').classList.add('hide'); return; }
-    parsed=CSV.parse(t,{header:true,delimiter:'auto'}); order=parsed.header.map(function(_,i){return i;});
+    var tmp=$('input').value.trim(); if(!tmp){ $('collist').classList.add('hide'); return; }
+    parsed=CSV.parse(tmp,{header:true,delimiter:'auto'}); order=parsed.header.map(function(_,i){return i;});
     render();
   }
   function render(){
@@ -110,12 +110,12 @@
   }
   $('collist').addEventListener('click', function(e){
     var b=e.target.closest('button'); if(!b) return; var row=b.closest('.crow'); var pos=+row.dataset.pos;
-    if(b.classList.contains('up')&&pos>0){ var t=order[pos];order[pos]=order[pos-1];order[pos-1]=t; render(); }
-    if(b.classList.contains('dn')&&pos<order.length-1){ var t2=order[pos];order[pos]=order[pos+1];order[pos+1]=t2; render(); }
+    if(b.classList.contains('up')&&pos>0){ var tmp=order[pos];order[pos]=order[pos-1];order[pos-1]=tmp; render(); }
+    if(b.classList.contains('dn')&&pos<order.length-1){ var tmp2=order[pos];order[pos]=order[pos+1];order[pos+1]=tmp2; render(); }
   });
   $('input').addEventListener('input', build);
   $('run').addEventListener('click', run);
-  $('copy').addEventListener('click', function(){ if($('out').value) navigator.clipboard.writeText($('out').value).then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click', function(){ if($('out').value) navigator.clipboard.writeText($('out').value).then(function(){toast(t('b_csvcols_toast_copied'));}); });
   $('dl').addEventListener('click', function(){ if(!$('out').value)return; var blob=new Blob(['﻿'+$('out').value],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='columns.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove();},100); });
   $('sample').addEventListener('click', function(){ $('input').value='id,name,age,city\n1,홍길동,32,서울\n2,김영희,28,부산'; build(); run(); });
   build();

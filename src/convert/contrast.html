@@ -63,32 +63,32 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>색상 대비 검사기</h1>
-  <p class="sub">전경(글자)색과 배경색의 명도 대비비를 계산하고, 웹 접근성 기준 WCAG AA·AAA 통과 여부를 확인합니다.</p>
+  <h1 data-i18n="b_contrast_title">색상 대비 검사기</h1>
+  <p class="sub" data-i18n="b_contrast_sub">전경(글자)색과 배경색의 명도 대비비를 계산하고, 웹 접근성 기준 WCAG AA·AAA 통과 여부를 확인합니다.</p>
 
   <div class="card">
     <div class="pick">
-      <div class="fld"><label for="fgText">전경색 (글자)</label>
-        <div class="swatchrow"><input id="fg" type="color" value="#333333" aria-label="전경 색상 선택"/><input id="fgText" type="text" value="#333333"/></div></div>
-      <div class="fld"><label for="bgText">배경색</label>
-        <div class="swatchrow"><input id="bg" type="color" value="#FFFFFF" aria-label="배경 색상 선택"/><input id="bgText" type="text" value="#FFFFFF"/></div></div>
+      <div class="fld"><label for="fgText" data-i18n="b_contrast_fg_label">전경색 (글자)</label>
+        <div class="swatchrow"><input id="fg" type="color" value="#333333" data-i18n-ph="b_contrast_fg_aria" aria-label="전경 색상 선택"/><input id="fgText" type="text" value="#333333"/></div></div>
+      <div class="fld"><label for="bgText" data-i18n="b_contrast_bg_label">배경색</label>
+        <div class="swatchrow"><input id="bg" type="color" value="#FFFFFF" data-i18n-ph="b_contrast_bg_aria" aria-label="배경 색상 선택"/><input id="bgText" type="text" value="#FFFFFF"/></div></div>
     </div>
-    <button class="btn btn-ghost swap" id="swap" type="button">⇅ 전경↔배경 바꾸기</button>
+    <button class="btn btn-ghost swap" id="swap" type="button" data-i18n="b_contrast_swap">⇅ 전경↔배경 바꾸기</button>
 
     <div class="preview" id="preview">
-      <div class="big">큰 텍스트 Aa 가나다</div>
-      <div class="small">일반 텍스트 — 본문 가독성을 이렇게 확인합니다.</div>
+      <div class="big" data-i18n="b_contrast_preview_big">큰 텍스트 Aa 가나다</div>
+      <div class="small" data-i18n="b_contrast_preview_small">일반 텍스트 — 본문 가독성을 이렇게 확인합니다.</div>
     </div>
 
     <div class="ratio"><span class="v" id="ratio">12.6</span><span class="u">: 1</span></div>
     <div class="grid2">
-      <div class="badge">AA 일반 텍스트 <span class="pf" id="aaN"></span></div>
-      <div class="badge">AA 큰 텍스트 <span class="pf" id="aaL"></span></div>
-      <div class="badge">AAA 일반 텍스트 <span class="pf" id="aaaN"></span></div>
-      <div class="badge">AAA 큰 텍스트 <span class="pf" id="aaaL"></span></div>
+      <div class="badge"><span data-i18n="b_contrast_badge_aa_normal">AA 일반 텍스트</span> <span class="pf" id="aaN"></span></div>
+      <div class="badge"><span data-i18n="b_contrast_badge_aa_large">AA 큰 텍스트</span> <span class="pf" id="aaL"></span></div>
+      <div class="badge"><span data-i18n="b_contrast_badge_aaa_normal">AAA 일반 텍스트</span> <span class="pf" id="aaaN"></span></div>
+      <div class="badge"><span data-i18n="b_contrast_badge_aaa_large">AAA 큰 텍스트</span> <span class="pf" id="aaaL"></span></div>
     </div>
-    <div class="note">
-      대비비는 WCAG 상대 휘도 공식으로 계산합니다(흰색·검정 = 최대 21:1). 기준: <strong>AA</strong> 일반 4.5, 큰 텍스트 3.0 / <strong>AAA</strong> 일반 7.0, 큰 텍스트 4.5. ‘큰 텍스트’는 약 18pt(24px) 이상 또는 14pt(18.66px) 굵은 글씨입니다. 색상값은 서버로 전송되지 않습니다.
+    <div class="note" data-i18n-html="b_contrast_note">
+      대비비는 WCAG 상대 휘도 공식으로 계산합니다(흰색·검정 = 최대 21:1). 기준: <strong>AA</strong> 일반 4.5, 큰 텍스트 3.0 / <strong>AAA</strong> 일반 7.0, 큰 텍스트 4.5. '큰 텍스트'는 약 18pt(24px) 이상 또는 14pt(18.66px) 굵은 글씨입니다. 색상값은 서버로 전송되지 않습니다.
     </div>
   </div>
 </div>
@@ -107,7 +107,7 @@
     return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b);
   }
   function ratio(fg,bg){ var a=lum(fg), b=lum(bg), hi=Math.max(a,b), lo=Math.min(a,b); return (hi+0.05)/(lo+0.05); }
-  function mark(el, ok){ el.textContent = ok?'통과':'실패'; el.className='pf '+(ok?'pass':'fail'); }
+  function mark(el, ok){ el.textContent = ok?t('b_contrast_pass'):t('b_contrast_fail'); el.className='pf '+(ok?'pass':'fail'); }
 
   function calc(){
     var fg=norm($('fgText').value), bg=norm($('bgText').value);
@@ -125,7 +125,8 @@
   $('bg').addEventListener('input', function(){ $('bgText').value=this.value.toUpperCase(); calc(); });
   $('fgText').addEventListener('input', calc);
   $('bgText').addEventListener('input', calc);
-  $('swap').addEventListener('click', function(){ var t=$('fgText').value; $('fgText').value=$('bgText').value; $('bgText').value=t; calc(); });
+  $('swap').addEventListener('click', function(){ var tmp=$('fgText').value; $('fgText').value=$('bgText').value; $('bgText').value=tmp; calc(); });
+  window.onI18n = calc;
   calc();
 </script>
 </body>

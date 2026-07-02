@@ -23,13 +23,13 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:680px;">
-  <h1>전자 서명 패드</h1>
-  <p class="sub">아래 영역에 마우스나 손가락으로 서명하고 투명 배경 PNG로 저장하세요.</p>
+  <h1 data-i18n="b_signature_title">전자 서명 패드</h1>
+  <p class="sub" data-i18n="b_signature_sub">아래 영역에 마우스나 손가락으로 서명하고 투명 배경 PNG로 저장하세요.</p>
   <div class="card">
-    <div class="opts"><label>펜 색<input id="color" type="color" value="#111111"/></label><label>굵기 <input id="w" type="range" min="1" max="6" value="2.5" step="0.5"/></label><label><input type="checkbox" id="bg"/> 흰 배경 포함</label></div>
+    <div class="opts"><label><span data-i18n="b_signature_pen_color">펜 색</span><input id="color" type="color" value="#111111"/></label><label><span data-i18n="b_signature_pen_width">굵기</span> <input id="w" type="range" min="1" max="6" value="2.5" step="0.5"/></label><label><input type="checkbox" id="bg"/> <span data-i18n="b_signature_white_bg">흰 배경 포함</span></label></div>
     <canvas class="pad" id="pad" width="640" height="260"></canvas>
-    <div class="actions" style="margin-top:.7rem;"><button class="btn" id="dl" type="button">⬇️ PNG 저장</button><button class="btn btn-ghost" id="undo" type="button">↶ 실행취소</button><button class="btn btn-ghost" id="clear" type="button">지우기</button></div>
-    <div class="note">오픈소스 <b>signature_pad</b>(MIT, <a href="https://github.com/szimek/signature_pad" target="_blank" rel="noopener">szimek/signature_pad</a>)을 자체 호스팅합니다. 기본은 투명 배경으로 저장되며, 서명 이미지는 서버로 전송되지 않습니다.</div>
+    <div class="actions" style="margin-top:.7rem;"><button class="btn" id="dl" type="button" data-i18n="b_signature_btn_save">⬇️ PNG 저장</button><button class="btn btn-ghost" id="undo" type="button" data-i18n="b_signature_btn_undo">↶ 실행취소</button><button class="btn btn-ghost" id="clear" type="button" data-i18n="b_signature_btn_clear">지우기</button></div>
+    <div class="note" data-i18n-html="b_signature_note">오픈소스 <b>signature_pad</b>(MIT, <a href="https://github.com/szimek/signature_pad" target="_blank" rel="noopener">szimek/signature_pad</a>)을 자체 호스팅합니다. 기본은 투명 배경으로 저장되며, 서명 이미지는 서버로 전송되지 않습니다.</div>
   </div>
 </div>
 <script src="/vendor/signature_pad-4/signature_pad.umd.min.js"></script>
@@ -46,7 +46,7 @@
   $('w').addEventListener('input',function(){ pad.minWidth=+$('w').value*0.6; pad.maxWidth=+$('w').value*1.4; });
   $('clear').addEventListener('click',function(){ pad.clear(); });
   $('undo').addEventListener('click',function(){ var d=pad.toData(); if(d.length){ d.pop(); pad.fromData(d); } });
-  $('dl').addEventListener('click',function(){ if(pad.isEmpty()){toast('먼저 서명해 주세요');return;}
+  $('dl').addEventListener('click',function(){ if(pad.isEmpty()){toast(t('b_signature_toast_empty'));return;}
     var url; if($('bg').checked){ var tmp=document.createElement('canvas');tmp.width=cv.width;tmp.height=cv.height;var x=tmp.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,tmp.width,tmp.height);x.drawImage(cv,0,0);url=tmp.toDataURL('image/png'); }
     else url=pad.toDataURL('image/png');
     var a=document.createElement('a');a.href=url;a.download='signature.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},100); });

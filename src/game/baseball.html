@@ -26,18 +26,21 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:520px;">
-  <h1>숫자야구</h1>
-  <p class="sub">컴퓨터가 정한 <b>서로 다른 숫자</b>를 맞혀 보세요. 자리와 숫자가 맞으면 S(스트라이크), 숫자만 맞으면 B(볼)!</p>
+  <h1 data-i18n="b_baseball_title">숫자야구</h1>
+  <p class="sub" data-i18n-html="b_baseball_sub">컴퓨터가 정한 <b>서로 다른 숫자</b>를 맞혀 보세요. 자리와 숫자가 맞으면 S(스트라이크), 숫자만 맞으면 B(볼)!</p>
   <div class="card">
     <div class="bar">
-      <select id="digits"><option value="3">3자리</option><option value="4">4자리</option></select>
-      <input id="guess" inputmode="numeric" maxlength="4" placeholder="예: 123"/>
-      <button class="btn" id="go" type="button">확인</button>
+      <select id="digits">
+        <option value="3" data-i18n="b_baseball_opt3">3자리</option>
+        <option value="4" data-i18n="b_baseball_opt4">4자리</option>
+      </select>
+      <input id="guess" inputmode="numeric" maxlength="4" data-i18n-ph="b_baseball_placeholder"/>
+      <button class="btn" id="go" type="button" data-i18n="b_baseball_btn_go">확인</button>
     </div>
     <div class="win" id="win"></div>
-    <button class="btn btn-ghost" id="newgame" type="button" style="width:100%;margin-bottom:.6rem;">새 게임</button>
+    <button class="btn btn-ghost" id="newgame" type="button" style="width:100%;margin-bottom:.6rem;" data-i18n="b_baseball_btn_newgame">새 게임</button>
     <div class="hist" id="hist"></div>
-    <div class="note">서로 다른 숫자로 구성됩니다(중복 없음). 예: 정답 123에 추측 132 → 1S 2B. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_baseball_note">서로 다른 숫자로 구성됩니다(중복 없음). 예: 정답 123에 추측 132 → 1S 2B. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -49,14 +52,15 @@
     $('hist').innerHTML=''; $('win').textContent=''; $('guess').value=''; $('guess').maxLength=n; $('guess').focus();
   }
   function judge(g){ var s=0,b=0; for(var i=0;i<n;i++){ if(g[i]===ans[i])s++; else if(ans.indexOf(g[i])>=0)b++; } return {s:s,b:b}; }
-  function go(){ if(done)return; var v=$('guess').value.trim(); if(!/^\d+$/.test(v)||v.length!==n){ $('win').textContent='숫자 '+n+'자리를 입력하세요'; $('win').style.color='#e0563b'; return; }
-    var g=v.split('').map(Number); if(new Set(g).size!==n){ $('win').textContent='서로 다른 숫자로 입력하세요'; $('win').style.color='#e0563b'; return; }
+  function go(){ if(done)return; var v=$('guess').value.trim(); if(!/^\d+$/.test(v)||v.length!==n){ $('win').textContent=t('b_baseball_err_digits').replace('{n}',n); $('win').style.color='#e0563b'; return; }
+    var g=v.split('').map(Number); if(new Set(g).size!==n){ $('win').textContent=t('b_baseball_err_unique'); $('win').style.color='#e0563b'; return; }
     tries++; var r=judge(g);
     var txt = r.s===0&&r.b===0 ? 'OUT' : (r.s>0?r.s+'S ':'')+(r.b>0?r.b+'B':''); txt=txt.trim()||'OUT';
-    $('hist').insertAdjacentHTML('afterbegin','<div class="h"><span class="g">'+v+'</span><span class="r">'+txt+'</span><span>'+tries+'회</span></div>');
+    $('hist').insertAdjacentHTML('afterbegin','<div class="h"><span class="g">'+v+'</span><span class="r">'+txt+'</span><span>'+tries+t('b_baseball_tries_unit')+'</span></div>');
     $('guess').value=''; $('guess').focus();
-    if(r.s===n){ done=true; $('win').textContent='🎉 정답! '+tries+'번 만에 맞혔어요'; $('win').style.color='#16a34a'; }
+    if(r.s===n){ done=true; $('win').textContent='🎉 '+t('b_baseball_win').replace('{n}',tries); $('win').style.color='#16a34a'; }
   }
+  window.onI18n=function(){ if($('guess').getAttribute('placeholder')){ $('guess').placeholder=t('b_baseball_placeholder'); } };
   $('go').addEventListener('click',go);
   $('guess').addEventListener('keydown',function(e){ if(e.key==='Enter')go(); });
   $('newgame').addEventListener('click',newGame);

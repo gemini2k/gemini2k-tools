@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>Git Diff 뷰어 (unified diff 시각화) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="git diff·patch(unified diff) 텍스트를 GitHub처럼 보기 좋게 시각화합니다. 좌우 분할·라인 보기, 구문 강조. 코드 리뷰에. diff2html 자체 호스팅. 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/gitdiff.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="Git Diff 뷰어 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="unified diff를 GitHub 스타일로 시각화(diff2html). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/gitdiff.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<link rel="stylesheet" href="/vendor/diff2html-3/diff2html.min.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:150px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.82rem;color:var(--text);resize:vertical;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.6rem 0;}select{padding:.5rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);}
+#out{margin-top:.4rem;border:1px solid var(--border);border-radius:11px;overflow:auto;background:#fff;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DeveloperApplication","name":"Git Diff 뷰어","description":"unified diff(patch)를 GitHub 스타일로 시각화합니다(diff2html).","url":"https://gemini2k.co.kr/gitdiff.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:920px;">
+  <h1 data-i18n="b_gitdiff_title">Git Diff 뷰어</h1>
+  <p class="sub" data-i18n-html="b_gitdiff_sub"><code>git diff</code> 결과(unified diff)를 붙여넣으면 GitHub처럼 보기 좋게 그려 줍니다.</p>
+  <div class="card" style="max-width:none;">
+    <textarea id="in">diff --git a/app.js b/app.js
+index 1234567..89abcde 100644
+--- a/app.js
++++ b/app.js
+@@ -1,5 +1,6 @@
+ function greet(name) {
+-  return "Hi " + name;
++  // 인사말 개선
++  return `안녕하세요, ${name}님`;
+ }
+
+-console.log(greet("world"));
++console.log(greet("방문자"));</textarea>
+    <div class="row"><span data-i18n="b_gitdiff_view_label">보기</span> <select id="format"><option value="line-by-line" data-i18n="b_gitdiff_opt_line">한 줄씩</option><option value="side-by-side" data-i18n="b_gitdiff_opt_side">좌우 분할</option></select></div>
+    <div id="out"></div>
+    <div class="note" data-i18n-html="b_gitdiff_note">오픈소스 <b>diff2html</b>(MIT, <a href="https://github.com/rtfpessoa/diff2html" target="_blank" rel="noopener">rtfpessoa/diff2html</a>)을 자체 호스팅합니다. <code>git diff</code> 또는 <code>diff -u</code> 형식의 텍스트를 넣으세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/diff2html-3/diff2html-ui.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function render(){ try{ var diff=$('in').value;
+      if(!diff.trim()){ $('out').innerHTML='<div style="padding:1rem;color:#888;">'+t('b_gitdiff_msg_empty')+'</div>'; return; }
+      var ui=new Diff2HtmlUI($('out'),diff,{drawFileList:false,matching:'lines',outputFormat:$('format').value});
+      ui.draw(); ui.highlightCode();
+      if(!$('out').querySelector('.d2h-file-wrapper'))$('out').innerHTML='<div style="padding:1rem;color:#888;">'+t('b_gitdiff_msg_nodiff')+'</div>'; }
+    catch(e){ $('out').innerHTML='<div style="padding:1rem;color:#c00;">⚠️ '+e.message+'</div>'; } }
+  window.onI18n=render;
+  var _t; $('in').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(render,300);}); $('format').addEventListener('change',render);
+  render();
+</script>
+</body>
+</html>

@@ -58,27 +58,27 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:480px;">
-  <h1>두더지 잡기</h1>
-  <p class="sub">30초 동안 튀어나오는 두더지를 빠르게 잡으세요!</p>
+  <h1 data-i18n="b_whack_title">두더지 잡기</h1>
+  <p class="sub" data-i18n="b_whack_sub">30초 동안 튀어나오는 두더지를 빠르게 잡으세요!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li>‘시작’을 누르면 두더지가 무작위로 튀어나옵니다</li>
-    <li>두더지를 클릭(터치)하면 점수가 오릅니다</li>
-    <li>30초 안에 최대한 많이 잡으세요</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_whack_howto_title">조작법</b><ol>
+    <li data-i18n="b_whack_howto_1">'시작'을 누르면 두더지가 무작위로 튀어나옵니다</li>
+    <li data-i18n="b_whack_howto_2">두더지를 클릭(터치)하면 점수가 오릅니다</li>
+    <li data-i18n="b_whack_howto_3">30초 안에 최대한 많이 잡으세요</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
-      <button class="btn" id="start" type="button">시작</button>
+      <button class="btn" id="start" type="button" data-i18n="b_whack_btn_start">시작</button>
       <div class="scores">
-        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
-        <div class="sbox"><div class="l">남은 시간</div><div class="v" id="time">30</div></div>
-        <div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_whack_label_score">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_whack_label_time">남은 시간</div><div class="v" id="time">30</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_whack_label_best">최고</div><div class="v" id="best">0</div></div>
       </div>
     </div>
     <div class="holes" id="holes"></div>
     <div class="msg" id="msg"></div>
-    <div class="note">모든 진행은 브라우저에서만 이루어지며 최고 점수만 이 기기에 저장됩니다.</div>
+    <div class="note" data-i18n="b_whack_note">모든 진행은 브라우저에서만 이루어지며 최고 점수만 이 기기에 저장됩니다.</div>
   </div>
 </div>
 
@@ -106,14 +106,14 @@
     if(free.length){ var c=free[Math.floor(Math.random()*free.length)];
       c.querySelector('.mole').textContent=MOLES[Math.floor(Math.random()*MOLES.length)];
       c.classList.add('up','live');
-      var t=setTimeout(function(){ c.classList.remove('up','live'); }, 700+Math.random()*600);
-      hideTimers.push(t);
+      var tmp=setTimeout(function(){ c.classList.remove('up','live'); }, 700+Math.random()*600);
+      hideTimers.push(tmp);
     }
     spawnT=setTimeout(spawn, 500+Math.random()*450);
   }
   function end(){ playing=false; clearInterval(tickT); clearTimeout(spawnT); clearAll();
     if(score>best){ best=score; localStorage.setItem('whack:best',best); $('best').textContent=best; }
-    $('msg').textContent='⏰ 종료! 점수 '+score; }
+    $('msg').textContent=t('b_whack_msg_end').replace('{score}',score); }
 
   holes.addEventListener('click', function(e){ var c=e.target.closest('.hole'); if(!c||!playing||gc.isPaused()) return;
     if(c.classList.contains('up')){ score++; $('score').textContent=score; c.classList.add('bonk'); var cc=c;

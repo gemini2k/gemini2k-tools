@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>RSA 키쌍 생성기 (공개키·개인키 PEM) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="RSA 공개키·개인키 쌍을 PEM 형식으로 생성합니다(2048/4096비트). SSH·암호화·서명 키 발급에. node-forge 자체 호스팅. 업로드 없이 브라우저에서만 생성됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/rsakey.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="RSA 키쌍 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="RSA 공개키·개인키(PEM)를 브라우저에서 생성. 전송 없음."/><meta property="og:url" content="https://gemini2k.co.kr/rsakey.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.8rem;}select{padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+.keys{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.5rem;}@media(max-width:640px){.keys{grid-template-columns:1fr;}}
+.kbox h3{font-size:.9rem;margin:0 0 .35rem;}textarea{width:100%;min-height:200px;padding:.7rem;border:1px solid var(--border);border-radius:10px;background:var(--ground);font-family:ui-monospace,monospace;font-size:.72rem;color:var(--text);resize:vertical;}
+.kbtn{margin-top:.35rem;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"RSA 키쌍 생성기","description":"RSA 공개키·개인키 쌍을 PEM 형식으로 생성합니다(node-forge).","url":"https://gemini2k.co.kr/rsakey.html","applicationCategory":"SecurityApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/BSD-3-Clause","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:820px;">
+  <h1 data-i18n="b_rsakey_title">RSA 키쌍 생성기</h1>
+  <p class="sub" data-i18n="b_rsakey_sub">RSA 공개키·개인키 쌍을 PEM 형식으로 만들어 줍니다. 모든 생성은 브라우저 안에서만 이루어집니다.</p>
+  <div class="card">
+    <div class="row"><span data-i18n="b_rsakey_bits_label">키 길이</span> <select id="bits"><option value="2048" data-i18n="b_rsakey_bits_2048">2048비트 (권장)</option><option value="3072" data-i18n="b_rsakey_bits_3072">3072비트</option><option value="4096" data-i18n="b_rsakey_bits_4096">4096비트 (느림)</option></select>
+      <button class="btn" id="gen" type="button" data-i18n="b_rsakey_btn_gen">🔑 키 생성</button><span id="status" style="color:var(--muted);font-size:.9rem;"></span></div>
+    <div class="keys">
+      <div class="kbox"><h3 data-i18n="b_rsakey_pub_title">🔓 공개키 (Public Key)</h3><textarea id="pub" readonly data-i18n-ph="b_rsakey_pub_ph" placeholder="여기에 공개키가 표시됩니다"></textarea><button class="btn btn-ghost kbtn" id="cpub" type="button" data-i18n="b_rsakey_btn_copy">📋 복사</button></div>
+      <div class="kbox"><h3 data-i18n="b_rsakey_priv_title">🔒 개인키 (Private Key)</h3><textarea id="priv" readonly data-i18n-ph="b_rsakey_priv_ph" placeholder="여기에 개인키가 표시됩니다"></textarea><button class="btn btn-ghost kbtn" id="cpriv" type="button" data-i18n="b_rsakey_btn_copy">📋 복사</button></div>
+    </div>
+    <div class="note" data-i18n-html="b_rsakey_note">오픈소스 <b>node-forge</b>(BSD-3-Clause, <a href="https://github.com/digitalbazaar/forge" target="_blank" rel="noopener">digitalbazaar/forge</a>)를 자체 호스팅합니다. 키는 서버로 전송되지 않고 이 브라우저에서만 생성됩니다. 개인키는 안전하게 보관하세요.</div>
+  </div>
+</div>
+<script src="/vendor/forge-1/forge.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  $('gen').addEventListener('click',function(){
+    var bits=+$('bits').value; $('gen').disabled=true; $('status').textContent=t('b_rsakey_status_generating');
+    $('pub').value='';$('priv').value='';
+    forge.pki.rsa.generateKeyPair({bits:bits,e:0x10001},function(err,keypair){
+      $('gen').disabled=false;
+      if(err){$('status').textContent=t('b_rsakey_status_error');return;}
+      $('pub').value=forge.pki.publicKeyToPem(keypair.publicKey).trim();
+      $('priv').value=forge.pki.privateKeyToPem(keypair.privateKey).trim();
+      $('status').textContent=t('b_rsakey_status_done');
+    });
+  });
+  $('cpub').addEventListener('click',function(){if($('pub').value)navigator.clipboard.writeText($('pub').value).then(function(){toast(t('b_rsakey_toast_pub'));});});
+  $('cpriv').addEventListener('click',function(){if($('priv').value)navigator.clipboard.writeText($('priv').value).then(function(){toast(t('b_rsakey_toast_priv'));});});
+</script>
+</body>
+</html>

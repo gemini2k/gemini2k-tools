@@ -52,41 +52,46 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:520px;">
-  <h1>더치페이·N빵 계산기</h1>
-  <p class="sub">총 금액과 인원만 넣으면 1인당 낼 금액을 깔끔하게 나눠 줍니다. 올림 단위와 팁도 반영돼요.</p>
+  <h1 data-i18n="b_dutchpay_h1">더치페이·N빵 계산기</h1>
+  <p class="sub" data-i18n="b_dutchpay_sub">총 금액과 인원만 넣으면 1인당 낼 금액을 깔끔하게 나눠 줍니다. 올림 단위와 팁도 반영돼요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>총 금액과 인원을 입력합니다</li>
-    <li>필요하면 팁·봉사료(%)와 1인당 올림 단위를 고릅니다</li>
-    <li>1인당 금액과 모인 총액·차액을 바로 확인합니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_dutchpay_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_dutchpay_howto_1">총 금액과 인원을 입력합니다</li>
+    <li data-i18n="b_dutchpay_howto_2">필요하면 팁·봉사료(%)와 1인당 올림 단위를 고릅니다</li>
+    <li data-i18n="b_dutchpay_howto_3">1인당 금액과 모인 총액·차액을 바로 확인합니다</li>
   </ol></div></div>
 
   <div class="card">
-    <div class="fld"><label for="total">총 금액 (원)</label><input id="total" type="number" min="0" value="83000" inputmode="numeric"/></div>
+    <div class="fld"><label for="total" data-i18n="b_dutchpay_lbl_total">총 금액 (원)</label><input id="total" type="number" min="0" value="83000" inputmode="numeric"/></div>
     <div class="row">
-      <div class="fld"><label for="people">인원</label><input id="people" type="number" min="1" value="4" inputmode="numeric"/></div>
-      <div class="fld"><label for="tip">팁·봉사료 (%)</label><input id="tip" type="number" min="0" value="0" inputmode="decimal"/></div>
+      <div class="fld"><label for="people" data-i18n="b_dutchpay_lbl_people">인원</label><input id="people" type="number" min="1" value="4" inputmode="numeric"/></div>
+      <div class="fld"><label for="tip" data-i18n="b_dutchpay_lbl_tip">팁·봉사료 (%)</label><input id="tip" type="number" min="0" value="0" inputmode="decimal"/></div>
     </div>
-    <div class="fld"><label for="round">1인당 올림 단위</label><select id="round">
-      <option value="1">원 단위(올림 없음)</option>
-      <option value="100" selected>100원</option>
-      <option value="500">500원</option>
-      <option value="1000">1,000원</option>
+    <div class="fld"><label for="round" data-i18n="b_dutchpay_lbl_round">1인당 올림 단위</label><select id="round">
+      <option value="1" data-i18n="b_dutchpay_opt_1">원 단위(올림 없음)</option>
+      <option value="100" selected data-i18n="b_dutchpay_opt_100">100원</option>
+      <option value="500" data-i18n="b_dutchpay_opt_500">500원</option>
+      <option value="1000" data-i18n="b_dutchpay_opt_1000">1,000원</option>
     </select></div>
-    <div class="big"><div class="n" id="per">-</div><div class="u">1인당</div></div>
+    <div class="big"><div class="n" id="per">-</div><div class="u" data-i18n="b_dutchpay_per_label">1인당</div></div>
     <div class="lines">
-      <div class="r"><span>팁 포함 총액</span><span id="grand">-</span></div>
-      <div class="r"><span>1인당 × 인원</span><span id="collected">-</span></div>
-      <div class="r"><span>남는 차액(올림 적립)</span><span id="diff">-</span></div>
+      <div class="r"><span data-i18n="b_dutchpay_row_grand">팁 포함 총액</span><span id="grand">-</span></div>
+      <div class="r"><span data-i18n="b_dutchpay_row_collected">1인당 × 인원</span><span id="collected">-</span></div>
+      <div class="r"><span data-i18n="b_dutchpay_row_diff">남는 차액(올림 적립)</span><span id="diff">-</span></div>
     </div>
-    <div class="note">올림 단위를 적용하면 1인당 금액이 깔끔해지고, 모인 금액이 실제 총액보다 조금 많아질 수 있습니다(차액은 팁이나 적립으로). 모든 계산은 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_dutchpay_note">올림 단위를 적용하면 1인당 금액이 깔끔해지고, 모인 금액이 실제 총액보다 조금 많아질 수 있습니다(차액은 팁이나 적립으로). 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
-  function won(n){ return Math.round(n).toLocaleString()+'원'; }
+  function won(n){
+    var lang=typeof curLang==='function'?curLang():'ko';
+    var locale={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[lang]||'ko-KR';
+    var unit=t('b_dutchpay_currency_unit');
+    return Math.round(n).toLocaleString(locale)+unit;
+  }
   function calc(){
     var total=+$('total').value||0, people=Math.max(1,parseInt($('people').value,10)||1), tip=+$('tip').value||0, unit=+$('round').value||1;
     var grand=total*(1+tip/100);
@@ -99,6 +104,7 @@
   }
   ['total','people','tip','round'].forEach(function(id){ $(id).addEventListener('input',calc); $(id).addEventListener('change',calc); });
   calc();
+  window.onI18n=calc;
 </script>
 </body>
 </html>

@@ -55,25 +55,25 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:820px;">
-  <h1>PPT(PPTX) 텍스트 추출기</h1>
-  <p class="sub">파워포인트(.pptx)의 모든 슬라이드 텍스트를 순서대로 추출합니다. 발표 자료 내용을 빠르게 가져오세요.</p>
+  <h1 data-i18n="b_pptx2txt_title">PPT(PPTX) 텍스트 추출기</h1>
+  <p class="sub" data-i18n="b_pptx2txt_sub">파워포인트(.pptx)의 모든 슬라이드 텍스트를 순서대로 추출합니다. 발표 자료 내용을 빠르게 가져오세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>파워포인트 파일(.pptx)을 끌어다 놓거나 클릭해 올립니다</li>
-    <li>슬라이드별 텍스트가 순서대로 추출됩니다</li>
-    <li>‘전체 복사’ 또는 ‘.txt 다운로드’로 가져갑니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_pptx2txt_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_pptx2txt_howto1">파워포인트 파일(.pptx)을 끌어다 놓거나 클릭해 올립니다</li>
+    <li data-i18n="b_pptx2txt_howto2">슬라이드별 텍스트가 순서대로 추출됩니다</li>
+    <li data-i18n="b_pptx2txt_howto3">'전체 복사' 또는 '.txt 다운로드'로 가져갑니다</li>
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">📑</div><div><strong>파워포인트 파일(.pptx)을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.pptx (구형 .ppt는 미지원)</div></div>
+    <div class="drop" id="drop"><div class="big">📑</div><div><strong data-i18n="b_pptx2txt_drop_label">파워포인트 파일(.pptx)을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;" data-i18n="b_pptx2txt_drop_hint">.pptx (구형 .ppt는 미지원)</div></div>
     <input type="file" id="file" accept=".pptx" class="hide"/>
     <div class="meta hide" id="meta"></div>
     <div class="actions hide" id="actions">
-      <button class="btn" id="copy" type="button">📋 전체 복사</button>
-      <button class="btn btn-ghost" id="dl" type="button">⬇️ .txt 다운로드</button>
+      <button class="btn" id="copy" type="button" data-i18n="b_pptx2txt_btn_copy">📋 전체 복사</button>
+      <button class="btn btn-ghost" id="dl" type="button" data-i18n="b_pptx2txt_btn_dl">⬇️ .txt 다운로드</button>
     </div>
     <div class="slides hide" id="slides"></div>
-    <div class="note">.pptx(2007 이후 형식)만 지원합니다. 구형 .ppt는 파워포인트에서 .pptx로 저장 후 사용하세요. 도형·텍스트 상자의 글자를 슬라이드 순서대로 추출하며 이미지·차트 그림은 제외됩니다. 파일은 브라우저 안에서만 처리됩니다.</div>
+    <div class="note" data-i18n="b_pptx2txt_note">.pptx(2007 이후 형식)만 지원합니다. 구형 .ppt는 파워포인트에서 .pptx로 저장 후 사용하세요. 도형·텍스트 상자의 글자를 슬라이드 순서대로 추출하며 이미지·차트 그림은 제외됩니다. 파일은 브라우저 안에서만 처리됩니다.</div>
   </div>
 </div>
 
@@ -85,14 +85,14 @@
   var slides=[], baseName='presentation';
   function fail(m){ $('meta').classList.remove('hide'); $('meta').textContent=m; $('actions').classList.add('hide'); $('slides').classList.add('hide'); }
   function readFile(f){ if(!f) return; baseName=f.name.replace(/\.[^.]+$/,'')||'presentation';
-    if(!/\.pptx$/i.test(f.name)){ fail('.pptx 파일만 지원합니다. 구형 .ppt는 .pptx로 저장 후 사용하세요.'); return; }
+    if(!/\.pptx$/i.test(f.name)){ fail(t('b_pptx2txt_err_not_pptx')); return; }
     f.arrayBuffer().then(function(buf){ return JSZip.loadAsync(buf); }).then(function(zip){
       var names=Object.keys(zip.files).filter(function(n){ return /^ppt\/slides\/slide\d+\.xml$/.test(n); });
-      if(!names.length) throw new Error('슬라이드를 찾을 수 없습니다.');
+      if(!names.length) throw new Error(t('b_pptx2txt_err_no_slide'));
       names.sort(function(a,b){ return (+a.match(/slide(\d+)/)[1]) - (+b.match(/slide(\d+)/)[1]); });
       return Promise.all(names.map(function(n){ return zip.file(n).async('string'); }));
     }).then(function(xmls){ slides=xmls.map(extract); show(); })
-    .catch(function(e){ fail('파일을 읽을 수 없습니다. 올바른 .pptx 파일인지 확인해 주세요.'); });
+    .catch(function(e){ fail(t('b_pptx2txt_err_read')); });
   }
   function extract(xml){
     var out=[]; var re=/<a:t>([\s\S]*?)<\/a:t>/g, m;
@@ -101,11 +101,12 @@
       .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'");
     return s.replace(/\n{3,}/g,'\n\n').trim();
   }
-  function allText(){ return slides.map(function(s,i){ return '── 슬라이드 '+(i+1)+' ──\n'+(s||'(텍스트 없음)'); }).join('\n\n'); }
+  function allText(){ return slides.map(function(s,i){ return t('b_pptx2txt_slide_sep').replace('{n}',i+1)+'\n'+(s||t('b_pptx2txt_no_text')); }).join('\n\n'); }
   function show(){
     var n=slides.length, words=slides.join(' ').split(/\s+/).filter(Boolean).length;
-    $('meta').classList.remove('hide'); $('meta').textContent='슬라이드 '+n+'개 · 단어 약 '+words.toLocaleString()+'개';
-    $('slides').innerHTML=slides.map(function(s,i){ return '<div class="slide"><h3>슬라이드 '+(i+1)+'</h3><pre>'+esc(s||'(텍스트 없음)')+'</pre></div>'; }).join('');
+    var locale={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[window.curLang?curLang():'ko'];
+    $('meta').classList.remove('hide'); $('meta').textContent=t('b_pptx2txt_meta').replace('{n}',n).replace('{w}',words.toLocaleString(locale));
+    $('slides').innerHTML=slides.map(function(s,i){ return '<div class="slide"><h3>'+t('b_pptx2txt_slide_label').replace('{n}',i+1)+'</h3><pre>'+esc(s||t('b_pptx2txt_no_text'))+'</pre></div>'; }).join('');
     $('slides').classList.remove('hide'); $('actions').classList.remove('hide');
   }
   function esc(s){ return String(s).replace(/[&<>]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]);}); }
@@ -116,8 +117,9 @@
   ['dragover','dragenter'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.add('over');}); });
   ['dragleave','drop'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.remove('over');}); });
   $('drop').addEventListener('drop',function(e){ if(e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]); });
-  $('copy').addEventListener('click',function(){ if(slides.length) navigator.clipboard.writeText(allText()).then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click',function(){ if(slides.length) navigator.clipboard.writeText(allText()).then(function(){toast(t('b_pptx2txt_toast_copied'));}); });
   $('dl').addEventListener('click',download);
+  window.onI18n=function(){ if(slides.length) show(); };
 </script>
 </body>
 </html>

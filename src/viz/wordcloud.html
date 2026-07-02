@@ -23,14 +23,17 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:760px;">
-  <h1>워드클라우드 생성기</h1>
-  <p class="sub">글을 넣으면 자주 나온 단어를 크게 그려 워드클라우드를 만들어 줍니다.</p>
+  <h1 data-i18n="b_wordcloud_title">워드클라우드 생성기</h1>
+  <p class="sub" data-i18n="b_wordcloud_sub">글을 넣으면 자주 나온 단어를 크게 그려 워드클라우드를 만들어 줍니다.</p>
   <div class="card">
-    <textarea id="in">워드클라우드는 자주 나오는 단어를 크게 보여줍니다. 단어 단어 단어 빈도 빈도 시각화 시각화 시각화 분석 텍스트 텍스트 클라우드 클라우드 클라우드 클라우드</textarea>
-    <div class="opts"><label>색 <select id="color"><option value="random-dark">진한색</option><option value="random-light">연한색</option></select></label><label>최소 글자수 <select id="min"><option>1</option><option selected>2</option><option>3</option></select></label></div>
+    <textarea id="in" data-i18n-ph="b_wordcloud_placeholder">워드클라우드는 자주 나오는 단어를 크게 보여줍니다. 단어 단어 단어 빈도 빈도 시각화 시각화 시각화 분석 텍스트 텍스트 클라우드 클라우드 클라우드 클라우드</textarea>
+    <div class="opts">
+      <label><span data-i18n="b_wordcloud_color_label">색</span> <select id="color"><option value="random-dark" data-i18n="b_wordcloud_color_dark">진한색</option><option value="random-light" data-i18n="b_wordcloud_color_light">연한색</option></select></label>
+      <label><span data-i18n="b_wordcloud_min_label">최소 글자수</span> <select id="min"><option>1</option><option selected>2</option><option>3</option></select></label>
+    </div>
     <div class="cvwrap"><canvas id="cv" width="700" height="400"></canvas></div>
-    <div class="actions"><button class="btn" id="gen" type="button">☁️ 생성</button><button class="btn btn-ghost" id="png" type="button">⬇️ PNG</button></div>
-    <div class="note">오픈소스 <b>wordcloud2.js</b>(MIT, <a href="https://github.com/timdream/wordcloud2.js" target="_blank" rel="noopener">timdream/wordcloud2.js</a>)를 자체 호스팅합니다. 단어는 공백·문장부호로 나누며 흔한 조사 일부를 제외합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="actions"><button class="btn" id="gen" type="button" data-i18n="b_wordcloud_btn_gen">☁️ 생성</button><button class="btn btn-ghost" id="png" type="button" data-i18n="b_wordcloud_btn_png">⬇️ PNG</button></div>
+    <div class="note" data-i18n-html="b_wordcloud_note">오픈소스 <b>wordcloud2.js</b>(MIT, <a href="https://github.com/timdream/wordcloud2.js" target="_blank" rel="noopener">timdream/wordcloud2.js</a>)를 자체 호스팅합니다. 단어는 공백·문장부호로 나누며 흔한 조사 일부를 제외합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/wordcloud2-1.2/wordcloud2.min.js"></script>
@@ -42,7 +45,7 @@
   function gen(){ var min=+$('min').value; var toks=$('in').value.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
     var map={}; toks.forEach(function(w){ if(w.length<min||STOP[w.toLowerCase()])return; map[w]=(map[w]||0)+1; });
     var list=Object.keys(map).map(function(k){return [k,map[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,120);
-    if(!list.length){toast('단어가 부족해요');return;}
+    if(!list.length){toast(t('b_wordcloud_toast_empty'));return;}
     var max=list[0][1];
     WordCloud($('cv'),{ list:list, weightFactor:function(s){return Math.max(12, s/max*64);}, color:$('color').value, backgroundColor:'#fff', rotateRatio:0.5, gridSize:6, fontFamily:'Pretendard,sans-serif' });
   }

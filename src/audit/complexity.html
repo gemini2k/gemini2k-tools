@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>코드 복잡도(순환복잡도) 분석 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="JavaScript 코드의 함수별 순환복잡도(Cyclomatic Complexity)를 계산합니다. 분기·반복·논리연산 기반. acorn 자체 호스팅."/>
+<link rel="canonical" href="https://gemini2k.co.kr/complexity.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="코드 복잡도(순환복잡도) 분석 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="JavaScript 코드의 함수별 순환복잡도(Cyclomatic Complexity)를 계산합니다. 분기·반복·논리연산 기반. acorn 자체 호스팅."/><meta property="og:url" content="https://gemini2k.co.kr/complexity.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"코드 복잡도(순환복잡도) 분석","description":"JavaScript 코드의 함수별 순환복잡도(Cyclomatic Complexity)를 계산합니다. 분기·반복·논리연산 기반. acorn 자체 호스팅.","url":"https://gemini2k.co.kr/complexity.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_complexity_title">코드 복잡도 분석</h1>
+  <p class="sub" data-i18n="b_complexity_sub">JavaScript 함수별 순환복잡도를 계산합니다.</p>
+  <div class="card" style="max-width:none;">
+    <textarea class="in" id="in" spellcheck="false">function classify(n) {
+  if (n < 0) return 'neg';
+  else if (n === 0) return 'zero';
+  for (var i = 0; i < n; i++) {
+    if (i % 2 === 0 && i > 10) continue;
+  }
+  return n > 100 ? 'big' : 'small';
+}</textarea><div class="err" id="err"></div><div class="res" id="res" style="margin-top:.6rem"></div>
+    <div class="note" data-i18n-html="b_complexity_note">오픈소스 <b>acorn</b>(MIT) 파서로 AST를 분석합니다. 순환복잡도 10 이하 권장, 20 초과는 리팩터링 대상입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/acorn-8/acorn.js"></script><script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};
+  function walk(node,fn){if(!node||typeof node.type!=='string')return;fn(node);for(var k in node){if(k==='type')continue;var v=node[k];if(Array.isArray(v))v.forEach(function(c){if(c&&c.type)walk(c,fn);});else if(v&&v.type)walk(v,fn);}}
+  function cc(node){var c=1;walk(node,function(n){if(/IfStatement|ForStatement|ForInStatement|ForOfStatement|WhileStatement|DoWhileStatement|CatchClause|ConditionalExpression/.test(n.type))c++;else if(n.type==='SwitchCase'&&n.test)c++;else if(n.type==='LogicalExpression'&&(n.operator==='&&'||n.operator==='||'))c++;});return c;}
+  function run(){$('err').textContent='';try{var ast=acorn.parse($('in').value,{ecmaVersion:'latest'});var fns=[];
+    walk(ast,function(n){if(/FunctionDeclaration|FunctionExpression|ArrowFunctionExpression/.test(n.type)){var name=(n.id&&n.id.name)||t('b_complexity_anon');fns.push({name:name,cc:cc(n)});}});
+    if(!fns.length){fns.push({name:t('b_complexity_whole'),cc:cc(ast)});}
+    var rows=fns.map(function(f){var col=f.cc<=10?'#16a34a':f.cc<=20?'#d97706':'#dc2626';return '<tr><td><b>'+f.name+'</b></td><td><b style="color:'+col+'">'+f.cc+'</b> '+(f.cc<=10?t('b_complexity_good'):f.cc<=20?t('b_complexity_warn'):t('b_complexity_danger'))+'</td></tr>';}).join('');
+    var max=Math.max.apply(null,fns.map(function(f){return f.cc;}));
+    $('res').innerHTML='<div class="ak-rate"><b>'+t('b_complexity_max_prefix')+max+'</b> <span>· '+t('b_complexity_fn_count_prefix')+fns.length+t('b_complexity_fn_count_suffix')+'</span></div><table>'+rows+'</table>';
+  }catch(e){$('res').innerHTML='';$('err').textContent='⚠️ '+t('b_complexity_parse_error')+e.message;}}
+  $('in').addEventListener('input',run);run();
+  window.onI18n=run;
+</script>
+</body>
+</html>

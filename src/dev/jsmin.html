@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>JavaScript 압축기 (minify·terser) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="자바스크립트 코드를 안전하게 압축(minify)해 용량을 줄입니다. 변수 단축·공백 제거·죽은 코드 제거. terser 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/jsmin.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="JavaScript 압축기 (minify) — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="JS 코드 minify로 용량 절감(terser). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/jsmin.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:160px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.83rem;color:var(--text);resize:vertical;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.6rem 0;}.row label{font-weight:600;font-size:.9rem;display:inline-flex;gap:.35rem;align-items:center;}
+.meta{font-size:.85rem;color:var(--muted);margin:.4rem 0;}
+.out{width:100%;min-height:120px;border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.83rem;color:var(--text);white-space:pre-wrap;word-break:break-all;overflow:auto;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DeveloperApplication","name":"JavaScript 압축기","description":"자바스크립트 코드를 minify해 용량을 줄입니다(terser).","url":"https://gemini2k.co.kr/jsmin.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/BSD-2-Clause","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:820px;">
+  <h1 data-i18n="b_jsmin_title">JavaScript 압축기 (minify)</h1>
+  <p class="sub" data-i18n="b_jsmin_sub">자바스크립트 코드를 안전하게 압축해 용량을 줄입니다.</p>
+  <div class="card">
+    <textarea id="in">// 예시 코드
+function add(first, second) {
+  const result = first + second;
+  return result;
+}
+const numbers = [1, 2, 3, 4, 5];
+const total = numbers.reduce((sum, n) => add(sum, n), 0);
+console.log(total);</textarea>
+    <div class="row">
+      <label><input type="checkbox" id="mangle" checked/> <span data-i18n="b_jsmin_mangle">변수명 단축(mangle)</span></label>
+      <label><input type="checkbox" id="comments"/> <span data-i18n="b_jsmin_keep_comments">주석 유지</span></label>
+      <button class="btn" id="run" type="button" data-i18n="b_jsmin_btn_run">압축</button>
+      <button class="btn btn-ghost" id="copy" type="button">📋 <span data-i18n="b_jsmin_btn_copy">복사</span></button>
+    </div>
+    <div class="meta" id="meta"></div>
+    <div class="out" id="out"></div>
+    <div class="note" data-i18n-html="b_jsmin_note">오픈소스 <b>terser</b>(BSD-2, <a href="https://github.com/terser/terser" target="_blank" rel="noopener">terser/terser</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/terser-5/bundle.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function run(){ var src=$('in').value;
+    Terser.minify(src,{mangle:$('mangle').checked,format:{comments:$('comments').checked}}).then(function(res){
+      if(res.error){ $('out').textContent='⚠️ '+res.error.message; $('meta').textContent=''; window._o=''; return; }
+      $('out').textContent=res.code; window._o=res.code;
+      var b1=new Blob([src]).size, b2=new Blob([res.code]).size;
+      $('meta').textContent=t('b_jsmin_original')+' '+b1+'B → '+t('b_jsmin_compressed')+' '+b2+'B ('+(b1?Math.round((1-b2/b1)*100):0)+'% '+t('b_jsmin_saved')+')';
+    }).catch(function(e){ $('out').textContent='⚠️ '+e.message; }); }
+  $('run').addEventListener('click',run); ['mangle','comments'].forEach(function(id){$(id).addEventListener('change',run);});
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_jsmin_copied'));});});
+  window.onI18n=run;
+  run();
+</script>
+</body>
+</html>

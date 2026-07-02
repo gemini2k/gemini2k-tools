@@ -67,38 +67,38 @@
 <body>
 
 <div class="toolwrap">
-  <h1>사다리타기</h1>
-  <p class="sub">참가자와 결과를 넣고 사다리를 만든 뒤, 이름을 클릭하면 경로를 따라가 결과를 알려줍니다. 모임·내기·역할 정하기에.</p>
+  <h1 data-i18n="b_ladder_title">사다리타기</h1>
+  <p class="sub" data-i18n="b_ladder_sub">참가자와 결과를 넣고 사다리를 만든 뒤, 이름을 클릭하면 경로를 따라가 결과를 알려줍니다. 모임·내기·역할 정하기에.</p>
 
   <div class="card">
     <div class="io">
       <div class="fld">
-        <label for="names">참가자</label>
-        <textarea id="names" placeholder="줄바꿈 또는 쉼표로 구분">철수
+        <label for="names" data-i18n="b_ladder_label_names">참가자</label>
+        <textarea id="names" data-i18n-ph="b_ladder_ph_names" placeholder="줄바꿈 또는 쉼표로 구분">철수
 영희
 민수
 지영</textarea>
-        <div class="hintln">한 줄에 한 명 (또는 쉼표)</div>
+        <div class="hintln" data-i18n="b_ladder_hint_names">한 줄에 한 명 (또는 쉼표)</div>
       </div>
       <div class="fld">
-        <label for="prizes">결과</label>
-        <textarea id="prizes" placeholder="줄바꿈 또는 쉼표로 구분">당첨
+        <label for="prizes" data-i18n="b_ladder_label_prizes">결과</label>
+        <textarea id="prizes" data-i18n-ph="b_ladder_ph_prizes" placeholder="줄바꿈 또는 쉼표로 구분">당첨
 꽝
 꽝
 커피</textarea>
-        <div class="hintln">참가자 수와 같게 맞춰 주세요</div>
+        <div class="hintln" data-i18n="b_ladder_hint_prizes">참가자 수와 같게 맞춰 주세요</div>
       </div>
     </div>
     <div class="row" style="margin-top:1rem;">
-      <button class="btn" id="build">사다리 만들기</button>
-      <button class="btn btn-ghost" id="reveal">전체 결과 보기</button>
+      <button class="btn" id="build" data-i18n="b_ladder_btn_build">사다리 만들기</button>
+      <button class="btn btn-ghost" id="reveal" data-i18n="b_ladder_btn_reveal">전체 결과 보기</button>
     </div>
 
     <div class="stage"><svg id="svg" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet"></svg></div>
     <div class="resbox" id="resbox"></div>
 
-    <div class="note">
-      사다리는 만들 때마다 무작위로 새로 그려집니다. 위쪽 이름을 클릭하면 경로가 그려지고, ‘전체 결과 보기’로 모두 한 번에 확인할 수 있습니다. 모든 추첨은 브라우저에서만 이루어집니다.
+    <div class="note" data-i18n="b_ladder_note">
+      사다리는 만들 때마다 무작위로 새로 그려집니다. 위쪽 이름을 클릭하면 경로가 그려지고, '전체 결과 보기'로 모두 한 번에 확인할 수 있습니다. 모든 추첨은 브라우저에서만 이루어집니다.
     </div>
   </div>
 </div>
@@ -144,7 +144,7 @@
     return { end:col, pts:pts };
   }
 
-  function el(name, attrs){ var e=document.createElementNS(SVGNS,name); for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  function el(nm, attrs){ var e=document.createElementNS(SVGNS,nm); for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
   function draw(highlight){
     var svg=$('svg'); svg.setAttribute('viewBox','0 0 '+W+' '+H); svg.innerHTML='';
     // 세로줄
@@ -153,8 +153,8 @@
     for(var l=0;l<L;l++){ for(var j=0;j<C-1;j++){ if(rungs[l][j]){ var y=levelY(l);
       svg.appendChild(el('line',{x1:colX(j),y1:y,x2:colX(j+1),y2:y,stroke:'#d4d9e4','stroke-width':2})); } } }
     // 강조 경로
-    if(highlight!=null){ var t=traceCol(highlight);
-      var d='M'+t.pts.map(function(p){return p[0]+' '+p[1];}).join(' L');
+    if(highlight!=null){ var tmp=traceCol(highlight);
+      var d='M'+tmp.pts.map(function(p){return p[0]+' '+p[1];}).join(' L');
       svg.appendChild(el('path',{d:d,fill:'none',stroke:'#1aa3e0','stroke-width':4,'stroke-linejoin':'round','stroke-linecap':'round',opacity:0.95}));
     }
     // 위 이름 (클릭)
@@ -170,9 +170,9 @@
       var t2=el('text',{x:colX(i3),y:botY+26,'text-anchor':'middle','font-size':12.5,'font-weight':700,fill:(endHi?'#fff':'#2b2f3a')}); t2.textContent=prizes[i3]||('?'); svg.appendChild(t2);
     }
   }
-  function pick(i){ draw(i); var t=traceCol(i); toast((names[i]||('#'+(i+1)))+' → '+(prizes[t.end]||'?')); }
+  function pick(i){ draw(i); var tmp=traceCol(i); toast((names[i]||('#'+(i+1)))+' → '+(prizes[tmp.end]||'?')); }
   function reveal(){
-    var html=''; for(var i=0;i<C;i++){ var t=traceCol(i); html+='<div class="resrow"><span class="a">'+(names[i]||('#'+(i+1)))+'</span><span class="b">'+(prizes[t.end]||'?')+'</span></div>'; }
+    var html=''; for(var i=0;i<C;i++){ var tmp=traceCol(i); html+='<div class="resrow"><span class="a">'+(names[i]||('#'+(i+1)))+'</span><span class="b">'+(prizes[tmp.end]||'?')+'</span></div>'; }
     $('resbox').innerHTML=html; $('resbox').style.display='';
   }
   function toast(m){ var el=$('toast'); el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1800); }

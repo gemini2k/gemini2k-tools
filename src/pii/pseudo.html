@@ -63,28 +63,28 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>해시 가명처리기</h1>
-  <p class="sub">이름·주민번호·사번 같은 식별자를 솔트 SHA-256으로 일관된 가명 ID로 바꿉니다. 같은 솔트를 쓰면 같은 값은 늘 같은 가명이 되어, 서로 다른 표에서도 안전하게 결합할 수 있습니다.</p>
+  <h1 data-i18n="b_pseudo_title">해시 가명처리기</h1>
+  <p class="sub" data-i18n="b_pseudo_sub">이름·주민번호·사번 같은 식별자를 솔트 SHA-256으로 일관된 가명 ID로 바꿉니다. 같은 솔트를 쓰면 같은 값은 늘 같은 가명이 되어, 서로 다른 표에서도 안전하게 결합할 수 있습니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol><li>솔트(비밀키)를 입력하거나 ‘솔트 생성’을 누릅니다</li><li>식별자를 한 줄에 하나씩 입력합니다</li><li>‘가명 생성’ — 같은 솔트면 항상 같은 가명이 만들어집니다</li></ol></div></div>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_pseudo_howto_title">사용 방법</b><ol><li data-i18n="b_pseudo_howto_1">솔트(비밀키)를 입력하거나 '솔트 생성'을 누릅니다</li><li data-i18n="b_pseudo_howto_2">식별자를 한 줄에 하나씩 입력합니다</li><li data-i18n="b_pseudo_howto_3">'가명 생성' — 같은 솔트면 항상 같은 가명이 만들어집니다</li></ol></div></div>
 
   <div class="card">
     <div class="opts">
-      <div class="fld"><label for="salt">솔트(salt) — 비밀키</label><input id="salt" type="text" placeholder="예: 2026-프로젝트-A" autocomplete="off"/></div>
-      <div class="fld"><label for="len">가명 길이</label><input id="len" type="number" value="12" min="6" max="64"/></div>
-      <div class="fld"><label for="prefix">접두어</label><input id="prefix" type="text" value="ID_" autocomplete="off" style="width:90px;"/></div>
-      <button class="btn btn-ghost" id="genSalt" type="button" style="height:2.6rem;">🎲 솔트 생성</button>
+      <div class="fld"><label for="salt" data-i18n="b_pseudo_lbl_salt">솔트(salt) — 비밀키</label><input id="salt" type="text" data-i18n-ph="b_pseudo_ph_salt" placeholder="예: 2026-프로젝트-A" autocomplete="off"/></div>
+      <div class="fld"><label for="len" data-i18n="b_pseudo_lbl_len">가명 길이</label><input id="len" type="number" value="12" min="6" max="64"/></div>
+      <div class="fld"><label for="prefix" data-i18n="b_pseudo_lbl_prefix">접두어</label><input id="prefix" type="text" value="ID_" autocomplete="off" style="width:90px;"/></div>
+      <button class="btn btn-ghost" id="genSalt" type="button" style="height:2.6rem;" data-i18n="b_pseudo_btn_gen_salt">🎲 솔트 생성</button>
     </div>
-    <label for="input">식별자 입력 (한 줄에 하나)</label>
-    <textarea id="input" placeholder="홍길동&#10;901010-1234567&#10;사번00123"></textarea>
+    <label for="input" data-i18n="b_pseudo_lbl_input">식별자 입력 (한 줄에 하나)</label>
+    <textarea id="input" data-i18n-ph="b_pseudo_ph_input" placeholder="홍길동&#10;901010-1234567&#10;사번00123"></textarea>
     <div class="actions">
-      <button class="btn" id="run" type="button">가명 생성</button>
-      <button class="btn btn-ghost" id="copyAll" type="button">📋 가명 전체 복사</button>
-      <button class="btn btn-ghost" id="dl" type="button">⬇️ CSV 내려받기</button>
-      <button class="btn btn-ghost" id="sample" type="button">샘플</button>
+      <button class="btn" id="run" type="button" data-i18n="b_pseudo_btn_run">가명 생성</button>
+      <button class="btn btn-ghost" id="copyAll" type="button" data-i18n="b_pseudo_btn_copy_all">📋 가명 전체 복사</button>
+      <button class="btn btn-ghost" id="dl" type="button" data-i18n="b_pseudo_btn_dl">⬇️ CSV 내려받기</button>
+      <button class="btn btn-ghost" id="sample" type="button" data-i18n="b_pseudo_btn_sample">샘플</button>
     </div>
     <div class="tbl-scroll" id="resWrap" style="display:none;"><table id="res"></table></div>
-    <div class="note">
+    <div class="note" data-i18n-html="b_pseudo_note">
       <span class="warn">솔트는 안전하게 보관하세요.</span> 솔트를 잃어버리면 같은 가명을 다시 만들 수 없고, 솔트가 유출되면 후보 값을 대입해 원본을 역추적할 수 있습니다(가명처리는 익명화가 아닙니다). 가명은 <code>SHA-256(솔트 + "|" + 값)</code>의 앞 글자를 16진수로 사용합니다. 모든 처리는 브라우저에서만 이루어지며 입력값·솔트는 전송되지 않습니다.
     </div>
   </div>
@@ -106,11 +106,11 @@
   function run(){
     var salt=$('salt').value, len=Math.max(6, Math.min(64, parseInt($('len').value)||12)), prefix=$('prefix').value;
     var lines=$('input').value.split(/\r?\n/).map(function(s){return s.trim();}).filter(function(s){return s.length;});
-    if(!lines.length){ toast('식별자를 입력하세요'); return; }
+    if(!lines.length){ toast(t('b_pseudo_toast_no_input')); return; }
     Promise.all(lines.map(function(v){ return pseudo(salt, v, len).then(function(h){ return {orig:v, pid:prefix+h}; }); }))
       .then(function(rows){
         LAST=rows;
-        var html='<tr><th>원본</th><th>가명 ID</th></tr>';
+        var html='<tr><th>'+t('b_pseudo_th_orig')+'</th><th>'+t('b_pseudo_th_pid')+'</th></tr>';
         rows.forEach(function(r){ html+='<tr><td class="orig">'+esc(r.orig)+'</td><td class="pid">'+esc(r.pid)+'</td></tr>'; });
         $('res').innerHTML=html; $('resWrap').style.display='';
       });
@@ -119,24 +119,32 @@
 
   $('run').addEventListener('click', run);
   $('genSalt').addEventListener('click', function(){
-    var b=crypto.getRandomValues(new Uint8Array(12)); $('salt').value=hex(b.buffer); toast('솔트를 생성했습니다 — 꼭 보관하세요');
+    var b=crypto.getRandomValues(new Uint8Array(12)); $('salt').value=hex(b.buffer); toast(t('b_pseudo_toast_salt_created'));
   });
   $('copyAll').addEventListener('click', function(){
     if(!LAST.length) return;
-    navigator.clipboard.writeText(LAST.map(function(r){return r.pid;}).join('\n')).then(function(){ toast(LAST.length+'개 복사됐습니다'); });
+    navigator.clipboard.writeText(LAST.map(function(r){return r.pid;}).join('\n')).then(function(){ toast(LAST.length+t('b_pseudo_toast_copied')); });
   });
   $('dl').addEventListener('click', function(){
     if(!LAST.length) return;
-    var csv='﻿원본,가명ID\n'+LAST.map(function(r){return csvCell(r.orig)+','+csvCell(r.pid);}).join('\n');
+    var csv='﻿'+t('b_pseudo_csv_header')+'\n'+LAST.map(function(r){return csvCell(r.orig)+','+csvCell(r.pid);}).join('\n');
     var blob=new Blob([csv],{type:'text/csv;charset=utf-8'}), url=URL.createObjectURL(blob), a=document.createElement('a');
-    a.href=url; a.download='가명처리_결과.csv'; document.body.appendChild(a); a.click();
+    a.href=url; a.download=t('b_pseudo_csv_filename'); document.body.appendChild(a); a.click();
     setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); },100);
   });
   $('sample').addEventListener('click', function(){
-    if(!$('salt').value) $('salt').value='2026-데모-솔트';
-    $('input').value='홍길동\n901010-1234567\n김철수\n사번00123\n홍길동';   // 마지막 중복 → 같은 가명 확인용
+    if(!$('salt').value) $('salt').value=t('b_pseudo_sample_salt');
+    $('input').value=t('b_pseudo_sample_data');   // 마지막 중복 → 같은 가명 확인용
     run();
   });
+
+  window.onI18n = function(){
+    if(LAST.length){
+      var html='<tr><th>'+t('b_pseudo_th_orig')+'</th><th>'+t('b_pseudo_th_pid')+'</th></tr>';
+      LAST.forEach(function(r){ html+='<tr><td class="orig">'+esc(r.orig)+'</td><td class="pid">'+esc(r.pid)+'</td></tr>'; });
+      $('res').innerHTML=html;
+    }
+  };
 </script>
 </body>
 </html>

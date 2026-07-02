@@ -64,28 +64,28 @@
 <body>
 
 <div class="toolwrap">
-  <h1>유닉스 타임스탬프 변환</h1>
-  <p class="sub">타임스탬프(epoch)와 날짜를 서로 바꿉니다. 초·밀리초를 자동으로 알아보고 현지·UTC 시각을 함께 보여 줍니다.</p>
+  <h1 data-i18n="b_timestamp_title">유닉스 타임스탬프 변환</h1>
+  <p class="sub" data-i18n="b_timestamp_sub">타임스탬프(epoch)와 날짜를 서로 바꿉니다. 초·밀리초를 자동으로 알아보고 현지·UTC 시각을 함께 보여 줍니다.</p>
 
   <div class="card">
     <div class="now">
-      <div><div class="l">현재 타임스탬프 (초)</div><div class="v" id="now-sec">0</div></div>
-      <button class="cp" id="now-copy">복사</button>
+      <div><div class="l" data-i18n="b_timestamp_now_label">현재 타임스탬프 (초)</div><div class="v" id="now-sec">0</div></div>
+      <button class="cp" id="now-copy" data-i18n="b_timestamp_copy_btn">복사</button>
     </div>
 
     <div class="blk">
-      <h3>타임스탬프 → 날짜</h3>
-      <div class="fld"><input id="ts" type="text" inputmode="numeric" placeholder="예: 1700000000 또는 1700000000000"/></div>
+      <h3 data-i18n="b_timestamp_ts_to_date">타임스탬프 → 날짜</h3>
+      <div class="fld"><input id="ts" type="text" inputmode="numeric" data-i18n-ph="b_timestamp_ts_placeholder" placeholder="예: 1700000000 또는 1700000000000"/></div>
       <div class="out" id="ts-out"></div>
     </div>
 
     <div class="blk">
-      <h3>날짜 → 타임스탬프</h3>
+      <h3 data-i18n="b_timestamp_date_to_ts">날짜 → 타임스탬프</h3>
       <div class="fld"><input id="dt" type="datetime-local" step="1"/></div>
       <div class="out" id="dt-out"></div>
     </div>
 
-    <div class="note">
+    <div class="note" data-i18n="b_timestamp_note">
       10자리는 초, 13자리는 밀리초로 자동 인식합니다. 날짜 입력은 사용자의 현지 시간대 기준이며, 결과에 UTC와 ISO 8601 형식을 함께 표시합니다. 모든 변환은 브라우저에서 이루어집니다.
     </div>
   </div>
@@ -99,25 +99,29 @@
   function utcStr(d){ return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate())+' '+pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds())+' UTC'; }
   function rows(box, arr){ $(box).innerHTML = arr.map(function(r){ return '<div class="orow"><span class="k">'+r[0]+'</span><span class="v">'+r[1]+'</span></div>'; }).join(''); }
 
+  var DOW_KEYS = ['b_timestamp_dow_sun','b_timestamp_dow_mon','b_timestamp_dow_tue','b_timestamp_dow_wed','b_timestamp_dow_thu','b_timestamp_dow_fri','b_timestamp_dow_sat'];
+
   function tsToDate(){
     var raw=$('ts').value.trim().replace(/[^0-9]/g,'');
     if(!raw){ $('ts-out').innerHTML=''; return; }
     var num=Number(raw); var ms = raw.length<=10 ? num*1000 : num;  // 10자리=초
     var d=new Date(ms);
-    if(isNaN(d.getTime())){ rows('ts-out',[['오류','유효하지 않은 값']]); return; }
-    rows('ts-out',[ ['현지 시각', localStr(d)], ['UTC', utcStr(d)], ['ISO 8601', d.toISOString()], ['요일', ['일','월','화','수','목','금','토'][d.getDay()]+'요일'] ]);
+    if(isNaN(d.getTime())){ rows('ts-out',[[t('b_timestamp_row_error'),t('b_timestamp_err_invalid_ts')]]); return; }
+    rows('ts-out',[ [t('b_timestamp_row_local'), localStr(d)], [t('b_timestamp_row_utc'), utcStr(d)], ['ISO 8601', d.toISOString()], [t('b_timestamp_row_dow'), t(DOW_KEYS[d.getDay()])] ]);
   }
   function dateToTs(){
     var v=$('dt').value; if(!v){ $('dt-out').innerHTML=''; return; }
     var d=new Date(v);
-    if(isNaN(d.getTime())){ rows('dt-out',[['오류','유효하지 않은 날짜']]); return; }
-    rows('dt-out',[ ['타임스탬프 (초)', Math.floor(d.getTime()/1000).toString()], ['타임스탬프 (밀리초)', d.getTime().toString()], ['ISO 8601', d.toISOString()] ]);
+    if(isNaN(d.getTime())){ rows('dt-out',[[t('b_timestamp_row_error'),t('b_timestamp_err_invalid_date')]]); return; }
+    rows('dt-out',[ [t('b_timestamp_row_ts_sec'), Math.floor(d.getTime()/1000).toString()], [t('b_timestamp_row_ts_ms'), d.getTime().toString()], ['ISO 8601', d.toISOString()] ]);
   }
   function toast(m){ var el=$('toast'); el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
 
+  window.onI18n = function(){ tsToDate(); dateToTs(); if($('now-copy')) $('now-copy').textContent = t('b_timestamp_copy_btn'); };
+
   setInterval(function(){ $('now-sec').textContent = Math.floor(Date.now()/1000).toLocaleString('en-US').replace(/,/g,''); }, 1000);
   $('now-sec').textContent = Math.floor(Date.now()/1000);
-  $('now-copy').addEventListener('click', function(){ navigator.clipboard.writeText(String(Math.floor(Date.now()/1000))).then(function(){ toast('복사됐습니다'); }); });
+  $('now-copy').addEventListener('click', function(){ navigator.clipboard.writeText(String(Math.floor(Date.now()/1000))).then(function(){ toast(t('b_timestamp_toast_copied')); }); });
   $('ts').addEventListener('input', tsToDate);
   $('dt').addEventListener('input', dateToTs);
   // 기본값: 지금

@@ -64,32 +64,32 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>이미지 자르기 · 회전</h1>
-  <p class="sub">사진을 원하는 영역으로 자르고 회전·반전합니다. 비율을 고정해 정사각형·썸네일도 만드세요. 이미지는 이 브라우저에서만 처리됩니다.</p>
+  <h1 data-i18n="b_imgcrop_title">이미지 자르기 · 회전</h1>
+  <p class="sub" data-i18n="b_imgcrop_sub">사진을 원하는 영역으로 자르고 회전·반전합니다. 비율을 고정해 정사각형·썸네일도 만드세요. 이미지는 이 브라우저에서만 처리됩니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol><li>이미지를 끌어다 놓거나 클릭해 올립니다</li><li>모서리 점을 끌어 자를 영역을 정합니다 (비율 고정·회전·반전 버튼 활용)</li><li>‘자르기’ 후 미리보기를 확인하고 내려받습니다</li></ol></div></div>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_imgcrop_howto_title">사용 방법</b><ol><li data-i18n="b_imgcrop_howto_1">이미지를 끌어다 놓거나 클릭해 올립니다</li><li data-i18n="b_imgcrop_howto_2">모서리 점을 끌어 자를 영역을 정합니다 (비율 고정·회전·반전 버튼 활용)</li><li data-i18n="b_imgcrop_howto_3">'자르기' 후 미리보기를 확인하고 내려받습니다</li></ol></div></div>
 
   <div class="card">
     <div class="drop" id="drop">
       <div class="big">🖼️</div>
-      <div><strong>이미지를 끌어다 놓거나 클릭</strong>해서 선택하세요</div>
-      <div style="font-size:.82rem;margin-top:.4rem;">JPG · PNG · WebP · GIF</div>
+      <div data-i18n-html="b_imgcrop_drop_main"><strong>이미지를 끌어다 놓거나 클릭</strong>해서 선택하세요</div>
+      <div style="font-size:.82rem;margin-top:.4rem;" data-i18n="b_imgcrop_drop_formats">JPG · PNG · WebP · GIF</div>
     </div>
     <input type="file" id="file" accept="image/*" class="hide"/>
 
     <div id="editor" class="hide">
       <div class="toolbar">
-        <span class="lab">비율</span>
+        <span class="lab" data-i18n="b_imgcrop_ratio_label">비율</span>
         <select id="aspect">
-          <option value="0">자유</option><option value="1">1:1</option>
+          <option value="0" data-i18n="b_imgcrop_ratio_free">자유</option><option value="1">1:1</option>
           <option value="1.3333">4:3</option><option value="0.75">3:4</option>
           <option value="1.7778">16:9</option><option value="0.5625">9:16</option>
         </select>
-        <button id="rotL" type="button" title="왼쪽 90°">↺</button>
-        <button id="rotR" type="button" title="오른쪽 90°">↻</button>
-        <button id="flipH" type="button" title="좌우 반전">↔</button>
-        <button id="flipV" type="button" title="상하 반전">↕</button>
-        <button id="resetSel" type="button">전체 선택</button>
+        <button id="rotL" type="button" data-i18n="b_imgcrop_btn_rotL" title="왼쪽 90°">↺</button>
+        <button id="rotR" type="button" data-i18n="b_imgcrop_btn_rotR" title="오른쪽 90°">↻</button>
+        <button id="flipH" type="button" data-i18n="b_imgcrop_btn_flipH" title="좌우 반전">↔</button>
+        <button id="flipV" type="button" data-i18n="b_imgcrop_btn_flipV" title="상하 반전">↕</button>
+        <button id="resetSel" type="button" data-i18n="b_imgcrop_btn_reset">전체 선택</button>
       </div>
       <div class="stagewrap">
         <div class="stage" id="stage">
@@ -99,17 +99,17 @@
       </div>
       <div class="out-opts">
         <select id="fmt"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option></select>
-        <button class="btn" id="cropBtn" type="button">✂️ 자르기</button>
-        <button class="btn btn-ghost" id="another" type="button">다른 이미지</button>
+        <button class="btn" id="cropBtn" type="button" data-i18n="b_imgcrop_btn_crop">✂️ 자르기</button>
+        <button class="btn btn-ghost" id="another" type="button" data-i18n="b_imgcrop_btn_another">다른 이미지</button>
       </div>
       <div class="resw hide" id="resw">
         <div class="dims" id="dims"></div>
-        <img id="preview" alt="잘라낸 이미지 미리보기"/>
-        <div style="margin-top:.8rem;"><a class="btn" id="dl" download="cropped.png">⬇️ 내려받기</a></div>
+        <img id="preview" data-i18n-ph="b_imgcrop_preview_alt" alt="잘라낸 이미지 미리보기"/>
+        <div style="margin-top:.8rem;"><a class="btn" id="dl" download="cropped.png" data-i18n="b_imgcrop_btn_download">⬇️ 내려받기</a></div>
       </div>
     </div>
 
-    <div class="note">
+    <div class="note" data-i18n="b_imgcrop_note">
       자르기 영역은 모서리 점을 끌어 크기를 바꾸고, 안쪽을 끌어 위치를 옮깁니다. 비율을 고르면 그 비율로 고정됩니다. JPEG는 투명 영역이 흰색으로 채워집니다. 모든 처리는 브라우저에서 이루어지며 이미지는 서버로 전송되지 않습니다.
     </div>
   </div>
@@ -159,8 +159,8 @@
   /* 드래그(이동/리사이즈) */
   var drag=null;
   function onDown(e){
-    var t=e.target, cw=work.clientWidth, ch=work.clientHeight;
-    var mode = t.classList.contains('h') ? t.className.split(' ')[1] : 'move';
+    var tmp2=e.target, cw=work.clientWidth, ch=work.clientHeight;
+    var mode = tmp2.classList.contains('h') ? tmp2.className.split(' ')[1] : 'move';
     drag={mode:mode, sx:e.clientX, sy:e.clientY, r:Object.assign({},rect), cw:cw, ch:ch};
     cropEl.setPointerCapture && cropEl.setPointerCapture(e.pointerId);
     e.preventDefault();

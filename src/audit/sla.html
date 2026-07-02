@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>가용성(SLA) 다운타임 계산기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="목표 가용성(%)에 따른 연·월·주간 허용 다운타임을 계산하고, 반대로 다운타임으로 가용성을 역산합니다. SLA 협의·운영."/>
+<link rel="canonical" href="https://gemini2k.co.kr/sla.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="가용성(SLA) 다운타임 계산기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="목표 가용성(%)에 따른 연·월·주간 허용 다운타임을 계산하고, 반대로 다운타임으로 가용성을 역산합니다. SLA 협의·운영."/><meta property="og:url" content="https://gemini2k.co.kr/sla.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
+.frm{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
+.frm label{font-size:.85rem;font-weight:600;display:inline-flex;flex-direction:column;gap:.2rem;}
+.frm input,.frm select,.frm textarea{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;font-size:.95rem;}
+.frm input[type=number]{width:130px;}
+.res{border:1px solid var(--border);border-radius:12px;background:var(--ground);padding:1rem;margin-top:.4rem;}
+.res table{width:100%;border-collapse:collapse;font-size:.92rem;}.res td{padding:.45rem .5rem;border-bottom:1px solid var(--border);word-break:break-word;overflow-wrap:anywhere;}.res td:first-child{color:var(--muted);white-space:nowrap;}
+.res td b{font-variant-numeric:tabular-nums;}
+.big{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;word-break:break-word;overflow-wrap:anywhere;}
+.out{border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.84rem;white-space:pre-wrap;word-break:break-word;overflow:auto;}
+textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.drop{display:block;border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;}
+.drop:hover{border-color:var(--accent);background:var(--accent-soft);}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"가용성(SLA) 다운타임 계산기","description":"목표 가용성(%)에 따른 연·월·주간 허용 다운타임을 계산하고, 반대로 다운타임으로 가용성을 역산합니다. SLA 협의·운영.","url":"https://gemini2k.co.kr/sla.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:1000px;">
+  <h1 data-i18n="b_sla_title">가용성(SLA) 계산기</h1>
+  <p class="sub" data-i18n="b_sla_sub">목표 가용성(9의 개수)에 따른 허용 다운타임을 계산합니다.</p>
+  <div class="card" style="max-width:none;">
+    <div class="frm">
+    <label><span data-i18n="b_sla_label_av">목표 가용성(%)</span><input type="number" id="av" value="99.9" step="0.001"></label>
+  </div><div class="res" id="res"></div>
+    <div class="note" data-i18n="b_sla_note">예: 99.9%(쓰리나인)는 연 8시간 45분, 99.99%(포나인)는 연 52분의 다운타임이 허용됩니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};
+  function dur(min){
+    var _loc={ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[window.curLang?curLang():'ko'];
+    if(min<1)return Math.round(min*60)+t('b_sla_unit_sec');
+    if(min<60)return min.toFixed(1)+t('b_sla_unit_min');
+    if(min<1440)return (min/60).toFixed(1)+t('b_sla_unit_hour');
+    return (min/1440).toFixed(2)+t('b_sla_unit_day');
+  }
+  function run(){var av=+$('av').value;if(isNaN(av)||av<0||av>100){$('res').innerHTML=t('b_sla_err_range');return;}
+    var down=(100-av)/100;var yr=down*365*24*60,mo=down*30*24*60,wk=down*7*24*60,day=down*24*60;
+    $('res').innerHTML='<div class="big">'+av+'% '+t('b_sla_avail_label')+'</div><table>'+
+    '<tr><td>'+t('b_sla_row_yearly')+'</td><td><b>'+dur(yr)+'</b></td></tr>'+
+    '<tr><td>'+t('b_sla_row_monthly')+'</td><td><b>'+dur(mo)+'</b></td></tr>'+
+    '<tr><td>'+t('b_sla_row_weekly')+'</td><td><b>'+dur(wk)+'</b></td></tr>'+
+    '<tr><td>'+t('b_sla_row_daily')+'</td><td><b>'+dur(day)+'</b></td></tr></table>';}
+  $('av').addEventListener('input',run);run();
+  window.onI18n=run;
+</script>
+</body>
+</html>

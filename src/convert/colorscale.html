@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>색상 스케일·그라데이션 생성기 (데이터 시각화) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="두 색 사이를 부드럽게 잇는 색상 스케일(팔레트)을 만들어 차트·히트맵·디자인에 쓸 색 코드를 뽑습니다. 보간 방식 선택. chroma.js 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/colorscale.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="색상 스케일·그라데이션 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="두 색 사이 색상 스케일·팔레트 생성(chroma.js). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/colorscale.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.8rem;}
+.row label{font-weight:700;font-size:.85rem;}input[type=color]{width:46px;height:38px;border:1px solid var(--border);border-radius:8px;background:none;cursor:pointer;}
+select,input[type=number]{padding:.5rem .6rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
+.gradbar{height:54px;border-radius:10px;margin:.6rem 0;border:1px solid var(--border);}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:.4rem;margin-top:.6rem;}
+.sw{border-radius:8px;height:64px;display:flex;align-items:flex-end;justify-content:center;cursor:pointer;font-size:.66rem;font-family:ui-monospace,monospace;padding-bottom:.2rem;}
+.out{margin-top:.7rem;border:1px solid var(--border);border-radius:10px;background:var(--ground);padding:.7rem;font-family:ui-monospace,monospace;font-size:.8rem;color:var(--text);white-space:pre-wrap;word-break:break-all;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"색상 스케일·그라데이션 생성기","description":"두 색 사이 색상 스케일(팔레트)을 생성합니다(chroma.js).","url":"https://gemini2k.co.kr/colorscale.html","applicationCategory":"DesignApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/Apache-2.0","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1 data-i18n="b_colorscale_title">색상 스케일 생성기</h1>
+  <p class="sub" data-i18n="b_colorscale_sub">두 색(또는 세 색) 사이를 부드럽게 잇는 색상 스케일을 만들어, 차트·히트맵·디자인용 색 코드를 뽑아 줍니다.</p>
+  <div class="card">
+    <div class="row"><label data-i18n="b_colorscale_start">시작</label><input type="color" id="c1" value="#2563eb"/>
+      <label data-i18n="b_colorscale_mid">중간(선택)</label><input type="color" id="c2" value="#ffffff"/><label><input type="checkbox" id="usemid"/> <span data-i18n="b_colorscale_use">사용</span></label>
+      <label data-i18n="b_colorscale_end">끝</label><input type="color" id="c3" value="#dc2626"/></div>
+    <div class="row"><label data-i18n="b_colorscale_steps">단계 수</label><input type="number" id="steps" value="9" min="2" max="20"/>
+      <label data-i18n="b_colorscale_interp">보간</label><select id="mode"><option value="rgb">RGB</option><option value="lab" selected data-i18n="b_colorscale_opt_lab">LAB(부드러움)</option><option value="lch">LCH</option><option value="hsl">HSL</option></select>
+      <button class="btn btn-ghost" id="copy" type="button" data-i18n="b_colorscale_copy_all">📋 전체 복사</button></div>
+    <div class="gradbar" id="grad"></div>
+    <div class="swatches" id="sw"></div>
+    <div class="out" id="out"></div>
+    <div class="note" data-i18n-html="b_colorscale_note">오픈소스 <b>chroma.js</b>(Apache-2.0/BSD, <a href="https://github.com/gka/chroma.js" target="_blank" rel="noopener">gka/chroma.js</a>)를 자체 호스팅합니다. 색을 클릭하면 복사됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/chroma-2/chroma.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  function run(){ var stops=$('usemid').checked?[$('c1').value,$('c2').value,$('c3').value]:[$('c1').value,$('c3').value];
+    var n=Math.max(2,Math.min(20,+$('steps').value||9)); var scale=chroma.scale(stops).mode($('mode').value);
+    var colors=scale.colors(n);
+    $('grad').style.background='linear-gradient(to right,'+colors.join(',')+')';
+    var sw=$('sw'); sw.innerHTML='';
+    colors.forEach(function(c){ var d=document.createElement('div'); d.className='sw'; d.style.background=c;
+      var lum=chroma(c).luminance(); d.style.color=lum>0.5?'#111':'#fff'; d.textContent=c;
+      d.addEventListener('click',function(){navigator.clipboard.writeText(c).then(function(){toast(c+' '+t('b_colorscale_toast_copied'));});}); sw.appendChild(d); });
+    window._cs=colors; $('out').textContent=JSON.stringify(colors); }
+  ['c1','c2','c3','usemid','steps','mode'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
+  $('copy').addEventListener('click',function(){if(window._cs)navigator.clipboard.writeText(window._cs.join(', ')).then(function(){toast(t('b_colorscale_toast_all_copied'));});});
+  window.onI18n=run;
+  run();
+</script>
+</body>
+</html>

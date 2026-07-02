@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>고급 바코드 생성기 (DataMatrix·PDF417·Aztec) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="DataMatrix·PDF417·Aztec·QR·Code128 등 100여 종 바코드 심볼을 생성해 PNG로 저장합니다. 물류·산업용 코드에. bwip-js 자체 호스팅. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/barcode2.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="고급 바코드 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="DataMatrix·PDF417·Aztec 등 100여 종 바코드 생성(bwip-js). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/barcode2.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem;}
+select,input[type=text]{padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:inherit;}#text{flex:1;min-width:200px;}
+#bc{display:block;margin:.6rem auto;background:#fff;border:1px solid var(--border);border-radius:11px;padding:1rem;max-width:100%;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;text-align:center;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"고급 바코드 생성기","description":"DataMatrix·PDF417·Aztec 등 다양한 바코드를 생성합니다(bwip-js).","url":"https://gemini2k.co.kr/barcode2.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:620px;">
+  <h1 data-i18n="b_barcode2_title">고급 바코드 생성기</h1>
+  <p class="sub" data-i18n="b_barcode2_sub">DataMatrix·PDF417·Aztec 등 산업용 2D/1D 바코드를 만들어 줍니다.</p>
+  <div class="card">
+    <div class="row">
+      <span data-i18n="b_barcode2_label_type">종류</span> <select id="type">
+        <option value="datamatrix">DataMatrix</option><option value="pdf417">PDF417</option><option value="azteccode">Aztec</option>
+        <option value="qrcode">QR Code</option><option value="code128">Code 128</option><option value="code39">Code 39</option>
+        <option value="ean13">EAN-13</option><option value="upca">UPC-A</option><option value="interleaved2of5">ITF</option><option value="gs1-128">GS1-128</option></select>
+    </div>
+    <div class="row"><input type="text" id="text" value="1234-ABCD-5678"/><button class="btn" id="gen" type="button" data-i18n="b_barcode2_btn_gen">생성</button><button class="btn btn-ghost" id="png" type="button" data-i18n="b_barcode2_btn_png">⬇️ PNG</button></div>
+    <div class="err" id="err"></div>
+    <canvas id="bc"></canvas>
+    <div class="note" data-i18n-html="b_barcode2_note">오픈소스 <b>bwip-js</b>(MIT, <a href="https://github.com/metafloor/bwip-js" target="_blank" rel="noopener">metafloor/bwip-js</a>)를 자체 호스팅합니다. 100여 종 심볼을 지원합니다. EAN/UPC 등은 자릿수 규칙이 있어 형식에 맞아야 합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/bwip-4/bwip-js-min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function gen(){ $('err').textContent='';
+    try{ bwipjs.toCanvas($('bc'),{bcid:$('type').value,text:$('text').value,scale:3,height:$('type').value==='qrcode'||$('type').value==='datamatrix'||$('type').value==='azteccode'?undefined:12,includetext:true,textxalign:'center'}); }
+    catch(e){ $('err').textContent='⚠️ '+(e.message||e); var c=$('bc');c.getContext('2d').clearRect(0,0,c.width,c.height); } }
+  ['type','text'].forEach(function(id){$(id).addEventListener('input',gen);$(id).addEventListener('change',gen);});
+  $('gen').addEventListener('click',gen);
+  $('png').addEventListener('click',function(){var a=document.createElement('a');a.href=$('bc').toDataURL('image/png');a.download='barcode.png';document.body.appendChild(a);a.click();a.remove();});
+  gen();
+</script>
+</body>
+</html>

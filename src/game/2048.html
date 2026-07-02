@@ -66,36 +66,36 @@
 <body>
 <div class="toolwrap" style="max-width:480px;">
   <h1>2048</h1>
-  <p class="sub">같은 숫자 타일을 밀어서 합치세요. 2048 타일을 만들면 승리!</p>
+  <p class="sub" data-i18n="b_g2048_sub">같은 숫자 타일을 밀어서 합치세요. 2048 타일을 만들면 승리!</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>조작법</b><ol>
-    <li>PC: 방향키(↑↓←→) · 모바일: 화면을 쓸어넘기기(스와이프)</li>
-    <li>아래 방향 버튼으로도 움직일 수 있습니다</li>
-    <li>같은 숫자가 만나면 합쳐지고 점수가 오릅니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_g2048_howto_title">조작법</b><ol>
+    <li data-i18n="b_g2048_howto_1">PC: 방향키(↑↓←→) · 모바일: 화면을 쓸어넘기기(스와이프)</li>
+    <li data-i18n="b_g2048_howto_2">아래 방향 버튼으로도 움직일 수 있습니다</li>
+    <li data-i18n="b_g2048_howto_3">같은 숫자가 만나면 합쳐지고 점수가 오릅니다</li>
   </ol></div></div>
 
   <div class="card">
     <div class="gbar">
-      <button class="btn" id="newgame" type="button">새 게임</button>
+      <button class="btn" id="newgame" type="button" data-i18n="b_g2048_new_game">새 게임</button>
       <div class="scores">
-        <div class="sbox"><div class="l">점수</div><div class="v" id="score">0</div></div>
-        <div class="sbox"><div class="l">최고</div><div class="v" id="best">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_g2048_score_label">점수</div><div class="v" id="score">0</div></div>
+        <div class="sbox"><div class="l" data-i18n="b_g2048_best_label">최고</div><div class="v" id="best">0</div></div>
       </div>
     </div>
-    <div class="board" id="board" tabindex="0" aria-label="2048 보드">
+    <div class="board" id="board" tabindex="0" data-i18n-aria-label="b_g2048_board_aria">
       <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
       <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
       <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
       <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
     </div>
     <div class="dpad">
-      <button class="d-up" data-dir="up" aria-label="위">▲</button>
-      <button class="d-left" data-dir="left" aria-label="왼쪽">◀</button>
-      <button class="d-down" data-dir="down" aria-label="아래">▼</button>
-      <button class="d-right" data-dir="right" aria-label="오른쪽">▶</button>
+      <button class="d-up" data-dir="up" data-i18n-aria-label="b_g2048_dir_up">▲</button>
+      <button class="d-left" data-dir="left" data-i18n-aria-label="b_g2048_dir_left">◀</button>
+      <button class="d-down" data-dir="down" data-i18n-aria-label="b_g2048_dir_down">▼</button>
+      <button class="d-right" data-dir="right" data-i18n-aria-label="b_g2048_dir_right">▶</button>
     </div>
     <div class="msg" id="msg"></div>
-    <div class="note">모든 진행은 브라우저에서만 이루어지며, 최고 점수만 이 기기에 저장됩니다. 데이터는 전송되지 않습니다.</div>
+    <div class="note" data-i18n="b_g2048_note">모든 진행은 브라우저에서만 이루어지며, 최고 점수만 이 기기에 저장됩니다. 데이터는 전송되지 않습니다.</div>
   </div>
 </div>
 
@@ -111,29 +111,28 @@
   function reset(){ grid=[]; for(var r=0;r<N;r++){grid.push([0,0,0,0]);} score=0; won=false; over=false; $('msg').textContent=''; spawn(); spawn(); render(true); }
 
   function render(pop){
-    // 기존 타일 제거
-    board.querySelectorAll('.tile').forEach(function(t){t.remove();});
+    board.querySelectorAll('.tile').forEach(function(tmp){tmp.remove();});
     var pad=10, gap=10, size=(board.clientWidth - pad*2 - gap*3)/4;
     for(var r=0;r<N;r++)for(var c=0;c<N;c++){ var v=grid[r][c]; if(!v) continue;
-      var t=document.createElement('div'); t.className='tile'+(pop?' pop':'');
-      t.style.width=t.style.height=size+'px';
-      t.style.transform='translate('+(pad+c*(size+gap))+'px,'+(pad+r*(size+gap))+'px)';
-      t.style.background=COLORS[v]||'#3c3a32';
-      t.style.color=v<=4?'#776e65':'#fff';
-      t.style.fontSize=(v<100?size*0.42:v<1000?size*0.34:size*0.26)+'px';
-      t.textContent=v; board.appendChild(t);
+      var tmp2=document.createElement('div'); tmp2.className='tile'+(pop?' pop':'');
+      tmp2.style.width=tmp2.style.height=size+'px';
+      tmp2.style.transform='translate('+(pad+c*(size+gap))+'px,'+(pad+r*(size+gap))+'px)';
+      tmp2.style.background=COLORS[v]||'#3c3a32';
+      tmp2.style.color=v<=4?'#776e65':'#fff';
+      tmp2.style.fontSize=(v<100?size*0.42:v<1000?size*0.34:size*0.26)+'px';
+      tmp2.textContent=v; board.appendChild(tmp2);
     }
     $('score').textContent=score;
     if(score>best){ best=score; localStorage.setItem('2048:best',best); $('best').textContent=best; }
   }
 
-  function slide(row){ // 왼쪽으로 압축+병합
+  function slide(row){
     var a=row.filter(function(x){return x;}), gained=0;
     for(var i=0;i<a.length-1;i++){ if(a[i]===a[i+1]){ a[i]*=2; gained+=a[i]; if(a[i]===2048) won=true; a.splice(i+1,1); } }
     while(a.length<N) a.push(0);
     return {row:a, gained:gained};
   }
-  function rotate(g){ var n=[]; for(var c=0;c<N;c++){ n.push([]); for(var r=N-1;r>=0;r--) n[c].push(g[r][c]); } return n; } // 시계방향
+  function rotate(g){ var n=[]; for(var c=0;c<N;c++){ n.push([]); for(var r=N-1;r>=0;r--) n[c].push(g[r][c]); } return n; }
   function move(dir){
     if(over) return;
     var rot = dir==='left'?0 : dir==='up'?3 : dir==='right'?2 : 1;
@@ -143,8 +142,8 @@
     for(var j=0;j<(4-rot)%4;j++) ng=rotate(ng);
     if(!moved) return;
     grid=ng; score+=gain; spawn(); render(true);
-    if(won){ $('msg').textContent='🎉 2048 달성! 계속 도전하세요'; won=false; }
-    if(!canMove()){ over=true; $('msg').textContent='게임 오버 — 새 게임을 눌러 다시 시작'; }
+    if(won){ $('msg').textContent=t('b_g2048_msg_won'); won=false; }
+    if(!canMove()){ over=true; $('msg').textContent=t('b_g2048_msg_over'); }
   }
   function canMove(){ if(empty().length) return true;
     for(var r=0;r<N;r++)for(var c=0;c<N;c++){ var v=grid[r][c]; if((c<N-1&&grid[r][c+1]===v)||(r<N-1&&grid[r+1][c]===v)) return true; } return false; }
@@ -155,10 +154,9 @@
   });
   document.querySelector('.dpad').addEventListener('click', function(e){ var b=e.target.closest('button'); if(b) move(b.dataset.dir); });
   $('newgame').addEventListener('click', reset);
-  // 스와이프
   var sx,sy;
-  board.addEventListener('touchstart', function(e){ var t=e.touches[0]; sx=t.clientX; sy=t.clientY; }, {passive:true});
-  board.addEventListener('touchend', function(e){ if(sx==null) return; var t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+  board.addEventListener('touchstart', function(e){ var tmp3=e.touches[0]; sx=tmp3.clientX; sy=tmp3.clientY; }, {passive:true});
+  board.addEventListener('touchend', function(e){ if(sx==null) return; var tmp4=e.changedTouches[0], dx=tmp4.clientX-sx, dy=tmp4.clientY-sy;
     if(Math.max(Math.abs(dx),Math.abs(dy))<24){ sx=null; return; }
     move(Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up')); sx=null; });
   window.addEventListener('resize', function(){ render(false); });

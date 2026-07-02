@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>CSS 이징 곡선 생성기 (cubic-bezier) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="cubic-bezier 이징 곡선을 드래그로 조절해 CSS transition-timing-function 코드를 만들고, 실제 움직임을 미리봅니다. 애니메이션 설계에. 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/bezier.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="CSS 이징 곡선 생성기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="cubic-bezier 이징 곡선 편집 + 움직임 미리보기. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/bezier.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.grid{display:grid;grid-template-columns:240px 1fr;gap:1rem;align-items:start;}@media(max-width:600px){.grid{grid-template-columns:1fr;}}
+#cv{background:var(--ground);border:1px solid var(--border);border-radius:11px;touch-action:none;cursor:pointer;width:240px;height:240px;}
+.presets{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem;}.presets button{padding:.35rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;cursor:pointer;font-size:.82rem;}
+.track{height:42px;background:var(--ground);border:1px solid var(--border);border-radius:21px;position:relative;margin:.6rem 0;}
+.ball{position:absolute;top:5px;left:5px;width:30px;height:30px;border-radius:50%;background:var(--accent);}
+.out{border:1px solid var(--border);border-radius:10px;background:var(--ground);padding:.7rem;font-family:ui-monospace,monospace;font-size:.9rem;color:var(--text);}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DesignApplication","name":"CSS 이징 곡선 생성기","description":"cubic-bezier 이징 곡선을 만들고 미리봅니다.","url":"https://gemini2k.co.kr/bezier.html","applicationCategory":"DesignApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:720px;">
+  <h1 data-i18n="b_bezier_title">CSS 이징 곡선 생성기</h1>
+  <p class="sub" data-i18n="b_bezier_sub">제어점을 드래그해 cubic-bezier 이징을 만들고, 실제 움직임을 확인하세요.</p>
+  <div class="card">
+    <div class="presets" id="presets"></div>
+    <div class="grid">
+      <canvas id="cv" width="240" height="240"></canvas>
+      <div>
+        <div class="out" id="out"></div>
+        <button class="btn btn-ghost" id="copy" type="button" style="margin:.5rem 0;" data-i18n="b_bezier_copy">📋 복사</button>
+        <div class="track"><div class="ball" id="ball"></div></div>
+        <button class="btn" id="play" type="button" data-i18n="b_bezier_play">▶ 미리보기 재생</button>
+      </div>
+    </div>
+    <div class="note" data-i18n-html="b_bezier_note">곡선 위·아래의 두 제어점을 드래그하세요. 결과를 <code>transition-timing-function</code>이나 <code>animation-timing-function</code>에 사용하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var cv=$('cv'),ctx=cv.getContext('2d'),P=240,pad=30,size=P-pad*2;
+  var p=[0.25,0.1,0.25,1.0]; var drag=-1;
+  var presets={'ease':[0.25,0.1,0.25,1],'linear':[0,0,1,1],'ease-in':[0.42,0,1,1],'ease-out':[0,0,0.58,1],'ease-in-out':[0.42,0,0.58,1],'bounce':[0.68,-0.55,0.27,1.55]};
+  (function(){ var box=$('presets'); Object.keys(presets).forEach(function(k){ var b=document.createElement('button'); b.textContent=k; b.addEventListener('click',function(){p=presets[k].slice();draw();}); box.appendChild(b); }); })();
+  function X(t){return pad+t*size;} function Y(v){return pad+(1-v)*size;}
+  function draw(){ ctx.clearRect(0,0,P,P);
+    ctx.strokeStyle='#94a3b8';ctx.lineWidth=1; ctx.strokeRect(pad,pad,size,size);
+    var acc=(getComputedStyle(document.documentElement).getPropertyValue('--accent')||'#2563eb').trim();
+    ctx.strokeStyle='#cbd5e1';ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(p[0]),Y(p[1]));ctx.moveTo(X(1),Y(1));ctx.lineTo(X(p[2]),Y(p[3]));ctx.stroke();
+    ctx.strokeStyle=acc;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.bezierCurveTo(X(p[0]),Y(p[1]),X(p[2]),Y(p[3]),X(1),Y(1));ctx.stroke();
+    [[p[0],p[1]],[p[2],p[3]]].forEach(function(pt){ ctx.fillStyle=acc;ctx.beginPath();ctx.arc(X(pt[0]),Y(pt[1]),7,0,7);ctx.fill(); });
+    var css='cubic-bezier('+p.map(function(n){return (+n).toFixed(2);}).join(', ')+')';
+    $('out').textContent='transition-timing-function: '+css+';'; window._o=$('out').textContent; window._css=css; }
+  function pos(e){ var r=cv.getBoundingClientRect(); var cx=(e.touches?e.touches[0].clientX:e.clientX)-r.left, cy=(e.touches?e.touches[0].clientY:e.clientY)-r.top;
+    return [(cx-pad)/size, 1-(cy-pad)/size]; }
+  cv.addEventListener('pointerdown',function(e){ var m=pos(e); var d0=Math.hypot(m[0]-p[0],m[1]-p[1]),d1=Math.hypot(m[0]-p[2],m[1]-p[3]); drag=d0<d1?0:1; move(e); });
+  function move(e){ if(drag<0)return; var m=pos(e); var x=Math.max(0,Math.min(1,m[0]));
+    if(drag===0){p[0]=x;p[1]=m[1];}else{p[2]=x;p[3]=m[1];} draw(); }
+  window.addEventListener('pointermove',move); window.addEventListener('pointerup',function(){drag=-1;});
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_bezier_toast_copied'));});});
+  $('play').addEventListener('click',function(){ var b=$('ball'); b.style.transition='none'; b.style.left='5px';
+    requestAnimationFrame(function(){requestAnimationFrame(function(){ var w=b.parentElement.clientWidth-40; b.style.transition='left 1.2s '+window._css; b.style.left=w+'px'; });}); });
+  draw();
+</script>
+</body>
+</html>

@@ -12,7 +12,7 @@
   }
   function fallback(el, msg){
     el.innerHTML = '<div class="g3d-fallback"><div class="ic" aria-hidden="true">🖥️</div><p>'
-      + (msg || '이 브라우저·기기에서는 3D 그래픽을 표시할 수 없어요.<br>최신 Chrome·Edge·Safari에서 다시 시도해 주세요.')
+      + (msg || ((window.t && window.t('gc.webgl') !== 'gc.webgl') ? window.t('gc.webgl') : '이 브라우저·기기에서는 3D 그래픽을 표시할 수 없어요.<br>최신 Chrome·Edge·Safari에서 다시 시도해 주세요.'))
       + '</p></div>';
   }
   function setup(el, opts){

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>XML ↔ JSON 변환기 — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="XML을 JSON으로, JSON을 XML로 변환합니다. 속성·중첩·배열 처리. API·설정 변환에. 업로드 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/xml2json.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="XML ↔ JSON 변환기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="XML과 JSON을 상호 변환. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/xml2json.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:.7rem;}.seg button{padding:.5rem .9rem;border:0;background:var(--surface);color:var(--text);font-family:inherit;font-weight:700;cursor:pointer;}.seg button.on{background:var(--accent);color:#fff;}
+textarea{width:100%;min-height:150px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin:.5rem 0;}.err{color:#e0563b;font-size:.84rem;min-height:1.1em;}.arrow{text-align:center;color:var(--muted);font-size:1.3rem;}
+.out{width:100%;min-height:130px;border:1px solid var(--border);border-radius:11px;background:var(--ground);padding:.8rem;font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);white-space:pre;overflow:auto;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"XML ↔ JSON 변환기","description":"XML과 JSON을 상호 변환합니다.","url":"https://gemini2k.co.kr/xml2json.html","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:800px;">
+  <h1 data-i18n="b_xml2json_title">XML ↔ JSON 변환기</h1>
+  <p class="sub" data-i18n="b_xml2json_sub">XML과 JSON을 서로 변환합니다.</p>
+  <div class="card">
+    <div class="seg" id="seg"><button data-d="x2j" class="on" type="button" data-i18n="b_xml2json_btn_x2j">XML → JSON</button><button data-d="j2x" type="button" data-i18n="b_xml2json_btn_j2x">JSON → XML</button></div>
+    <textarea id="in">&lt;catalog&gt;
+  &lt;book id="1"&gt;
+    &lt;title&gt;자바스크립트&lt;/title&gt;
+    &lt;price&gt;28000&lt;/price&gt;
+  &lt;/book&gt;
+  &lt;book id="2"&gt;
+    &lt;title&gt;파이썬&lt;/title&gt;
+    &lt;price&gt;25000&lt;/price&gt;
+  &lt;/book&gt;
+&lt;/catalog&gt;</textarea>
+    <div class="actions"><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_xml2json_btn_copy">📋 복사</button></div>
+    <div class="err" id="err"></div>
+    <div class="arrow">↓</div>
+    <div class="out" id="out"></div>
+    <div class="note" data-i18n-html="b_xml2json_note">XML 속성은 <code>@attr</code>, 텍스트는 <code>#text</code>로 표현합니다. 같은 태그가 반복되면 배열로 변환합니다. 브라우저 내장 파서(DOMParser)를 사용하며 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  var dir='x2j';
+  function x2jNode(node){ var obj={};
+    if(node.attributes)for(var i=0;i<node.attributes.length;i++){var a=node.attributes[i];obj['@'+a.name]=a.value;}
+    var kids=node.childNodes, textParts=[];
+    for(var k=0;k<kids.length;k++){ var c=kids[k];
+      if(c.nodeType===3){ var tmp=c.nodeValue.trim(); if(tmp)textParts.push(tmp); }
+      else if(c.nodeType===1){ var val=x2jNode(c); if(obj[c.nodeName]!==undefined){ if(!Array.isArray(obj[c.nodeName]))obj[c.nodeName]=[obj[c.nodeName]]; obj[c.nodeName].push(val); } else obj[c.nodeName]=val; } }
+    if(textParts.length){ if(Object.keys(obj).length)obj['#text']=textParts.join(' '); else return textParts.join(' '); }
+    return obj; }
+  function j2x(obj,name){ var xml='';
+    function ser(o,tag){ if(o===null||typeof o!=='object'){ return '<'+tag+'>'+String(o)+'</'+tag+'>'; }
+      if(Array.isArray(o))return o.map(function(it){return ser(it,tag);}).join('');
+      var attrs='',inner='',text='';
+      Object.keys(o).forEach(function(k){ if(k[0]==='@')attrs+=' '+k.slice(1)+'="'+o[k]+'"'; else if(k==='#text')text=o[k]; else inner+=ser(o[k],k); });
+      return '<'+tag+attrs+'>'+text+inner+'</'+tag+'>'; }
+    Object.keys(obj).forEach(function(k){ xml+=ser(obj[k],k); }); return xml; }
+  function pretty(xml){ var formatted='',pad=0; xml=xml.replace(/>\s*</g,'><').replace(/></g,'>\n<');
+    xml.split('\n').forEach(function(line){ if(/^<\/\w/.test(line))pad--; formatted+=Array(Math.max(0,pad)+1).join('  ')+line+'\n'; if(/^<\w[^>]*[^\/]>$/.test(line)&&!/<\//.test(line))pad++; }); return formatted.trim(); }
+  function run(){ $('err').textContent='';
+    try{ if(dir==='x2j'){ var doc=new DOMParser().parseFromString($('in').value,'application/xml');
+        var pe=doc.querySelector('parsererror'); if(pe)throw new Error(t('b_xml2json_err_xml'));
+        var o={}; o[doc.documentElement.nodeName]=x2jNode(doc.documentElement); $('out').textContent=JSON.stringify(o,null,2); }
+      else { var obj=JSON.parse($('in').value); $('out').textContent=pretty(j2x(obj)); }
+      window._o=$('out').textContent;
+    }catch(e){ $('out').textContent=''; $('err').textContent='⚠️ '+e.message; } }
+  $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;dir=b.dataset.d;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
+    $('in').value = dir==='x2j'?'<catalog>\n  <book id="1">\n    <title>자바스크립트</title>\n    <price>28000</price>\n  </book>\n</catalog>':'{\n  "catalog": {\n    "book": { "@id": "1", "title": "자바스크립트", "price": "28000" }\n  }\n}';run();});
+  $('in').addEventListener('input',run);
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_xml2json_toast_copied'));});});
+  run();
+</script>
+</body>
+</html>

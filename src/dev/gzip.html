@@ -24,17 +24,17 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:760px;">
-  <h1>텍스트 gzip 압축·해제</h1>
-  <p class="sub">텍스트를 gzip/deflate로 압축해 Base64 문자열로 만들고, 반대로 해제합니다.</p>
+  <h1 data-i18n="b_gzip_title">텍스트 gzip 압축·해제</h1>
+  <p class="sub" data-i18n="b_gzip_sub">텍스트를 gzip/deflate로 압축해 Base64 문자열로 만들고, 반대로 해제합니다.</p>
   <div class="card">
-    <div class="seg" id="seg"><button data-d="c" class="on" type="button">압축</button><button data-d="d" type="button">해제</button></div>
-    <div class="opts"><label>알고리즘 <select id="algo"><option value="gzip">gzip</option><option value="deflate">deflate</option></select></label></div>
+    <div class="seg" id="seg"><button data-d="c" class="on" type="button" data-i18n="b_gzip_btn_compress">압축</button><button data-d="d" type="button" data-i18n="b_gzip_btn_decompress">해제</button></div>
+    <div class="opts"><label><span data-i18n="b_gzip_label_algo">알고리즘</span> <select id="algo"><option value="gzip">gzip</option><option value="deflate">deflate</option></select></label></div>
     <textarea id="in">안녕하세요! 이 텍스트를 gzip으로 압축해 봅니다. gzip gzip gzip 반복 반복 반복.</textarea>
-    <div class="actions"><button class="btn" id="copy" type="button">📋 복사</button></div>
+    <div class="actions"><button class="btn" id="copy" type="button" data-i18n="b_gzip_btn_copy">📋 복사</button></div>
     <div class="meta" id="meta"></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>
-    <div class="note">오픈소스 <b>pako</b>(MIT/Zlib, <a href="https://github.com/nodeca/pako" target="_blank" rel="noopener">nodeca/pako</a>)를 자체 호스팅합니다. 압축 결과는 Base64로 표시됩니다(바이너리를 텍스트로 안전하게 전달). 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_gzip_note">오픈소스 <b>pako</b>(MIT/Zlib, <a href="https://github.com/nodeca/pako" target="_blank" rel="noopener">nodeca/pako</a>)를 자체 호스팅합니다. 압축 결과는 Base64로 표시됩니다(바이너리를 텍스트로 안전하게 전달). 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="/vendor/pako-2.1/pako.min.js"></script>
@@ -45,16 +45,17 @@
   var dir='c';
   function b64enc(u8){ var s=''; for(var i=0;i<u8.length;i++)s+=String.fromCharCode(u8[i]); return btoa(s); }
   function b64dec(b){ var s=atob(b.trim()); var u8=new Uint8Array(s.length); for(var i=0;i<s.length;i++)u8[i]=s.charCodeAt(i); return u8; }
-  function run(){ var t=$('in').value, algo=$('algo').value; $('meta').textContent='';
-    try{ if(dir==='c'){ var inB=new TextEncoder().encode(t); var comp=algo==='gzip'?pako.gzip(inB):pako.deflate(inB); var out=b64enc(comp);
+  function run(){ var inp=$('in').value, algo=$('algo').value; $('meta').textContent='';
+    try{ if(dir==='c'){ var inB=new TextEncoder().encode(inp); var comp=algo==='gzip'?pako.gzip(inB):pako.deflate(inB); var out=b64enc(comp);
         $('out').textContent=out; window._o=out; var ratio=inB.length? Math.round((1-comp.length/inB.length)*100):0;
-        $('meta').textContent='원본 '+inB.length+'B → 압축 '+comp.length+'B (Base64 '+out.length+'자) · '+ratio+'% 절감'; }
-      else { var u8=b64dec(t); var dec=algo==='gzip'?pako.ungzip(u8):pako.inflate(u8); var txt=new TextDecoder().decode(dec); $('out').textContent=txt; window._o=txt; }
+        $('meta').textContent=t('b_gzip_meta_compress').replace('{inB}',inB.length).replace('{comp}',comp.length).replace('{b64}',out.length).replace('{ratio}',ratio); }
+      else { var u8=b64dec(inp); var dec=algo==='gzip'?pako.ungzip(u8):pako.inflate(u8); var txt=new TextDecoder().decode(dec); $('out').textContent=txt; window._o=txt; }
     }catch(e){ $('out').textContent='⚠️ '+e.message; window._o=''; }
   }
   $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;dir=b.dataset.d;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});run();});
   ['in','algo'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
-  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast('복사됐습니다');});});
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_gzip_toast_copied'));});});
+  window.onI18n=run;
   run();
 </script>
 </body>

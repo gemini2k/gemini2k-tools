@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>타임라인 시각화 (연표·일정) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="사건·일정을 시간 축에 올려 인터랙티브 타임라인(연표)으로 보여 줍니다. 줌·드래그 지원. 연혁·프로젝트 기록에. vis-timeline 자체 호스팅. 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/timeline.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="타임라인 시각화 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="사건을 시간 축에 올린 인터랙티브 타임라인(vis-timeline). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/timeline.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<link rel="stylesheet" href="/vendor/vistimeline-7/vis-timeline-graph2d.min.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.85rem;color:var(--text);resize:vertical;}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.6rem 0;}
+.err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+#tl{background:#fff;border:1px solid var(--border);border-radius:11px;margin-top:.4rem;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"타임라인 시각화","description":"사건·일정을 인터랙티브 타임라인으로 시각화합니다(vis-timeline).","url":"https://gemini2k.co.kr/timeline.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:920px;">
+  <h1 data-i18n="b_timeline_title">타임라인 시각화</h1>
+  <p class="sub" data-i18n="b_timeline_sub">사건·일정을 시간 축에 올려 보여 줍니다. 마우스로 끌고 확대할 수 있어요.</p>
+  <div class="card" style="max-width:none;">
+    <textarea id="in">창업, 2020-03-01
+시드 투자, 2021-06-15
+제품 출시, 2022-01-10, 2022-03-10
+시리즈 A, 2023-05-01
+해외 진출, 2024-02-01, 2024-08-01
+IPO 준비, 2025-09-01</textarea>
+    <div class="row"><button class="btn" id="render" type="button" data-i18n="b_timeline_btn_render">그리기</button><span style="font-size:.85rem;color:var(--muted);" data-i18n="b_timeline_format_hint">형식: 내용, 시작일[, 종료일]</span></div>
+    <div class="err" id="err"></div>
+    <div id="tl"></div>
+    <div class="note" data-i18n-html="b_timeline_note">오픈소스 <b>vis-timeline</b>(MIT/Apache-2.0, <a href="https://github.com/visjs/vis-timeline" target="_blank" rel="noopener">visjs/vis-timeline</a>)을 자체 호스팅합니다. 종료일이 있으면 막대(기간), 없으면 점(시점)으로 표시합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+  </div>
+</div>
+<script src="/vendor/vistimeline-7/vis-timeline-graph2d.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  var tl=null;
+  function render(){ $('err').textContent='';
+    try{ var items=$('in').value.split(/\r?\n/).map(function(l,i){ var p=l.split(',').map(function(x){return x.trim();}); if(p.length<2||!p[0])return null;
+        var o={id:i,content:p[0],start:p[1]}; if(p[2])o.end=p[2]; return o; }).filter(Boolean);
+      if(!items.length){$('err').textContent=t('b_timeline_err_empty');return;}
+      if(tl)tl.destroy(); tl=new vis.Timeline($('tl'),new vis.DataSet(items),{height:'320px',locale:'en',stack:true});
+    }catch(e){ $('err').textContent='⚠️ '+(e.message||e); } }
+  $('render').addEventListener('click',render);
+  var _t; $('in').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(render,500);});
+  window.onI18n=render;
+  render();
+</script>
+</body>
+</html>

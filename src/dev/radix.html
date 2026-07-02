@@ -32,7 +32,7 @@
   .custom input[type=number]{width:80px;padding:.55rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:inherit;}
   .custom input[type=text]{flex:1;min-width:160px;padding:.6rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--input-bg);color:var(--text);font-family:ui-monospace,monospace;}
   .note{margin-top:1.2rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
-</style>
+@media(max-width:440px){input[type=text]{min-width:0;}}</style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
 <script type="application/ld+json">
 {
@@ -52,21 +52,21 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>진법 변환기</h1>
-  <p class="sub">2·8·10·16진수를 서로 변환합니다. 아무 칸에나 입력하면 나머지가 즉시 바뀝니다.</p>
+  <h1 data-i18n="b_radix_title">진법 변환기</h1>
+  <p class="sub" data-i18n="b_radix_sub">2·8·10·16진수를 서로 변환합니다. 아무 칸에나 입력하면 나머지가 즉시 바뀝니다.</p>
 
   <div class="card">
-    <div class="rrow"><label for="b10">10진수</label><input id="b10" data-base="10" inputmode="numeric" value="255" autocomplete="off"/></div>
-    <div class="rrow"><label for="b2">2진수</label><input id="b2" data-base="2" autocomplete="off"/></div>
-    <div class="rrow"><label for="b8">8진수</label><input id="b8" data-base="8" autocomplete="off"/></div>
-    <div class="rrow"><label for="b16">16진수</label><input id="b16" data-base="16" autocomplete="off" style="text-transform:uppercase;"/></div>
+    <div class="rrow"><label for="b10" data-i18n="b_radix_label_dec">10진수</label><input id="b10" data-base="10" inputmode="numeric" value="255" autocomplete="off"/></div>
+    <div class="rrow"><label for="b2" data-i18n="b_radix_label_bin">2진수</label><input id="b2" data-base="2" autocomplete="off"/></div>
+    <div class="rrow"><label for="b8" data-i18n="b_radix_label_oct">8진수</label><input id="b8" data-base="8" autocomplete="off"/></div>
+    <div class="rrow"><label for="b16" data-i18n="b_radix_label_hex">16진수</label><input id="b16" data-base="16" autocomplete="off" style="text-transform:uppercase;"/></div>
     <div class="custom">
-      <label style="margin:0;font-weight:700;">임의 진법</label>
-      <input id="cbase" type="number" min="2" max="36" value="36" aria-label="진법(2~36)"/>
-      <span style="color:var(--muted);">진수 =</span>
-      <input id="cval" type="text" readonly aria-label="결과"/>
+      <label style="margin:0;font-weight:700;" data-i18n="b_radix_label_custom">임의 진법</label>
+      <input id="cbase" type="number" min="2" max="36" value="36" data-i18n-ph="b_radix_aria_base" aria-label="진법(2~36)"/>
+      <span style="color:var(--muted);" data-i18n="b_radix_base_suffix">진수 =</span>
+      <input id="cval" type="text" readonly data-i18n-ph="b_radix_aria_result" aria-label="결과"/>
     </div>
-    <div class="note">정수만 변환하며 음수는 앞에 −를 붙입니다. 16진수는 0–9·A–F를, 임의 진법(2~36)은 0–9·A–Z를 사용합니다. 매우 큰 수는 자릿수 한계로 정밀도가 떨어질 수 있습니다. 모든 계산은 브라우저에서 이루어집니다.</div>
+    <div class="note" data-i18n="b_radix_note">정수만 변환하며 음수는 앞에 −를 붙입니다. 16진수는 0–9·A–F를, 임의 진법(2~36)은 0–9·A–Z를 사용합니다. 매우 큰 수는 자릿수 한계로 정밀도가 떨어질 수 있습니다. 모든 계산은 브라우저에서 이루어집니다.</div>
   </div>
 </div>
 

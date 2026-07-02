@@ -56,40 +56,40 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:680px;">
-  <h1>바코드 생성기</h1>
-  <p class="sub">텍스트나 숫자를 바코드로 만들어 PNG·SVG로 내려받습니다. 상품·재고·자산 관리에 활용하세요.</p>
+  <h1 data-i18n="b_barcode_title">바코드 생성기</h1>
+  <p class="sub" data-i18n="b_barcode_sub">텍스트나 숫자를 바코드로 만들어 PNG·SVG로 내려받습니다. 상품·재고·자산 관리에 활용하세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>내용을 입력하고 바코드 형식을 고릅니다 (모르면 <b>CODE128</b> 추천 — 문자·숫자 모두 가능)</li>
-    <li>색·크기·텍스트 표시를 조절합니다</li>
-    <li>‘PNG/SVG 다운로드’로 저장합니다 (EAN·UPC는 정해진 자릿수의 숫자만 가능)</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_barcode_howto_title">사용 방법</b><ol>
+    <li data-i18n-html="b_barcode_howto_1">내용을 입력하고 바코드 형식을 고릅니다 (모르면 <b>CODE128</b> 추천 — 문자·숫자 모두 가능)</li>
+    <li data-i18n="b_barcode_howto_2">색·크기·텍스트 표시를 조절합니다</li>
+    <li data-i18n="b_barcode_howto_3">'PNG/SVG 다운로드'로 저장합니다 (EAN·UPC는 정해진 자릿수의 숫자만 가능)</li>
   </ol></div></div>
 
   <div class="card">
-    <div class="fld"><label>내용</label><input id="data" type="text" value="GEMINI2K-001"/></div>
+    <div class="fld"><label data-i18n="b_barcode_label_data">내용</label><input id="data" type="text" value="GEMINI2K-001"/></div>
     <div class="grid">
-      <label>형식<select id="fmt">
-        <option value="CODE128">CODE128 (문자+숫자)</option>
-        <option value="EAN13">EAN-13 (숫자 12~13)</option>
-        <option value="EAN8">EAN-8 (숫자 7~8)</option>
-        <option value="UPC">UPC-A (숫자 11~12)</option>
+      <label><span data-i18n="b_barcode_label_fmt">형식</span><select id="fmt">
+        <option value="CODE128" data-i18n="b_barcode_opt_code128">CODE128 (문자+숫자)</option>
+        <option value="EAN13" data-i18n="b_barcode_opt_ean13">EAN-13 (숫자 12~13)</option>
+        <option value="EAN8" data-i18n="b_barcode_opt_ean8">EAN-8 (숫자 7~8)</option>
+        <option value="UPC" data-i18n="b_barcode_opt_upc">UPC-A (숫자 11~12)</option>
         <option value="CODE39">CODE39</option>
-        <option value="ITF14">ITF-14 (숫자 13~14)</option>
+        <option value="ITF14" data-i18n="b_barcode_opt_itf14">ITF-14 (숫자 13~14)</option>
         <option value="codabar">Codabar</option>
       </select></label>
-      <label>막대 두께 <span id="wv" style="color:var(--accent)">2</span><input id="bw" type="range" min="1" max="5" value="2"/></label>
-      <label>높이 <span id="hv" style="color:var(--accent)">80</span><input id="bh" type="range" min="40" max="160" value="80"/></label>
-      <label>바코드 색<input id="line" type="color" value="#000000"/></label>
-      <label>배경색<input id="bg" type="color" value="#ffffff"/></label>
-      <label class="chk"><input id="showtext" type="checkbox" checked/> 글자 표시</label>
+      <label><span data-i18n="b_barcode_label_bw">막대 두께</span> <span id="wv" style="color:var(--accent)">2</span><input id="bw" type="range" min="1" max="5" value="2"/></label>
+      <label><span data-i18n="b_barcode_label_bh">높이</span> <span id="hv" style="color:var(--accent)">80</span><input id="bh" type="range" min="40" max="160" value="80"/></label>
+      <label><span data-i18n="b_barcode_label_linecolor">바코드 색</span><input id="line" type="color" value="#000000"/></label>
+      <label><span data-i18n="b_barcode_label_bgcolor">배경색</span><input id="bg" type="color" value="#ffffff"/></label>
+      <label class="chk"><input id="showtext" type="checkbox" checked/> <span data-i18n="b_barcode_label_showtext">글자 표시</span></label>
     </div>
     <div class="err" id="err"></div>
     <div class="bcwrap"><svg id="bc"></svg></div>
     <div class="actions">
-      <button class="btn" id="png" type="button">⬇️ PNG 다운로드</button>
-      <button class="btn btn-ghost" id="svg" type="button">⬇️ SVG 다운로드</button>
+      <button class="btn" id="png" type="button" data-i18n="b_barcode_btn_png">⬇️ PNG 다운로드</button>
+      <button class="btn btn-ghost" id="svg" type="button" data-i18n="b_barcode_btn_svg">⬇️ SVG 다운로드</button>
     </div>
-    <div class="note">CODE128은 영문·숫자·기호를 모두 담을 수 있어 가장 널리 쓰입니다. EAN/UPC는 국제 상품코드 규격으로 정해진 자릿수의 숫자만 허용하며 체크digit가 자동 계산됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_barcode_note">CODE128은 영문·숫자·기호를 모두 담을 수 있어 가장 널리 쓰입니다. EAN/UPC는 국제 상품코드 규격으로 정해진 자릿수의 숫자만 허용하며 체크digit가 자동 계산됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -103,17 +103,17 @@
     try{
       JsBarcode('#bc', data, { format:fmt, width:parseInt($('bw').value,10), height:parseInt($('bh').value,10),
         lineColor:$('line').value, background:$('bg').value, displayValue:$('showtext').checked, margin:10, font:'Pretendard,sans-serif' });
-    }catch(e){ $('bc').innerHTML=''; $('err').textContent='⚠️ 이 형식에 맞지 않는 내용입니다. 형식을 바꾸거나 내용을 확인하세요. (EAN/UPC는 숫자만)'; }
+    }catch(e){ $('bc').innerHTML=''; $('err').textContent=t('b_barcode_err_invalid'); }
   }
-  function downloadPNG(){ var svg=$('bc'); if(!svg.querySelector('rect,path')){ toast('먼저 올바른 바코드를 만들어 주세요'); return; }
+  function downloadPNG(){ var svg=$('bc'); if(!svg.querySelector('rect,path')){ toast(t('b_barcode_toast_no_barcode')); return; }
     var W=svg.getAttribute('width')||svg.clientWidth, H=svg.getAttribute('height')||svg.clientHeight;
     var data=new XMLSerializer().serializeToString(svg); var img=new Image();
     img.onload=function(){ var cv=document.createElement('canvas'); cv.width=W*2; cv.height=H*2; var x=cv.getContext('2d'); x.scale(2,2); x.fillStyle=$('bg').value; x.fillRect(0,0,W,H); x.drawImage(img,0,0);
       var a=document.createElement('a'); a.href=cv.toDataURL('image/png'); a.download='barcode.png'; document.body.appendChild(a); a.click(); setTimeout(function(){a.remove();},100); };
-    img.onerror=function(){ toast('PNG 변환에 실패했어요'); };
+    img.onerror=function(){ toast(t('b_barcode_toast_png_fail')); };
     img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data);
   }
-  function downloadSVG(){ var svg=$('bc'); if(!svg.querySelector('rect,path')){ toast('먼저 올바른 바코드를 만들어 주세요'); return; }
+  function downloadSVG(){ var svg=$('bc'); if(!svg.querySelector('rect,path')){ toast(t('b_barcode_toast_no_barcode')); return; }
     var data=new XMLSerializer().serializeToString(svg); var blob=new Blob([data],{type:'image/svg+xml'});
     var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='barcode.svg'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120);
   }

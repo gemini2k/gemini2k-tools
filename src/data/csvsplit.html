@@ -56,24 +56,24 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:880px;">
-  <h1>CSV 분할·샘플링</h1>
-  <p class="sub">CSV를 비율로 두 덩어리로 나누거나, 무작위로 원하는 만큼 행을 뽑습니다. 학습/검증셋이나 샘플 만들 때 쓰세요.</p>
+  <h1 data-i18n="b_csvsplit_title">CSV 분할·샘플링</h1>
+  <p class="sub" data-i18n="b_csvsplit_sub">CSV를 비율로 두 덩어리로 나누거나, 무작위로 원하는 만큼 행을 뽑습니다. 학습/검증셋이나 샘플 만들 때 쓰세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>CSV를 붙여 넣습니다(첫 행은 머리글, 모든 결과에 포함)</li>
-    <li>‘비율 분할’ 또는 ‘무작위 추출’을 고르고 값을 정합니다</li>
-    <li>‘실행’ 후 결과를 복사하거나 내려받습니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_csvsplit_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_csvsplit_howto_1">CSV를 붙여 넣습니다(첫 행은 머리글, 모든 결과에 포함)</li>
+    <li data-i18n="b_csvsplit_howto_2">'비율 분할' 또는 '무작위 추출'을 고르고 값을 정합니다</li>
+    <li data-i18n="b_csvsplit_howto_3">'실행' 후 결과를 복사하거나 내려받습니다</li>
   </ol></div></div>
 
   <div class="card">
-    <label for="input" style="font-weight:700;font-size:.85rem;">CSV 입력</label>
-    <textarea id="input" placeholder="id,name&#10;1,A&#10;2,B&#10;3,C"></textarea>
-    <div class="seg"><button id="mRatio" class="on" type="button">비율 분할</button><button id="mSample" type="button">무작위 추출</button></div>
-    <div class="ctl" id="ctlRatio"><label>앞쪽 비율 <input id="ratio" type="number" value="80" min="1" max="99"/> %</label><label><input type="checkbox" id="shuf"/> 섞은 뒤 분할</label></div>
-    <div class="ctl hide" id="ctlSample"><label>추출 행 수 <input id="n" type="number" value="10" min="1"/></label></div>
-    <div style="display:flex;gap:.6rem;flex-wrap:wrap;"><button class="btn" id="run" type="button">실행</button><button class="btn btn-ghost" id="sample" type="button">샘플</button></div>
+    <label for="input" style="font-weight:700;font-size:.85rem;" data-i18n="b_csvsplit_input_label">CSV 입력</label>
+    <textarea id="input" data-i18n-ph="b_csvsplit_input_ph" placeholder="id,name&#10;1,A&#10;2,B&#10;3,C"></textarea>
+    <div class="seg"><button id="mRatio" class="on" type="button" data-i18n="b_csvsplit_mode_ratio">비율 분할</button><button id="mSample" type="button" data-i18n="b_csvsplit_mode_sample">무작위 추출</button></div>
+    <div class="ctl" id="ctlRatio"><label><span data-i18n="b_csvsplit_ratio_label">앞쪽 비율</span> <input id="ratio" type="number" value="80" min="1" max="99"/> %</label><label><input type="checkbox" id="shuf"/> <span data-i18n="b_csvsplit_shuf_label">섞은 뒤 분할</span></label></div>
+    <div class="ctl hide" id="ctlSample"><label><span data-i18n="b_csvsplit_n_label">추출 행 수</span> <input id="n" type="number" value="10" min="1"/></label></div>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;"><button class="btn" id="run" type="button" data-i18n="b_csvsplit_btn_run">실행</button><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_csvsplit_btn_sample">샘플</button></div>
     <div class="two" id="result"></div>
-    <div class="note">헤더는 모든 결과에 포함됩니다. ‘섞은 뒤 분할’과 ‘무작위 추출’은 매번 다른 결과가 나옵니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_csvsplit_note">헤더는 모든 결과에 포함됩니다. '섞은 뒤 분할'과 '무작위 추출'은 매번 다른 결과가 나옵니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -82,31 +82,32 @@
   var $ = function(id){ return document.getElementById(id); };
   function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
   var mode='ratio';
-  function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; } return a; }
+  function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var tmp=a[i];a[i]=a[j];a[j]=tmp; } return a; }
   function partHtml(title, matrix, id){
-    return '<div class="part"><h3>'+title+' ('+(matrix.length-1)+'행) <button class="cp" data-id="'+id+'">복사</button></h3>'
+    return '<div class="part"><h3>'+title+' ('+(matrix.length-1)+t('b_csvsplit_row_unit')+') <button class="cp" data-id="'+id+'">'+t('b_csvsplit_copy_btn')+'</button></h3>'
       +'<textarea class="out" id="'+id+'" readonly>'+CSV.toText(matrix,{delimiter:','})+'</textarea></div>';
   }
   function run(){
-    var t=$('input').value.trim(); if(!t){ toast('CSV를 입력하세요'); return; }
-    var p=CSV.parse(t,{header:true,delimiter:'auto'}); var rows=p.rows;
+    var v=$('input').value.trim(); if(!v){ toast(t('b_csvsplit_toast_empty')); return; }
+    var p=CSV.parse(v,{header:true,delimiter:'auto'}); var rows=p.rows;
     if(mode==='ratio'){
       var src=$('shuf').checked?shuffle(rows):rows;
       var k=Math.round(src.length*(Math.max(1,Math.min(99,+$('ratio').value))/100));
       var A=[p.header].concat(src.slice(0,k)), B=[p.header].concat(src.slice(k));
-      $('result').innerHTML=partHtml('A (앞)',A,'outA')+partHtml('B (뒤)',B,'outB');
+      $('result').innerHTML=partHtml(t('b_csvsplit_part_a'),A,'outA')+partHtml(t('b_csvsplit_part_b'),B,'outB');
     } else {
       var n=Math.max(1,Math.min(rows.length,parseInt($('n').value)||1));
       var pick=shuffle(rows).slice(0,n);
       var S=[p.header].concat(pick);
-      $('result').innerHTML=partHtml('무작위 추출',S,'outA');
+      $('result').innerHTML=partHtml(t('b_csvsplit_part_sample'),S,'outA');
     }
   }
   $('mRatio').addEventListener('click',function(){mode='ratio';this.classList.add('on');$('mSample').classList.remove('on');$('ctlRatio').classList.remove('hide');$('ctlSample').classList.add('hide');});
   $('mSample').addEventListener('click',function(){mode='sample';this.classList.add('on');$('mRatio').classList.remove('on');$('ctlSample').classList.remove('hide');$('ctlRatio').classList.add('hide');});
   $('run').addEventListener('click', run);
-  $('result').addEventListener('click', function(e){ var b=e.target.closest('.cp'); if(b){ var ta=$(b.dataset.id); navigator.clipboard.writeText(ta.value).then(function(){toast('복사됐습니다');}); } });
-  $('sample').addEventListener('click', function(){ var r=['id,name']; for(var i=1;i<=20;i++) r.push(i+',항목'+i); $('input').value=r.join('\n'); run(); });
+  $('result').addEventListener('click', function(e){ var b=e.target.closest('.cp'); if(b){ var ta=$(b.dataset.id); navigator.clipboard.writeText(ta.value).then(function(){toast(t('b_csvsplit_toast_copied'));}); } });
+  $('sample').addEventListener('click', function(){ var r=['id,name']; for(var i=1;i<=20;i++) r.push(i+','+t('b_csvsplit_sample_item')+i); $('input').value=r.join('\n'); run(); });
+  window.onI18n = function(){ run && $('input').value && run(); };
 </script>
 </body>
 </html>

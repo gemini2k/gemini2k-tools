@@ -61,8 +61,8 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:560px;">
-  <h1>MBTI 간이 검사</h1>
-  <p class="sub">16개의 질문에 직관적으로 답하면 성격유형을 알려 드립니다. 재미·참고용 간이 검사예요.</p>
+  <h1 data-i18n="b_mbti_title">MBTI 간이 검사</h1>
+  <p class="sub" data-i18n="b_mbti_sub">16개의 질문에 직관적으로 답하면 성격유형을 알려 드립니다. 재미·참고용 간이 검사예요.</p>
 
   <div class="card">
     <div id="quiz">
@@ -71,7 +71,7 @@
       <div class="q" id="qtext"></div>
       <button class="opt" id="optA" type="button"></button>
       <button class="opt" id="optB" type="button"></button>
-      <div class="nav"><button class="btn btn-ghost" id="prev" type="button">← 이전</button><span></span></div>
+      <div class="nav"><button class="btn btn-ghost" id="prev" type="button" data-i18n="b_mbti_prev">← 이전</button><span></span></div>
     </div>
 
     <div id="result" class="res hide">
@@ -81,11 +81,11 @@
       <div class="bars" id="rbars"></div>
       <div class="good" id="rgood"></div>
       <div style="display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap;">
-        <button class="btn" id="again" type="button">다시 하기</button>
-        <button class="btn btn-ghost" id="copy" type="button">📋 결과 복사</button>
+        <button class="btn" id="again" type="button" data-i18n="b_mbti_again">다시 하기</button>
+        <button class="btn btn-ghost" id="copy" type="button" data-i18n="b_mbti_copy">📋 결과 복사</button>
       </div>
     </div>
-    <div class="note">실제 MBTI(MBTI®)는 공인 검사로 진행해야 정확합니다. 이 검사는 가벼운 자기 이해를 위한 <b>간이·재미용</b>이며 의학적·심리학적 진단이 아닙니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_mbti_note">실제 MBTI(MBTI®)는 공인 검사로 진행해야 정확합니다. 이 검사는 가벼운 자기 이해를 위한 <b>간이·재미용</b>이며 의학적·심리학적 진단이 아닙니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -95,46 +95,49 @@
   function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
   // 문항: dim축, a선택지→a극, b선택지→b극
   var Q=[
-    {d:'EI',q:'주말에 에너지가 더 채워지는 쪽은?',a:['사람들과 어울려 활동',  'E'],b:['혼자 또는 소수와 휴식','I']},
-    {d:'EI',q:'처음 만난 모임에서 나는?',a:['먼저 말을 거는 편','E'],b:['상대가 다가오길 기다리는 편','I']},
-    {d:'EI',q:'생각은 주로?',a:['말하면서 정리된다','E'],b:['속으로 정리한 뒤 말한다','I']},
-    {d:'EI',q:'연락은?',a:['자주 주고받는 게 좋다','E'],b:['필요할 때만으로 충분','I']},
-    {d:'SN',q:'설명을 들을 때 끌리는 것은?',a:['구체적인 사실과 예시','S'],b:['전체 의미와 가능성','N']},
-    {d:'SN',q:'나는 보통?',a:['현재의 현실에 집중','S'],b:['미래의 상상에 잘 빠짐','N']},
-    {d:'SN',q:'새 일을 시작할 때?',a:['검증된 방법을 따른다','S'],b:['새로운 방식을 시도한다','N']},
-    {d:'SN',q:'기억에 남는 것은?',a:['실제 겪은 디테일','S'],b:['그때 떠오른 아이디어','N']},
-    {d:'TF',q:'결정할 때 더 중요한 것은?',a:['논리와 객관적 기준','T'],b:['사람의 감정과 관계','F']},
-    {d:'TF',q:'친구가 고민을 털어놓으면?',a:['해결책을 함께 찾는다','T'],b:['먼저 공감하고 위로한다','F']},
-    {d:'TF',q:'피드백을 줄 때?',a:['솔직하게 사실대로','T'],b:['상처받지 않게 부드럽게','F']},
-    {d:'TF',q:'옳고 그름을 따질 때?',a:['원칙이 우선','T'],b:['상황과 사정도 고려','F']},
-    {d:'JP',q:'여행 스타일은?',a:['미리 계획을 짠다','J'],b:['즉흥적으로 움직인다','P']},
-    {d:'JP',q:'할 일이 있으면?',a:['미리미리 끝낸다','J'],b:['마감 직전에 몰입한다','P']},
-    {d:'JP',q:'내 공간·일정은?',a:['정돈되고 예측 가능하게','J'],b:['유연하고 자유롭게','P']},
-    {d:'JP',q:'계획이 바뀌면?',a:['조금 스트레스받는다','J'],b:['오히려 즐겁다','P']}
+    {d:'EI',qk:'b_mbti_q1',ak:'b_mbti_q1a',bk:'b_mbti_q1b',q:'주말에 에너지가 더 채워지는 쪽은?',a:['사람들과 어울려 활동',  'E'],b:['혼자 또는 소수와 휴식','I']},
+    {d:'EI',qk:'b_mbti_q2',ak:'b_mbti_q2a',bk:'b_mbti_q2b',q:'처음 만난 모임에서 나는?',a:['먼저 말을 거는 편','E'],b:['상대가 다가오길 기다리는 편','I']},
+    {d:'EI',qk:'b_mbti_q3',ak:'b_mbti_q3a',bk:'b_mbti_q3b',q:'생각은 주로?',a:['말하면서 정리된다','E'],b:['속으로 정리한 뒤 말한다','I']},
+    {d:'EI',qk:'b_mbti_q4',ak:'b_mbti_q4a',bk:'b_mbti_q4b',q:'연락은?',a:['자주 주고받는 게 좋다','E'],b:['필요할 때만으로 충분','I']},
+    {d:'SN',qk:'b_mbti_q5',ak:'b_mbti_q5a',bk:'b_mbti_q5b',q:'설명을 들을 때 끌리는 것은?',a:['구체적인 사실과 예시','S'],b:['전체 의미와 가능성','N']},
+    {d:'SN',qk:'b_mbti_q6',ak:'b_mbti_q6a',bk:'b_mbti_q6b',q:'나는 보통?',a:['현재의 현실에 집중','S'],b:['미래의 상상에 잘 빠짐','N']},
+    {d:'SN',qk:'b_mbti_q7',ak:'b_mbti_q7a',bk:'b_mbti_q7b',q:'새 일을 시작할 때?',a:['검증된 방법을 따른다','S'],b:['새로운 방식을 시도한다','N']},
+    {d:'SN',qk:'b_mbti_q8',ak:'b_mbti_q8a',bk:'b_mbti_q8b',q:'기억에 남는 것은?',a:['실제 겪은 디테일','S'],b:['그때 떠오른 아이디어','N']},
+    {d:'TF',qk:'b_mbti_q9',ak:'b_mbti_q9a',bk:'b_mbti_q9b',q:'결정할 때 더 중요한 것은?',a:['논리와 객관적 기준','T'],b:['사람의 감정과 관계','F']},
+    {d:'TF',qk:'b_mbti_q10',ak:'b_mbti_q10a',bk:'b_mbti_q10b',q:'친구가 고민을 털어놓으면?',a:['해결책을 함께 찾는다','T'],b:['먼저 공감하고 위로한다','F']},
+    {d:'TF',qk:'b_mbti_q11',ak:'b_mbti_q11a',bk:'b_mbti_q11b',q:'피드백을 줄 때?',a:['솔직하게 사실대로','T'],b:['상처받지 않게 부드럽게','F']},
+    {d:'TF',qk:'b_mbti_q12',ak:'b_mbti_q12a',bk:'b_mbti_q12b',q:'옳고 그름을 따질 때?',a:['원칙이 우선','T'],b:['상황과 사정도 고려','F']},
+    {d:'JP',qk:'b_mbti_q13',ak:'b_mbti_q13a',bk:'b_mbti_q13b',q:'여행 스타일은?',a:['미리 계획을 짠다','J'],b:['즉흥적으로 움직인다','P']},
+    {d:'JP',qk:'b_mbti_q14',ak:'b_mbti_q14a',bk:'b_mbti_q14b',q:'할 일이 있으면?',a:['미리미리 끝낸다','J'],b:['마감 직전에 몰입한다','P']},
+    {d:'JP',qk:'b_mbti_q15',ak:'b_mbti_q15a',bk:'b_mbti_q15b',q:'내 공간·일정은?',a:['정돈되고 예측 가능하게','J'],b:['유연하고 자유롭게','P']},
+    {d:'JP',qk:'b_mbti_q16',ak:'b_mbti_q16a',bk:'b_mbti_q16b',q:'계획이 바뀌면?',a:['조금 스트레스받는다','J'],b:['오히려 즐겁다','P']}
   ];
   var TYPES={
-    INTJ:['전략가','독립적이고 통찰력 있는 계획가. 큰 그림을 그리고 목표를 향해 묵묵히 나아갑니다.','ENFP·ENTP'],
-    INTP:['논리술사','호기심 많은 분석가. 원리를 파고들고 아이디어로 세상을 이해합니다.','ENTJ·ESTJ'],
-    ENTJ:['지도자','결단력 있는 리더. 비전을 제시하고 사람들을 이끌어 성과를 만듭니다.','INTP·INFP'],
-    ENTP:['변론가','재치 있는 발명가. 토론과 새로운 시도를 즐기는 아이디어 뱅크.','INFJ·INTJ'],
-    INFJ:['옹호자','조용하지만 깊은 신념의 이상주의자. 사람의 마음을 잘 읽습니다.','ENFP·ENTP'],
-    INFP:['중재자','따뜻하고 가치 중심적인 몽상가. 진정성과 의미를 소중히 여깁니다.','ENFJ·ENTJ'],
-    ENFJ:['선도자','카리스마 있는 격려자. 사람들의 성장을 돕고 분위기를 이끕니다.','INFP·ISFP'],
-    ENFP:['활동가','열정 가득한 자유로운 영혼. 사람과 가능성에 늘 설렙니다.','INTJ·INFJ'],
-    ISTJ:['현실주의자','성실하고 책임감 강한 관리자. 약속과 원칙을 지킵니다.','ESFP·ESTP'],
-    ISFJ:['수호자','헌신적이고 다정한 보호자. 묵묵히 주변을 챙깁니다.','ESFP·ESTP'],
-    ESTJ:['경영자','체계적이고 추진력 있는 조직가. 질서와 효율을 중시합니다.','ISTP·ISFP'],
-    ESFJ:['집정관','사교적이고 배려 깊은 조력자. 사람들을 잘 돌봅니다.','ISFP·ISTP'],
-    ISTP:['장인','과묵한 문제 해결사. 손재주와 실용적 분석에 능합니다.','ESFJ·ESTJ'],
-    ISFP:['모험가','감성적이고 자유로운 예술가. 지금 이 순간을 즐깁니다.','ENFJ·ESFJ'],
-    ESTP:['사업가','대담하고 활동적인 행동파. 위기 상황에 강합니다.','ISFJ·ISTJ'],
-    ESFP:['연예인','분위기 메이커. 사람들과 즐거운 순간을 만드는 데 천재적.','ISFJ·ISTJ']
+    INTJ:{nk:'b_mbti_type_INTJ_nick',dk:'b_mbti_type_INTJ_desc',gk:'b_mbti_type_INTJ_good',nick:'전략가',desc:'독립적이고 통찰력 있는 계획가. 큰 그림을 그리고 목표를 향해 묵묵히 나아갑니다.',good:'ENFP·ENTP'},
+    INTP:{nk:'b_mbti_type_INTP_nick',dk:'b_mbti_type_INTP_desc',gk:'b_mbti_type_INTP_good',nick:'논리술사',desc:'호기심 많은 분석가. 원리를 파고들고 아이디어로 세상을 이해합니다.',good:'ENTJ·ESTJ'},
+    ENTJ:{nk:'b_mbti_type_ENTJ_nick',dk:'b_mbti_type_ENTJ_desc',gk:'b_mbti_type_ENTJ_good',nick:'지도자',desc:'결단력 있는 리더. 비전을 제시하고 사람들을 이끌어 성과를 만듭니다.',good:'INTP·INFP'},
+    ENTP:{nk:'b_mbti_type_ENTP_nick',dk:'b_mbti_type_ENTP_desc',gk:'b_mbti_type_ENTP_good',nick:'변론가',desc:'재치 있는 발명가. 토론과 새로운 시도를 즐기는 아이디어 뱅크.',good:'INFJ·INTJ'},
+    INFJ:{nk:'b_mbti_type_INFJ_nick',dk:'b_mbti_type_INFJ_desc',gk:'b_mbti_type_INFJ_good',nick:'옹호자',desc:'조용하지만 깊은 신념의 이상주의자. 사람의 마음을 잘 읽습니다.',good:'ENFP·ENTP'},
+    INFP:{nk:'b_mbti_type_INFP_nick',dk:'b_mbti_type_INFP_desc',gk:'b_mbti_type_INFP_good',nick:'중재자',desc:'따뜻하고 가치 중심적인 몽상가. 진정성과 의미를 소중히 여깁니다.',good:'ENFJ·ENTJ'},
+    ENFJ:{nk:'b_mbti_type_ENFJ_nick',dk:'b_mbti_type_ENFJ_desc',gk:'b_mbti_type_ENFJ_good',nick:'선도자',desc:'카리스마 있는 격려자. 사람들의 성장을 돕고 분위기를 이끕니다.',good:'INFP·ISFP'},
+    ENFP:{nk:'b_mbti_type_ENFP_nick',dk:'b_mbti_type_ENFP_desc',gk:'b_mbti_type_ENFP_good',nick:'활동가',desc:'열정 가득한 자유로운 영혼. 사람과 가능성에 늘 설렙니다.',good:'INTJ·INFJ'},
+    ISTJ:{nk:'b_mbti_type_ISTJ_nick',dk:'b_mbti_type_ISTJ_desc',gk:'b_mbti_type_ISTJ_good',nick:'현실주의자',desc:'성실하고 책임감 강한 관리자. 약속과 원칙을 지킵니다.',good:'ESFP·ESTP'},
+    ISFJ:{nk:'b_mbti_type_ISFJ_nick',dk:'b_mbti_type_ISFJ_desc',gk:'b_mbti_type_ISFJ_good',nick:'수호자',desc:'헌신적이고 다정한 보호자. 묵묵히 주변을 챙깁니다.',good:'ESFP·ESTP'},
+    ESTJ:{nk:'b_mbti_type_ESTJ_nick',dk:'b_mbti_type_ESTJ_desc',gk:'b_mbti_type_ESTJ_good',nick:'경영자',desc:'체계적이고 추진력 있는 조직가. 질서와 효율을 중시합니다.',good:'ISTP·ISFP'},
+    ESFJ:{nk:'b_mbti_type_ESFJ_nick',dk:'b_mbti_type_ESFJ_desc',gk:'b_mbti_type_ESFJ_good',nick:'집정관',desc:'사교적이고 배려 깊은 조력자. 사람들을 잘 돌봅니다.',good:'ISFP·ISTP'},
+    ISTP:{nk:'b_mbti_type_ISTP_nick',dk:'b_mbti_type_ISTP_desc',gk:'b_mbti_type_ISTP_good',nick:'장인',desc:'과묵한 문제 해결사. 손재주와 실용적 분석에 능합니다.',good:'ESFJ·ESTJ'},
+    ISFP:{nk:'b_mbti_type_ISFP_nick',dk:'b_mbti_type_ISFP_desc',gk:'b_mbti_type_ISFP_good',nick:'모험가',desc:'감성적이고 자유로운 예술가. 지금 이 순간을 즐깁니다.',good:'ENFJ·ESFJ'},
+    ESTP:{nk:'b_mbti_type_ESTP_nick',dk:'b_mbti_type_ESTP_desc',gk:'b_mbti_type_ESTP_good',nick:'사업가',desc:'대담하고 활동적인 행동파. 위기 상황에 강합니다.',good:'ISFJ·ISTJ'},
+    ESFP:{nk:'b_mbti_type_ESFP_nick',dk:'b_mbti_type_ESFP_desc',gk:'b_mbti_type_ESFP_good',nick:'연예인',desc:'분위기 메이커. 사람들과 즐거운 순간을 만드는 데 천재적.',good:'ISFJ·ISTJ'}
   };
   var idx=0, ans=new Array(Q.length).fill(null);
   function show(){
-    var q=Q[idx]; $('qnum').textContent=(idx+1)+' / '+Q.length;
+    var q=Q[idx];
+    $('qnum').textContent=(idx+1)+' / '+Q.length;
     $('prog').style.width=Math.round(idx/Q.length*100)+'%';
-    $('qtext').textContent=q.q; $('optA').textContent=q.a[0]; $('optB').textContent=q.b[0];
+    $('qtext').textContent=t(q.qk)||q.q;
+    $('optA').textContent=t(q.ak)||q.a[0];
+    $('optB').textContent=t(q.bk)||q.b[0];
     $('prev').style.visibility=idx>0?'visible':'hidden';
   }
   function pick(which){ ans[idx]=which; if(idx<Q.length-1){ idx++; show(); } else finish(); }
@@ -144,20 +147,24 @@
     var type=(sc.E>=sc.I?'E':'I')+(sc.S>=sc.N?'S':'N')+(sc.T>=sc.F?'T':'F')+(sc.J>=sc.P?'J':'P');
     var info=TYPES[type];
     $('quiz').classList.add('hide'); $('result').classList.remove('hide');
-    $('rtype').textContent=type; $('rnick').textContent='“'+info[0]+'”'; $('rdesc').textContent=info[1];
+    var nickStr=t(info.nk)||info.nick;
+    var descStr=t(info.dk)||info.desc;
+    var goodStr=t(info.gk)||info.good;
+    $('rtype').textContent=type; $('rnick').textContent='"'+nickStr+'"'; $('rdesc').textContent=descStr;
     $('rbars').innerHTML=[['E','I',sc.E,sc.I],['S','N',sc.S,sc.N],['T','F',sc.T,sc.F],['J','P',sc.J,sc.P]].map(function(a){
       var tot=a[2]+a[3], pct=Math.round(a[2]/tot*100);
       return '<div class="axis"><div class="lab"><span>'+a[0]+' '+a[2]+'</span><span>'+a[3]+' '+a[1]+'</span></div><div class="track"><div class="fill" style="width:'+pct+'%"></div></div></div>';
     }).join('');
-    $('rgood').innerHTML='💞 <b>잘 맞는 유형:</b> '+info[2];
-    window._result=type+' ('+info[0]+') · 잘 맞는 유형 '+info[2];
+    $('rgood').innerHTML='💞 <b>'+t('b_mbti_good_label')+'</b> '+goodStr;
+    window._result=type+' ('+nickStr+') · '+(t('b_mbti_result_good_prefix')||'잘 맞는 유형')+' '+goodStr;
   }
   function restart(){ idx=0; ans.fill(null); $('result').classList.add('hide'); $('quiz').classList.remove('hide'); show(); }
   $('optA').addEventListener('click',function(){ pick('a'); });
   $('optB').addEventListener('click',function(){ pick('b'); });
   $('prev').addEventListener('click',function(){ if(idx>0){ idx--; show(); } });
   $('again').addEventListener('click',restart);
-  $('copy').addEventListener('click',function(){ navigator.clipboard.writeText('내 MBTI 결과: '+window._result+' (gemini2k.co.kr/mbti)').then(function(){toast('복사됐습니다');}); });
+  $('copy').addEventListener('click',function(){ navigator.clipboard.writeText((t('b_mbti_copy_prefix')||'내 MBTI 결과: ')+window._result+' (gemini2k.co.kr/mbti)').then(function(){toast(t('b_mbti_toast_copied')||'복사됐습니다');}); });
+  window.onI18n=show;
   show();
 </script>
 </body>

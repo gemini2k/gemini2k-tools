@@ -56,29 +56,29 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:720px;">
-  <h1>타자 속도 측정</h1>
-  <p class="sub">제시된 문장을 그대로 입력하면 타자 속도(타/분)와 정확도를 실시간으로 측정합니다.</p>
+  <h1 data-i18n="b_typing_title">타자 속도 측정</h1>
+  <p class="sub" data-i18n="b_typing_sub">제시된 문장을 그대로 입력하면 타자 속도(타/분)와 정확도를 실시간으로 측정합니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>언어(한글/영문)를 고르고 아래 입력칸을 클릭합니다</li>
-    <li>제시 문장을 그대로 입력하세요. 첫 글자 입력 순간부터 시간이 측정됩니다</li>
-    <li>문장을 끝내면 타/분·정확도가 나옵니다. ‘다음 문장’으로 계속 연습하세요</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_typing_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_typing_howto1">언어(한글/영문)를 고르고 아래 입력칸을 클릭합니다</li>
+    <li data-i18n="b_typing_howto2">제시 문장을 그대로 입력하세요. 첫 글자 입력 순간부터 시간이 측정됩니다</li>
+    <li data-i18n="b_typing_howto3">문장을 끝내면 타/분·정확도가 나옵니다. '다음 문장'으로 계속 연습하세요</li>
   </ol></div></div>
 
   <div class="card">
     <div class="opts">
-      <label>언어 <select id="lang"><option value="ko">한글</option><option value="en">영문</option></select></label>
+      <label><span data-i18n="b_typing_lang_label">언어</span> <select id="lang"><option value="ko" data-i18n="b_typing_lang_ko">한글</option><option value="en" data-i18n="b_typing_lang_en">영문</option></select></label>
     </div>
     <div class="target" id="target"></div>
-    <textarea id="input" placeholder="여기에 입력하세요…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+    <textarea id="input" placeholder="여기에 입력하세요…" data-i18n-ph="b_typing_input_ph" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
     <div class="stat">
-      <div class="sbox"><div class="l">타/분 (CPM)</div><div class="v" id="cpm">0</div></div>
+      <div class="sbox"><div class="l" data-i18n="b_typing_stat_cpm">타/분 (CPM)</div><div class="v" id="cpm">0</div></div>
       <div class="sbox"><div class="l">WPM</div><div class="v" id="wpm">0</div></div>
-      <div class="sbox"><div class="l">정확도</div><div class="v" id="acc">100%</div></div>
-      <div class="sbox"><div class="l">시간</div><div class="v" id="time">0.0</div></div>
+      <div class="sbox"><div class="l" data-i18n="b_typing_stat_acc">정확도</div><div class="v" id="acc">100%</div></div>
+      <div class="sbox"><div class="l" data-i18n="b_typing_stat_time">시간</div><div class="v" id="time">0.0</div></div>
     </div>
-    <div class="actions"><button class="btn btn-ghost" id="next" type="button">다음 문장 ↻</button><button class="btn btn-ghost" id="reset" type="button">다시</button></div>
-    <div class="note">타/분(CPM)은 한글의 경우 자판 입력 수(타수)를 기준으로, 영문은 글자 수를 기준으로 계산합니다. WPM은 타수를 5로 나눈 표준 환산값입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="actions"><button class="btn btn-ghost" id="next" type="button" data-i18n="b_typing_btn_next">다음 문장 ↻</button><button class="btn btn-ghost" id="reset" type="button" data-i18n="b_typing_btn_reset">다시</button></div>
+    <div class="note" data-i18n="b_typing_note">타/분(CPM)은 한글의 경우 자판 입력 수(타수)를 기준으로, 영문은 글자 수를 기준으로 계산합니다. WPM은 타수를 5로 나눈 표준 환산값입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
@@ -111,13 +111,13 @@
       var ch=target[i]==='&'?'&amp;':target[i]==='<'?'&lt;':target[i]; h+='<span class="'+cls+'">'+ch+'</span>'; }
     $('target').innerHTML=h;
   }
-  function setStats(cpm,wpm,acc,t){ $('cpm').textContent=cpm; $('wpm').textContent=wpm; $('acc').textContent=acc+'%'; $('time').textContent=t.toFixed(1); }
+  function setStats(cpm,wpm,acc,tm){ $('cpm').textContent=cpm; $('wpm').textContent=wpm; $('acc').textContent=acc+'%'; $('time').textContent=tm.toFixed(1); }
   function startTick(){ stopTick(); tick=setInterval(update,100); }
   function stopTick(){ if(tick){ clearInterval(tick); tick=null; } }
   function update(){ if(!started) return; var typed=$('input').value; var elapsed=(performance.now()-started)/1000;
     var correct=0; for(var i=0;i<typed.length&&i<target.length;i++) if(typed[i]===target[i]) correct++;
-    var lang=$('lang').value;
-    var unit = lang==='ko' ? strokes(target.slice(0,correct)) : correct;
+    var lng=$('lang').value;
+    var unit = lng==='ko' ? strokes(target.slice(0,correct)) : correct;
     var cpm = elapsed>0 ? Math.round(unit/elapsed*60) : 0;
     var acc = typed.length? Math.round(correct/typed.length*100):100;
     setStats(cpm, Math.round(cpm/5), acc, elapsed);
@@ -128,7 +128,7 @@
     render(typed);
     if(typed.length>=target.length && !finished){ finished=true; update(); stopTick();
       var ok=true; for(var i=0;i<target.length;i++) if(typed[i]!==target[i]){ok=false;break;}
-      $('target').innerHTML+= ok?' <b style="color:#16a34a">✓ 완성!</b>':' <b style="color:#f59e0b">— 오타가 있어요</b>';
+      $('target').innerHTML+= ok?' <b style="color:#16a34a">✓ '+t('b_typing_msg_done')+'</b>':' <b style="color:#f59e0b">— '+t('b_typing_msg_typo')+'</b>';
     }
   });
   $('lang').addEventListener('change',pick);

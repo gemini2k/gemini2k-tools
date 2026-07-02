@@ -24,15 +24,15 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:640px;">
-  <h1>한글 로마자 변환기</h1>
-  <p class="sub">한글을 로마자(국어의 로마자 표기법 근사)로 바꿉니다. 이름·주소·간판 영문 표기에 참고하세요.</p>
+  <h1 data-i18n="b_romanize_title">한글 로마자 변환기</h1>
+  <p class="sub" data-i18n="b_romanize_sub">한글을 로마자(국어의 로마자 표기법 근사)로 바꿉니다. 이름·주소·간판 영문 표기에 참고하세요.</p>
   <div class="card">
     <textarea id="in">안녕하세요 빛의여행</textarea>
-    <div class="opts"><label><input type="checkbox" id="cap"/> 단어 첫 글자 대문자</label></div>
+    <div class="opts"><label><input type="checkbox" id="cap"/> <span data-i18n="b_romanize_cap_label">단어 첫 글자 대문자</span></label></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>
-    <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 복사</button></div>
-    <div class="note">표준 로마자 표기법의 자모 대응과 기본 연음을 적용한 <b>근사 변환</b>입니다. 사람 이름·일부 음운변화(된소리·구개음화 등)는 규칙이 달라질 수 있어 참고용입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 <span data-i18n="b_romanize_copy">복사</span></button></div>
+    <div class="note" data-i18n="b_romanize_note">표준 로마자 표기법의 자모 대응과 기본 연음을 적용한 <b>근사 변환</b>입니다. 사람 이름·일부 음운변화(된소리·구개음화 등)는 규칙이 달라질 수 있어 참고용입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -62,7 +62,7 @@
   function run(){ var lines=$('in').value.split('\n').map(function(line){ return line.split(' ').map(function(w){ var r=rr(w); if($('cap').checked&&r)r=r.charAt(0).toUpperCase()+r.slice(1); return r; }).join(' '); }).join('\n');
     $('out').textContent=lines; }
   ['in','cap'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
-  $('copy').addEventListener('click',function(){if($('out').textContent)navigator.clipboard.writeText($('out').textContent).then(function(){toast('복사됐습니다');});});
+  $('copy').addEventListener('click',function(){if($('out').textContent)navigator.clipboard.writeText($('out').textContent).then(function(){toast(t('b_romanize_copied'));});});
   run();
 </script>
 </body>

@@ -31,17 +31,17 @@
 </head>
 <body>
 <div class="toolwrap" style="max-width:880px;">
-  <h1>JSON 비교 (diff)</h1>
-  <p class="sub">두 JSON을 구조적으로 비교해 어떤 경로가 추가·삭제·변경됐는지 보여 줍니다.</p>
+  <h1 data-i18n="b_jsondiff_title">JSON 비교 (diff)</h1>
+  <p class="sub" data-i18n="b_jsondiff_sub">두 JSON을 구조적으로 비교해 어떤 경로가 추가·삭제·변경됐는지 보여 줍니다.</p>
   <div class="card">
     <div class="grid2">
-      <div><label style="font-weight:700;font-size:.85rem;">JSON A (이전)</label><textarea id="a">{"name":"홍길동","age":30,"tags":["x","y"],"vip":false}</textarea></div>
-      <div><label style="font-weight:700;font-size:.85rem;">JSON B (이후)</label><textarea id="b">{"name":"홍길동","age":31,"tags":["x","z"],"city":"서울"}</textarea></div>
+      <div><label style="font-weight:700;font-size:.85rem;" data-i18n="b_jsondiff_label_a">JSON A (이전)</label><textarea id="a">{"name":"홍길동","age":30,"tags":["x","y"],"vip":false}</textarea></div>
+      <div><label style="font-weight:700;font-size:.85rem;" data-i18n="b_jsondiff_label_b">JSON B (이후)</label><textarea id="b">{"name":"홍길동","age":31,"tags":["x","z"],"city":"서울"}</textarea></div>
     </div>
     <div class="err" id="err"></div>
     <div class="sum" id="sum"></div>
     <div class="difflist" id="out"></div>
-    <div class="note">경로(dot notation)로 차이를 나열합니다. <span style="color:#16a34a">＋추가</span> / <span style="color:#b91c1c">－삭제</span> / <span style="color:#b45309">≠변경</span>. 배열은 인덱스 기준 비교입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_jsondiff_note">경로(dot notation)로 차이를 나열합니다. <span style="color:#16a34a">＋추가</span> / <span style="color:#b91c1c">－삭제</span> / <span style="color:#b45309">≠변경</span>. 배열은 인덱스 기준 비교입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 <script src="tool-shell.js"></script>
@@ -61,16 +61,17 @@
   }
   function fmt(v){ return v===undefined?'∅':JSON.stringify(v); }
   function run(){ $('err').textContent=''; var A,B;
-    try{A=JSON.parse($('a').value);}catch(e){$('err').textContent='A JSON 오류: '+e.message;return;}
-    try{B=JSON.parse($('b').value);}catch(e){$('err').textContent='B JSON 오류: '+e.message;return;}
+    try{A=JSON.parse($('a').value);}catch(e){$('err').textContent=t('b_jsondiff_err_a')+e.message;return;}
+    try{B=JSON.parse($('b').value);}catch(e){$('err').textContent=t('b_jsondiff_err_b')+e.message;return;}
     var out=[]; diff(A,B,'',out);
     var na=out.filter(function(d){return d[0]==='add';}).length, nd=out.filter(function(d){return d[0]==='del';}).length, nc=out.filter(function(d){return d[0]==='chg';}).length;
-    $('sum').innerHTML='<span class="sbox" style="color:#16a34a">＋추가 '+na+'</span><span class="sbox" style="color:#b91c1c">－삭제 '+nd+'</span><span class="sbox" style="color:#b45309">≠변경 '+nc+'</span>';
-    if(!out.length){ $('out').innerHTML='<div class="d" style="color:var(--muted)">차이가 없습니다 (동일)</div>'; return; }
+    $('sum').innerHTML='<span class="sbox" style="color:#16a34a">＋'+t('b_jsondiff_added')+' '+na+'</span><span class="sbox" style="color:#b91c1c">－'+t('b_jsondiff_deleted')+' '+nd+'</span><span class="sbox" style="color:#b45309">≠'+t('b_jsondiff_changed')+' '+nc+'</span>';
+    if(!out.length){ $('out').innerHTML='<div class="d" style="color:var(--muted)">'+t('b_jsondiff_no_diff')+'</div>'; return; }
     $('out').innerHTML=out.map(function(d){ var cls=d[0], sym=cls==='add'?'＋':cls==='del'?'－':'≠';
       var txt = cls==='add'? d[1]+' = '+fmt(d[3]) : cls==='del'? d[1]+' = '+fmt(d[2]) : d[1]+' : '+fmt(d[2])+' → '+fmt(d[3]);
       return '<div class="d '+cls+'">'+sym+' '+txt.replace(/</g,'&lt;')+'</div>'; }).join('');
   }
+  window.onI18n=run;
   ['a','b'].forEach(function(id){$(id).addEventListener('input',run);});
   run();
 </script>

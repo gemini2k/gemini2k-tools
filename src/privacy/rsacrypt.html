@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/favicon.ico" sizes="any"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
+<title>RSA 암호화·복호화 (공개키 암호화) — 빛의여행(gemini2k) 도구</title>
+<meta name="description" content="공개키로 메시지를 RSA 암호화하고 개인키로 복호화합니다. 키 생성도 지원. 안전한 메시지 전달 실습에. JSEncrypt 자체 호스팅. 전송 없이 브라우저에서만 처리됩니다."/>
+<link rel="canonical" href="https://gemini2k.co.kr/rsacrypt.html"/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="RSA 암호화·복호화 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="공개키 RSA 암호화·개인키 복호화(JSEncrypt). 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/rsacrypt.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
+<link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
+<script src="ga.js"></script><script src="theme.js"></script><script src="i18n.js"></script><script src="tools.js"></script>
+<style>.field{margin-bottom:.7rem;}.field label{display:block;font-weight:700;font-size:.85rem;margin-bottom:.3rem;}
+textarea{width:100%;padding:.6rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:ui-monospace,monospace;font-size:.78rem;resize:vertical;}
+.keys{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}@media(max-width:600px){.keys{grid-template-columns:1fr;}}
+.keys textarea{min-height:120px;}.msg{min-height:70px;}
+.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin:.5rem 0;}
+.out{width:100%;min-height:60px;border:1px solid var(--border);border-radius:10px;background:var(--ground);padding:.7rem;font-family:ui-monospace,monospace;font-size:.8rem;color:var(--text);white-space:pre-wrap;word-break:break-all;}
+.note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SecurityApplication","name":"RSA 암호화·복호화","description":"공개키로 RSA 암호화하고 개인키로 복호화합니다(JSEncrypt).","url":"https://gemini2k.co.kr/rsacrypt.html","applicationCategory":"SecurityApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
+</head>
+<body>
+<div class="toolwrap" style="max-width:760px;">
+  <h1 data-i18n="b_rsacrypt_title">RSA 암호화·복호화</h1>
+  <p class="sub" data-i18n="b_rsacrypt_sub">공개키로 메시지를 암호화하고, 개인키로 복호화합니다. 키가 없으면 생성할 수 있어요.</p>
+  <div class="card">
+    <div class="actions"><button class="btn" id="genkey" type="button" data-i18n="b_rsacrypt_btn_genkey">🔑 샘플 키쌍 생성</button><span id="gstatus" style="color:var(--muted);font-size:.9rem;align-self:center;"></span></div>
+    <div class="keys">
+      <div class="field"><label data-i18n="b_rsacrypt_label_pub">공개키 (암호화용)</label><textarea id="pub" placeholder="-----BEGIN PUBLIC KEY-----"></textarea></div>
+      <div class="field"><label data-i18n="b_rsacrypt_label_priv">개인키 (복호화용)</label><textarea id="priv" placeholder="-----BEGIN RSA PRIVATE KEY-----"></textarea></div>
+    </div>
+    <div class="field"><label data-i18n="b_rsacrypt_label_msg">메시지</label><textarea id="msg" class="msg" data-i18n-ph="b_rsacrypt_msg_default">안녕하세요, 비밀 메시지입니다.</textarea></div>
+    <div class="actions"><button class="btn" id="enc" type="button" data-i18n="b_rsacrypt_btn_enc">🔒 암호화</button><button class="btn" id="dec" type="button" data-i18n="b_rsacrypt_btn_dec">🔓 복호화</button><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_rsacrypt_btn_copy">📋 복사</button></div>
+    <div class="field"><label data-i18n="b_rsacrypt_label_out">결과</label><div class="out" id="out"></div></div>
+    <div class="note" data-i18n-html="b_rsacrypt_note">오픈소스 <b>JSEncrypt</b>(MIT, <a href="https://github.com/travist/jsencrypt" target="_blank" rel="noopener">travist/jsencrypt</a>)를 자체 호스팅합니다. RSA는 짧은 메시지에 적합합니다(긴 글은 길이 제한). 키·메시지는 전송되지 않고 브라우저에서만 처리됩니다.</div>
+  </div>
+</div>
+<script src="/vendor/jsencrypt-3/jsencrypt.min.js"></script>
+<script src="tool-shell.js"></script>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  $('genkey').addEventListener('click',function(){ $('gstatus').textContent=t('b_rsacrypt_status_generating'); $('genkey').disabled=true;
+    setTimeout(function(){ var c=new JSEncrypt({default_key_size:1024}); c.getKey();
+      $('pub').value=c.getPublicKey(); $('priv').value=c.getPrivateKey(); $('gstatus').textContent=t('b_rsacrypt_status_done'); $('genkey').disabled=false; },30); });
+  $('enc').addEventListener('click',function(){ var c=new JSEncrypt(); c.setPublicKey($('pub').value);
+    var tmp=c.encrypt($('msg').value); $('out').textContent=tmp?tmp:t('b_rsacrypt_err_enc'); window._o=tmp||''; });
+  $('dec').addEventListener('click',function(){ var c=new JSEncrypt(); c.setPrivateKey($('priv').value);
+    var tmp=c.decrypt($('msg').value.trim()); $('out').textContent=(tmp!==false&&tmp!=null)?tmp:t('b_rsacrypt_err_dec'); window._o=(tmp||''); });
+  $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_rsacrypt_toast_copied'));});});
+</script>
+</body>
+</html>

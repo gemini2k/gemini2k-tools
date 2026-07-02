@@ -53,24 +53,32 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>혈압 분류기</h1>
-  <p class="sub">수축기(높은 값)·이완기(낮은 값) 혈압을 넣으면 대한고혈압학회 기준 단계를 알려 줍니다.</p>
+  <h1 data-i18n="b_bloodpressure_title">혈압 분류기</h1>
+  <p class="sub" data-i18n="b_bloodpressure_sub">수축기(높은 값)·이완기(낮은 값) 혈압을 넣으면 대한고혈압학회 기준 단계를 알려 줍니다.</p>
 
   <div class="card">
     <div class="frow">
-      <div class="fld"><label for="sys">수축기 (mmHg)</label><input id="sys" type="number" value="118" min="60" max="260"/></div>
-      <div class="fld"><label for="dia">이완기 (mmHg)</label><input id="dia" type="number" value="76" min="40" max="160"/></div>
+      <div class="fld"><label for="sys" data-i18n="b_bloodpressure_label_sys">수축기 (mmHg)</label><input id="sys" type="number" value="118" min="60" max="260"/></div>
+      <div class="fld"><label for="dia" data-i18n="b_bloodpressure_label_dia">이완기 (mmHg)</label><input id="dia" type="number" value="76" min="40" max="160"/></div>
     </div>
-    <div class="res"><span class="cat" id="cat">정상</span><div class="bp" id="bp"></div></div>
+    <div class="res"><span class="cat" id="cat" data-i18n="b_bloodpressure_lv0">정상</span><div class="bp" id="bp"></div></div>
     <div class="scale" id="scale"></div>
-    <div class="note">⚠️ 참고용입니다 — 진단이 아닙니다. 대한고혈압학회 기준: 정상 &lt;120/80, 주의혈압 120–129/&lt;80, 고혈압 전단계 130–139 또는 80–89, 1기 140–159 또는 90–99, 2기 ≥160 또는 ≥100. 수축기·이완기 중 더 높은 단계로 분류합니다. 혈압은 여러 번·안정 상태에서 측정해야 하며, 정확한 진단은 의료진과 상담하세요.</div>
+    <div class="note" data-i18n="b_bloodpressure_note">⚠️ 참고용입니다 — 진단이 아닙니다. 대한고혈압학회 기준: 정상 &lt;120/80, 주의혈압 120–129/&lt;80, 고혈압 전단계 130–139 또는 80–89, 1기 140–159 또는 90–99, 2기 ≥160 또는 ≥100. 수축기·이완기 중 더 높은 단계로 분류합니다. 혈압은 여러 번·안정 상태에서 측정해야 하며, 정확한 진단은 의료진과 상담하세요.</div>
   </div>
 </div>
 
 <script src="tool-shell.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
-  var LV=[['정상','c0'],['주의혈압','c1'],['고혈압 전단계','c2'],['고혈압 1기','c3'],['고혈압 2기','c4']];
+  function getLV(){
+    return [
+      [t('b_bloodpressure_lv0'),'c0'],
+      [t('b_bloodpressure_lv1'),'c1'],
+      [t('b_bloodpressure_lv2'),'c2'],
+      [t('b_bloodpressure_lv3'),'c3'],
+      [t('b_bloodpressure_lv4'),'c4']
+    ];
+  }
   function level(s,d){
     if(s>=160||d>=100) return 4;
     if(s>=140||d>=90) return 3;
@@ -83,6 +91,7 @@
   function calc(){
     var s=parseInt($('sys').value), d=parseInt($('dia').value);
     if(!(s>0&&d>0)){ return; }
+    var LV=getLV();
     var lv=level(s,d), info=LV[lv];
     var colors={c0:'#22c55e',c1:'#84cc16',c2:'#eab308',c3:'#f97316',c4:'#ef4444'};
     var cat=$('cat'); cat.textContent=info[0]; cat.style.background=colors[info[1]]+'22'; cat.style.color=colors[info[1]];
@@ -91,6 +100,7 @@
       return '<div class="lvl'+(i===lv?' on':'')+'"><span><span class="dot '+l[1]+'"></span>'+l[0]+(i===lv?' ◀':'')+'</span><span style="color:var(--muted)">'+ranges[i]+'</span></div>'; }).join('');
   }
   ['sys','dia'].forEach(function(id){ $(id).addEventListener('input',calc); });
+  window.onI18n = calc;
   calc();
 </script>
 </body>

@@ -53,34 +53,44 @@
 </head>
 <body>
 <div class="toolwrap">
-  <h1>Cron 표현식 해석기</h1>
-  <p class="sub">crontab 표현식이 무슨 뜻인지 풀어 주고, 앞으로 언제 실행될지 미리 보여 줍니다.</p>
+  <h1 data-i18n="b_cron_title">Cron 표현식 해석기</h1>
+  <p class="sub" data-i18n="b_cron_sub">crontab 표현식이 무슨 뜻인지 풀어 주고, 앞으로 언제 실행될지 미리 보여 줍니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b>사용 방법</b><ol>
-    <li>cron 표현식을 입력합니다(분 시 일 월 요일, 5칸)</li>
-    <li>아래에 한국어 설명과 다음 실행 시각이 표시됩니다</li>
-    <li>예시 버튼을 눌러 빠르게 확인할 수도 있습니다</li>
+  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_cron_howto_title">사용 방법</b><ol>
+    <li data-i18n="b_cron_howto1">cron 표현식을 입력합니다(분 시 일 월 요일, 5칸)</li>
+    <li data-i18n="b_cron_howto2">아래에 한국어 설명과 다음 실행 시각이 표시됩니다</li>
+    <li data-i18n="b_cron_howto3">예시 버튼을 눌러 빠르게 확인할 수도 있습니다</li>
   </ol></div></div>
 
   <div class="card">
     <input id="cron" class="cronin" value="0 9 * * 1-5" autocomplete="off" spellcheck="false"/>
     <div class="presets">
-      <button data-c="* * * * *">매분</button><button data-c="0 * * * *">매시 정각</button>
-      <button data-c="0 9 * * *">매일 9시</button><button data-c="0 9 * * 1-5">평일 9시</button>
-      <button data-c="*/15 * * * *">15분마다</button><button data-c="0 0 1 * *">매월 1일</button>
+      <button data-c="* * * * *" data-i18n="b_cron_p_everymin">매분</button><button data-c="0 * * * *" data-i18n="b_cron_p_everyhour">매시 정각</button>
+      <button data-c="0 9 * * *" data-i18n="b_cron_p_daily9">매일 9시</button><button data-c="0 9 * * 1-5" data-i18n="b_cron_p_weekday9">평일 9시</button>
+      <button data-c="*/15 * * * *" data-i18n="b_cron_p_15min">15분마다</button><button data-c="0 0 1 * *" data-i18n="b_cron_p_monthly1">매월 1일</button>
     </div>
     <div class="err" id="err"></div>
     <div class="desc" id="desc"></div>
-    <div style="font-size:.82rem;color:var(--muted);font-weight:700;">다음 실행 시각</div>
+    <div style="font-size:.82rem;color:var(--muted);font-weight:700;" data-i18n="b_cron_next_label">다음 실행 시각</div>
     <div class="next" id="next"></div>
-    <div class="note">5필드(분 시 일 월 요일)를 지원합니다. <code>*</code>(전체), <code>*/n</code>(n단계), <code>a-b</code>(범위), <code>a,b</code>(목록)를 인식합니다. 요일은 0=일요일입니다. 다음 실행 시각은 이 기기의 현지 시간 기준으로 계산합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_cron_note">5필드(분 시 일 월 요일)를 지원합니다. <code>*</code>(전체), <code>*/n</code>(n단계), <code>a-b</code>(범위), <code>a,b</code>(목록)를 인식합니다. 요일은 0=일요일입니다. 다음 실행 시각은 이 기기의 현지 시간 기준으로 계산합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 </div>
 
 <script src="tool-shell.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
-  var WD=['일','월','화','수','목','금','토'], MON=['','1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  var WD_ko=['일','월','화','수','목','금','토'];
+  var WD_en=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var WD_zh=['日','一','二','三','四','五','六'];
+  var WD_ja=['日','月','火','水','木','金','土'];
+  var MON_ko=['','1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  var MON_en=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var MON_zh=['','1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  var MON_ja=['','1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  function getLang(){ return (typeof curLang === 'function' ? curLang() : null) || 'ko'; }
+  function getWD(){ var l=getLang(); return l==='en'?WD_en:l==='zh'?WD_zh:l==='ja'?WD_ja:WD_ko; }
+  function getMON(){ var l=getLang(); return l==='en'?MON_en:l==='zh'?MON_zh:l==='ja'?MON_ja:MON_ko; }
   function parseField(f, min, max){
     var out={};
     f.split(',').forEach(function(part){
@@ -90,13 +100,13 @@
       if(range==='*'){ lo=min; hi=max; }
       else if(range.indexOf('-')>=0){ var r=range.split('-'); lo=parseInt(r[0]); hi=parseInt(r[1]); }
       else { lo=hi=parseInt(range); }
-      if(isNaN(lo)||isNaN(hi)||isNaN(step)||step<1||lo<min||hi>max||lo>hi) throw new Error('범위 오류');
+      if(isNaN(lo)||isNaN(hi)||isNaN(step)||step<1||lo<min||hi>max||lo>hi) throw new Error(t('b_cron_err_range'));
       for(var v=lo;v<=hi;v+=step) out[v]=1;
     });
     return Object.keys(out).map(Number).sort(function(a,b){return a-b;});
   }
   function parseCron(s){
-    var f=s.trim().split(/\s+/); if(f.length!==5) throw new Error('5칸(분 시 일 월 요일)이 필요합니다');
+    var f=s.trim().split(/\s+/); if(f.length!==5) throw new Error(t('b_cron_err_fields'));
     return { min:parseField(f[0],0,59), hour:parseField(f[1],0,23), dom:parseField(f[2],1,31), mon:parseField(f[3],1,12), dow:parseField(f[4],0,6),
              domStar:f[2]==='*', dowStar:f[4]==='*' };
   }
@@ -104,19 +114,28 @@
   function describe(c, raw){
     var f=raw.trim().split(/\s+/);
     var parts=[];
+    var WD=getWD(), MON=getMON();
+    var lang=getLang();
     // 월
     var md=listDesc(c.mon,12,function(m){return MON[m];}); if(md) parts.push(md);
     // 일/요일
-    var dd=c.domStar?null:c.dom.join(', ')+'일';
-    var wd=c.dowStar?null:c.dow.map(function(d){return WD[d]+'요일';}).join(', ');
-    if(dd&&wd) parts.push(dd+' 또는 '+wd); else if(dd) parts.push(dd); else if(wd) parts.push(wd);
-    else parts.push('매일');
+    var dd=c.domStar?null:c.dom.join(', ')+(lang==='en'?'':lang==='ja'?'日':lang==='zh'?'日':'일');
+    var wd=c.dowStar?null:c.dow.map(function(d){
+      if(lang==='en') return WD[d];
+      if(lang==='zh'||lang==='ja') return WD[d]+(lang==='zh'?'曜日':'曜日');
+      return WD[d]+'요일';
+    }).join(', ');
+    var orWord = lang==='en'?' or ':lang==='zh'?'或':lang==='ja'?'または':' 또는 ';
+    if(dd&&wd) parts.push(dd+orWord+wd); else if(dd) parts.push(dd); else if(wd) parts.push(wd);
+    else parts.push(t('b_cron_desc_everyday'));
     // 시:분
     var hourStar=f[1]==='*', minStar=f[0]==='*';
-    if(minStar && hourStar) parts.push('매분');
-    else if(hourStar){ parts.push('매시 '+c.min.join(',')+'분'); }
-    else if(minStar){ parts.push(c.hour.join(',')+'시 매분'); }
-    else { var times=[]; c.hour.forEach(function(h){ c.min.forEach(function(m){ times.push(h+':'+String(m).padStart(2,'0')); }); }); parts.push(times.slice(0,8).join(', ')+(times.length>8?' 등':'')); }
+    var minWord=lang==='en'?'min':lang==='zh'?'分':lang==='ja'?'分':'분';
+    var hourWord=lang==='en'?'h':lang==='zh'?'时':lang==='ja'?'時':'시';
+    if(minStar && hourStar) parts.push(t('b_cron_desc_everymin'));
+    else if(hourStar){ parts.push(t('b_cron_desc_everyhour_at')+' '+c.min.join(',')+minWord); }
+    else if(minStar){ parts.push(c.hour.join(',')+hourWord+' '+t('b_cron_desc_everymin')); }
+    else { var times=[]; c.hour.forEach(function(h){ c.min.forEach(function(m){ times.push(h+':'+String(m).padStart(2,'0')); }); }); parts.push(times.slice(0,8).join(', ')+(times.length>8?' '+t('b_cron_desc_etc'):'')); }
     return parts.join(' · ');
   }
   function nextRuns(c, n){
@@ -130,17 +149,18 @@
     }
     return res;
   }
-  function fmtD(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' ('+WD[d.getDay()]+') '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+  function fmtD(d){ var WD=getWD(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' ('+WD[d.getDay()]+') '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
   function run(){
     $('err').textContent=''; var el=$('cron'); el.classList.remove('bad');
     try{ var c=parseCron(el.value);
       $('desc').textContent=describe(c, el.value);
       var runs=nextRuns(c,5);
-      $('next').innerHTML = runs.length? runs.map(function(d){return '<div class="nrow">'+fmtD(d)+'</div>';}).join('') : '<div class="nrow">향후 1년 내 실행 없음</div>';
+      $('next').innerHTML = runs.length? runs.map(function(d){return '<div class="nrow">'+fmtD(d)+'</div>';}).join('') : '<div class="nrow">'+t('b_cron_no_run')+'</div>';
     }catch(e){ el.classList.add('bad'); $('err').textContent=e.message; $('desc').textContent=''; $('next').innerHTML=''; }
   }
   $('cron').addEventListener('input', run);
   document.querySelector('.presets').addEventListener('click', function(e){ var b=e.target.closest('button'); if(b){ $('cron').value=b.dataset.c; run(); } });
+  window.onI18n = run;
   run();
 </script>
 </body>
