@@ -79,6 +79,7 @@
           <option value="14,14,45" data-i18n="b_minesweeper_level_hard">어려움 14×14 (45)</option>
         </select>
         <button class="flagbtn" id="flagmode" type="button" data-i18n="b_minesweeper_flagmode">🚩 깃발 모드</button>
+        <button class="flagbtn" id="newgame" type="button" data-i18n="b_minesweeper_newgame">새 게임</button>
       </div>
       <div class="scores">
         <div class="sbox"><div class="l" data-i18n="b_minesweeper_label_mines">지뢰</div><div class="v" id="mines">0</div></div>
@@ -136,6 +137,7 @@
   });
   msEl.addEventListener('contextmenu', function(e){ var b=e.target.closest('.ms-c'); if(!b) return; e.preventDefault(); var i=idx(+b.dataset.r,+b.dataset.c); if(started&&!over) toggleFlag(i); });
   $('flagmode').addEventListener('click', function(){ flagMode=!flagMode; this.classList.toggle('on',flagMode); });
+  $('newgame').addEventListener('click', function(){ flagMode=false; $('flagmode').classList.remove('on'); build(); });
   $('level').addEventListener('change', build);
   build();
 </script>
