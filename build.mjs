@@ -264,6 +264,16 @@ for (const f of fs.readdirSync(DIST)){
 // 2.8) 언어별 정적 URL 생성 (/en /zh /ja, ko=루트) + hreflang
 //   - 본문은 window.__FORCE_LANG + i18n 엔진이 런타임 번역(Googlebot JS 렌더). head(title/desc/og/canonical/hreflang/lang)는 정적 번역.
 const LANGS_OUT = [['en', 'en'], ['zh', 'zh-CN'], ['ja', 'ja']];
+// 애드센스 '가치가 별로 없는 콘텐츠' 대응(2026-11-08):
+//  - 언어 변형(/en /zh /ja)은 원본 HTML 이 한국어와 같고 번역은 JS 런타임이라 크롤러에겐 중복 페이지 →
+//    본문을 정적 번역할 때까지 noindex + hreflang·sitemap 제외. LANG_INDEX=1 로 빌드하면 예전처럼 색인.
+//  - 게임·운세 등 흔한 도구는 사이트 고유 가치가 낮아 noindex + sitemap 제외(페이지·허브 노출은 유지).
+const LANG_INDEX = process.env.LANG_INDEX === '1';
+const NOINDEX_CATS = new Set(['game', 'fortune']);          // src/<폴더> 기준
+const NOINDEX_FILES = new Set([...seen].filter(([, p]) => NOINDEX_CATS.has(path.basename(path.dirname(p)))).map(([b]) => b));
+for (const c of CATS) if (NOINDEX_CATS.has(CAT_SLUG[c])) NOINDEX_FILES.add('cat-' + CAT_SLUG[c] + '.html');
+const ROBOTS_NOINDEX = '<meta name="robots" content="noindex,follow"/>';
+const addNoindex = html => html.indexOf('name="robots"') >= 0 ? html : html.replace('</head>', ROBOTS_NOINDEX + '</head>');
 const SITE = { ko: '빛의여행(gemini2k) 도구', en: 'gemini2k Tools', zh: 'gemini2k 工具', ja: 'gemini2k ツール' };
 const IDX_TITLE = { en: 'Free Online Tools — gemini2k', zh: '免费在线工具 — gemini2k', ja: '無料オンラインツール — gemini2k' };
 const IDX_DESC = { en: '300+ free, privacy-first browser tools: text, calculators, converters, image/PDF, developer, GIS, games and more. No install, no upload.', zh: '300+ 款免费、注重隐私的浏览器工具：文本、计算器、转换、图像/PDF、开发者、GIS、游戏等。免安装、不上传。', ja: '300以上の無料・プライバシー重視のブラウザツール：テキスト・計算機・変換・画像/PDF・開発者・GIS・ゲームなど。インストール不要、アップロードなし。' };
@@ -282,8 +292,10 @@ const absolutize = html => html.replace(/(src|href)="([^"\/][^"]*\.(?:js|css))(\
 
 // (a) ko 루트 페이지에 hreflang 주입
 for (const f of pageFiles) {
-  const fp = path.join(DIST, f); let h = fs.readFileSync(fp, 'utf8');
-  if (h.indexOf('hreflang') < 0) { const he = h.indexOf('</head>'); if (he >= 0) { fs.writeFileSync(fp, h.slice(0, he) + hreflangBlock(f) + h.slice(he)); } }
+  const fp = path.join(DIST, f); let h = fs.readFileSync(fp, 'utf8'); const h0 = h;
+  if (NOINDEX_FILES.has(f)) h = addNoindex(h);
+  if (LANG_INDEX && h.indexOf('hreflang') < 0) { const he = h.indexOf('</head>'); if (he >= 0) h = h.slice(0, he) + hreflangBlock(f) + h.slice(he); }
+  if (h !== h0) fs.writeFileSync(fp, h);
 }
 // (b) 언어 변형 생성
 const langUrls = [];
@@ -311,7 +323,9 @@ for (const [lang, htmlLang] of LANGS_OUT) {
   const dir = path.join(DIST, lang); fs.mkdirSync(dir, { recursive: true });
   for (const f of pageFiles) {
     const src = fs.readFileSync(path.join(DIST, f), 'utf8');
-    fs.writeFileSync(path.join(dir, f), localize(src, f, lang, htmlLang));
+    let out = localize(src, f, lang, htmlLang);
+    if (!LANG_INDEX || NOINDEX_FILES.has(f)) out = addNoindex(out);
+    fs.writeFileSync(path.join(dir, f), out);
     langUrls.push(f === 'index.html' ? '/' + lang + '/' : '/' + lang + '/' + f);
     langPages++;
   }
@@ -331,9 +345,10 @@ const altLinks = (file) => {
 const lmOf = (file) => { try { return '<lastmod>' + new Date(fs.statSync(seen.get(file) || path.join(DIST, file)).mtime).toISOString().slice(0, 10) + '</lastmod>'; } catch { return ''; } };
 let smEntries = '';
 for (const f of pageFiles) {
-  const alts = altLinks(f), lm = lmOf(f);
+  if (NOINDEX_FILES.has(f)) continue;                       // 검색 제외 페이지는 sitemap 에서도 제외
+  const alts = LANG_INDEX ? altLinks(f) : '', lm = lmOf(f);
   smEntries += '<url><loc>' + locOf(f, '') + '</loc>' + alts + lm + '</url>\n';
-  for (const [l] of LANGS_OUT) smEntries += '<url><loc>' + locOf(f, l) + '</loc>' + alts + lm + '</url>\n';
+  if (LANG_INDEX) for (const [l] of LANGS_OUT) smEntries += '<url><loc>' + locOf(f, l) + '</loc>' + alts + lm + '</url>\n';
 }
 const sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
   + smEntries + '</urlset>\n';
@@ -342,7 +357,7 @@ fs.writeFileSync(path.join(DIST, 'robots.txt'), 'User-agent: *\nAllow: /\nSitema
 
 const total = fs.readdirSync(DIST).filter(f => f.endsWith('.html')).length;
 const coreSz = Math.round(fs.statSync(path.join(DIST,'i18n-core.js')).size/1024);
-const smCount = pageFiles.length * (1 + LANGS_OUT.length);
+const smCount = (smEntries.match(/<url>/g) || []).length;
 console.log('빌드 완료 — html ' + total + '개(카테고리 ' + catPages + '), 언어변형 ' + langPages + '페이지(en/zh/ja), 공용자산 ' + assets + '항목, sitemap ' + smCount + ' URL(hreflang), SEO주입 ' + seoInjected + '페이지');
 console.log('캐시버스팅 — v=' + VER + ' (앱코드 ' + busted + '개 html 적용)');
 console.log('최적화 — 페이지 인라인 ' + optimized + '개, i18n-core.js ' + coreSz + 'KB (도구 수와 무관하게 고정)');

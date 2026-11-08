@@ -36,6 +36,35 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <label class="drop" id="drop" for="file">📁 <span data-i18n="b_checksum_drop_label">파일을 끌어다 놓거나 클릭해서 선택</span><input type="file" id="file" hidden/></label><div style="text-align:center;color:var(--muted);font-size:.85rem;margin:.4rem 0"><span data-i18n="b_checksum_or_text">— 또는 텍스트 —</span></div><textarea class="in" id="txt" spellcheck="false" style="min-height:70px">Hello, 빛의여행!</textarea><div class="meta" id="meta" style="font-size:.85rem;color:var(--muted);margin:.4rem 0"></div><div class="res" id="res" style="overflow-x:auto"></div>
     <div class="note" data-i18n-html="b_checksum_note">오픈소스 <b>hash-wasm</b>(MIT, <a href="https://github.com/Daninet/hash-wasm" target="_blank" rel="noopener">Daninet/hash-wasm</a>)을 자체 호스팅합니다. 파일은 업로드되지 않고 브라우저에서만 해시됩니다. 배포파일 검증·다운로드 무결성 확인에 사용하세요.</div>
   </div>
+  <section class="toolhelp">
+    <h2>파일 무결성 체크섬 도구 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>파일 하나 또는 입력한 텍스트에 대해 MD5, SHA-1, SHA-256, SHA-512, SHA3-256, BLAKE2b-256, CRC32 일곱 가지 값을 한 번에 계산합니다. 해시는 내용이 1바이트만 달라도 완전히 다른 값이 나오기 때문에, 받은 파일이 원본과 같은지 확인하는 가장 간단한 방법입니다. 계산은 오픈소스 hash-wasm(WebAssembly)으로 브라우저 안에서 처리하며 파일을 서버로 올리지 않습니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>공개 소프트웨어나 보안 패치를 내려받은 뒤 배포처에 게시된 SHA-256 값과 비교해 변조 여부를 확인할 때</li>
+      <li>운영 반영 전후로 배포 파일(war, jar, zip)이 검수받은 파일과 같은지 대조할 때. 감리에서 형상 일치 여부를 볼 때도 같은 방식입니다.</li>
+      <li>망연계나 USB로 옮긴 파일이 전송 중 손상되지 않았는지 양쪽에서 해시를 비교할 때</li>
+      <li>개발 중 특정 문자열의 해시값을 코드 결과와 맞춰 보거나 테스트 기대값을 만들 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>파일은 점선 상자에 끌어다 놓거나 상자를 눌러 선택합니다. 파일명과 크기가 표시되고 곧 결과 표가 나옵니다.</li>
+      <li>텍스트를 해시하려면 아래 입력란에 내용을 입력합니다. 입력할 때마다 바이트 수와 결과가 갱신됩니다.</li>
+      <li>결과 표의 해시값 칸을 누르면 그 값이 클립보드에 복사됩니다. 비교할 값과 붙여 놓고 대조하면 됩니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>값은 16진수 소문자로 표시되며 길이가 알고리즘마다 정해져 있습니다. MD5는 32자, SHA-1은 40자, SHA-256·SHA3-256·BLAKE2b-256은 64자, SHA-512는 128자, CRC32는 8자입니다. 예를 들어 입력란에 abc 세 글자만 넣으면 SHA-256은 ba7816bf로 시작해 f20015ad로 끝나는 값, MD5는 900150983cd24fb0d6963f7d28e17f72가 나옵니다. 배포처 값과 대소문자만 다르다면 같은 값입니다. 한 글자라도 다르면 파일이 다르다고 판단합니다. 텍스트는 UTF-8로 변환해 계산하므로 한글 한 글자는 3바이트로 셉니다.</p>
+    <h3>주의할 점</h3>
+    <p>MD5와 SHA-1은 의도적으로 같은 해시를 갖는 다른 파일을 만들 수 있는 충돌 공격이 알려져 있으므로, 악의적 변조를 막아야 하는 검증에는 SHA-256 이상을 쓰세요. CRC32는 전송 오류 검출용이지 보안용이 아닙니다. 해시가 일치해도 배포처 자체가 해킹되어 파일과 해시가 함께 바뀐 경우는 알아낼 수 없으므로 중요한 경우 전자서명 검증을 병행해야 합니다. 텍스트 입력은 줄바꿈 하나, 끝의 공백 하나에도 결과가 달라집니다. 파일 전체를 메모리로 읽으므로 수 GB 파일은 브라우저가 느려지거나 실패할 수 있습니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>리눅스 sha256sum 결과와 같은가요?</dt>
+      <dd>같은 파일이면 같은 값이 나옵니다. 윈도우에서는 certutil -hashfile 파일명 SHA256 명령 결과와 비교할 수 있습니다.</dd>
+      <dt>파일이 외부로 전송되나요?</dt>
+      <dd>전송되지 않습니다. 파일은 브라우저 메모리에서만 읽혀 계산되고, 페이지를 닫으면 사라집니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/hashwasm-4/hash-wasm.min.js"></script><script src="audit-kit.js"></script><script src="tool-shell.js"></script>
 <script>

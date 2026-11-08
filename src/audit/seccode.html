@@ -42,6 +42,42 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
 }</textarea><div class="err" id="err"></div><div class="out" id="out" style="margin-top:.6rem"></div>
     <div class="note" data-i18n="b_seccode_note">정규식 휴리스틱 기반 참고용 점검입니다(정적분석 도구를 대체하지 않음). 모든 분석은 브라우저에서만 이루어지며 코드는 전송되지 않습니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>시큐어코딩 패턴 스캐너 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>붙여넣은 소스코드를 한 줄씩 읽으며, 보안약점으로 이어지기 쉬운 코드 패턴을 정규식으로 찾아 줄 번호와 함께 보여 주는 간이 점검 도구입니다. 정적분석 도구를 돌리기 전에 눈에 띄는 문제를 먼저 걸러 내거나, 코드 리뷰 중 의심 구간을 빠르게 짚을 때 씁니다.</p>
+    <p>현재 찾는 패턴은 9종입니다. innerHTML 대입·document.write(XSS), SQL 문자열 결합(SQL 삽입), eval·new Function(코드 삽입), Math.random(취약한 난수), password·secret·api_key·token 등에 문자열 직접 대입(하드코딩 비밀), md5·sha1(취약한 해시), exec(·child_process·Runtime.getRuntime·os.system(명령 삽입), http://(평문 전송), console.log·console.debug(디버그 코드)입니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>SW 개발보안 진단 전에 개발자가 스스로 담당 모듈을 훑어볼 때</li>
+      <li>코드 리뷰에서 외부 업체가 넘긴 스크립트 일부를 빠르게 확인할 때</li>
+      <li>운영 반영 직전 디버그 출력이나 평문 URL이 남았는지 마지막으로 볼 때</li>
+      <li>신규 개발자 교육에서 위험한 코드가 어떻게 보이는지 예시로 보여 줄 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>입력칸의 예시 코드를 지우고 점검할 소스를 붙여넣습니다.</li>
+      <li>입력하는 즉시 아래 결과창에 "n건 의심:"과 함께 목록이 나옵니다.</li>
+      <li>각 항목의 줄 번호(L번호)로 원본 위치를 찾아 조치 방향을 확인합니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>결과는 "L줄번호 [유형] 권장 조치"와 그 줄의 앞부분(최대 80자) 형식입니다. 한 줄이 여러 규칙에 걸리면 각각 따로 표시됩니다.</p>
+    <p>기본 예시 7줄을 그대로 두면 4건이 나옵니다. L2 SQL 삽입(문자열 결합), L3 XSS(innerHTML), L4 취약한 난수(Math.random), L6 코드 삽입(eval)입니다. 반면 L5의 var pw = "admin1234"는 변수명이 규칙 목록(password·passwd·pwd 등)에 없어 잡히지 않습니다. 정규식 점검이 무엇을 놓치는지 보여 주는 좋은 예입니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>줄 단위 정규식이라 여러 줄에 걸친 SQL 조립, 다른 함수를 거친 입력값 흐름은 추적하지 못합니다.</li>
+      <li>오탐도 있습니다. 자바스크립트 정규식의 regex.exec( 호출이나 XML 네임스페이스의 http://도 잡힙니다. 반대로 "SHA-1"처럼 하이픈이 들어간 표기는 해시 규칙에 걸리지 않습니다.</li>
+      <li>"발견 0건"이 안전하다는 뜻은 아닙니다. 공식 진단은 검증된 정적분석 도구와 진단원 검토로 하세요.</li>
+      <li>코드는 브라우저 밖으로 전송되지 않습니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>어떤 언어를 지원하나요?</dt>
+      <dd>언어를 구분하지 않고 텍스트 패턴만 봅니다. 그래서 자바스크립트·자바·파이썬 코드에 공통으로 쓸 수 있지만, 언어별 안전한 API 사용 여부까지 판단하지는 못합니다.</dd>
+      <dt>Math.random을 꼭 바꿔야 하나요?</dt>
+      <dd>화면 효과나 게임 같은 용도면 괜찮습니다. 세션 토큰, 임시 비밀번호, 인증번호처럼 예측되면 안 되는 값에만 crypto.getRandomValues 같은 보안 난수를 쓰면 됩니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="tool-shell.js"></script>
 <script>

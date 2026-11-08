@@ -36,6 +36,35 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <div class="frm"><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_certparse_sample_btn">예시 인증서 생성</button></div><textarea class="in" id="in" spellcheck="false" placeholder="-----BEGIN CERTIFICATE-----"></textarea><div class="err" id="err"></div><div class="res" id="res" style="margin-top:.6rem"></div>
     <div class="note" data-i18n-html="b_certparse_note">오픈소스 <b>node-forge</b>(BSD, <a href="https://github.com/digitalbazaar/forge" target="_blank" rel="noopener">digitalbazaar/forge</a>)를 자체 호스팅합니다. 인증서는 전송되지 않고 브라우저에서만 분석됩니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>인증서(PEM) 분석기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>PEM 형식의 X.509 인증서를 붙여넣으면 발급대상(Subject), 발급자(Issuer), 유효기간, 만료까지 남은 일수, 일련번호, 서명 알고리즘, 공개키 길이를 표로 정리해 줍니다. openssl x509 -text 명령을 쓸 수 없는 PC에서도 인증서의 핵심 정보를 바로 확인할 수 있고, 남은 일수를 색으로 표시해 갱신 시점을 놓치지 않게 돕습니다. 해석은 오픈소스 node-forge 라이브러리가 브라우저 안에서 처리합니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>웹서버, 연계 서버, API 게이트웨이에 설치된 SSL 인증서의 만료일을 정기 점검할 때</li>
+      <li>보안 점검에서 인증서가 SHA-1 같은 오래된 서명 알고리즘이나 짧은 RSA 키를 쓰고 있지 않은지 확인할 때</li>
+      <li>인증서 교체 작업 후 새로 받은 파일이 맞는 도메인, 맞는 발급기관의 것인지 설치 전에 대조할 때</li>
+      <li>자체 서명 인증서인지 공인 인증기관 발급인지 Subject와 Issuer를 비교해 구분할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>-----BEGIN CERTIFICATE----- 부터 -----END CERTIFICATE----- 까지를 입력란에 붙여넣습니다. 서버에서 받은 .crt, .pem 파일을 메모장으로 열어 복사하면 됩니다.</li>
+      <li>붙여넣는 즉시 아래에 분석 표가 나타납니다. 형식이 맞지 않으면 오류 문구가 표시됩니다.</li>
+      <li>시험해 보려면 [예시 인증서 생성]을 누릅니다. 오늘부터 1년짜리 자체 서명 인증서가 만들어져 바로 분석됩니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>발급대상과 발급자는 CN(일반 이름), O(기관), C(국가) 같은 약어=값 형태로 나열됩니다. 두 값이 같으면 자체 서명 인증서입니다. 유효기간은 시작일 ~ 만료일을 UTC 기준 날짜로 표시합니다. 만료까지 항목은 남은 일수를 올림한 D-값으로, 30일 이상이면 초록, 30일 미만이면 주황, 이미 지났으면 빨간색 "만료됨"으로 나옵니다. 예를 들어 만료가 20일 남은 인증서는 주황색 D-20으로 보이므로 갱신 일정을 바로 잡아야 합니다. 서명 알고리즘이 sha256WithRSAEncryption이면 현재 일반적인 수준이고, sha1WithRSAEncryption이면 교체 대상입니다. 공개키는 RSA 모듈러스의 비트 수로, 2048비트 이상이 통상 권장되는 수준입니다.</p>
+    <h3>주의할 점</h3>
+    <p>node-forge가 RSA 공개키 위주로 지원하기 때문에 ECDSA 키를 쓰는 인증서는 분석 오류가 날 수 있습니다. 여러 인증서가 이어 붙은 체인 파일은 첫 번째 인증서만 해석합니다. SAN(주체 대체 이름)이나 키 용도 같은 확장 필드는 표에 나오지 않고, 체인 신뢰 여부나 폐기(CRL·OCSP) 상태도 확인하지 않습니다. 예시 인증서의 512비트 키는 생성 속도를 위한 시연용이라 실제로는 쓰면 안 됩니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>DER(.cer) 바이너리 파일은 어떻게 넣나요?</dt>
+      <dd>이 도구는 PEM 텍스트만 받습니다. openssl x509 -inform der -in a.cer -out a.pem 으로 변환하거나, 16진수 DER을 받는 ASN.1 디코더를 이용하세요.</dd>
+      <dt>개인키를 넣어야 하나요?</dt>
+      <dd>아닙니다. 인증서는 공개 정보라 그것만 있으면 됩니다. 개인키는 이 도구에 넣을 필요가 없고 넣지 않는 것이 맞습니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/forge-1/forge.min.js"></script><script src="audit-kit.js"></script><script src="tool-shell.js"></script>
 <script>

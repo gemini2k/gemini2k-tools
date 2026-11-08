@@ -36,6 +36,35 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <textarea class="in" id="in" spellcheck="false" style="min-height:130px">TN:\nSF:src/auth.js\nFNF:3\nFNH:2\nLF:40\nLH:34\nBRF:8\nBRH:5\nend_of_record\nSF:src/util.js\nFNF:5\nFNH:5\nLF:60\nLH:60\nBRF:4\nBRH:3\nend_of_record</textarea><div class="res" id="res" style="margin-top:.6rem;overflow-x:auto"></div>
     <div class="note" data-i18n="b_lcovview_note">lcov.info 형식(SF/DA/LF/LH/FNF/FNH/BRF/BRH)을 파싱합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>LCOV 커버리지 뷰어 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>테스트 커버리지 도구가 만드는 lcov.info 파일 내용을 붙여 넣으면 소스 파일별 라인·함수·브랜치 커버리지와 전체 합계를 표로 정리해 줍니다. lcov.info는 Istanbul/nyc, Jest, c8, gcov+lcov 등 여러 도구가 내보내는 텍스트 형식으로, 파일마다 SF(소스 경로)로 시작해 end_of_record로 끝나는 레코드가 이어집니다. 이 도구는 각 레코드의 요약 줄인 LF/LH(라인 전체/실행), FNF/FNH(함수 전체/실행), BRF/BRH(분기 전체/실행) 값을 읽어 계산합니다. HTML 리포트를 띄울 환경이 없을 때 숫자만 빠르게 확인하는 용도입니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>개발사가 제출한 단위시험 커버리지 결과를 원본 파일로 직접 확인할 때</li>
+      <li>"커버리지 80% 이상" 같은 품질 기준을 어느 파일이 끌어내리는지 찾을 때</li>
+      <li>폐쇄망 CI에서 받은 산출물만으로 커버리지 추이를 기록할 때</li>
+      <li>시험 단계 감리에서 핵심 업무 모듈의 브랜치 커버리지가 특히 낮지 않은지 볼 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>coverage 폴더 안의 lcov.info를 텍스트 편집기로 열어 전체를 복사합니다.</li>
+      <li>입력란에 붙여 넣으면 0.3초 뒤 자동으로 집계됩니다.</li>
+      <li>상단의 전체 라인 커버리지와 함수·브랜치 비율, 아래의 파일별 표를 확인합니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>비율은 실행 수 ÷ 전체 수를 반올림한 값이고, 라인 커버리지는 80% 이상 초록, 50% 이상 주황, 그 미만 빨강으로 표시됩니다. 전체 값은 파일별 비율의 평균이 아니라 모든 파일의 분자와 분모를 각각 더해 계산합니다. 기본 예시에서 src/auth.js는 라인 34/40 = 85%, 함수 2/3 = 67%, 브랜치 5/8 = 63%이고, src/util.js는 라인 60/60 = 100%, 함수 100%, 브랜치 3/4 = 75%입니다. 합계는 라인 94/100 = 94%, 함수 7/8 = 88%, 브랜치 8/12 = 67%입니다. 라인은 높은데 브랜치가 낮다면 if/else의 한쪽 경로, 특히 예외 처리 경로가 시험되지 않았다는 뜻이라 우선 보강 대상입니다.</p>
+    <h3>주의할 점</h3>
+    <p>DA(줄별 실행 횟수)나 BRDA(분기별 상세) 줄은 해석하지 않으므로 어느 줄이 빠졌는지까지는 보여 주지 않습니다. 레코드에 LF/LH 같은 요약 줄이 없으면 전체 수가 0이 되어 해당 항목이 100%로 표시되니, 요약 줄이 들어 있는 파일인지 먼저 확인하세요. 커버리지는 코드가 실행됐는지만 알려 줄 뿐 결과를 제대로 검증했는지는 알려 주지 않습니다. 단언문 없는 테스트로도 100%를 만들 수 있으므로 커버리지 수치만으로 시험 품질을 판단하면 안 됩니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>리포트의 HTML 화면과 숫자가 조금 다릅니다.</dt>
+      <dd>도구에 따라 문장(statement) 커버리지를 기본으로 보여 주기도 하고, 반올림 방식도 다릅니다. 이 뷰어는 lcov.info의 라인·함수·브랜치 값만 사용하니 같은 지표끼리 비교하세요.</dd>
+      <dt>테스트 대상이 아닌 파일까지 포함돼 비율이 낮아집니다.</dt>
+      <dd>커버리지 도구 설정에서 제외 경로(설정 파일, 자동 생성 코드 등)를 지정해 lcov.info를 다시 만드는 것이 정석입니다. 감리 관점에서는 제외 목록이 타당한지도 함께 확인할 대상입니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="tool-shell.js"></script>
 <script>

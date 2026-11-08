@@ -40,6 +40,37 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
 &lt;p style="color:#bbb;background:#ccc"&gt;저대비 텍스트&lt;/p&gt;</textarea><div class="frm" style="margin-top:.5rem"><button class="btn" id="run" type="button" data-i18n="b_a11ycheck_btn_run">점검 실행</button></div><div class="err" id="err"></div><div class="res" id="res"></div><div id="sandbox" style="position:absolute;left:-99999px;top:0;width:820px;"></div>
     <div class="note" data-i18n-html="b_a11ycheck_note">오픈소스 <b>axe-core</b>(MPL-2.0, Deque, <a href="https://github.com/dequelabs/axe-core" target="_blank" rel="noopener">dequelabs/axe-core</a>)를 자체 호스팅합니다. 자동 점검은 일부 항목만 커버하므로 수동 점검(KWCAG)과 병행하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>웹 접근성 자동 점검 도구 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>붙여넣은 HTML 조각을 화면 밖의 임시 영역에 그려 놓고, Deque가 공개한 오픈소스 엔진 axe-core로 접근성 규칙 위반을 찾아 줍니다. 대체텍스트 없는 이미지, 이름이 없는 버튼, 레이블이 연결되지 않은 입력란, 글자와 배경의 명도대비 부족, 잘못 쓴 ARIA 속성처럼 기계가 판정할 수 있는 항목을 골라내는 용도입니다. 서버로 코드를 보내지 않고 브라우저 안에서만 검사합니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>공공기관 웹 개발 중 화면 단위로 마크업을 만들고, 접근성 인증 심사 전에 기본 결함을 미리 걸러 낼 때</li>
+      <li>정보시스템 감리에서 산출물로 받은 화면 소스 일부를 표본으로 골라 대체텍스트·레이블 누락 여부를 빠르게 확인할 때</li>
+      <li>디자이너가 정한 회색 글자색이 배경 위에서 명도대비 기준을 넘는지 확인하고 싶을 때</li>
+      <li>게시판 에디터나 CMS가 자동 생성하는 HTML이 접근성 규칙을 깨뜨리는지 확인할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>입력란에 점검할 HTML을 붙여넣습니다. 처음에는 위반이 일부러 들어간 예시가 채워져 있습니다.</li>
+      <li>필요하면 스타일이 반영되도록 인라인 style이나 &lt;style&gt; 블록을 함께 넣습니다. 명도대비는 실제로 계산된 색으로 판정하기 때문입니다.</li>
+      <li>[점검 실행] 버튼을 누르면 결과 영역에 위반 건수와 규칙별 목록이 나타납니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>맨 위에 위반 규칙의 개수가 나오고, 아래에 규칙마다 영향도, 설명, 해당 요소 개수가 한 줄씩 표시됩니다. 영향도는 axe가 붙이는 네 단계로, critical(보라)·serious(빨강)·moderate(주황)·minor(청록) 순으로 심각합니다. 예시 HTML을 그대로 돌리면 alt 없는 이미지, 텍스트 없는 버튼, 레이블 없는 입력란, 저대비 문단 등이 각각 한 규칙으로 잡힙니다. 같은 규칙이 여러 요소에서 걸리면 한 줄로 묶이고 괄호 안의 숫자가 늘어납니다. 위반이 하나도 없으면 초록색 문구가 나옵니다.</p>
+    <h3>주의할 점</h3>
+    <p>자동 점검이 잡아내는 것은 접근성 요구사항 중 일부입니다. 대체텍스트가 있기만 하면 통과하므로 "이미지"처럼 의미 없는 문구는 걸러지지 않고, 키보드 이동 순서, 초점 표시, 동영상 자막, 링크 문구가 맥락상 적절한지 같은 항목은 사람이 직접 봐야 합니다. 또 조각 HTML만 검사하므로 문서 제목, html 요소의 lang 속성처럼 페이지 전체에 걸린 항목은 제대로 평가되지 않고, 붙여넣은 코드 안의 스크립트는 실행되지 않습니다. 결과는 참고용이며 KWCAG 2.2 기준의 수동 점검과 함께 써야 합니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>위반 0건이면 접근성 인증을 받을 수 있나요?</dt>
+      <dd>아닙니다. 기계로 판정 가능한 규칙에서 문제가 발견되지 않았다는 뜻일 뿐입니다. 인증 심사는 전문가 수동 검사를 포함하므로 이 결과는 사전 정리용으로 보시면 됩니다.</dd>
+      <dt>외부 CSS 파일을 쓰는 페이지는 명도대비가 정확한가요?</dt>
+      <dd>외부 스타일시트는 불러오지 않으므로 실제와 다르게 판정될 수 있습니다. 해당 색상 규칙을 &lt;style&gt;로 함께 붙여넣어야 정확해집니다.</dd>
+      <dt>입력한 소스가 어딘가에 저장되나요?</dt>
+      <dd>저장되지 않습니다. axe-core 스크립트도 이 사이트에서 직접 제공하며 검사는 브라우저 안에서 끝납니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/axe-4/axe.min.js"></script><script src="tool-shell.js"></script>
 <script>

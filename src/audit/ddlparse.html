@@ -44,6 +44,36 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
 );</textarea><div class="err" id="err"></div><div class="res" id="res" style="margin-top:.6rem;overflow-x:auto"></div>
     <div class="note" data-i18n-html="b_ddlparse_note">오픈소스 <b>node-sql-parser</b>(Apache-2.0, <a href="https://github.com/taozhi8833998/node-sql-parser" target="_blank" rel="noopener">node-sql-parser</a>)를 자체 호스팅합니다(MySQL 문법). 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>DDL → 테이블정의서 변환 도구 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>CREATE TABLE 문을 붙여넣으면 테이블마다 컬럼, 자료형, NULL 허용 여부, 키(PK), 기본값을 정리한 표를 만들어 줍니다. 테이블정의서는 설계 산출물로 꼭 필요하지만 DB를 고친 뒤 문서를 손으로 다시 맞추다 보면 실제 스키마와 어긋나기 쉽습니다. 실제 DDL에서 바로 표를 뽑으면 그 차이를 줄일 수 있습니다. SQL 해석은 오픈소스 node-sql-parser의 MySQL 문법 모드로 처리합니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>개발이 끝난 뒤 운영 DB에서 SHOW CREATE TABLE로 뽑은 DDL로 테이블정의서 초안을 만들 때</li>
+      <li>감리에서 제출된 테이블정의서와 실제 DDL의 자료형, NULL 여부, PK가 일치하는지 대조할 때</li>
+      <li>인수인계받은 시스템의 스키마 구조를 문서 없이 빠르게 파악할 때</li>
+      <li>여러 CREATE TABLE 문을 한 번에 넣어 테이블별 표를 연달아 뽑아 문서에 붙일 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>입력란에 CREATE TABLE 문을 붙여넣습니다. 여러 개라면 문장 끝마다 세미콜론(;)을 붙여 이어서 넣습니다.</li>
+      <li>입력이 바뀌면 바로 변환됩니다. 테이블 이름이 제목으로, 그 아래에 컬럼 표가 나옵니다.</li>
+      <li>결과 표를 드래그해 복사하면 엑셀이나 한글 문서에 표 형태로 붙일 수 있습니다.</li>
+      <li>문법 오류가 있으면 파싱 오류 문구가 나오므로 오류 위치 근처를 고쳐 다시 넣습니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>NULL 칸의 N은 NOT NULL, Y는 NULL 허용입니다. 키 칸은 테이블 끝에 PRIMARY KEY (컬럼) 형태로 선언된 컬럼에 PK를 표시합니다. 기본 예시를 넣으면 user_master 표에 6개 컬럼이 나오고, user_id는 BIGINT·N·PK, login_id는 VARCHAR(50)·N, email은 VARCHAR(200)·Y, status는 CHAR(1)·Y·기본값 Y로 정리됩니다. 정의서와 비교할 때는 자료형 길이와 NULL 여부가 가장 자주 어긋나는 항목이므로 이 두 열부터 대조하면 효율이 좋습니다.</p>
+    <h3>주의할 점</h3>
+    <p>컬럼 정의 안에 직접 쓴 PRIMARY KEY(예: id INT PRIMARY KEY)는 키 칸에 표시되지 않으니, PK를 테이블 수준 제약으로 쓰거나 직접 보완하세요. FK, UNIQUE, 인덱스, 컬럼 COMMENT(한글 컬럼명)는 표에 나오지 않습니다. DECIMAL(10,2)처럼 소수 자릿수가 있는 자료형은 DECIMAL(10)으로만 표시되고, CURRENT_TIMESTAMP 같은 함수형 기본값은 빈칸으로 나옵니다. MySQL 문법 기준이라 Oracle의 VARCHAR2, NUMBER나 PostgreSQL 고유 문법, 저장 옵션 절은 파싱 오류가 날 수 있습니다. CREATE TABLE이 아닌 문장은 무시됩니다. 결과는 초안으로 쓰고 최종 정의서는 실제 스키마와 다시 확인하세요.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>Oracle DDL은 어떻게 하나요?</dt>
+      <dd>그대로는 오류가 날 가능성이 높습니다. 자료형을 MySQL 형식으로 바꾸고 STORAGE, TABLESPACE 같은 옵션 절을 지운 뒤 넣으면 구조 확인 정도는 할 수 있습니다.</dd>
+      <dt>입력한 DDL이 서버에 저장되나요?</dt>
+      <dd>저장되지 않습니다. 파서가 페이지 안에서 실행되므로 스키마 정보가 외부로 나가지 않습니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/sqlparser-4/mysql.umd.js"></script><script src="tool-shell.js"></script>
 <script>

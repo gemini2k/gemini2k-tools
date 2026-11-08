@@ -36,6 +36,36 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <div class="frm"><label><span data-i18n="b_csrgen_lbl_cn">CN(도메인)</span><input type="text" id="cn" value="example.com"></label><label><span data-i18n="b_csrgen_lbl_o">조직(O)</span><input type="text" id="o" value="Example Inc"></label><label><span data-i18n="b_csrgen_lbl_ou">부서(OU)</span><input type="text" id="ou" value="IT"></label><label><span data-i18n="b_csrgen_lbl_l">지역(L)</span><input type="text" id="l" value="Seoul"></label><label><span data-i18n="b_csrgen_lbl_st">시도(ST)</span><input type="text" id="st" value="Seoul"></label><label><span data-i18n="b_csrgen_lbl_c">국가(C)</span><input type="text" id="c" value="KR" style="width:70px"></label><label><span data-i18n="b_csrgen_lbl_bits">키 길이</span><select id="bits"><option>2048</option><option>3072</option><option>4096</option></select></label></div><div class="frm"><button class="btn" id="gen" type="button" data-i18n="b_csrgen_btn_gen">CSR 생성</button><span id="st2" style="color:var(--muted);font-size:.9rem;align-self:center"></span></div><label style="font-weight:700;font-size:.85rem" data-i18n="b_csrgen_lbl_csr">CSR (PEM)</label><textarea class="out" id="csr" readonly style="min-height:140px"></textarea><label style="font-weight:700;font-size:.85rem;margin-top:.5rem;display:block" data-i18n="b_csrgen_lbl_key">개인키 (PEM)</label><textarea class="out" id="key" readonly style="min-height:140px"></textarea>
     <div class="note" data-i18n-html="b_csrgen_note">오픈소스 <b>jsrsasign</b>(MIT, <a href="https://github.com/kjur/jsrsasign" target="_blank" rel="noopener">kjur/jsrsasign</a>)을 자체 호스팅합니다. 개인키와 CSR은 서버로 전송되지 않고 브라우저에서만 생성됩니다. 개인키는 안전하게 보관하세요.</div>
   </div>
+  <section class="toolhelp">
+    <h2>CSR 생성기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>SSL/TLS 인증서를 발급받으려면 먼저 개인키를 만들고, 그 키의 공개키와 신청자 정보를 담아 개인키로 서명한 인증서 서명 요청(CSR, PKCS#10 형식)을 인증기관에 제출해야 합니다. 보통은 서버에서 openssl req 명령으로 만들지만, 명령줄이 낯설거나 서버에 바로 접근하기 어려울 때 이 도구로 같은 결과물을 만들 수 있습니다. 입력한 정보로 RSA 키쌍을 생성하고 SHA-256 서명 CSR과 PKCS#8 개인키를 PEM 텍스트로 보여 줍니다. 생성은 오픈소스 jsrsasign으로 브라우저 안에서만 이루어집니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>기관 홈페이지나 내부 시스템의 SSL 인증서를 신규 발급하거나 갱신하면서 인증기관에 CSR을 제출해야 할 때</li>
+      <li>개발·시험 서버용 사설 인증기관에 서명을 받을 CSR이 필요할 때</li>
+      <li>CSR 형식과 주체(DN) 구성 요소를 교육하거나 문서화할 때 실제 예시가 필요할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>[CN(도메인)]에 인증서를 적용할 도메인을 정확히 적습니다. 예: www.example.go.kr. 와일드카드라면 *.example.go.kr처럼 씁니다.</li>
+      <li>[조직(O)], [부서(OU)], [지역(L)], [시도(ST)], [국가(C)]를 채웁니다. 국가는 KR처럼 두 글자 코드입니다.</li>
+      <li>[키 길이]에서 2048, 3072, 4096 중 하나를 고르고 [CSR 생성]을 누릅니다. 4096비트는 몇 초 이상 걸릴 수 있습니다.</li>
+      <li>"CSR (PEM)" 칸의 내용을 BEGIN 줄부터 END 줄까지 복사해 인증기관 신청 화면에 붙여넣습니다.</li>
+      <li>"개인키 (PEM)" 칸의 내용은 텍스트 파일(예: server.key)로 저장해 안전한 곳에 보관합니다. 인증서를 받은 뒤 서버에 함께 설치해야 합니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>CSR은 -----BEGIN CERTIFICATE REQUEST----- 로 시작하고, 주체는 C, ST, L, O, OU, CN 순서로 들어갑니다. 개인키는 -----BEGIN PRIVATE KEY----- 로 시작하는 암호화되지 않은 PKCS#8 형식입니다. 만든 CSR이 맞게 들어갔는지 보려면 같은 사이트의 ASN.1 디코더에 붙여 구조를 확인하거나 openssl req -in a.csr -noout -text로 읽어 보면 됩니다. 키 길이는 2048비트가 현재 널리 쓰이는 최소 수준이고, 더 긴 키는 안전 여유가 크지만 서버의 TLS 처리 부담이 조금 늘어납니다.</p>
+    <h3>주의할 점</h3>
+    <p>가장 중요한 것은 개인키입니다. 페이지를 닫거나 다시 생성하면 이전 개인키는 되살릴 수 없고, 개인키를 잃으면 발급받은 인증서를 쓸 수 없어 재발급해야 합니다. 개인키는 암호 없이 출력되므로 저장 파일의 접근 권한을 제한하고 메일이나 메신저로 보내지 마세요. 이 도구의 CSR에는 SAN(주체 대체 이름) 확장이 들어가지 않습니다. 여러 도메인을 한 인증서에 넣으려면 인증기관 신청 화면에서 SAN을 따로 입력하거나 openssl 설정으로 만들어야 합니다. 값에 슬래시(/)가 들어가면 주체가 잘못 나뉠 수 있습니다. 공인 인증기관에 따라 OU 값을 받지 않는 곳도 있으니 신청 안내를 확인하세요.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>만든 개인키가 서버로 전송되지 않는다는 걸 어떻게 믿나요?</dt>
+      <dd>키 생성 코드가 페이지 안에서 실행되고 별도 전송 요청이 없습니다. 그래도 운영 키라면 기관 보안 지침에 따라 서버에서 직접 생성하는 방법을 우선 고려하세요.</dd>
+      <dt>ECDSA 키로 만들 수 있나요?</dt>
+      <dd>이 도구는 RSA 키만 지원합니다. ECDSA가 필요하면 openssl ecparam 등으로 생성해야 합니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/jsrsasign-11/jsrsasign-all-min.js"></script><script src="tool-shell.js"></script>
 <script>

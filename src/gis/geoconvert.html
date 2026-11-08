@@ -93,6 +93,42 @@
     </div>
     <p class="hint" data-i18n="gc.note">※ Shapefile은 .shp·.dbf·.prj 등을 묶은 .zip 으로 올리세요(.prj 있으면 WGS84로 자동 변환). GPX 내보내기는 점·선 형상에 적합합니다. 모든 처리는 브라우저에서만 이루어집니다.</p>
   </div>
+
+  <section class="toolhelp">
+    <h2>Shapefile·KML·GPX·GeoJSON 변환기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>GIS 파일 하나를 읽어 지도에 미리 보여 주고 GeoJSON, KML, GPX 중 원하는 형식으로 다시 저장합니다. 읽을 수 있는 형식은 Shapefile을 묶은 .zip, .kml, .gpx, .geojson/.json입니다. Shapefile은 shpjs 라이브러리로 해석하며, zip 안에 .prj가 있으면 그 좌표계 정보로 경위도(WGS84)로 바꿔 읽습니다. 내보내는 파일은 모두 경위도 좌표입니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>국가공간정보포털 등에서 받은 Shapefile을 웹 지도 개발용 GeoJSON으로 바꿔야 할 때</li>
+      <li>등산 앱에서 받은 GPX 경로를 구글 어스에서 보려고 KML로 바꿀 때</li>
+      <li>받은 파일이 어느 지역 데이터인지, 도형이 몇 개이고 어떤 유형인지 GIS 프로그램 없이 확인할 때</li>
+      <li>KML로 관리하던 지점 목록을 GeoJSON으로 바꿔 다른 분석 도구에 넣을 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>점선 상자에 파일을 끌어다 놓거나 클릭해 고릅니다. Shapefile은 .shp, .dbf, .prj(가능하면 .cpg까지)를 하나의 .zip으로 묶어 올립니다.</li>
+      <li>지도에 도형이 그려지고, 위쪽에 전체 피처 수와 Point·LineString·Polygon 등 유형별 개수가 표시됩니다.</li>
+      <li>'내보내기'에서 GeoJSON, KML, GPX 중 하나를 누르면 converted.geojson 같은 이름으로 내려받습니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>행정경계 Shapefile을 올렸다면 피처 수와 함께 MultiPolygon·Polygon 개수가 나뉘어 표시되고, 그 합이 원본 레코드 수와 맞으면 모두 읽힌 것입니다. 지도가 한반도가 아닌 엉뚱한 곳을 비추거나 도형이 보이지 않으면 좌표계 정보가 빠졌을 가능성이 큽니다. GeoJSON은 속성을 그대로 보존하고, KML은 속성을 ExtendedData로 담습니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>zip에 .prj가 없으면 좌표를 변환하지 않고 그대로 경위도로 간주합니다. 중부원점이나 UTM-K로 된 Shapefile은 반드시 .prj를 함께 넣어야 합니다.</li>
+      <li>DBF 속성의 한글이 깨지면 zip 안에 인코딩을 적은 .cpg 파일(예: 내용이 CP949 또는 EUC-KR)을 넣고 다시 시도해 보세요.</li>
+      <li>GPX 형식은 점과 선(경로)만 표현할 수 있어 면 데이터는 GPX로 제대로 옮겨지지 않습니다.</li>
+      <li>KML의 스타일(아이콘·색), 폴더 구조, 3D 모델 등은 변환 과정에서 대부분 사라집니다.</li>
+      <li>배경 지도는 OpenStreetMap 타일을 불러오며, 수백 MB급 파일은 브라우저 메모리가 부족해 멈출 수 있습니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>GeoJSON을 Shapefile로 바꿀 수 있나요?</dt>
+      <dd>이 도구는 Shapefile 읽기만 지원하고 Shapefile로 쓰기는 하지 않습니다.</dd>
+      <dt>zip 안에 레이어가 여러 개면 어떻게 되나요?</dt>
+      <dd>zip에 든 모든 레이어의 피처를 합쳐 하나의 목록으로 보여 주고 내보냅니다. 레이어를 나누려면 zip을 따로 만드세요.</dd>
+    </dl>
+  </section>
 </div>
 
 <script src="tool-shell.js"></script>

@@ -36,6 +36,35 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <textarea class="in" id="in" spellcheck="false">.box {\n  margin: 0px;\n  color: #FFF;\n  color: #fff;\n}\n#a { float: left; width: 100px; }</textarea><div class="res" id="res" style="margin-top:.6rem"></div>
     <div class="note" data-i18n-html="b_csslint_note">오픈소스 <b>CSSLint</b>(MIT, <a href="https://github.com/CSSLint/csslint" target="_blank" rel="noopener">CSSLint/csslint</a>)를 자체 호스팅합니다. 일부 규칙은 권고사항이므로 맥락에 맞게 판단하세요. 모든 분석은 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>CSS 코드 점검 도구 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>CSS를 붙여넣으면 오픈소스 정적 분석기 CSSLint의 기본 규칙으로 문제 소지가 있는 부분을 찾아 줄 번호와 함께 보여 줍니다. 문법 오류처럼 명백한 잘못뿐 아니라, 0 값에 단위를 붙인 경우, 선택자에 ID를 쓴 경우, 내용 없는 빈 규칙, 철자가 틀려 브라우저가 무시하는 속성, 같은 속성의 반복 선언, 벤더 접두어만 쓰고 표준 속성을 빠뜨린 경우처럼 유지보수나 호환성에 영향을 주는 습관도 짚어 냅니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>퍼블리싱 산출물을 넘겨받을 때 오타 속성이나 중복 선언이 없는지 빠르게 훑어볼 때</li>
+      <li>오래된 시스템의 스타일시트를 정리하면서 의미 없는 빈 규칙과 남은 코드를 찾을 때</li>
+      <li>소스 품질 점검에서 CSS 파일 일부를 표본으로 골라 코딩 관행을 확인할 때</li>
+      <li>특정 화면에서만 스타일이 먹지 않을 때 속성 이름 오타나 괄호 누락을 찾을 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>입력란의 예시를 지우고 점검할 CSS를 붙여넣습니다. 파일 전체도, 규칙 몇 개만도 됩니다.</li>
+      <li>입력을 멈추면 잠시 뒤 결과가 갱신됩니다. 별도 실행 버튼은 없습니다.</li>
+      <li>결과 표에서 왼쪽 L 숫자로 해당 줄을 찾아 메시지 내용을 확인하고 고칩니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>맨 위에 지적 사항 개수가 나오고, 줄마다 위치와 메시지가 표시됩니다. 빨간 줄 번호는 오류(error), 주황 줄 번호는 경고(warning)입니다. 메시지는 CSSLint 원문 그대로 영어로 나옵니다. 예를 들어 margin: 0px가 있으면 0 값에는 단위가 필요 없다는 경고가, #a { … }처럼 ID 선택자를 쓰면 ID를 선택자에 쓰지 말라는 경고가 나옵니다. 둘 다 동작에는 문제가 없는 권고이므로 팀 규칙에 따라 고칠지 정하면 됩니다. 반면 known property 관련 경고는 속성 이름 오타일 가능성이 높아 먼저 확인해야 합니다.</p>
+    <h3>주의할 점</h3>
+    <p>CSSLint는 오래전에 개발이 멈춘 도구라 CSS 변수(--color), grid 일부 속성, 중첩 문법, 최근 추가된 함수 같은 최신 문법을 모르는 속성이나 오류로 잘못 지적할 수 있습니다. 이런 경고는 무시해도 됩니다. ID 선택자 금지, !important 사용 경고 같은 규칙은 코딩 스타일에 대한 권고일 뿐 오류가 아닙니다. 규칙을 켜고 끄는 설정은 제공하지 않으며 기본 규칙 묶음만 적용됩니다. SCSS나 LESS 문법은 해석하지 못하므로 컴파일된 CSS를 넣어야 합니다. 렌더링 결과나 접근성은 점검 대상이 아닙니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>지적 사항을 모두 고쳐야 하나요?</dt>
+      <dd>아닙니다. 오류와 속성 오타는 고치는 것이 맞지만, 나머지는 성능이나 유지보수 관점의 권고라 프로젝트 규칙과 맞지 않으면 무시해도 됩니다.</dd>
+      <dt>줄 번호가 실제 파일과 다릅니다.</dt>
+      <dd>붙여넣은 내용의 첫 줄을 1로 셉니다. 파일 일부만 붙였다면 원본 파일의 시작 위치만큼 더해서 찾으세요.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/csslint-1/csslint.js"></script><script src="tool-shell.js"></script>
 <script>

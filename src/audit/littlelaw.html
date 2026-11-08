@@ -36,6 +36,35 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <div class="frm"><label><span data-i18n="b_littlelaw_lbl_target">계산할 값</span><select id="target"><option value="L" data-i18n="b_littlelaw_opt_L">동시 처리수 L</option><option value="lam" data-i18n="b_littlelaw_opt_lam">처리율 λ (req/s)</option><option value="W" data-i18n="b_littlelaw_opt_W">평균 응답시간 W (초)</option></select></label></div><div class="frm"><label><span data-i18n="b_littlelaw_lbl_lam">처리율 λ (req/s)</span><input type="number" id="lam" value="50" step="any"></label><label><span data-i18n="b_littlelaw_lbl_W">평균 응답시간 W (초)</span><input type="number" id="W" value="0.2" step="any"></label><label><span data-i18n="b_littlelaw_lbl_L">동시 처리수 L</span><input type="number" id="L" step="any"></label></div><div class="res" id="res"></div>
     <div class="note" data-i18n="b_littlelaw_note">리틀의 법칙: 동시 처리수(L) = 처리율(λ) × 평균 체류시간(W). 부하시험 계획·용량 산정에 쓰입니다. λ는 초당 처리건수(req/s), W는 초 단위입니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>Little's Law 계산기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>리틀의 법칙(Little's Law)은 안정 상태에 있는 시스템에서 "안에 머무는 평균 개수 L = 들어오는 비율 λ × 평균 체류시간 W"가 성립한다는 대기행렬 이론의 기본 관계입니다. 서버에 적용하면 동시에 처리 중인 요청 수 = 초당 처리건수 × 평균 응답시간이 됩니다. 이 계산기는 세 값 중 구하고 싶은 하나를 고르면 나머지 두 값으로 계산하고, 처리율을 시간당 건수로도 환산해 보여 줍니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>부하시험 계획에서 목표 TPS를 내려면 가상 사용자나 스레드를 몇 개 띄워야 하는지 정할 때</li>
+      <li>WAS 스레드 풀, DB 커넥션 풀 크기가 목표 처리량에 비해 충분한지 따져 볼 때</li>
+      <li>성능시험 보고서의 TPS·응답시간·동시 사용자 수가 서로 앞뒤가 맞는지 감리에서 검증할 때</li>
+      <li>장애 시 응답시간이 늘면 동시 처리 중인 요청이 얼마나 쌓이는지 설명할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>'계산할 값'에서 동시 처리수 L, 처리율 λ, 평균 응답시간 W 중 하나를 고릅니다. 고른 칸은 잠기고 결과가 채워집니다.</li>
+      <li>나머지 두 칸에 값을 넣습니다. λ는 초당 건수(req/s), W는 초 단위입니다. 300ms라면 0.3으로 넣습니다.</li>
+      <li>큰 글씨의 결과와 표의 적용 식, 시간당 처리건수를 확인합니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>기본값 λ = 50 req/s, W = 0.2초면 L = 50 × 0.2 = 10입니다. 평균적으로 요청 10개가 동시에 처리 중이라는 뜻이고, 처리율은 시간당 180,000건으로 환산됩니다. 거꾸로 스레드 풀이 20개이고 평균 응답시간이 0.5초라면, 처리율 λ를 고르고 L = 20, W = 0.5를 넣었을 때 λ = 40 req/s가 그 구성으로 낼 수 있는 처리량의 이론적 상한에 가깝습니다. 응답시간이 1초로 늘면 같은 스레드로 20 req/s밖에 못 내므로, 느려진 DB 하나가 전체 처리량을 반으로 떨어뜨리는 이유를 이 식으로 설명할 수 있습니다.</p>
+    <h3>주의할 점</h3>
+    <p>리틀의 법칙은 들어오는 양과 나가는 양이 균형을 이룬 안정 상태의 평균에 대해서만 성립합니다. 요청이 계속 쌓여 대기열이 늘어나는 과부하 구간이나 순간 최대치에는 맞지 않습니다. 계산 결과는 평균값이라 실제 풀 크기는 피크와 응답시간 편차를 감안해 여유를 둬야 합니다. 부하시험에서 사용자 수를 정할 때는 사용자가 화면을 보며 머무는 생각 시간(think time)도 체류시간에 포함해야 하므로, W에 응답시간과 생각 시간을 더한 값을 넣어야 합니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>동시 사용자 1,000명이면 TPS는 얼마인가요?</dt>
+      <dd>사용자 한 명이 요청 한 번에 쓰는 시간(응답 0.5초 + 생각 시간 9.5초 = 10초)을 W로 넣고 L = 1,000으로 λ를 구하면 100 req/s입니다. 생각 시간을 빼먹으면 필요한 TPS를 몇십 배 부풀려 잡게 됩니다.</dd>
+      <dt>결과가 0으로 나옵니다.</dt>
+      <dd>나누는 값이 0이거나 칸이 비어 있으면 계산 대신 0을 표시합니다. 처음 열었을 때 L 칸은 비어 있으니, λ나 W를 구할 때는 L을 포함한 나머지 두 칸에 0이 아닌 숫자를 넣었는지 확인하세요.</dd>
+    </dl>
+  </section>
 </div>
 <script src="tool-shell.js"></script>
 <script>

@@ -36,6 +36,35 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <textarea class="in" id="in" spellcheck="false">&lt;div id="a"&gt;&lt;/div&gt;\n&lt;div id="a"&gt;&lt;img src="x.png"&gt;&lt;/div&gt;\n&lt;A HREF="#"&gt;링크&lt;/A&gt;</textarea><div class="res" id="res" style="margin-top:.6rem"></div>
     <div class="note" data-i18n-html="b_htmlhint_note">오픈소스 <b>HTMLHint</b>(MIT, <a href="https://github.com/htmlhint/HTMLHint" target="_blank" rel="noopener">htmlhint/HTMLHint</a>)를 자체 호스팅합니다. 접근성 자동 점검은 별도의 axe 도구를 함께 쓰세요. 모든 분석은 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>HTML 마크업 품질 점검 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>붙여 넣은 HTML을 오픈소스 정적 분석기 HTMLHint로 검사해 규칙 위반을 줄 번호와 함께 보여 줍니다. 별도 설정 없이 HTMLHint의 기본 규칙 10개가 적용됩니다. 태그 이름 소문자(tagname-lowercase), 속성 이름 소문자(attr-lowercase), 속성값 큰따옴표(attr-value-double-quotes), 문서 첫머리 doctype(doctype-first), 여닫는 태그 짝(tag-pair), 특수문자 이스케이프(spec-char-escape), id 중복 금지(id-unique), 빈 src 금지(src-not-empty), 같은 속성 중복 금지(attr-no-duplication), title 요소 필수(title-require)입니다. 입력을 고치면 0.3초 뒤 다시 검사합니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>웹 접근성 품질 점검을 앞두고 '마크업 문법 준수' 항목에서 걸리는 중복 id나 닫히지 않은 태그를 미리 찾을 때</li>
+      <li>CMS나 에디터가 만든 게시물 HTML이 구조를 깨뜨리고 있는지 확인할 때</li>
+      <li>코드 리뷰에서 템플릿 조각의 기본 문법 오류를 빠르게 걸러 낼 때</li>
+      <li>오래된 페이지의 대문자 태그·작은따옴표 속성 같은 관행을 정리할 범위를 파악할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>브라우저의 '페이지 소스 보기'나 템플릿 파일에서 HTML을 복사해 입력란에 붙여 넣습니다.</li>
+      <li>결과 표에서 L줄:칸 위치와 메시지, 괄호 안의 규칙 ID를 확인합니다. 빨간색은 오류(error), 주황색은 경고(warning)이며, 기본 규칙 위반은 대부분 오류로 표시됩니다.</li>
+      <li>필요하면 맨 첫 줄에 <code>&lt;!-- htmlhint alt-require:true --&gt;</code>처럼 주석을 넣어 규칙을 추가하거나, <code>doctype-first:false</code>로 기본 규칙을 끌 수 있습니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>기본 예시에는 id="a"가 두 번 나오므로 id-unique가, &lt;A HREF&gt;처럼 대문자로 쓴 부분에서 tagname-lowercase와 attr-lowercase가 걸립니다. 조각 코드만 붙여 넣으면 문서 앞에 doctype이 없어서 doctype-first 오류가 함께 나오는데, 페이지 전체가 아니라 일부를 검사하는 중이라면 무시해도 됩니다. 우선순위는 tag-pair와 id-unique를 먼저 고치는 것입니다. 이 둘은 화면 낭독기와 스크립트 동작에 실제 영향을 주고, 대소문자나 따옴표 규칙은 대부분 표기 일관성 문제입니다.</p>
+    <h3>주의할 점</h3>
+    <p>HTMLHint는 소스 텍스트만 봅니다. 스크립트가 실행된 뒤 만들어지는 DOM, CSS로 숨긴 요소, 명도 대비나 키보드 이동 같은 접근성 항목은 검사하지 않습니다. 기본 규칙에는 이미지 대체 텍스트 검사(alt-require)도 포함되어 있지 않아 예시의 &lt;img&gt;에 alt가 없어도 경고가 나오지 않습니다. 위반이 0건이라고 웹 접근성이나 표준 준수가 보장되는 것은 아니며, 결과는 참고용입니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>W3C 검사기와 결과가 다릅니다.</dt>
+      <dd>W3C 검사기는 HTML 명세에 따른 유효성을, HTMLHint는 팀 코딩 규칙에 가까운 스타일 규칙을 봅니다. 대문자 태그는 명세상 허용되지만 HTMLHint 기본 규칙에서는 빨간 오류로 표시됩니다.</dd>
+      <dt>입력한 HTML이 서버로 전송되나요?</dt>
+      <dd>아닙니다. 분석은 브라우저 안에서 실행되는 라이브러리로 처리됩니다. 내부 시스템 화면 소스를 검사해도 외부로 나가지 않습니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/htmlhint-1/htmlhint.min.js"></script><script src="tool-shell.js"></script>
 <script>

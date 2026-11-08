@@ -41,6 +41,7 @@
     + '<span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>'
     + '<a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a>'
     + '<a href="privacy.html" data-i18n="foot.policy">· 개인정보처리방침</a>'
+    + '<a href="about.html">· 소개</a><a href="terms.html">· 이용약관</a><a href="contact.html">· 문의하기</a>'
     + '<span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>'
     + '</div>' + CATNAV_HTML + '</footer>';
 

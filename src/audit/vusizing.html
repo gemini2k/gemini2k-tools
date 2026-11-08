@@ -36,6 +36,41 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <div class="frm"><label><span data-i18n="b_vusizing_lbl_tp">목표 처리량</span><input type="number" id="tp" value="50" step="any"></label><label><span data-i18n="b_vusizing_lbl_unit">단위</span><select id="unit"><option value="1" data-i18n="b_vusizing_unit_tps">초당 (TPS)</option><option value="0.0166667" data-i18n="b_vusizing_unit_rpm">분당</option><option value="0.000277778" data-i18n="b_vusizing_unit_rph">시간당</option></select></label><label><span data-i18n="b_vusizing_lbl_rt">평균 응답시간 (초)</span><input type="number" id="rt" value="0.3" step="any"></label><label><span data-i18n="b_vusizing_lbl_think">Think time (초)</span><input type="number" id="think" value="3" step="any"></label><label><span data-i18n="b_vusizing_lbl_peak">피크 계수</span><input type="number" id="peak" value="1.5" step="any"></label></div><div class="res" id="res"></div>
     <div class="note" data-i18n="b_vusizing_note">필요 VU ≈ 피크 처리량(TPS) × (응답시간 + Think time). 리틀의 법칙 기반이며, 실제값은 부하 패턴·시스템 상태에 따라 달라질 수 있으니 여유를 두세요.</div>
   </div>
+  <section class="toolhelp">
+    <h2>부하시험 VU 산정기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>성능시험을 준비하면 "가상사용자(VU)를 몇 명 띄워야 목표 처리량이 나오나"를 먼저 정해야 합니다. VU를 너무 적게 잡으면 목표 부하에 도달하지 못하고, 너무 많이 잡으면 부하 발생기 자원과 라이선스를 낭비합니다. 이 도구는 리틀의 법칙(시스템 안의 평균 요청 수 = 처리량 × 체류시간)을 이용해 필요한 VU 수와 권장 Ramp-up 시간을 계산합니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>성능시험 계획서에 목표 TPS와 VU 수, 시나리오별 Think time을 적어야 할 때</li>
+      <li>"동시 사용자 1,000명" 같은 요구사항을 처리량 목표로 바꿔 검증 가능한 형태로 만들 때</li>
+      <li>JMeter·k6·nGrinder 같은 도구에서 스레드 수와 Ramp-up을 정할 때</li>
+      <li>감리 시 성능시험 부하 설계가 목표 처리량을 실제로 만들어 낼 수 있는지 확인할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>"목표 처리량"과 "단위"(초당 TPS·분당·시간당)를 입력합니다. 운영 로그에서 피크 시간대 시간당 요청 수를 뽑았다면 시간당으로 넣으면 됩니다.</li>
+      <li>"평균 응답시간 (초)"에 목표 응답시간이나 현재 측정값을 넣습니다.</li>
+      <li>"Think time (초)"에 사용자가 화면을 읽고 다음 동작을 하기까지 쉬는 시간을 넣습니다.</li>
+      <li>"피크 계수"에 평균 대비 최대 부하 배율을 넣습니다. 피크를 이미 반영한 처리량이면 1로 둡니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>계산식은 필요 VU = 처리량(TPS) × 피크 계수 × (응답시간 + Think time)이며 소수점은 올림합니다. VU당 처리량은 1 ÷ (응답시간 + Think time), 권장 Ramp-up은 분당 약 10 VU씩 늘린다고 보고 필요 VU ÷ 10을 올림한 분입니다(최소 1분).</p>
+    <p>기본값(50 TPS, 응답 0.3초, Think time 3초, 피크 1.5)이면 환산 처리량 50 TPS(시간당 180,000건), 피크 처리량 75 TPS, 필요 VU 75 × 3.3 = 247.5 → 248, VU당 처리량 약 0.303 TPS, 권장 Ramp-up 25분이 나옵니다. Think time을 0으로 두면 필요 VU는 23으로 크게 줄지만, 실제 사용자 행동과 다른 과도한 부하 패턴이 됩니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>응답시간이 일정하다는 가정입니다. 부하가 오르면 응답시간이 늘어나 같은 VU로 처리량이 떨어지므로, 계산값에 20~30% 정도 여유를 두고 시험하는 편이 안전합니다.</li>
+      <li>시나리오가 여러 개면 시나리오별로 따로 계산해 더해야 합니다. 한 시나리오 안에 요청이 여러 개면 처리량을 요청 단위로 볼지 트랜잭션 단위로 볼지 먼저 정하세요.</li>
+      <li>Ramp-up의 분당 10 VU는 출발점일 뿐이며, 시스템 특성과 시험 목적(스트레스·내구성 시험 등)에 맞게 조정합니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>"동시 접속자 1,000명"이면 VU도 1,000이어야 하나요?</dt>
+      <dd>꼭 그렇지 않습니다. 중요한 것은 그 사용자들이 만들어 내는 처리량을 재현하는 것이고, 필요한 VU 수는 스크립트에 넣는 Think time에 따라 달라집니다. 실제 사용자와 비슷한 Think time을 넣으면 VU 수도 실제 동시 접속자 수에 가까워집니다. 요구사항이 동시 접속자로만 적혀 있다면 처리량 목표로 바꿔 발주기관과 합의하는 것이 먼저입니다.</dd>
+      <dt>응답시간에는 무엇을 넣어야 하나요?</dt>
+      <dd>목표 응답시간(예: 3초 이내)을 넣으면 최악 조건의 VU를, 현재 측정 평균을 넣으면 현실적인 VU를 얻습니다. 두 값을 모두 계산해 범위로 계획하면 좋습니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="tool-shell.js"></script>
 <script>
