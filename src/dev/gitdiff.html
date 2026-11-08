@@ -41,6 +41,34 @@ index 1234567..89abcde 100644
     <div id="out"></div>
     <div class="note" data-i18n-html="b_gitdiff_note">오픈소스 <b>diff2html</b>(MIT, <a href="https://github.com/rtfpessoa/diff2html" target="_blank" rel="noopener">rtfpessoa/diff2html</a>)을 자체 호스팅합니다. <code>git diff</code> 또는 <code>diff -u</code> 형식의 텍스트를 넣으세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>Git Diff 뷰어 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p><code>git diff</code>나 <code>diff -u</code>가 출력하는 unified diff 텍스트를 diff2html 3으로 해석해, 파일별로 줄 번호와 추가·삭제 색을 입힌 화면으로 그려 줍니다. 코드 부분에는 문법 색도 입혀지며, 한 줄씩 보기와 좌우 분할 보기를 바꿀 수 있습니다. 두 파일을 직접 비교하는 도구가 아니라, 이미 만들어진 diff를 읽기 좋게 보여 주는 뷰어입니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>메일이나 메신저로 받은 패치 파일(.patch, .diff)을 리뷰할 때</li>
+      <li>GitHub·GitLab에 올리지 않은 로컬 변경을 동료에게 화면 공유로 설명할 때</li>
+      <li>CI 로그에 찍힌 diff가 길어서 터미널에서 읽기 힘들 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>터미널에서 <code>git diff</code>, <code>git diff --staged</code>, <code>git show 커밋</code> 등의 출력을 복사합니다.</li>
+      <li>입력 칸에 붙여넣으면 잠시 후 아래에 결과가 그려집니다.</li>
+      <li>'보기'에서 한 줄씩 또는 좌우 분할을 고릅니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p><code>@@ -1,5 +1,6 @@</code> 같은 헝크 머리는 이전 파일 1번째 줄부터 5줄이 새 파일 1번째 줄부터 6줄로 바뀌었다는 뜻입니다. 기본 예시에서는 <code>return "Hi " + name;</code>이 빨간 줄, 주석과 템플릿 문자열로 바뀐 두 줄이 초록 줄로 나오고, 왼쪽 두 칸의 줄 번호로 각 줄이 이전·새 파일에서 몇 번째 줄인지 알 수 있습니다. 비슷한 삭제·추가 줄은 짝을 지어 그 안에서 바뀐 글자만 더 진하게 표시됩니다.</p>
+    <h3>주의할 점</h3>
+    <p><code>diff --git</code>이나 <code>---</code>/<code>+++</code> 머리 없이 헝크만 붙여넣으면 파일로 인식되지 않아 "표시할 diff가 없습니다"라는 안내가 나올 수 있습니다. 붙여넣는 과정에서 줄 앞의 공백 한 칸(변경 없는 줄 표시)이 사라지면 해석이 어긋납니다. 바이너리 파일 변경은 내용 없이 표시만 됩니다. 비공개 저장소의 diff라도 처리는 브라우저 안에서만 이루어집니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>여러 파일이 섞인 diff도 되나요?</dt>
+      <dd>됩니다. 파일마다 별도 블록으로 나뉘어 그려집니다.</dd>
+      <dt>diff를 직접 만들 수는 없나요?</dt>
+      <dd>이 도구는 보기 전용입니다. 두 텍스트를 비교하려면 텍스트 비교(diff) 도구를 쓰세요.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/diff2html-3/diff2html-ui.min.js"></script>
 <script src="tool-shell.js"></script>

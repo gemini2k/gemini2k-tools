@@ -39,7 +39,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <section class="toolhelp">
     <h2>LCOV 커버리지 뷰어 사용 안내</h2>
     <h3>무엇을 하는 도구인가</h3>
-    <p>테스트 커버리지 도구가 만드는 lcov.info 파일 내용을 붙여 넣으면 소스 파일별 라인·함수·브랜치 커버리지와 전체 합계를 표로 정리해 줍니다. lcov.info는 Istanbul/nyc, Jest, c8, gcov+lcov 등 여러 도구가 내보내는 텍스트 형식으로, 파일마다 SF(소스 경로)로 시작해 end_of_record로 끝나는 레코드가 이어집니다. 이 도구는 각 레코드의 요약 줄인 LF/LH(라인 전체/실행), FNF/FNH(함수 전체/실행), BRF/BRH(분기 전체/실행) 값을 읽어 계산합니다. HTML 리포트를 띄울 환경이 없을 때 숫자만 빠르게 확인하는 용도입니다.</p>
+    <p>테스트 커버리지 도구가 만드는 lcov.info 파일 내용을 붙여 넣으면 소스 파일별 라인·함수·브랜치 커버리지와 전체 합계를 표로 정리해 줍니다. lcov.info는 Istanbul/nyc, Jest, c8, gcov+lcov 등 여러 도구가 내보내는 텍스트 형식으로, 파일마다 SF(소스 경로)로 시작해 end_of_record로 끝나는 레코드가 이어집니다. 이 도구는 각 레코드의 요약 줄인 LF/LH(라인 전체/실행), FNF/FNH(함수 전체/실행), BRF/BRH(분기 전체/실행) 값을 읽어 계산하고, 요약 줄이 없으면 DA/FN/BRDA 상세 줄로 대신 셉니다. HTML 리포트를 띄울 환경이 없을 때 숫자만 빠르게 확인하는 용도입니다.</p>
     <h3>언제 쓰나</h3>
     <ul>
       <li>개발사가 제출한 단위시험 커버리지 결과를 원본 파일로 직접 확인할 때</li>
@@ -56,7 +56,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <h3>결과 해석</h3>
     <p>비율은 실행 수 ÷ 전체 수를 반올림한 값이고, 라인 커버리지는 80% 이상 초록, 50% 이상 주황, 그 미만 빨강으로 표시됩니다. 전체 값은 파일별 비율의 평균이 아니라 모든 파일의 분자와 분모를 각각 더해 계산합니다. 기본 예시에서 src/auth.js는 라인 34/40 = 85%, 함수 2/3 = 67%, 브랜치 5/8 = 63%이고, src/util.js는 라인 60/60 = 100%, 함수 100%, 브랜치 3/4 = 75%입니다. 합계는 라인 94/100 = 94%, 함수 7/8 = 88%, 브랜치 8/12 = 67%입니다. 라인은 높은데 브랜치가 낮다면 if/else의 한쪽 경로, 특히 예외 처리 경로가 시험되지 않았다는 뜻이라 우선 보강 대상입니다.</p>
     <h3>주의할 점</h3>
-    <p>DA(줄별 실행 횟수)나 BRDA(분기별 상세) 줄은 해석하지 않으므로 어느 줄이 빠졌는지까지는 보여 주지 않습니다. 레코드에 LF/LH 같은 요약 줄이 없으면 전체 수가 0이 되어 해당 항목이 100%로 표시되니, 요약 줄이 들어 있는 파일인지 먼저 확인하세요. 커버리지는 코드가 실행됐는지만 알려 줄 뿐 결과를 제대로 검증했는지는 알려 주지 않습니다. 단언문 없는 테스트로도 100%를 만들 수 있으므로 커버리지 수치만으로 시험 품질을 판단하면 안 됩니다.</p>
+    <p>레코드에 LF/LH 같은 요약 줄이 없으면 DA(줄별 실행 횟수), FN·FNDA(함수), BRDA(분기) 상세 줄을 직접 세어 비율을 계산합니다. 요약 줄과 상세 줄이 모두 없는 항목, 또는 전체 수가 0인 항목은 100%가 아니라 '정보 없음'으로 표시되고 합계 계산에서도 빠집니다. 상세 줄은 개수만 세므로 어느 줄이 빠졌는지까지는 보여 주지 않습니다. 커버리지는 코드가 실행됐는지만 알려 줄 뿐 결과를 제대로 검증했는지는 알려 주지 않습니다. 단언문 없는 테스트로도 100%를 만들 수 있으므로 커버리지 수치만으로 시험 품질을 판단하면 안 됩니다.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>리포트의 HTML 화면과 숫자가 조금 다릅니다.</dt>
@@ -68,7 +68,28 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
 </div>
 <script src="tool-shell.js"></script>
 <script>
-var $=function(i){return document.getElementById(i);};function pct(h,f){return f>0?Math.round(h/f*100):100;}function color(p){return p>=80?"#16a34a":p>=50?"#d97706":"#dc2626";}function run(){var txt=$("in").value.replace(/\\n/g,"\n");var recs=txt.split(/end_of_record/);var files=[],T={LF:0,LH:0,FNF:0,FNH:0,BRF:0,BRH:0};recs.forEach(function(r){var sf=(r.match(/SF:(.+)/)||[])[1];if(!sf)return;function g(k){return +((r.match(new RegExp(k+":(\\d+)"))||[])[1]||0);}var o={sf:sf.trim(),LF:g("LF"),LH:g("LH"),FNF:g("FNF"),FNH:g("FNH"),BRF:g("BRF"),BRH:g("BRH")};["LF","LH","FNF","FNH","BRF","BRH"].forEach(function(k){T[k]+=o[k];});files.push(o);});if(!files.length){$("res").innerHTML=t('b_lcovview_no_record');return;}var lp=pct(T.LH,T.LF);var html="<div class=\"ak-rate\"><b style=\"color:"+color(lp)+"\">"+lp+"%</b> "+t('b_lcovview_line_cov')+" <span>&middot; "+t('b_lcovview_fn')+" "+pct(T.FNH,T.FNF)+"% &middot; "+t('b_lcovview_br')+" "+pct(T.BRH,T.BRF)+"%</span></div><div class=\"ak-bar2\"><i style=\"width:"+lp+"%\"></i></div>";html+="<table style=\"margin-top:.6rem\"><tr><td><b>"+t('b_lcovview_col_file')+"</b></td><td><b>"+t('b_lcovview_col_line')+"</b></td><td><b>"+t('b_lcovview_col_fn')+"</b></td><td><b>"+t('b_lcovview_col_br')+"</b></td></tr>"+files.map(function(o){var l=pct(o.LH,o.LF);return "<tr><td>"+o.sf+"</td><td style=\"color:"+color(l)+"\"><b>"+l+"%</b> ("+o.LH+"/"+o.LF+")</td><td>"+pct(o.FNH,o.FNF)+"%</td><td>"+pct(o.BRH,o.BRF)+"%</td></tr>";}).join("")+"</table>";$("res").innerHTML=html;}window.onI18n=run;var _t;$("in").addEventListener("input",function(){clearTimeout(_t);_t=setTimeout(run,300);});run();
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+// 분모 0(또는 정보 없음)이면 null → '정보 없음' 표시(예전엔 100%로 보였음)
+function pct(h,f){return f>0?Math.round(h/f*100):null;}
+function color(p){return p==null?"var(--muted)":p>=80?"#16a34a":p>=50?"#d97706":"#dc2626";}
+function fmt(p){return p==null?t('b_lcovview_na'):p+"%";}
+// 레코드 하나 → {LF,LH,FNF,FNH,BRF,BRH}. 요약 줄(LF/LH…)이 있으면 그 값을, 없으면 상세 줄(DA/FN·FNDA/FNA/BRDA)을 직접 센다. 둘 다 없으면 null.
+function parseRec(r){
+  function g(k){var m=r.match(new RegExp("^\\s*"+k+":(\\d+)","m"));return m?+m[1]:null;}
+  var da=0,dah=0,fn={},fnh={},fna=0,fnah=0,br=0,brh=0;
+  r.split(/\r?\n/).forEach(function(l){var m;l=l.trim();
+    if((m=/^DA:\d+,(\d+)/.exec(l))){da++;if(+m[1]>0)dah++;}
+    else if((m=/^FN:(?:\d+,)+(.+)$/.exec(l))){fn[m[1]]=1;}
+    else if((m=/^FNDA:(\d+),(.+)$/.exec(l))){if(+m[1]>0)fnh[m[2]]=1;}
+    else if((m=/^FNA:\d+,(\d+),/.exec(l))){fna++;if(+m[1]>0)fnah++;}
+    else if((m=/^BRDA:[^,]*,[^,]*,[^,]*,(.+)$/.exec(l))){br++;if(m[1]!=="-"&&+m[1]>0)brh++;}});
+  var nfn=Object.keys(fn).length,nfnh=Object.keys(fnh).filter(function(k){return fn[k];}).length;
+  if(!nfn&&fna){nfn=fna;nfnh=fnah;}
+  function pick(F,H,dF,dH){var f=g(F);if(f!=null)return [f,g(H)||0];return dF>0?[dF,dH]:[null,null];}
+  var L=pick("LF","LH",da,dah),FN=pick("FNF","FNH",nfn,nfnh),BR=pick("BRF","BRH",br,brh);
+  return {LF:L[0],LH:L[1],FNF:FN[0],FNH:FN[1],BRF:BR[0],BRH:BR[1]};}
+function run(){var txt=$("in").value.replace(/\\n/g,"\n");var recs=txt.split(/end_of_record/);var files=[],T={LF:0,LH:0,FNF:0,FNH:0,BRF:0,BRH:0};recs.forEach(function(r){var sf=(r.match(/SF:(.+)/)||[])[1];if(!sf)return;var o=parseRec(r);o.sf=sf.trim();["LF","LH","FNF","FNH","BRF","BRH"].forEach(function(k){if(o[k]!=null)T[k]+=o[k];});files.push(o);});if(!files.length){$("res").innerHTML=t('b_lcovview_no_record');return;}var lp=pct(T.LH,T.LF);var html="<div class=\"ak-rate\"><b style=\"color:"+color(lp)+"\">"+fmt(lp)+"</b> "+t('b_lcovview_line_cov')+" <span>&middot; "+t('b_lcovview_fn')+" "+fmt(pct(T.FNH,T.FNF))+" &middot; "+t('b_lcovview_br')+" "+fmt(pct(T.BRH,T.BRF))+"</span></div><div class=\"ak-bar2\"><i style=\"width:"+(lp||0)+"%\"></i></div>";html+="<table style=\"margin-top:.6rem\"><tr><td><b>"+t('b_lcovview_col_file')+"</b></td><td><b>"+t('b_lcovview_col_line')+"</b></td><td><b>"+t('b_lcovview_col_fn')+"</b></td><td><b>"+t('b_lcovview_col_br')+"</b></td></tr>"+files.map(function(o){var l=pct(o.LH,o.LF);return "<tr><td>"+esc(o.sf)+"</td><td style=\"color:"+color(l)+"\"><b>"+fmt(l)+"</b>"+(o.LF!=null?" ("+o.LH+"/"+o.LF+")":"")+"</td><td>"+fmt(pct(o.FNH,o.FNF))+"</td><td>"+fmt(pct(o.BRH,o.BRF))+"</td></tr>";}).join("")+"</table>";$("res").innerHTML=html;}window.onI18n=run;var _t;$("in").addEventListener("input",function(){clearTimeout(_t);_t=setTimeout(run,300);});run();
 </script>
 </body>
 </html>

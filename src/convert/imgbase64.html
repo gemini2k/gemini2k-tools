@@ -39,6 +39,39 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
     </div>
     <div class="note" data-i18n="b_imgbase64_note">데이터 URI는 작은 아이콘에 적합합니다(큰 이미지는 용량이 33% 커집니다). 모든 처리는 브라우저에서만 이루어지며 파일은 업로드되지 않습니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>이미지 ↔ Base64 변환 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>이미지 파일을 브라우저의 FileReader로 읽어 <code>data:image/png;base64,...</code> 형태의 Data URI로 바꿉니다. 반대 방향에서는 Data URI를 붙여 넣으면 그림으로 미리 보여 주고 파일로 저장해 줍니다. 파일은 서버로 올라가지 않고 브라우저 안에서만 처리됩니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>작은 아이콘이나 로고를 CSS·HTML에 직접 넣어 별도 이미지 요청을 줄이고 싶을 때</li>
+      <li>외부 파일을 첨부할 수 없는 단일 HTML 보고서나 오프라인 문서에 그림을 넣을 때</li>
+      <li>API 응답이나 DB에 저장된 Base64 이미지가 실제로 어떤 그림인지 확인할 때</li>
+      <li>JSON 테스트 데이터에 들어갈 샘플 이미지 문자열이 필요할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>「이미지 → Base64」 탭에서 상자를 눌러 파일을 고르거나 이미지를 끌어다 놓습니다.</li>
+      <li>원본 크기와 Base64 크기를 확인한 뒤 「복사」로 Data URI 전체를, 「CSS 복사」로 <code>background-image: url('...');</code> 한 줄을 복사합니다.</li>
+      <li>되돌릴 때는 「Base64 → 이미지」 탭에 <code>data:image/...;base64,</code>로 시작하는 문자열을 붙여 넣고 「이미지 저장」을 누릅니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>Base64는 3바이트를 4글자로 나타내므로 결과는 원본보다 약 33% 커집니다. 화면의 「원본 KB → Base64 KB」 표시로 이 차이를 바로 볼 수 있으며, 예를 들어 30KB 아이콘은 40KB 남짓한 문자열이 됩니다. 저장할 때 파일 확장자는 Data URI 안의 형식 이름(png, jpeg, gif 등)을 그대로 씁니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>큰 사진을 Data URI로 넣으면 HTML·CSS 파일이 커지고 이미지만 따로 캐시되지도 않아 오히려 느려집니다. 몇 KB짜리 아이콘에 적합합니다.</li>
+      <li>되돌리기 탭은 <code>data:image/</code>로 시작하는 문자열만 받습니다. 앞부분 없이 Base64 본문만 있다면 <code>data:image/png;base64,</code>를 앞에 붙여 넣으세요(실제 형식에 맞게).</li>
+      <li>메일 본문에 Data URI 이미지를 넣으면 일부 메일 프로그램은 표시하지 않습니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>이미지를 압축하거나 크기를 줄여 주나요?</dt>
+      <dd>아닙니다. 파일 내용을 그대로 인코딩만 합니다. 용량을 줄이려면 먼저 이미지 압축을 거친 뒤 변환하세요.</dd>
+      <dt>SVG도 되나요?</dt>
+      <dd>이미지 형식으로 인식되는 파일이면 변환됩니다. 다만 SVG는 Base64 대신 URL 인코딩한 텍스트로 넣는 편이 더 짧은 경우가 많습니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="tool-shell.js"></script>
 <script>

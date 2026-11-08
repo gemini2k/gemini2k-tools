@@ -40,6 +40,34 @@ textarea{min-height:150px;resize:vertical;}#expr{font-weight:600;}
     <div class="out" id="out"></div>
     <div class="note" data-i18n-html="b_jsonata_note">오픈소스 <b>JSONata</b>(MIT, <a href="https://github.com/jsonata-js/jsonata" target="_blank" rel="noopener">jsonata-js/jsonata</a>)를 자체 호스팅합니다. 예: <code>orders[qty&gt;2].item</code>, <code>orders{item: price}</code>. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>JSONata 쿼리·변환기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>JSONata 2.x 엔진으로 JSON 데이터에 표현식을 실행하고 결과를 JSON으로 보여 줍니다. JSONata는 경로 탐색(<code>orders.item</code>), 조건 필터(<code>[qty&gt;2]</code>), 정렬(<code>^(&gt;price)</code>), 집계 함수(<code>$sum</code>, <code>$count</code>, <code>$average</code>), 새 객체 만들기(<code>{키: 값}</code>)를 한 줄 식으로 표현하는 질의·변환 언어입니다. 데이터나 식을 고치면 잠시 뒤 자동으로 다시 계산됩니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>Node-RED, AWS Step Functions 같은 곳에 넣을 JSONata 식을 미리 시험해 볼 때</li>
+      <li>큰 API 응답에서 필요한 필드만 뽑거나 합계를 내는 식을 만들 때</li>
+      <li>한 시스템의 JSON 구조를 다른 시스템이 원하는 모양으로 바꾸는 매핑 규칙을 설계할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>'JSON 데이터'에 표준 JSON을 붙여넣습니다.</li>
+      <li>'JSONata 표현식'에 식을 입력합니다.</li>
+      <li>'결과'에 들여쓰기된 JSON이 나옵니다. 데이터나 식에 오류가 있으면 결과 위에 오류 문구가 표시됩니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>기본 데이터에서 <code>$sum(orders.(qty * price))</code>는 3×1000 + 5×500 + 2×3000을 더해 <code>11500</code>을 돌려줍니다. <code>orders[qty&gt;2].item</code>은 <code>["사과", "바나나"]</code>, <code>orders{item: price}</code>는 <code>{"사과": 1000, "바나나": 500, "체리": 3000}</code>입니다. 눈여겨볼 점은 <code>orders[price&gt;=3000].item</code>처럼 결과가 하나뿐이면 배열이 아니라 <code>"체리"</code> 값 하나가 나온다는 것입니다. 항상 배열이 필요하면 경로 끝에 <code>[]</code>를 붙여 <code>orders[price&gt;=3000].item[]</code>로 씁니다. 일치하는 값이 없으면 결과 없음으로 표시됩니다.</p>
+    <h3>주의할 점</h3>
+    <p>JSONata 실행 환경마다 지원하는 버전과 사용자 정의 함수가 다를 수 있으니, 여기서 동작한 식도 실제 대상 시스템에서 한 번 더 확인하세요. 데이터 칸은 엄격한 JSON만 받으므로 주석이나 후행 쉼표가 있으면 데이터 오류가 납니다. 매우 큰 데이터에 복잡한 식을 걸면 브라우저가 한동안 멈출 수 있습니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>JSONPath와 무엇이 다른가요?</dt>
+      <dd>JSONPath는 값을 찾아 꺼내는 데 그치지만, JSONata는 계산·집계·새 구조 생성까지 할 수 있는 작은 언어에 가깝습니다.</dd>
+      <dt>문자열 필드에 공백이나 한글 키가 있으면요?</dt>
+      <dd>키를 백틱으로 감싸 <code>`주문 목록`.item</code>처럼 씁니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/jsonata-2/jsonata.min.js"></script>
 <script src="tool-shell.js"></script>

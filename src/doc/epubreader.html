@@ -34,6 +34,38 @@
     <div class="nav hide" id="nav"><button id="prev" type="button" data-i18n="b_epubreader_prev">← 이전</button><span id="title" style="font-size:.85rem;color:var(--muted)"></span><button id="next" type="button" data-i18n="b_epubreader_next">다음 →</button></div>
     <div class="note" data-i18n-html="b_epubreader_note">오픈소스 <b>epub.js</b>(BSD-2, <a href="https://github.com/futurepress/epub.js" target="_blank" rel="noopener">futurepress/epub.js</a>)와 JSZip을 자체 호스팅합니다. 책 파일은 서버로 전송되지 않고 브라우저에서만 열립니다. 좌우 화살표 키로도 넘길 수 있어요.</div>
   </div>
+  <section class="toolhelp">
+    <h2>EPUB 뷰어 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>EPUB은 전자책 표준 형식으로, 실제로는 XHTML 본문과 CSS, 이미지, 목차 정보를 ZIP으로 묶은 파일입니다. 이 뷰어는 파일을 브라우저에서 읽어 epub.js로 풀고, 한 화면에 한 쪽씩(양면 펼침 없이) 보여 줍니다. 책 메타데이터에 제목과 저자가 들어 있으면 아래쪽 넘김 버튼 사이에 「제목 · 저자」 형태로 표시합니다. 전자책 앱을 설치하지 않은 PC에서 내용을 빠르게 확인하는 용도입니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>외부에서 받은 교육 자료나 보고서가 EPUB으로만 와서 내용을 먼저 훑어봐야 할 때</li>
+      <li>직접 만든 EPUB을 배포하기 전에 표지·본문 글꼴·이미지가 제대로 들어갔는지 확인할 때</li>
+      <li>공용 PC처럼 전자책 앱을 깔 수 없는 환경에서 무료 공개 도서를 읽을 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>점선 상자를 클릭해 .epub 파일을 고르거나 상자 위로 끌어다 놓습니다.</li>
+      <li>본문이 표시되면 「← 이전」, 「다음 →」 버튼이나 키보드 좌우 화살표로 넘깁니다.</li>
+      <li>다른 책을 보려면 같은 상자에 새 파일을 넣으면 이전 화면을 지우고 새로 엽니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>쪽 나눔은 종이책의 쪽 번호가 아니라 지금 보이는 뷰어 영역(높이 560px) 크기에 맞춰 그때그때 계산됩니다. 그래서 창 너비를 바꾸면 한 화면에 들어가는 분량도 달라집니다. 아래쪽에 제목이 비어 있다면 파일 메타데이터에 제목 정보가 없는 경우이고, 「파일을 열 수 없습니다.」가 뜨거나 본문 영역이 빈 채로 남으면 ZIP 구조가 손상됐거나 EPUB이 아닌 파일일 가능성이 큽니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>DRM(복제 방지)이 걸린 서점 전자책은 내용이 암호화되어 있어 열리지 않습니다.</li>
+      <li>목차 이동, 글자 크기 조절, 책갈피, 읽던 위치 기억 기능은 없습니다. 내용을 확인하는 가벼운 뷰어로 생각하세요.</li>
+      <li>뷰어 배경이 흰색으로 고정되어 있어 다크 모드에서도 본문은 밝게 보입니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>책 파일이 서버에 올라가나요?</dt>
+      <dd>아닙니다. FileReader로 브라우저 메모리에서만 읽으며, 페이지를 닫으면 사라집니다.</dd>
+      <dt>PDF나 MOBI 파일도 열 수 있나요?</dt>
+      <dd>이 뷰어는 EPUB 전용입니다. PDF는 사이트의 PDF 관련 도구를 쓰고, Kindle용 MOBI·AZW는 EPUB으로 변환한 뒤 열어야 합니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/jszip-3.10.1/jszip.min.js"></script>
 <script src="/vendor/epubjs-0.3/epub.min.js"></script>

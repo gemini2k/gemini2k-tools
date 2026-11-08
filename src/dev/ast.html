@@ -37,6 +37,41 @@ const arr = [1, 2, 3].map(x =&gt; x * 2);</textarea></div>
     <div class="err" id="err"></div>
     <div class="note" data-i18n-html="b_ast_note">오픈소스 <b>acorn</b>(MIT, <a href="https://github.com/acornjs/acorn" target="_blank" rel="noopener">acornjs/acorn</a>)을 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>JavaScript AST 뷰어 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>자바스크립트 코드를 오픈소스 파서 acorn으로 분석해, ESTree 형식의 추상 구문 트리(AST)를 JSON으로 보여 줍니다. ECMAScript 버전(latest, 2020, 2017, 2015, 5)을 골라 그 버전 문법으로 파싱되는지 확인할 수 있고, 각 노드의 소스 내 위치(start/end 문자 오프셋)를 보이거나 숨길 수 있습니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>ESLint 사용자 규칙을 만들면서 원하는 코드가 어떤 노드 타입으로 잡히는지 확인할 때</li>
+      <li>Babel 플러그인이나 codemod로 코드를 일괄 수정하기 전에 대상 구조를 파악할 때</li>
+      <li>구형 브라우저를 지원해야 해서 코드에 ES2017 이후 문법이 섞였는지 점검할 때</li>
+      <li>컴파일러·파서 수업에서 소스가 트리로 바뀌는 과정을 보여 줄 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>왼쪽 「JavaScript 코드」 칸에 코드를 붙여 넣습니다. 입력을 멈추면 잠시 뒤 자동으로 다시 파싱합니다.</li>
+      <li>위쪽 ECMA 목록에서 문법 버전을 고릅니다.</li>
+      <li>노드 위치가 필요하면 「위치정보(start/end) 표시」에 체크합니다.</li>
+      <li>오른쪽 「AST (JSON)」에서 트리를 읽습니다. 문법 오류가 있으면 아래에 오류 메시지와 줄:열 위치가 나옵니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p><code>const x = 1;</code>을 넣으면 <code>Program</code>의 <code>body</code> 안에 <code>VariableDeclaration</code>(kind: "const")이 있고, 그 아래 <code>VariableDeclarator</code>의 <code>id</code>는 <code>Identifier</code>(name: "x"), <code>init</code>은 <code>Literal</code>(value: 1, raw: "1")로 나옵니다. ECMA를 2017로 두고 <code>a?.b</code>를 넣으면 옵셔널 체이닝이 ES2020 문법이라 「Unexpected token」 오류가 나므로, 해당 버전에서 쓸 수 없는 문법임을 알 수 있습니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>코드는 항상 모듈(sourceType: module)로 파싱하므로 엄격 모드가 적용됩니다. <code>with</code> 문처럼 엄격 모드에서 금지된 문법은 버전과 관계없이 오류가 납니다.</li>
+      <li>JSX와 TypeScript 문법은 지원하지 않습니다.</li>
+      <li>start/end는 줄·열이 아니라 소스 처음부터 센 문자 위치입니다.</li>
+      <li>코드가 길면 JSON도 매우 길어집니다. 확인하려는 부분만 잘라 넣는 편이 읽기 쉽습니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>ESLint나 Babel의 AST와 같은가요?</dt>
+      <dd>ESLint의 기본 파서(espree)는 acorn 기반이라 ESTree 구조가 거의 같습니다. Babel은 일부 노드 이름이 다르므로(예: 리터럴 종류별 노드) Babel용으로는 Babel 문서를 함께 보세요.</dd>
+      <dt>코드를 실행하나요?</dt>
+      <dd>아닙니다. 구문 분석만 하며 코드는 실행되지 않습니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/acorn-8/acorn.js"></script>
 <script src="tool-shell.js"></script>

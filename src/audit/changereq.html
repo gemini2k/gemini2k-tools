@@ -58,7 +58,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <h3>결과 해석</h3>
     <p>집계 줄은 "3건 · 승인/완료 1 · 처리대기 2"처럼 나옵니다. 승인/완료는 상태가 승인 또는 완료인 건, 처리대기는 접수 또는 검토인 건이고, 반려는 어느 쪽에도 포함되지 않습니다. 예를 들어 5건 중 승인 1, 완료 2, 검토 1, 반려 1이면 "5건 · 승인/완료 3 · 처리대기 1"이 됩니다. 처리대기가 계속 쌓이면 변경 검토 회의가 제때 열리지 않는다는 신호로 볼 수 있고, 승인 상태로 오래 남은 건은 반영 일정이 밀리고 있다는 뜻입니다.</p>
     <h3>주의할 점</h3>
-    <p>새로 추가한 행은 목록 상자에 첫 항목이 보이더라도 실제로 고르기 전까지는 값이 비어 있어 집계에서 빠집니다. 상태와 우선순위는 반드시 한 번 선택해 주세요. 데이터는 이 브라우저의 localStorage에만 저장되어 다른 사람과 공유되지 않고, 브라우저 데이터를 지우면 사라집니다. 여러 사람이 함께 써야 하거나 승인 서명 같은 증적이 필요하면 CSV를 정식 문서로 옮겨 관리하세요. 승인 권한이나 결재 흐름을 강제하는 기능은 없습니다.</p>
+    <p>새로 추가한 행은 우선순위가 보통, 상태가 접수로 미리 채워져 바로 처리대기 건수에 잡힙니다. 실제 값에 맞게 바꿔 주세요. 데이터는 이 브라우저의 localStorage에만 저장되어 다른 사람과 공유되지 않고, 브라우저 데이터를 지우면 사라집니다. 여러 사람이 함께 써야 하거나 승인 서명 같은 증적이 필요하면 CSV를 정식 문서로 옮겨 관리하세요. 승인 권한이나 결재 흐름을 강제하는 기능은 없습니다.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>CR번호는 자동으로 매겨지나요?</dt>
@@ -73,15 +73,15 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
 AuditKit.register({mount:'#app',key:'changereq',cols:[
     {k:'no',label:t('b_changereq_col_no'),w:'80px'},{k:'date',label:t('b_changereq_col_date'),type:'date'},{k:'req',label:t('b_changereq_col_req'),w:'80px'},
     {k:'content',label:t('b_changereq_col_content'),w:'170px',type:'area'},{k:'impact',label:t('b_changereq_col_impact'),w:'150px',type:'area'},
-    {k:'pri',label:t('b_changereq_col_pri'),type:'select',opts:[t('b_changereq_pri_urgent'),t('b_changereq_pri_high'),t('b_changereq_pri_normal'),t('b_changereq_pri_low')]},
-    {k:'status',label:t('b_changereq_col_status'),type:'select',opts:[t('b_changereq_status_received'),t('b_changereq_status_review'),t('b_changereq_status_approved'),t('b_changereq_status_rejected'),t('b_changereq_status_done')]},{k:'done',label:t('b_changereq_col_done'),type:'date'}],
+    {k:'pri',label:t('b_changereq_col_pri'),type:'select',def:t('b_changereq_pri_normal'),opts:[t('b_changereq_pri_urgent'),t('b_changereq_pri_high'),t('b_changereq_pri_normal'),t('b_changereq_pri_low')]},
+    {k:'status',label:t('b_changereq_col_status'),type:'select',def:t('b_changereq_status_received'),opts:[t('b_changereq_status_received'),t('b_changereq_status_review'),t('b_changereq_status_approved'),t('b_changereq_status_rejected'),t('b_changereq_status_done')]},{k:'done',label:t('b_changereq_col_done'),type:'date'}],
     seed:[{no:'CR-001',date:'',req:t('b_changereq_seed_req'),content:t('b_changereq_seed_content'),impact:t('b_changereq_seed_impact'),pri:t('b_changereq_pri_normal'),status:t('b_changereq_status_review'),done:''}],
     summary:function(rows){var ap=rows.filter(function(r){return r.status===t('b_changereq_status_approved')||r.status===t('b_changereq_status_done');}).length,pend=rows.filter(function(r){return r.status===t('b_changereq_status_received')||r.status===t('b_changereq_status_review');}).length;return '<div class="ak-rate"><b>'+rows.length+t('b_changereq_summary_count')+'</b> <span>· '+t('b_changereq_summary_approved')+ap+' · '+t('b_changereq_summary_pending')+pend+'</span></div>';}});
-window.onI18n=function(){AuditKit.register({mount:'#app',key:'changereq',cols:[
+window.onI18n=function(){document.getElementById('app').innerHTML='';AuditKit.register({mount:'#app',key:'changereq',cols:[
     {k:'no',label:t('b_changereq_col_no'),w:'80px'},{k:'date',label:t('b_changereq_col_date'),type:'date'},{k:'req',label:t('b_changereq_col_req'),w:'80px'},
     {k:'content',label:t('b_changereq_col_content'),w:'170px',type:'area'},{k:'impact',label:t('b_changereq_col_impact'),w:'150px',type:'area'},
-    {k:'pri',label:t('b_changereq_col_pri'),type:'select',opts:[t('b_changereq_pri_urgent'),t('b_changereq_pri_high'),t('b_changereq_pri_normal'),t('b_changereq_pri_low')]},
-    {k:'status',label:t('b_changereq_col_status'),type:'select',opts:[t('b_changereq_status_received'),t('b_changereq_status_review'),t('b_changereq_status_approved'),t('b_changereq_status_rejected'),t('b_changereq_status_done')]},{k:'done',label:t('b_changereq_col_done'),type:'date'}],
+    {k:'pri',label:t('b_changereq_col_pri'),type:'select',def:t('b_changereq_pri_normal'),opts:[t('b_changereq_pri_urgent'),t('b_changereq_pri_high'),t('b_changereq_pri_normal'),t('b_changereq_pri_low')]},
+    {k:'status',label:t('b_changereq_col_status'),type:'select',def:t('b_changereq_status_received'),opts:[t('b_changereq_status_received'),t('b_changereq_status_review'),t('b_changereq_status_approved'),t('b_changereq_status_rejected'),t('b_changereq_status_done')]},{k:'done',label:t('b_changereq_col_done'),type:'date'}],
     seed:[{no:'CR-001',date:'',req:t('b_changereq_seed_req'),content:t('b_changereq_seed_content'),impact:t('b_changereq_seed_impact'),pri:t('b_changereq_pri_normal'),status:t('b_changereq_status_review'),done:''}],
     summary:function(rows){var ap=rows.filter(function(r){return r.status===t('b_changereq_status_approved')||r.status===t('b_changereq_status_done');}).length,pend=rows.filter(function(r){return r.status===t('b_changereq_status_received')||r.status===t('b_changereq_status_review');}).length;return '<div class="ak-rate"><b>'+rows.length+t('b_changereq_summary_count')+'</b> <span>· '+t('b_changereq_summary_approved')+ap+' · '+t('b_changereq_summary_pending')+pend+'</span></div>';}});};
 </script>

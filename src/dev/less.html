@@ -44,6 +44,40 @@ textarea{width:100%;min-height:260px;padding:.7rem;border:1px solid var(--border
     <div style="margin-top:.6rem;"><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_less_copy_btn">📋 복사</button></div>
     <div class="note" data-i18n-html="b_less_note">오픈소스 <b>Less.js</b>(Apache-2.0, <a href="https://github.com/less/less.js" target="_blank" rel="noopener">less/less.js</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>LESS → CSS 컴파일러 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>Less.js 4 컴파일러를 브라우저에서 그대로 실행해 LESS 코드를 일반 CSS로 바꿉니다. 왼쪽 입력란에 타이핑하다 잠깐(약 0.35초) 멈추면 오른쪽 결과가 다시 만들어지고, 문법 오류가 있으면 Less.js가 낸 오류 메시지가 아래에 표시됩니다. 「압축(minify)」을 켜면 공백과 줄바꿈을 걷어 낸 CSS를 돌려줍니다. 별도의 Node.js나 빌드 도구 설치가 필요 없습니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>예전 부트스트랩 3 테마나 사내 레거시 화면의 .less 조각을 빌드 환경 없이 CSS로 확인해야 할 때</li>
+      <li>변수·믹스인·중첩이 섞인 코드가 실제로 어떤 선택자와 속성으로 풀리는지 눈으로 확인할 때</li>
+      <li>LESS를 걷어 내고 순수 CSS로 옮기면서 변환 결과를 기준본으로 삼을 때</li>
+      <li><code>darken()</code>, <code>lighten()</code> 같은 색상 함수가 어떤 값을 내는지 바로 보고 싶을 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>「LESS 입력」에 코드를 붙여 넣습니다. 처음에는 변수와 믹스인 예제가 들어 있습니다.</li>
+      <li>오른쪽 「CSS 출력」에서 결과를 확인합니다. 배포용 한 줄 CSS가 필요하면 「압축(minify)」을 체크합니다.</li>
+      <li>입력란 아래에 경고 문구가 나오면 메시지 내용을 보고 해당 부분을 고칩니다.</li>
+      <li>「복사」로 결과 CSS를 클립보드에 담습니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>기본 예제의 <code>.button(@bg)</code>처럼 괄호가 붙은 믹스인은 정의일 뿐이라 출력에 나타나지 않고, 이를 호출한 <code>.btn-primary</code> 안에 background·border-radius·padding이 펼쳐져 들어갑니다. 중첩된 <code>&amp;:hover</code>는 <code>.btn-primary:hover</code>라는 별도 규칙이 되고, <code>darken(@brand, 10%)</code>는 #2563eb의 명도를 10% 낮춘 16진수 색으로 계산되어 박힙니다. 결과 CSS에는 <code>@brand</code> 같은 변수 이름이 남지 않으므로, 나중에 색을 바꾸려면 CSS가 아니라 원본 LESS를 고쳐야 합니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>다른 파일을 불러오는 <code>@import</code>는 이 화면에서 원본 파일을 찾을 수 없습니다. 필요한 변수·믹스인 정의를 한 입력란에 합쳐 넣으세요.</li>
+      <li>컴파일 오류가 나면 직전에 성공한 결과가 오른쪽에 그대로 남아 있습니다. 결과를 복사하기 전에 경고 문구가 비어 있는지 확인하세요.</li>
+      <li>벤더 접두사 자동 추가(autoprefixer)나 소스맵 생성은 하지 않습니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>SCSS(Sass) 코드도 넣을 수 있나요?</dt>
+      <dd>안 됩니다. 변수에 <code>$</code>를 쓰는 Sass 문법은 Less.js가 해석하지 못해 오류가 납니다.</dd>
+      <dt>입력한 코드가 서버로 전송되나요?</dt>
+      <dd>아닙니다. 컴파일러 파일을 이 사이트에서 내려받아 브라우저 안에서만 실행합니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/less-4/less.min.js"></script>
 <script src="tool-shell.js"></script>

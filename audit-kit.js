@@ -40,7 +40,7 @@ window.AuditKit = (function () {
     table.addEventListener('change', function (e) { var t = e.target; if (t.tagName === 'SELECT' && t.dataset.ri != null) { rows[+t.dataset.ri][t.dataset.k] = t.value; persist(); } });
     table.addEventListener('click', function (e) { var b = e.target.closest('.ak-del'); if (b) { rows.splice(+b.dataset.ri, 1); persist(); render(); } });
     function btn(label, ghost, fn) { var b = el('button', 'btn' + (ghost ? ' btn-ghost' : ''), label); b.type = 'button'; b.onclick = fn; return b; }
-    bar.appendChild(btn('+ ' + L('ak.addrow', '행 추가'), false, function () { var nr = {}; cols.forEach(function (c) { nr[c.k] = c.def || ''; }); rows.push(nr); persist(); render(); }));
+    bar.appendChild(btn('+ ' + L('ak.addrow', '행 추가'), false, function () { var nr = {}; cols.forEach(function (c) { nr[c.k] = c.def || (c.type === 'select' && c.opts && c.opts.length ? String(c.opts[0]) : ''); }); rows.push(nr); persist(); render(); }));   // select 는 화면에 보이는 첫 항목을 실제 값으로 저장(빈 값이면 집계 누락)
     bar.appendChild(btn('⬇️ CSV', true, function () { downloadCSV(o.key + '.csv', [cols.map(function (c) { return c.label; })].concat(rows.map(function (r) { return cols.map(function (c) { return r[c.k]; }); }))); }));
     bar.appendChild(btn('🗑 ' + L('ak.clear', '비우기'), true, function () { if (confirm(L('ak.confirmclear', '모든 행을 삭제할까요?'))) { rows = []; persist(); render(); } }));
     tw.appendChild(table); mount.appendChild(bar); mount.appendChild(tw); mount.appendChild(sum); render();
@@ -53,11 +53,19 @@ window.AuditKit = (function () {
     var sum = el('div', 'ak-sum'), bar = el('div', 'ak-bar'), body = el('div');
     function gid(g, i) { return (g.id || g.title) + '#' + i; }
     function persist() { save(KEY, state); renderSum(); }
+    function tally(g) { var c = { total: 0, ok: 0, na: 0 }; g.items.forEach(function (it, i) { c.total++; var s = state[gid(g, i)] && state[gid(g, i)].v; if (s === 'ok') c.ok++; else if (s === 'na') c.na++; }); return c; }
     function renderSum() {
-      var total = 0, ok = 0, na = 0;
-      o.groups.forEach(function (g) { g.items.forEach(function (it, i) { total++; var s = state[gid(g, i)] && state[gid(g, i)].v; if (s === 'ok') ok++; else if (s === 'na') na++; }); });
+      var total = 0, ok = 0, na = 0, per = [];
+      o.groups.forEach(function (g) { var c = tally(g); per.push(c); total += c.total; ok += c.ok; na += c.na; });
       var denom = total - na, rate = denom > 0 ? Math.round(ok / denom * 100) : 0;
-      sum.innerHTML = '<div class="ak-rate"><b>' + rate + '%</b> ' + L('ak.met', '충족') + ' <span>(' + ok + '/' + denom + ' · ' + L('ak.na', '해당없음') + ' ' + na + ' · ' + L('ak.total', '전체') + ' ' + total + ')</span></div><div class="ak-bar2"><i style="width:' + rate + '%"></i></div>';
+      var h = '<div class="ak-rate"><b>' + rate + '%</b> ' + L('ak.met', '충족') + ' <span>(' + ok + '/' + denom + ' · ' + L('ak.na', '해당없음') + ' ' + na + ' · ' + L('ak.total', '전체') + ' ' + total + ')</span></div><div class="ak-bar2"><i style="width:' + rate + '%"></i></div>';
+      if (o.perGroup) {   // 그룹(단계)별 충족률 — 분모 = 그룹 항목 수 − 해당없음, 분모 0 이면 '-'
+        h += '<div class="ak-pg" style="margin-top:.6rem;display:grid;gap:.35rem">' + o.groups.map(function (g, gi) {
+          var c = per[gi], d = c.total - c.na, r = d > 0 ? Math.round(c.ok / d * 100) : null;
+          return '<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.15rem .6rem;align-items:center;font-size:.82rem"><span>' + esc(g.title) + '</span><span style="color:var(--muted)"><b style="color:var(--text)">' + (r == null ? '-' : r + '%') + '</b> (' + c.ok + '/' + d + ')</span><div class="ak-bar2" style="grid-column:1 / -1;height:6px"><i style="width:' + (r || 0) + '%"></i></div></div>';
+        }).join('') + '</div>';
+      }
+      sum.innerHTML = h;
     }
     function render() {
       body.innerHTML = '';

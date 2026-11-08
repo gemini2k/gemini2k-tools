@@ -39,6 +39,39 @@
     <button class="btn btn-ghost" id="copy" type="button" style="margin-top:.5rem;" data-i18n="b_autolink_btn_copy">📋 HTML 복사</button>
     <div class="note" data-i18n-html="b_autolink_note">오픈소스 <b>Autolinker</b>(MIT, <a href="https://github.com/gregjacobs/Autolinker.js" target="_blank" rel="noopener">gregjacobs/Autolinker.js</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>텍스트 자동 링크 변환 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>일반 텍스트 안의 웹 주소, 이메일, 전화번호, 해시태그, 멘션을 찾아 <code>&lt;a&gt;</code> 태그로 감싼 HTML을 만들어 줍니다. 찾는 규칙은 오픈소스 Autolinker 라이브러리를 그대로 씁니다. 결과는 위쪽에 실제로 클릭되는 미리보기로, 아래쪽에 HTML 코드로 동시에 보여 줍니다. 표시되는 주소 글자는 줄이지 않고 https://까지 그대로 둡니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>공지 문구를 홈페이지 게시판이나 이메일 템플릿 HTML에 넣기 전에 주소마다 링크를 거는 수고를 덜 때</li>
+      <li>메모장에 정리한 참고 사이트 목록을 클릭 가능한 HTML 목록으로 바꿀 때</li>
+      <li>모바일 페이지에서 전화번호를 눌러 바로 걸 수 있게 <code>tel:</code> 링크를 만들 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>입력칸에 텍스트를 붙여 넣습니다. 입력하는 동안 결과가 바로 바뀝니다.</li>
+      <li>URL, 「이메일」, 「전화번호」, 「해시태그」, 「멘션」 중 링크로 바꿀 항목만 체크합니다.</li>
+      <li>링크를 새 탭으로 열리게 하려면 「새 탭」을 켜 둡니다.</li>
+      <li>미리보기에서 클릭해 확인한 뒤 「📋 HTML 복사」로 코드를 가져갑니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>기본 예문으로 보면 <code>https://gemini2k.co.kr</code>은 같은 주소로, <code>hello@example.com</code>은 <code>mailto:</code> 링크로, <code>02-1234-5678</code>은 하이픈을 뺀 <code>tel:0212345678</code> 링크가 됩니다. 「새 탭」을 켜면 각 링크에 <code>target="_blank" rel="noopener noreferrer"</code>가 붙습니다. 해시태그 <code>#공지</code>는 트위터(X)의 해시태그 검색 주소로 연결되는데, 한글 멘션인 <code>@운영자</code>는 트위터 계정 규칙에 맞지 않아 링크가 되지 않습니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>해시태그와 멘션은 트위터 주소로만 연결됩니다. 인스타그램이나 사내 게시판 태그로 연결해야 한다면 끄고 쓰세요.</li>
+      <li>입력에 HTML 태그가 섞여 있으면 태그는 건드리지 않고 그대로 둡니다. 이미 링크가 걸린 부분도 다시 감싸지 않습니다.</li>
+      <li>주소 끝의 마침표나 감싼 괄호는 링크에서 빠지지만, 주소 뒤에 한글을 붙여 쓰면 「https://a.com에서」처럼 「에서」까지 주소로 잡힙니다. 원문에서 주소 뒤를 한 칸 띄우세요.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>https:// 없이 www로 시작해도 링크가 되나요?</dt>
+      <dd>됩니다. <code>www.naver.com</code>이나 <code>naver.com</code> 같은 형태도 인식하는데, 링크 주소는 <code>http://</code>로 시작하게 만들어집니다. https로 걸어야 하면 원문에 https://를 붙여 두세요.</dd>
+      <dt>복사한 코드를 워드에 붙이면 링크가 되나요?</dt>
+      <dd>복사되는 것은 HTML 코드 텍스트입니다. 웹 편집기의 HTML(소스) 모드나 이메일 템플릿 편집기에 붙여 넣으세요.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/autolinker-4/autolinker.min.js"></script>
 <script src="tool-shell.js"></script>

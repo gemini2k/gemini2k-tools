@@ -69,6 +69,38 @@
     <div class="out" id="out"></div>
     <div class="note" data-i18n="b_sqlformat_note">절 단위(SELECT·FROM·WHERE·GROUP BY·ORDER BY·HAVING·LIMIT·JOIN·UNION 등)로 줄을 나누고 AND/OR는 들여씁니다. 작은따옴표 문자열은 보호되어 변형되지 않습니다. 복잡한 서브쿼리는 가독성 위주의 근사 정렬입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>SQL 포매터 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>한 줄로 이어진 SQL을 절 단위로 줄을 나눠 읽기 쉽게 정리합니다. 먼저 연속된 공백과 줄바꿈을 하나로 합치고 쉼표 뒤에 공백을 한 칸 맞춘 뒤, SELECT·FROM·WHERE·GROUP BY·ORDER BY·HAVING·LIMIT·JOIN·UNION·INSERT INTO·VALUES·UPDATE·SET 같은 절 키워드 앞에서 줄을 바꾸고, AND·OR·ON은 두 칸 들여 쓴 새 줄로 내립니다. 문장 끝 세미콜론은 지웁니다. 전용 SQL 파서가 아니라 키워드 규칙으로 정리하는 방식입니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>ORM 로그나 슬로우 쿼리 로그에 한 줄로 찍힌 쿼리를 읽어야 할 때</li>
+      <li>메신저로 받은 쿼리를 검토하기 전에 조건절 구성을 한눈에 보고 싶을 때</li>
+      <li>보고서나 위키에 붙일 쿼리의 키워드 대소문자를 맞출 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>「SQL 입력」에 쿼리를 붙여 넣습니다. 입력하는 즉시 아래에 정리된 결과가 나옵니다.</li>
+      <li>「키워드」에서 대문자·소문자·유지 중 하나를 고릅니다.</li>
+      <li>결과를 확인하고 「복사」를 누릅니다. 「정리」 버튼은 같은 작업을 한 번 더 실행합니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p><code>select name, email from users where active='Y' and role='admin' order by name</code>을 대문자 모드로 정리하면 <code>SELECT name, email</code> / <code>FROM users</code> / <code>WHERE active='Y'</code> / <code>  AND role='admin'</code> / <code>ORDER BY name</code> 다섯 줄이 됩니다. 작은따옴표 문자열 안의 단어는 키워드로 보지 않아 대소문자가 바뀌지 않습니다. 소문자 모드는 같은 모양에 키워드만 소문자로 바뀝니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>「유지」 모드는 키워드를 쓴 그대로(대·소문자 섞임 포함) 두고 줄만 나눕니다. 팀 표기 규칙에 맞추려면 「대문자」나 「소문자」를 고르세요.</li>
+      <li>서브쿼리 괄호 안의 들여쓰기 깊이는 계산하지 않습니다. 중첩이 깊은 쿼리는 줄만 나뉘고 단계 구분은 직접 해야 합니다.</li>
+      <li>규칙 기반이라 방언 문법이나 큰따옴표·백틱 식별자 안의 단어를 키워드로 오인할 수 있습니다. 정리한 쿼리를 운영 DB에서 실행하기 전에는 원본과 한 번 대조하세요.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>문법 오류도 찾아 주나요?</dt>
+      <dd>아닙니다. 모양만 바꾸며 쿼리가 실행 가능한지는 검사하지 않습니다. 실행 결과를 보려면 SQL 연습장 같은 실행 도구를 쓰세요.</dd>
+      <dt>쿼리가 서버로 전송되나요?</dt>
+      <dd>아닙니다. 정리는 브라우저에서만 이루어집니다.</dd>
+    </dl>
+  </section>
 </div>
 
 <script src="tool-shell.js"></script>
@@ -81,7 +113,8 @@
   function format(sql){
     var kwMode=$('kw').value;
     // 1) 문자열 보호
-    var strs=[]; sql=sql.replace(/'([^']|'')*'/g, function(m){ strs.push(m); return ''+(strs.length-1)+''; });
+    // 자리표시자는 SQL 에 나올 수 없는 제어문자로 감싼다(숫자만 남으면 복원 단계가 SQL 속 숫자까지 바꿔 버림)
+    var strs=[]; sql=sql.replace(/'([^']|'')*'/g, function(m){ strs.push(m); return '\u0001'+(strs.length-1)+'\u0002'; });
     // 2) 공백 정리
     sql=sql.replace(/\s+/g,' ').trim().replace(/\s*,\s*/g,', ').replace(/\s*;\s*$/,'');
     // 3) 키워드 케이스
@@ -89,14 +122,16 @@
     KW.forEach(function(k){ var re=new RegExp('\\b'+k.replace(/ /g,'\\s+')+'\\b','gi');
       sql=sql.replace(re, function(m){ return kwMode==='upper'?k:kwMode==='lower'?k.toLowerCase():m; }); });
     // 4) 줄바꿈
-    var KW2 = kwMode==='lower' ? function(s){return s.toLowerCase();} : function(s){return s;};
-    NL.forEach(function(k){ var tmp=KW2(k); var re=new RegExp('\\s*\\b'+tmp.replace(/ /g,'\\s+')+'\\b','g');
-      sql=sql.replace(re, '\n'+tmp); });
-    INDENT.forEach(function(k){ var tmp=KW2(k); var re=new RegExp('\\s*\\b'+tmp.replace(/ /g,'\\s+')+'\\b','g');
-      sql=sql.replace(re, '\n  '+tmp); });
+    //   대소문자 무시(gi)로 찾고 원래 표기를 그대로 둔다('유지' 모드에서 소문자 키워드도 줄바꿈).
+    //   단독 JOIN 은 LEFT/RIGHT/INNER… JOIN 의 일부일 때 다시 줄을 나누지 않는다.
+    var JOIN_PRE='(?<!\\b(?:LEFT|RIGHT|INNER|OUTER|FULL|CROSS)\\s+)';
+    NL.forEach(function(k){ var re=new RegExp('\\s*'+(k==='JOIN'?JOIN_PRE:'')+'\\b'+k.replace(/ /g,'\\s+')+'\\b','gi');
+      sql=sql.replace(re, function(m){ return '\n'+m.replace(/^\s+/,''); }); });
+    INDENT.forEach(function(k){ var re=new RegExp('\\s*\\b'+k+'\\b','gi');
+      sql=sql.replace(re, function(m){ return '\n  '+m.replace(/^\s+/,''); }); });
     sql=sql.replace(/^\n+/,'').replace(/\n{2,}/g,'\n');
     // 5) 문자열 복원
-    sql=sql.replace(/(\d+)/g, function(_,i){ return strs[+i]; });
+    sql=sql.replace(/\u0001(\d+)\u0002/g, function(_,i){ return strs[+i]; });
     return sql;
   }
   function run(){ try{ $('out').textContent=format($('input').value); }catch(e){ $('out').textContent=$('input').value; } }

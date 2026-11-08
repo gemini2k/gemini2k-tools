@@ -34,12 +34,12 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <p class="sub" data-i18n="b_reqpriority_sub">가치·비용·위험을 평가해 우선순위를 산정합니다.</p>
   <div class="card" style="max-width:none;">
     <div id="app"></div>
-    <div class="note" data-i18n="b_reqpriority_note">우선순위 점수 = 가치 ÷ (비용 보정). MoSCoW로 범위(Scope)를 합의하세요. 데이터는 브라우저에만 저장됩니다.</div>
+    <div class="note" data-i18n="b_reqpriority_note">우선순위 점수 = 가치 ÷ (비용×0.6 + 위험×0.4). MoSCoW로 범위(Scope)를 합의하세요. 데이터는 브라우저에만 저장됩니다.</div>
   </div>
   <section class="toolhelp">
     <h2>요구사항 우선순위 결정 도구 사용 안내</h2>
     <h3>무엇을 하는 도구인가</h3>
-    <p>요구사항은 늘 예산과 일정보다 많습니다. 이 도구는 요구사항마다 가치·비용·위험을 1~5로 매기고 MoSCoW(Must·Should·Could·Won't) 분류를 붙여, 이번 차수에 무엇을 넣고 무엇을 미룰지 합의할 근거 표를 만듭니다. 하단 요약에는 MoSCoW 분류별 건수가 집계됩니다.</p>
+    <p>요구사항은 늘 예산과 일정보다 많습니다. 이 도구는 요구사항마다 가치·비용·위험을 1~5로 매기고 MoSCoW(Must·Should·Could·Won't) 분류를 붙여, 이번 차수에 무엇을 넣고 무엇을 미룰지 합의할 근거 표를 만듭니다. 하단 요약에는 MoSCoW 분류별 건수와 요구사항별 우선순위 점수 순위표가 함께 표시됩니다.</p>
     <h3>언제 쓰나</h3>
     <ul>
       <li>요구사항 분석 단계에서 제안요청서 요구사항과 현업 추가 요청이 섞여 범위가 불어날 때</li>
@@ -56,7 +56,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     </ol>
     <h3>결과 해석</h3>
     <p>요약줄의 "Must 3 · Should 4 · Could 2 · Won't 1" 같은 건수로 범위의 균형을 봅니다. Must가 전체의 절반을 훌쩍 넘으면 사실상 우선순위를 정하지 않은 것과 같습니다.</p>
-    <p>안내문의 우선순위 점수는 가치 ÷ (비용×0.6 + 위험×0.4)로 정의돼 있지만, 현재 화면에는 점수 열이 따로 표시되지 않으므로 필요하면 CSV를 받아 직접 계산합니다. 기본 예시로 계산하면 "핵심 결제 기능"(가치5·비용3·위험2)은 5 ÷ 2.6 ≈ 1.92, "테마 변경"(가치2·비용1·위험1)은 2 ÷ 1.0 = 2.00입니다. 점수만 보면 테마 변경이 앞서지만 결제는 Must입니다. 점수는 같은 MoSCoW 등급 안에서 순서를 정할 때 쓰고, 등급 자체는 업무 판단으로 정해야 한다는 뜻입니다.</p>
+    <p>우선순위 점수는 가치 ÷ (비용×0.6 + 위험×0.4)로 계산되며, 요약 아래 순위표에 MoSCoW 등급 순(Must → Should → Could → Won't)으로 묶고 같은 등급 안에서는 점수가 높은 순으로 표시됩니다. 기본 예시로 계산하면 "핵심 결제 기능"(가치5·비용3·위험2)은 5 ÷ 2.6 ≈ 1.92, "테마 변경"(가치2·비용1·위험1)은 2 ÷ 1.0 = 2.00입니다. 점수만 보면 테마 변경이 앞서지만 결제는 Must라서 순위표 맨 위에 옵니다. 점수는 같은 MoSCoW 등급 안에서 순서를 정할 때 쓰고, 등급 자체는 업무 판단으로 정해야 한다는 뜻입니다. 점수는 화면 표시용이라 CSV에는 들어가지 않습니다.</p>
     <h3>주의할 점</h3>
     <ul>
       <li>1~5 점수는 주관적입니다. 현업·개발·PM이 따로 매긴 뒤 차이가 큰 항목만 토론하면 회의 시간이 줄어듭니다.</li>
@@ -74,6 +74,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
 </div>
 <script src="audit-kit.js"></script><script src="tool-shell.js"></script>
 <script>
+function _mk(){document.getElementById('app').innerHTML='';
 AuditKit.register({mount:'#app',key:'reqpriority',cols:[
     {k:'name',label:t('b_reqpriority_col_name'),w:'160px',type:'area'},
     {k:'value',label:t('b_reqpriority_col_value'),type:'select',opts:['5','4','3','2','1']},
@@ -81,21 +82,19 @@ AuditKit.register({mount:'#app',key:'reqpriority',cols:[
     {k:'risk',label:t('b_reqpriority_col_risk'),type:'select',opts:['1','2','3','4','5']},
     {k:'moscow',label:'MoSCoW',type:'select',opts:['Must','Should','Could','Won\'t']}],
     seed:[{name:t('b_reqpriority_seed_payment'),value:'5',cost:'3',risk:'2',moscow:'Must'},{name:t('b_reqpriority_seed_theme'),value:'2',cost:'1',risk:'1',moscow:'Could'}],
-    summary:function(rows){function sc(r){return ((+r.value||0)/((+r.cost||1)*0.6+(+r.risk||1)*0.4)).toFixed(2);}
-      var sorted=rows.map(function(r){return r.name+' ('+sc(r)+')';});
-      var m={};rows.forEach(function(r){m[r.moscow]=(m[r.moscow]||0)+1;});
-      return '<div class="ak-rate"><b>MoSCoW</b> <span>Must '+(m.Must||0)+' \xb7 Should '+(m.Should||0)+' \xb7 Could '+(m.Could||0)+' \xb7 Won\'t '+(m['Won\'t']||0)+'</span></div>';}});
-window.onI18n=function(){AuditKit.register({mount:'#app',key:'reqpriority',cols:[
-    {k:'name',label:t('b_reqpriority_col_name'),w:'160px',type:'area'},
-    {k:'value',label:t('b_reqpriority_col_value'),type:'select',opts:['5','4','3','2','1']},
-    {k:'cost',label:t('b_reqpriority_col_cost'),type:'select',opts:['1','2','3','4','5']},
-    {k:'risk',label:t('b_reqpriority_col_risk'),type:'select',opts:['1','2','3','4','5']},
-    {k:'moscow',label:'MoSCoW',type:'select',opts:['Must','Should','Could','Won\'t']}],
-    seed:[{name:t('b_reqpriority_seed_payment'),value:'5',cost:'3',risk:'2',moscow:'Must'},{name:t('b_reqpriority_seed_theme'),value:'2',cost:'1',risk:'1',moscow:'Could'}],
-    summary:function(rows){function sc(r){return ((+r.value||0)/((+r.cost||1)*0.6+(+r.risk||1)*0.4)).toFixed(2);}
-      var sorted=rows.map(function(r){return r.name+' ('+sc(r)+')';});
-      var m={};rows.forEach(function(r){m[r.moscow]=(m[r.moscow]||0)+1;});
-      return '<div class="ak-rate"><b>MoSCoW</b> <span>Must '+(m.Must||0)+' \xb7 Should '+(m.Should||0)+' \xb7 Could '+(m.Could||0)+' \xb7 Won\'t '+(m['Won\'t']||0)+'</span></div>';}});};
+    summary:rpSummary});}
+// 우선순위 점수 = 가치 ÷ (비용×0.6 + 위험×0.4). 표시 순서 = MoSCoW 등급 → 점수 높은 순 → 입력 순.
+function rpScore(r){return (+r.value||0)/((+r.cost||1)*0.6+(+r.risk||1)*0.4);}
+function rpSummary(rows){var E=AuditKit.esc,ORD={'Must':0,'Should':1,'Could':2,'Won\'t':3};
+  function o(r){return ORD[r.moscow]!=null?ORD[r.moscow]:4;}
+  var m={};rows.forEach(function(r){m[r.moscow]=(m[r.moscow]||0)+1;});
+  var list=rows.map(function(r,i){return {r:r,s:rpScore(r),i:i};}).sort(function(a,b){return o(a.r)-o(b.r)||b.s-a.s||a.i-b.i;});
+  var h='<div class="ak-rate"><b>MoSCoW</b> <span>Must '+(m.Must||0)+' \xb7 Should '+(m.Should||0)+' \xb7 Could '+(m.Could||0)+' \xb7 Won\'t '+(m['Won\'t']||0)+'</span></div>';
+  if(!list.length)return h;
+  return h+'<div class="ak-tw" style="margin-top:.5rem"><table class="ak-tbl" style="min-width:0"><thead><tr><th>#</th><th>'+E(t('b_reqpriority_col_name'))+'</th><th>MoSCoW</th><th>'+E(t('b_reqpriority_score'))+'</th></tr></thead><tbody>'+
+    list.map(function(x,k){return '<tr><td>'+(k+1)+'</td><td>'+(E(x.r.name)||'-')+'</td><td>'+E(x.r.moscow||'-')+'</td><td><b>'+x.s.toFixed(2)+'</b></td></tr>';}).join('')+
+    '</tbody></table></div><div style="font-size:.78rem;color:var(--muted);margin-top:.35rem">'+E(t('b_reqpriority_rank_note'))+'</div>';}
+_mk();window.onI18n=_mk;
 </script>
 </body>
 </html>

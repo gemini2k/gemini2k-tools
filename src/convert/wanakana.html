@@ -32,6 +32,39 @@
     <div class="actions"><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_wanakana_btn_copy">📋 복사</button></div>
     <div class="note" data-i18n-html="b_wanakana_note">오픈소스 <b>WanaKana</b>(MIT, <a href="https://github.com/WaniKani/WanaKana" target="_blank" rel="noopener">WaniKani/WanaKana</a>)를 자체 호스팅합니다. 로마자→가나: 발음대로 입력(예: shi, tsu, kya). 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>일본어 가나 변환기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>오픈소스 WanaKana로 로마자를 히라가나·가타카나로 바꾸거나, 가나를 로마자(헵번식 기반)로 바꿉니다. 입력하는 즉시 아래에 결과가 나오며 「복사」로 가져갈 수 있습니다. 한자는 읽는 법을 알 수 없으므로 어느 방향에서도 그대로 둡니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>일본어 자판이 없는 PC에서 짧은 일본어 문구를 가나로 입력해야 할 때</li>
+      <li>일본 거래처 담당자 이름·지명의 가나 표기를 로마자로 바꿔 영문 서류에 적을 때</li>
+      <li>외래어를 가타카나로 어떻게 쓰는지 확인할 때</li>
+      <li>일본어 학습 중 가나 읽기를 로마자로 맞춰 볼 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>「→ 히라가나」, 「→ 가타카나」, 「→ 로마자」 중 원하는 변환 버튼을 먼저 고릅니다. 버튼을 누르면 입력칸이 예시 문장으로 바뀌니, 모드를 고른 다음 내용을 입력하세요.</li>
+      <li>입력칸에 로마자 또는 가나를 입력합니다.</li>
+      <li>결과를 확인하고 「복사」를 누릅니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>WanaKana는 소리 나는 대로 적은 로마자를 글자 그대로 옮깁니다. 그래서 <code>konnichiwa</code>는 <code>こんにちわ</code>가 되며, 인사말의 조사 「は」를 얻으려면 <code>kon'nichiha</code>처럼 ha로 적어야 <code>こんにちは</code>가 나옵니다. 가타카나 모드에서 하이픈은 장음 기호가 되어 <code>ko-hi-</code>는 <code>コーヒー</code>가 되고, 반대로 <code>トーキョー</code>를 로마자로 바꾸면 <code>tookyoo</code>가 나옵니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>ん 뒤에 모음이나 y가 오면 <code>n'</code>처럼 아포스트로피를 넣거나 <code>nn</code>으로 적어야 원하는 글자가 나옵니다.</li>
+      <li>로마자 변환 결과의 장음은 tookyoo처럼 모음을 겹쳐 씁니다. 여권·공문서용 헵번식(Tokyo, Tōkyō)과는 다르니 공식 표기는 따로 확인하세요.</li>
+      <li>한자가 섞인 문장을 로마자로 바꾸면 한자 부분은 그대로 남습니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>작은 っ(촉음)는 어떻게 입력하나요?</dt>
+      <dd>다음 자음을 두 번 씁니다. <code>kitte</code>는 <code>きって</code>가 됩니다.</dd>
+      <dt>한국어 발음으로 바꿔 주나요?</dt>
+      <dd>아닙니다. 로마자와 가나 사이의 변환만 합니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/wanakana-5/wanakana.min.js"></script>
 <script src="tool-shell.js"></script>

@@ -68,6 +68,34 @@
     <textarea id="out" readonly></textarea>
     <div class="note" data-i18n-html="b_htmlentity_note">기본 인코딩은 <code>&amp; &lt; &gt; " '</code>를 엔티티로 바꿉니다. 옵션을 켜면 한글 등 비ASCII 문자도 숫자 엔티티(&amp;#xxxx;)로 변환합니다. 디코딩은 명명·숫자 엔티티를 모두 원래 문자로 되돌립니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>HTML 엔티티 인코딩/디코딩 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>HTML에서 특별한 뜻을 갖는 다섯 문자 <code>&amp;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>"</code>, <code>'</code>를 각각 <code>&amp;amp;</code>, <code>&amp;lt;</code>, <code>&amp;gt;</code>, <code>&amp;quot;</code>, <code>&amp;#39;</code>로 바꾸고, 반대로 엔티티를 원래 문자로 되돌립니다. 디코딩은 브라우저의 HTML 해석기를 쓰기 때문에 <code>&amp;nbsp;</code>, <code>&amp;copy;</code> 같은 이름 엔티티와 <code>&amp;#50504;</code>, <code>&amp;#xC548;</code> 같은 숫자 엔티티를 모두 처리합니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>블로그나 문서에 HTML 코드 예제를 화면에 그대로 보이게 넣어야 할 때</li>
+      <li>DB나 API 응답에 <code>&amp;lt;</code>, <code>&amp;quot;</code>처럼 이중으로 인코딩된 문자열이 섞여 원문을 확인하고 싶을 때</li>
+      <li>템플릿 엔진 없이 HTML 속성값에 사용자 문자열을 넣는 코드가 어떤 결과를 내야 하는지 기대값을 만들 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>'입력'에 텍스트를 넣습니다.</li>
+      <li>[인코딩 ↓] 또는 [디코딩 ↓]를 누르면 '결과'에 나옵니다. 한글까지 숫자 엔티티로 바꾸려면 '모든 비ASCII 문자도 인코딩' 옵션을 켭니다.</li>
+      <li>[⇅ 입력↔출력]으로 결과를 입력으로 옮겨 한 번 더 변환할 수 있고, [📋 복사]로 가져갑니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>기본 예시 <code>&lt;div class="box"&gt;안녕 &amp; 환영&lt;/div&gt;</code>를 인코딩하면 <code>&amp;lt;div class=&amp;quot;box&amp;quot;&amp;gt;안녕 &amp;amp; 환영&amp;lt;/div&amp;gt;</code>가 됩니다. 옵션을 켜면 한글도 바뀌어 <code>안녕</code>이 <code>&amp;#50504;&amp;#45397;</code>가 됩니다. 디코딩 결과에 아직 <code>&amp;amp;lt;</code> 같은 형태가 남아 있다면 두 번 인코딩된 것이니 디코딩을 한 번 더 하면 됩니다.</p>
+    <h3>주의할 점</h3>
+    <p>여기서 하는 인코딩은 HTML 본문과 따옴표로 감싼 속성값에 넣을 때 기준입니다. 자바스크립트 문자열, URL, CSS 안에 넣는 값은 각각 다른 이스케이프가 필요하므로 이 결과만으로 XSS가 막히지 않습니다. 또 '모든 비ASCII 문자도 인코딩' 옵션은 이모지처럼 두 개의 UTF-16 코드 단위로 된 문자를 반쪽씩 따로 바꾸어 <code>&amp;#55357;&amp;#56832;</code> 같은 잘못된 엔티티를 만드므로, 이모지가 섞인 글에는 이 옵션을 쓰지 마세요.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>디코딩하면 스크립트가 실행될 위험은 없나요?</dt>
+      <dd>디코딩은 화면에 붙이지 않는 textarea 요소 안에서 이루어져 태그가 실행되지 않고 문자로만 돌아옵니다.</dd>
+      <dt>요즘도 한글을 엔티티로 바꿔야 하나요?</dt>
+      <dd>페이지가 UTF-8이면 필요 없습니다. 문자 인코딩을 통제할 수 없는 오래된 시스템이나 메일 본문에 넣을 때 정도에만 씁니다.</dd>
+    </dl>
+  </section>
 </div>
 
 <script src="tool-shell.js"></script>

@@ -36,12 +36,12 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <textarea class="in" id="in" spellcheck="false">HTTP/2 200
 content-type: text/html
 x-content-type-options: nosniff</textarea><div class="res" id="res" style="margin-top:.6rem"></div><h3 style="font-size:.9rem;margin:1rem 0 .3rem" data-i18n="b_secheaders_rec_heading">권장 헤더</h3><div class="out" id="rec"></div>
-    <div class="note" data-i18n="b_secheaders_note">주요 보안 응답 헤더의 존재 여부를 점검합니다. 권장값은 환경에 맞게 조정하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_secheaders_note">주요 보안 응답 헤더의 존재 여부와 기본 값(HSTS max-age 180일 이상, nosniff, DENY/SAMEORIGIN 또는 frame-ancestors, CSP unsafe-inline/unsafe-eval)을 점검합니다. 권장값은 환경에 맞게 조정하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
   <section class="toolhelp">
     <h2>보안 HTTP 헤더 점검 도구 사용 안내</h2>
     <h3>무엇을 하는 도구인가</h3>
-    <p>웹 서버 응답에 브라우저 보호 기능을 켜는 보안 헤더가 붙어 있는지 확인하는 도구입니다. 응답 헤더 텍스트를 붙여넣으면 다음 6개 헤더의 존재 여부를 ✅·❌로 표시하고, 바로 복사해 쓸 수 있는 권장 설정 예시를 함께 보여 줍니다.</p>
+    <p>웹 서버 응답에 브라우저 보호 기능을 켜는 보안 헤더가 붙어 있는지 확인하는 도구입니다. 응답 헤더 텍스트를 붙여넣으면 다음 6개 헤더가 있는지와 값이 기본 기준을 넘는지를 ✅(적정)·⚠️(보완 필요)·❌(미적용)로 표시하고, 바로 복사해 쓸 수 있는 권장 설정 예시를 함께 보여 줍니다.</p>
     <ul>
       <li>Strict-Transport-Security(HSTS): 이후 접속을 HTTPS로 강제</li>
       <li>Content-Security-Policy(CSP): 허용된 출처의 스크립트만 실행해 XSS 피해를 줄임</li>
@@ -63,12 +63,20 @@ x-content-type-options: nosniff</textarea><div class="res" id="res" style="margi
       <li>"권장 헤더" 상자의 예시 값을 참고해 서버 설정(nginx add_header, Apache Header set 등)에 반영합니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>상단의 "n/6 적용"은 6개 헤더 중 응답에 들어 있는 개수입니다. 기본 예시는 x-content-type-options만 있어 1/6로 나오고, 나머지 5개가 ❌입니다. HTTPS로 운영하는 서비스라면 최소한 HSTS, X-Content-Type-Options, X-Frame-Options(또는 CSP frame-ancestors)부터 갖추는 것이 무난한 출발점입니다.</p>
+    <p>상단의 "n/6 적정"은 6개 헤더 중 응답에 들어 있고 값도 아래 기준을 통과한 개수이며, 괄호 안에 보완 필요(⚠️)와 미적용(❌) 개수가 따로 나옵니다. 기본 예시는 x-content-type-options: nosniff만 있어 1/6 적정이고 나머지 5개가 ❌입니다. 값 점검 기준은 다음과 같습니다.</p>
+    <ul>
+      <li>HSTS: max-age가 15552000초(180일) 이상이어야 ✅, 없거나 그보다 짧으면 ⚠️입니다. includeSubDomains 포함 여부는 판정에 넣지 않고 참고로만 적어 줍니다.</li>
+      <li>CSP: 'unsafe-inline'이나 'unsafe-eval'이 들어 있으면 XSS 방어 효과가 크게 줄어 ⚠️로 표시합니다.</li>
+      <li>클릭재킹 방지: X-Frame-Options가 DENY 또는 SAMEORIGIN이면 ✅, 다른 값(폐기된 ALLOW-FROM 등)이면 ⚠️입니다. X-Frame-Options가 없어도 CSP에 frame-ancestors가 있으면(값이 * 하나가 아닐 때) 보호된 것으로 보고 ✅로 표시합니다.</li>
+      <li>X-Content-Type-Options: 값이 정확히 nosniff가 아니면 ⚠️입니다.</li>
+      <li>Referrer-Policy: unsafe-url은 전체 주소를 외부로 보내므로 ⚠️, 그 밖의 값은 ✅입니다. Permissions-Policy는 있는지만 봅니다.</li>
+    </ul>
+    <p>HTTPS로 운영하는 서비스라면 최소한 HSTS, X-Content-Type-Options, X-Frame-Options(또는 CSP frame-ancestors)부터 갖추는 것이 무난한 출발점입니다.</p>
     <p>권장값 예: HSTS는 max-age=31536000; includeSubDomains(1년), X-Frame-Options는 DENY, Referrer-Policy는 strict-origin-when-cross-origin입니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>헤더 이름이 있는지만 봅니다. 값이 적절한지(예: HSTS max-age=0, CSP에 'unsafe-inline' 포함)는 판단하지 않으니 값은 직접 읽어 보세요.</li>
-      <li>CSP의 frame-ancestors로 클릭재킹을 막고 X-Frame-Options를 쓰지 않는 사이트도 이 도구에서는 ❌로 나옵니다.</li>
+      <li>값 점검은 위에 적은 단순 기준뿐입니다. ✅여도 CSP의 script-src에 너무 넓은 출처(https: 전체, 와일드카드 도메인)가 들어 있거나 Permissions-Policy가 필요한 기능을 다 열어 두는 경우는 걸러내지 못하니 값은 직접 읽어 보세요.</li>
+      <li>같은 헤더가 여러 줄이면 하나로 이어 붙여 판정합니다. 응답 하나의 헤더만 붙여넣어야 결과가 정확합니다(리다이렉트 응답까지 함께 붙이면 섞입니다).</li>
       <li>권장 CSP default-src 'self'는 출발점일 뿐입니다. 외부 CDN·분석 스크립트를 쓰는 사이트에 그대로 넣으면 화면이 깨질 수 있으니 시험 환경에서 먼저 확인하세요.</li>
       <li>HSTS는 한번 적용되면 브라우저가 기간 동안 HTTP 접속을 거부하므로, 모든 하위 도메인이 HTTPS를 지원하는지 확인한 뒤 includeSubDomains를 넣으세요.</li>
     </ul>
@@ -92,11 +100,31 @@ var $=function(i){return document.getElementById(i);};
     ['Referrer-Policy',t('b_secheaders_chk_rp'),'strict-origin-when-cross-origin'],
     ['Permissions-Policy',t('b_secheaders_chk_pp'),'geolocation=(), camera=()']
   ];
-  function run(){var txt=$('in').value.toLowerCase();
-    var rows=CHK.map(function(c){var ok=txt.indexOf(c[0].toLowerCase()+':')>=0||txt.indexOf(c[0].toLowerCase()+' :')>=0;
-      return '<tr><td>'+(ok?'✅':'❌')+' '+c[0]+'</td><td>'+c[1]+'</td></tr>';}).join('');
-    var n=CHK.filter(function(c){return txt.indexOf(c[0].toLowerCase())>=0;}).length;
-    $('res').innerHTML='<div class="ak-rate"><b>'+n+'/'+CHK.length+'</b> '+t('b_secheaders_applied')+'</div><table>'+rows+'</table>';
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  // "이름: 값" 줄 파싱 → {소문자이름: 값}. 같은 헤더가 여러 줄이면 ', ' 로 이어 붙임(상태줄 등 ':' 없는 줄은 무시)
+  function parseHeaders(text){var H={};text.split(/\r?\n/).forEach(function(l){var i=l.indexOf(':');if(i<=0)return;var k=l.slice(0,i).trim().toLowerCase(),v=l.slice(i+1).trim();if(!/^[a-z0-9-]+$/.test(k))return;H[k]=(k in H)?H[k]+', '+v:v;});return H;}
+  var HSTS_MIN=15552000;   // 180일
+  // 값 점검: {s:'ok'|'weak'|'miss', n:'설명'} — 판정이 모호한 항목은 존재 여부만 본다(Permissions-Policy 등)
+  function judge(name,H){var v=H[name.toLowerCase()],lv=(v||'').toLowerCase(),csp=(H['content-security-policy']||'').toLowerCase();
+    if(name==='X-Frame-Options'){
+      if(v!=null){return /^(deny|sameorigin)$/.test(lv.trim())?{s:'ok',n:''}:{s:'weak',n:t('b_secheaders_n_xfo_bad')};}
+      var fa=/(?:^|;)\s*frame-ancestors\s+([^;,]*)/.exec(csp);
+      if(fa&&!/(^|\s)\*(\s|$)/.test(fa[1]))return {s:'ok',n:t('b_secheaders_n_xfo_csp')};
+      return {s:'miss',n:''};}
+    if(v==null)return {s:'miss',n:''};
+    if(name==='Strict-Transport-Security'){var m=/max-age\s*=\s*"?(\d+)/.exec(lv),sub=/includesubdomains/.test(lv)?t('b_secheaders_n_hsts_sub'):t('b_secheaders_n_hsts_nosub');
+      if(!m)return {s:'weak',n:t('b_secheaders_n_hsts_nomax')+' · '+sub};
+      if(+m[1]<HSTS_MIN)return {s:'weak',n:'max-age='+m[1]+' — '+t('b_secheaders_n_hsts_short')+' · '+sub};
+      return {s:'ok',n:'max-age='+m[1]+' · '+sub};}
+    if(name==='Content-Security-Policy'){var bad=["'unsafe-inline'","'unsafe-eval'"].filter(function(x){return lv.indexOf(x)>=0;});
+      return bad.length?{s:'weak',n:t('b_secheaders_n_csp_unsafe')+' '+bad.join(', ')}:{s:'ok',n:''};}
+    if(name==='X-Content-Type-Options')return lv.trim()==='nosniff'?{s:'ok',n:''}:{s:'weak',n:t('b_secheaders_n_xcto_bad')};
+    if(name==='Referrer-Policy')return /(^|[\s,])unsafe-url\s*$/.test(lv)?{s:'weak',n:t('b_secheaders_n_rp_unsafe')}:{s:'ok',n:''};
+    return {s:'ok',n:''};}
+  function run(){var H=parseHeaders($('in').value),cnt={ok:0,weak:0,miss:0},IC={ok:'✅',weak:'⚠️',miss:'❌'};
+    var rows=CHK.map(function(c){var j=judge(c[0],H);cnt[j.s]++;
+      return '<tr><td>'+IC[j.s]+' '+c[0]+'</td><td>'+c[1]+(j.n?'<div style="font-size:.8rem;color:'+(j.s==='weak'?'#d97706':'var(--muted)')+'">'+esc(j.n)+'</div>':'')+'</td></tr>';}).join('');
+    $('res').innerHTML='<div class="ak-rate"><b>'+cnt.ok+'/'+CHK.length+'</b> '+t('b_secheaders_good')+' <span>(⚠️ '+t('b_secheaders_weak')+' '+cnt.weak+' · ❌ '+t('b_secheaders_missing')+' '+cnt.miss+')</span></div><table>'+rows+'</table>';
     $('rec').textContent=CHK.map(function(c){return c[0]+': '+c[2];}).join('\n');}
   $('in').addEventListener('input',run);run();
   window.onI18n=function(){

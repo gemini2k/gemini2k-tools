@@ -44,6 +44,40 @@ END:VCALENDAR</textarea>
     <table><thead><tr><th data-i18n="b_icalview_col_title">제목</th><th data-i18n="b_icalview_col_start">시작</th><th data-i18n="b_icalview_col_end">종료</th><th data-i18n="b_icalview_col_location">장소</th><th data-i18n="b_icalview_col_rrule">반복</th></tr></thead><tbody id="tb"></tbody></table>
     <div class="note" data-i18n-html="b_icalview_note">오픈소스 <b>ical.js</b>(MPL-2.0, Mozilla, <a href="https://github.com/kewisch/ical.js" target="_blank" rel="noopener">kewisch/ical.js</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어지며 파일은 업로드되지 않습니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>ICS 캘린더 뷰어 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>ICS는 일정 데이터를 주고받는 표준 형식 iCalendar(RFC 5545)를 담은 텍스트 파일입니다. 구글 캘린더 내보내기, 아웃룩 회의 초대 첨부, 학회·교육 일정 배포 파일이 대개 이 형식입니다. 이 뷰어는 Mozilla의 ical.js로 파일을 해석해 그 안의 일정(VEVENT)마다 제목, 시작, 종료, 장소, 반복 규칙을 한 줄씩 표로 보여 줍니다. 캘린더 앱에 가져오기 전에 무엇이 들어 있는지 확인하는 용도입니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>메일로 받은 .ics 첨부가 어떤 일정인지 내 캘린더에 넣기 전에 확인할 때</li>
+      <li>교육 기관이 배포한 학사 일정 파일에 몇 건이 들어 있는지 훑어볼 때</li>
+      <li>캘린더 내보내기 파일이 제대로 만들어졌는지, 장소·반복 정보가 빠지지 않았는지 점검할 때</li>
+      <li>일정 연동 기능을 개발하면서 직접 만든 ICS 내용을 검증할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>위쪽 상자를 클릭하거나 .ics 파일을 끌어다 놓습니다. 파일 내용이 아래 입력 칸에 채워집니다.</li>
+      <li>파일 대신 ICS 텍스트를 입력 칸에 직접 붙여 넣어도 됩니다. 고치는 즉시 표가 갱신됩니다.</li>
+      <li>표에서 일정별 제목·시작·종료·장소·반복을 확인합니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>기본 예시의 「팀 회의」는 반복 칸에 <code>FREQ=WEEKLY;COUNT=4</code>가 표시되는데, 매주 같은 요일·시각에 총 4회 열린다는 뜻입니다. 이 뷰어는 반복 규칙을 펼쳐 날짜별로 나열하지 않고 첫 회차만 한 줄로 보여 줍니다. 「점심 약속」처럼 DTEND가 없는 일정은 종료 칸이 비어 있거나 시작과 같게 나올 수 있습니다. 끝에 Z가 붙은 UTC 시각(예: <code>20260701T000000Z</code>)은 지금 브라우저의 시간대로 바꿔 표시하므로 한국에서는 9시간을 더한 09:00으로 보입니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>종일 일정은 날짜만 있어 시작이 「00:00」으로 표시되고, 표준상 종료일은 마지막 날의 다음 날로 적힙니다.</li>
+      <li>시간대(TZID)가 지정된 시각은 파일 안 시간대 정보에 따라 실제 캘린더 앱과 다르게 보일 수 있으니 중요한 일정은 앱에서 다시 확인하세요.</li>
+      <li>할 일(VTODO), 참석자, 알림 같은 항목은 표에 나오지 않습니다.</li>
+      <li>파일 형식이 깨져 있으면 「⚠️ 분석 실패」와 함께 원인 문구가 나오고, 일정이 하나도 없으면 「일정(VEVENT)이 없습니다.」가 표시됩니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>보고 있는 일정을 내 캘린더에 추가할 수 있나요?</dt>
+      <dd>이 도구는 보기 전용입니다. 추가하려면 원래 .ics 파일을 캘린더 앱의 가져오기 기능으로 여세요.</dd>
+      <dt>파일이 서버로 전송되나요?</dt>
+      <dd>아닙니다. 파일 읽기와 해석은 모두 브라우저 안에서 이루어집니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/icaljs-1/ical.min.js"></script>
 <script src="tool-shell.js"></script>
@@ -56,6 +90,7 @@ END:VCALENDAR</textarea>
   drop.addEventListener('drop',function(e){e.preventDefault();drop.classList.remove('drag');if(e.dataTransfer.files[0])read(e.dataTransfer.files[0]);});
   file.addEventListener('change',function(){if(file.files[0])read(file.files[0]);});
   function read(f){ var r=new FileReader(); r.onload=function(){ $('in').value=r.result; run(); }; r.readAsText(f); }
+  function escH(s){ return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function fmt(tmp_t){ if(!tmp_t)return '—'; try{ var d=tmp_t.toJSDate(); function p(n){return(n<10?'0':'')+n;} return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }catch(ex){return String(tmp_t);} }
   function run(){ $('err').textContent=''; try{
       var jcal=ICAL.parse($('in').value); var comp=new ICAL.Component(jcal);
@@ -63,7 +98,8 @@ END:VCALENDAR</textarea>
       if(!evts.length){ $('tb').innerHTML='<tr><td colspan="5">'+t('b_icalview_no_events')+'</td></tr>'; return; }
       $('tb').innerHTML=evts.map(function(ve){ var ev=new ICAL.Event(ve);
         var rrule=ve.getFirstPropertyValue('rrule'); var rr=rrule?(rrule.toString?rrule.toString():String(rrule)):'—';
-        return '<tr><td>'+(ev.summary||'—')+'</td><td>'+fmt(ev.startDate)+'</td><td>'+fmt(ev.endDate)+'</td><td>'+(ev.location||'—')+'</td><td>'+rr+'</td></tr>'; }).join('');
+        // 외부 .ics 값은 신뢰할 수 없으므로 HTML 이스케이프 후 삽입(스크립트 주입 방지)
+        return '<tr><td>'+escH(ev.summary||'—')+'</td><td>'+escH(fmt(ev.startDate))+'</td><td>'+escH(fmt(ev.endDate))+'</td><td>'+escH(ev.location||'—')+'</td><td>'+escH(rr)+'</td></tr>'; }).join('');
     }catch(ex){ $('err').textContent=t('b_icalview_parse_error')+ex.message; $('tb').innerHTML=''; } }
   $('in').addEventListener('input',run);
   window.onI18n=run;

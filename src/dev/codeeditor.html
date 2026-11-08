@@ -36,6 +36,41 @@ for (let i = 1; i <= 5; i++) {
     <div class="out" id="out" data-i18n="b_codeeditor_out_placeholder">실행 결과가 여기에 표시됩니다.</div>
     <div class="note" data-i18n-html="b_codeeditor_note">오픈소스 <b>Ace Editor</b>(BSD, <a href="https://github.com/ajaxorg/ace" target="_blank" rel="noopener">ajaxorg/ace</a>)를 자체 호스팅합니다. JS 실행은 이 페이지 안에서 이루어지며, 코드는 서버로 전송되지 않습니다(신뢰할 수 있는 본인 코드만 실행하세요).</div>
   </div>
+  <section class="toolhelp">
+    <h2>온라인 코드 에디터 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>오픈소스 Ace Editor로 만든 브라우저 코드 편집기입니다. JavaScript·HTML·CSS·JSON·Python·SQL 문법 강조, 라이트·다크 테마를 지원하고, 작성한 코드를 파일로 저장할 수 있습니다. 언어가 JavaScript일 때는 「실행(JS)」으로 코드를 이 페이지 안에서 실행하고 <code>console.log</code> 출력을 아래 결과 칸에 보여 줍니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>IDE가 없는 PC에서 짧은 자바스크립트 로직을 바로 시험해 볼 때</li>
+      <li>정규식·날짜 계산·배열 처리 결과를 콘솔로 빠르게 확인할 때</li>
+      <li>SQL이나 Python 코드를 문법 강조된 화면으로 읽고 고친 뒤 파일로 받을 때</li>
+      <li>코딩 교육에서 설치 없이 예제를 함께 실행해 볼 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>첫 번째 목록에서 언어를, 두 번째 목록에서 「라이트」 또는 「다크」 테마를 고릅니다.</li>
+      <li>편집기에 코드를 작성합니다.</li>
+      <li>JavaScript라면 「실행(JS)」을 눌러 결과를 봅니다. 다른 언어를 고르면 실행 버튼이 사라집니다.</li>
+      <li>「저장」을 누르면 언어에 맞는 확장자(<code>code.js</code>, <code>code.py</code> 등)로 내려받습니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>처음 들어 있는 예제를 실행하면 <code>줄 1 : 1</code>부터 <code>줄 5 : 25</code>까지 다섯 줄이 출력됩니다. 객체는 JSON 문자열로 바꿔 보여 주고, 코드 맨 바깥에서 <code>return</code>한 값이 있으면 <code>→</code> 표시와 함께 마지막 줄에 나옵니다. 오류가 나면 ⚠️ 표시와 오류 메시지가 출력됩니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>작성한 코드는 자동 저장되지 않습니다. 새로고침하거나 탭을 닫으면 사라지니 중요한 코드는 「저장」으로 내려받으세요.</li>
+      <li>결과 칸에는 <code>console.log</code>와 <code>console.error</code>만, 그것도 실행 도중 동기적으로 찍힌 것만 나옵니다. <code>setTimeout</code>·<code>Promise</code> 이후의 출력이나 <code>console.warn</code>은 브라우저 개발자 도구 콘솔에 찍힙니다.</li>
+      <li>코드는 이 페이지와 같은 환경에서 실행되므로 무한 루프를 돌리면 탭이 멈춥니다. 출처를 모르는 코드는 실행하지 마세요.</li>
+      <li>Python·SQL은 문법 강조만 하며 실행하지 않습니다. 편집기 안의 실시간 문법 오류 표시도 꺼져 있습니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>await를 쓸 수 있나요?</dt>
+      <dd>코드가 일반 함수로 감싸져 실행되므로 맨 바깥에서 <code>await</code>를 쓰면 문법 오류가 납니다. <code>(async () =&gt; { … })()</code>로 감싸고, 결과는 개발자 도구 콘솔에서 확인하세요.</dd>
+      <dt>코드가 서버로 전송되나요?</dt>
+      <dd>아닙니다. 편집과 실행 모두 브라우저 안에서만 이루어집니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/ace-1.32/ace.js"></script>
 <script src="tool-shell.js"></script>

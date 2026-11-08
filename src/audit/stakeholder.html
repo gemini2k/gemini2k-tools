@@ -84,7 +84,7 @@ AuditKit.register({mount:'#app',key:'stakeholder',cols:[
     {k:'interest',label:t('b_stakeholder_col_interest'),type:'select',opts:[t('b_stakeholder_opt_high'),t('b_stakeholder_opt_mid'),t('b_stakeholder_opt_low')]},{k:'power',label:t('b_stakeholder_col_power'),type:'select',opts:[t('b_stakeholder_opt_high'),t('b_stakeholder_opt_mid'),t('b_stakeholder_opt_low')]},
     {k:'expect',label:t('b_stakeholder_col_expect'),w:'150px',type:'area'},{k:'strategy',label:t('b_stakeholder_col_strategy'),w:'150px',type:'area'},{k:'owner',label:t('b_stakeholder_col_owner'),w:'70px'}],
     seed:[{name:t('b_stakeholder_seed_name'),org:t('b_stakeholder_seed_org'),interest:t('b_stakeholder_opt_high'),power:t('b_stakeholder_opt_high'),expect:t('b_stakeholder_seed_expect'),strategy:t('b_stakeholder_seed_strategy'),owner:'PM'}]});
-window.onI18n=function(){AuditKit.register({mount:'#app',key:'stakeholder',cols:[
+window.onI18n=function(){document.getElementById('app').innerHTML='';AuditKit.register({mount:'#app',key:'stakeholder',cols:[
     {k:'name',label:t('b_stakeholder_col_name'),w:'100px'},{k:'org',label:t('b_stakeholder_col_org'),w:'110px'},
     {k:'interest',label:t('b_stakeholder_col_interest'),type:'select',opts:[t('b_stakeholder_opt_high'),t('b_stakeholder_opt_mid'),t('b_stakeholder_opt_low')]},{k:'power',label:t('b_stakeholder_col_power'),type:'select',opts:[t('b_stakeholder_opt_high'),t('b_stakeholder_opt_mid'),t('b_stakeholder_opt_low')]},
     {k:'expect',label:t('b_stakeholder_col_expect'),w:'150px',type:'area'},{k:'strategy',label:t('b_stakeholder_col_strategy'),w:'150px',type:'area'},{k:'owner',label:t('b_stakeholder_col_owner'),w:'70px'}],

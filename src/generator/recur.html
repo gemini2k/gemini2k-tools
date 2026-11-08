@@ -50,6 +50,41 @@ select,input{padding:.55rem .65rem;border:1px solid var(--border);border-radius:
     <div class="field"><label data-i18n="b_recur_lbl_list">다음 일정 (최대 10개)</label><div class="list" id="list"></div></div>
     <div class="note" data-i18n-html="b_recur_note">오픈소스 <b>rrule.js</b>(BSD-3, <a href="https://github.com/jkbrzt/rrule" target="_blank" rel="noopener">jkbrzt/rrule</a>)를 자체 호스팅합니다. RFC 5545 기준. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>반복 일정 규칙(RRULE) 생성기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>“2주마다 화·목요일”, “매월 같은 날 10회”처럼 반복되는 일정을 iCalendar 표준(RFC 5545)의 RRULE 문자열로 만들어 줍니다. 계산은 오픈소스 rrule.js가 맡고, 만든 규칙으로 실제 돌아오는 날짜를 최대 10개까지 바로 펼쳐 보여 주므로 규칙이 의도대로 잡혔는지 눈으로 확인할 수 있습니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>예약·회의실 시스템을 개발하면서 반복 일정 필드에 넣을 RRULE 예시가 필요할 때</li>
+      <li>.ics 파일을 직접 작성해 팀 정기 회의를 캘린더로 배포할 때</li>
+      <li>API 문서에 적힌 RRULE이 실제로 어떤 날짜를 뜻하는지 확인할 때</li>
+      <li>격주 근무나 월 1회 점검처럼 사람마다 해석이 갈리는 주기를 날짜 목록으로 맞춰 볼 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>「시작일시」를 정합니다. 처음 열면 오늘 09:00이 들어가 있습니다.</li>
+      <li>「반복 주기」에서 매일·매주·매월·매년을 고르고 「간격」에 숫자를 넣습니다. 2를 넣고 매주를 고르면 격주입니다.</li>
+      <li>매주를 고르면 요일 체크 상자가 나타납니다. 기본은 월~금이 선택되어 있습니다.</li>
+      <li>「종료」에서 횟수, 날짜까지, 없음 중 하나를 고르고 값을 넣습니다.</li>
+      <li>RRULE 칸의 문자열을 「복사」해 캘린더나 코드에 붙여 넣습니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>예를 들어 매주, 간격 2, 화·목, 횟수 6을 고르면 <code>RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=TU,TH;COUNT=6</code> 형태가 나오고, 아래 목록에 2주 간격의 화·목 날짜 6개가 찍힙니다. 첫 줄의 DTSTART는 끝에 Z가 붙은 협정세계시(UTC)로 표시되므로, 한국 시간 09:00은 <code>T000000Z</code>로 보입니다. 시간이 틀린 것이 아니라 표기 기준이 다른 것입니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>매월은 시작일의 날짜를 따라갑니다. 31일에 시작하면 31일이 없는 달은 건너뛰는 것이 표준 동작입니다. 말일 반복이 필요하면 캘린더 앱에서 따로 지정하세요.</li>
+      <li>매월 “둘째 주 화요일” 같은 규칙과 특정 날짜 제외(EXDATE)는 이 화면에서 만들 수 없습니다.</li>
+      <li>한국 시간 오전 9시 이전으로 시작 시각을 잡으면 UTC 기준으로는 전날이 되어, 매주 요일 계산이 하루 어긋나 보일 수 있습니다. 목록의 날짜를 반드시 확인하세요.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>종료를 ‘없음’으로 하면 목록이 왜 10개뿐인가요?</dt>
+      <dd>끝없는 규칙이라 미리보기는 앞의 10개만 계산해 보여 줍니다. 실제 캘린더에서는 계속 반복됩니다.</dd>
+      <dt>구글 캘린더에 바로 넣을 수 있나요?</dt>
+      <dd>구글 캘린더 화면에는 RRULE 입력 칸이 없습니다. .ics 파일이나 캘린더 API에 DTSTART와 RRULE 줄을 넣는 방식으로 씁니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/rrule-2/rrule.min.js"></script>
 <script src="tool-shell.js"></script>

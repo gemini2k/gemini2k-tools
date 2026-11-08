@@ -76,7 +76,7 @@ AuditKit.register({mount:'#app',key:'ifspec',cols:[
     {k:'cycle',label:t('b_ifspec_col_cycle'),type:'select',opts:[t('b_ifspec_opt_realtime'),t('b_ifspec_opt_nearrealtime'),t('b_ifspec_opt_hourly'),t('b_ifspec_opt_daily'),t('b_ifspec_opt_weekly'),t('b_ifspec_opt_monthly'),t('b_ifspec_opt_ondemand')]},
     {k:'format',label:t('b_ifspec_col_format'),type:'select',opts:['JSON','XML',t('b_ifspec_opt_fixed'),t('b_ifspec_opt_csv_other'),t('b_ifspec_opt_other')]},{k:'sec',label:t('b_ifspec_col_sec'),w:'90px',type:'area'}],
     seed:[{id:'IF-001',name:t('b_ifspec_seed_name'),from:t('b_ifspec_seed_from'),to:'CRM',method:'API(REST)',cycle:t('b_ifspec_opt_realtime'),format:'JSON',sec:'TLS, API Key'}]});
-window.onI18n=function(){AuditKit.register({mount:'#app',key:'ifspec',cols:[
+window.onI18n=function(){document.getElementById('app').innerHTML='';AuditKit.register({mount:'#app',key:'ifspec',cols:[
     {k:'id',label:'I/F ID',w:'80px'},{k:'name',label:t('b_ifspec_col_name'),w:'130px',type:'area'},
     {k:'from',label:t('b_ifspec_col_from'),w:'90px'},{k:'to',label:t('b_ifspec_col_to'),w:'90px'},
     {k:'method',label:t('b_ifspec_col_method'),type:'select',opts:['API(REST)','API(SOAP)','EAI/ESB','FEP',t('b_ifspec_opt_file_ftp'),'DB링크',t('b_ifspec_opt_mq')]},

@@ -68,6 +68,36 @@
     <div class="appframe"><iframe src="/apps/cyberchef/index.html" title="CyberChef" loading="lazy" referrerpolicy="no-referrer"></iframe></div>
     <div class="note" data-i18n="b_cyberchef_note">CyberChef는 영국 GCHQ가 공개한 오픈소스(Apache License 2.0)이며, 본 사이트에 원본 그대로 자체 호스팅합니다. 모든 변환은 브라우저(이 페이지) 안에서만 이루어지며 입력 데이터는 서버로 전송되지 않습니다. 인터페이스는 영어입니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>CyberChef 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>CyberChef는 영국 정보기관 GCHQ가 공개한 데이터 변환 도구로, 인코딩·디코딩, 암복호화, 해시, 압축 해제, 텍스트 추출 같은 작업(operation)을 레시피로 쌓아 순서대로 적용합니다. 이 페이지는 원본을 그대로 자체 호스팅해 iframe으로 띄운 것이며, 입력 데이터는 브라우저 안에서만 처리됩니다. 화면은 영어입니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>로그나 패킷 덤프에서 나온 Base64·Hex·URL 인코딩 문자열을 여러 겹 풀어야 할 때</li>
+      <li>보안 점검 중 발견한 의심스러운 스크립트의 난독화 문자열을 단계별로 해독해 볼 때</li>
+      <li>gzip으로 압축된 뒤 Base64로 인코딩된 페이로드처럼 변환이 섞인 데이터를 확인할 때</li>
+      <li>외부 서비스에 붙여넣기 곤란한 사내 데이터를 오프라인에 가깝게 변환해야 할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>왼쪽 Operations 검색창에 작업 이름(예: From Base64)을 입력합니다.</li>
+      <li>찾은 작업을 가운데 Recipe 영역으로 끌어다 놓습니다. 여러 개를 쌓으면 위에서부터 차례로 적용됩니다.</li>
+      <li>오른쪽 위 Input에 데이터를 넣으면 아래 Output에 결과가 바로 나옵니다.</li>
+      <li>화면이 좁으면 [↗ 새 탭에서 전체화면]으로 열어 작업합니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>Input에 <code>SGVsbG8=</code>를 넣고 Recipe에 From Base64를 두면 Output에 <code>Hello</code>가 나옵니다. 여기에 To Hex를 이어 붙이면 <code>48 65 6c 6c 6f</code>가 됩니다. 결과가 깨진 글자로 보이면 단계 순서가 틀렸거나 이진 데이터일 가능성이 높으니, 레시피에서 작업을 하나씩 끄면서 어느 단계에서 깨지는지 확인하세요. 무엇으로 인코딩됐는지 모를 때는 Magic 작업이 후보 변환을 제안해 줍니다.</p>
+    <h3>주의할 점</h3>
+    <p>처리 자체는 브라우저에서 끝나지만, 작업 중에는 HTTP 요청을 보내는 것처럼 외부와 통신하는 기능도 있으니 민감한 데이터에는 그런 작업을 넣지 마세요. 큰 파일을 넣으면 브라우저가 느려지거나 멈출 수 있습니다. 해시나 암호 관련 작업 결과는 학습·분석용으로 확인하는 데 쓰고, 운영 시스템의 키 생성 같은 용도에는 검증된 전용 도구를 쓰는 편이 맞습니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>만든 레시피를 저장할 수 있나요?</dt>
+      <dd>CyberChef 자체의 Save recipe 기능으로 레시피를 텍스트로 내보내 두었다가 Load recipe로 다시 불러올 수 있습니다.</dd>
+      <dt>한국어가 깨져 나와요.</dt>
+      <dd>디코딩 결과의 문자 인코딩이 UTF-8이 아닐 수 있습니다. Decode text 작업에서 EUC-KR(CP949) 계열을 지정해 보세요.</dd>
+    </dl>
+  </section>
 </div>
 
 <script src="tool-shell.js"></script>

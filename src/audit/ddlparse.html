@@ -63,9 +63,9 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
       <li>문법 오류가 있으면 파싱 오류 문구가 나오므로 오류 위치 근처를 고쳐 다시 넣습니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>NULL 칸의 N은 NOT NULL, Y는 NULL 허용입니다. 키 칸은 테이블 끝에 PRIMARY KEY (컬럼) 형태로 선언된 컬럼에 PK를 표시합니다. 기본 예시를 넣으면 user_master 표에 6개 컬럼이 나오고, user_id는 BIGINT·N·PK, login_id는 VARCHAR(50)·N, email은 VARCHAR(200)·Y, status는 CHAR(1)·Y·기본값 Y로 정리됩니다. 정의서와 비교할 때는 자료형 길이와 NULL 여부가 가장 자주 어긋나는 항목이므로 이 두 열부터 대조하면 효율이 좋습니다.</p>
+    <p>NULL 칸의 N은 NOT NULL, Y는 NULL 허용입니다. PK 컬럼은 NOT NULL을 따로 적지 않아도 NULL을 넣을 수 없으므로 N으로 표시합니다. 키 칸은 테이블 끝에 PRIMARY KEY (컬럼) 형태로 선언된 컬럼과, 컬럼 정의 안에 직접 쓴 PRIMARY KEY(예: id INT PRIMARY KEY) 모두에 PK를 표시합니다. 기본 예시를 넣으면 user_master 표에 6개 컬럼이 나오고, user_id는 BIGINT·N·PK, login_id는 VARCHAR(50)·N, email은 VARCHAR(200)·Y, status는 CHAR(1)·Y·기본값 Y로 정리됩니다. 정의서와 비교할 때는 자료형 길이와 NULL 여부가 가장 자주 어긋나는 항목이므로 이 두 열부터 대조하면 효율이 좋습니다.</p>
     <h3>주의할 점</h3>
-    <p>컬럼 정의 안에 직접 쓴 PRIMARY KEY(예: id INT PRIMARY KEY)는 키 칸에 표시되지 않으니, PK를 테이블 수준 제약으로 쓰거나 직접 보완하세요. FK, UNIQUE, 인덱스, 컬럼 COMMENT(한글 컬럼명)는 표에 나오지 않습니다. DECIMAL(10,2)처럼 소수 자릿수가 있는 자료형은 DECIMAL(10)으로만 표시되고, CURRENT_TIMESTAMP 같은 함수형 기본값은 빈칸으로 나옵니다. MySQL 문법 기준이라 Oracle의 VARCHAR2, NUMBER나 PostgreSQL 고유 문법, 저장 옵션 절은 파싱 오류가 날 수 있습니다. CREATE TABLE이 아닌 문장은 무시됩니다. 결과는 초안으로 쓰고 최종 정의서는 실제 스키마와 다시 확인하세요.</p>
+    <p>FK, UNIQUE, 인덱스, 컬럼 COMMENT(한글 컬럼명)는 표에 나오지 않습니다. 자료형은 길이와 소수 자릿수까지 DECIMAL(10,2)처럼 그대로 표시하지만 UNSIGNED 같은 부가 속성과 ENUM의 값 목록은 빠집니다. CURRENT_TIMESTAMP, NOW() 같은 함수형 기본값은 함수 이름으로 표시됩니다. MySQL 문법 기준이라 Oracle의 VARCHAR2, NUMBER나 PostgreSQL 고유 문법, 저장 옵션 절은 파싱 오류가 날 수 있습니다. CREATE TABLE이 아닌 문장은 무시됩니다. 결과는 초안으로 쓰고 최종 정의서는 실제 스키마와 다시 확인하세요.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>Oracle DDL은 어떻게 하나요?</dt>
@@ -86,9 +86,14 @@ var $=function(i){return document.getElementById(i);};
         var pk=[];(st.create_definitions||[]).forEach(function(d){if(d.constraint_type==='primary key'&&d.definition)d.definition.forEach(function(c){pk.push(c.column);});});
         html+='<h3 style="font-size:.95rem;color:var(--accent);margin:.8rem 0 .3rem">'+tbl+'</h3><table><tr><td>'+t('b_ddlparse_col_column')+'</td><td>'+t('b_ddlparse_col_datatype')+'</td><td>'+t('b_ddlparse_col_null')+'</td><td>'+t('b_ddlparse_col_key')+'</td><td>'+t('b_ddlparse_col_default')+'</td></tr>';
         (st.create_definitions||[]).forEach(function(d){if(d.resource!=='column')return;
-          var col=d.column.column;var dt=d.definition.dataType+(d.definition.length?'('+d.definition.length+')':'');
+          var col=d.column.column,dd=d.definition;
+          // 길이·소수자릿수: DECIMAL(10,2) → length 10, scale 2 (scale 없으면 null)
+          var dt=dd.dataType+(dd.length!=null?'('+dd.length+(dd.scale!=null?','+dd.scale:'')+')':'');
           var nn=(d.nullable&&d.nullable.type==='not null')?'N':'Y';
-          var key=pk.indexOf(col)>=0?'PK':'';var def=d.default_val&&d.default_val.value?(d.default_val.value.value!==undefined?d.default_val.value.value:''):'';
+          // 테이블 수준 PRIMARY KEY(…) 또는 컬럼 수준 'PRIMARY KEY'/'KEY'(AST primary_key)
+          var key=(pk.indexOf(col)>=0||d.primary_key)?'PK':'';if(key)nn='N';   // PK 컬럼은 NOT NULL 을 안 적어도 NULL 불가
+          var dv=d.default_val&&d.default_val.value,def='';
+          if(dv){if(dv.type==='function'&&typeof dv.name==='string')def=dv.name+(dv.args&&dv.args.value?'('+dv.args.value.map(function(a){return a&&a.value!=null?a.value:'';}).join(',')+')':'');else if(dv.value!==undefined)def=dv.value;}
           html+='<tr><td><b>'+col+'</b></td><td>'+dt+'</td><td>'+nn+'</td><td>'+key+'</td><td>'+def+'</td></tr>';});
         html+='</table>';});
       $('res').innerHTML=html||'<span class="err">'+t('b_ddlparse_no_table')+'</span>';

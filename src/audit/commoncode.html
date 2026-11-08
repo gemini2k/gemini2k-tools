@@ -75,7 +75,7 @@ AuditKit.register({mount:'#app',key:'commoncode',cols:[
     seed:[{grp:'GENDER',code:'M',name:t('b_commoncode_seed_male'),desc:'',sort:'1',use:'Y'},{grp:'GENDER',code:'F',name:t('b_commoncode_seed_female'),desc:'',sort:'2',use:'Y'}],
     summary:function(rows){var seen={},dup=[];rows.forEach(function(r){var k=r.grp+'|'+r.code;if(seen[k])dup.push(k);seen[k]=1;});
       return dup.length?'<div class="ak-rate" style="color:#dc2626"><b>'+t('b_commoncode_dup_found_pre')+dup.length+t('b_commoncode_dup_found_suf')+'</b> <span>'+dup.join(', ')+'</span></div>':'<div class="ak-rate" style="color:#16a34a"><b>'+t('b_commoncode_no_dup')+'</b> <span>'+t('b_commoncode_total_pre')+rows.length+t('b_commoncode_total_suf')+'</span></div>';}});
-window.onI18n=function(){AuditKit.register({mount:'#app',key:'commoncode',cols:[
+window.onI18n=function(){document.getElementById('app').innerHTML='';AuditKit.register({mount:'#app',key:'commoncode',cols:[
     {k:'grp',label:t('b_commoncode_col_grp'),w:'100px'},{k:'code',label:t('b_commoncode_col_code'),w:'80px'},{k:'name',label:t('b_commoncode_col_name'),w:'120px'},
     {k:'desc',label:t('b_commoncode_col_desc'),w:'150px',type:'area'},{k:'sort',label:t('b_commoncode_col_sort'),w:'60px',type:'num'},{k:'use',label:t('b_commoncode_col_use'),type:'select',opts:['Y','N']}],
     seed:[{grp:'GENDER',code:'M',name:t('b_commoncode_seed_male'),desc:'',sort:'1',use:'Y'},{grp:'GENDER',code:'F',name:t('b_commoncode_seed_female'),desc:'',sort:'2',use:'Y'}],

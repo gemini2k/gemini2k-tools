@@ -36,6 +36,34 @@
     <div class="out" id="out"></div>
     <div class="note" data-i18n-html="b_gzip_note">오픈소스 <b>pako</b>(MIT/Zlib, <a href="https://github.com/nodeca/pako" target="_blank" rel="noopener">nodeca/pako</a>)를 자체 호스팅합니다. 압축 결과는 Base64로 표시됩니다(바이너리를 텍스트로 안전하게 전달). 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>텍스트 gzip 압축·해제 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>텍스트를 UTF-8 바이트로 바꾼 뒤 pako 2.1로 gzip 또는 deflate 압축하고, 그 바이너리를 Base64 문자열로 보여 줍니다. 해제 모드에서는 Base64를 바이트로 되돌린 다음 압축을 풀어 UTF-8 텍스트로 표시합니다. 여기서 deflate는 zlib 머리(2바이트)와 체크섬이 붙은 형식이며, 머리 없는 raw deflate가 아닙니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>로그나 메시지 큐에 Base64로 담긴 gzip 페이로드(<code>H4sI</code>로 시작)를 열어 볼 때</li>
+      <li>URL 파라미터나 쿠키에 넣을 긴 JSON을 압축했을 때 길이가 실제로 얼마나 줄어드는지 가늠할 때</li>
+      <li>서버 쪽 압축 구현이 만든 값이 표준 gzip·zlib으로 풀리는지 교차 확인할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>[압축] 또는 [해제]를 고릅니다.</li>
+      <li>'알고리즘'에서 gzip 또는 deflate를 고릅니다. 해제할 때는 압축할 때 쓴 방식과 같아야 합니다.</li>
+      <li>입력 칸에 원문(압축) 또는 Base64 문자열(해제)을 넣으면 결과가 바로 나오고, [📋 복사]로 가져갑니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>압축 모드에서는 원본 바이트, 압축 바이트, Base64 글자 수, 절감률(%)이 함께 표시됩니다. 기본 예시 문장은 UTF-8로 102바이트인데 gzip으로는 102바이트(0% 절감), deflate로는 90바이트(12% 절감)가 됩니다. gzip은 머리와 꼬리에 18바이트를 더 붙이기 때문에 짧은 글은 거의 줄지 않고, Base64로 바꾸면 길이가 약 4/3배로 늘어 오히려 원문보다 길어집니다. <code>hello</code>를 gzip하면 <code>H4sIAAAAAAAAA8tIzcnJBwCGphA2BQAAAA==</code>, deflate하면 <code>eJzLSM3JyQcABiwCFQ==</code>입니다.</p>
+    <h3>주의할 점</h3>
+    <p>해제 결과는 UTF-8로 해석하므로 원래 데이터가 EUC-KR 텍스트나 이미지 같은 바이너리였다면 글자가 깨져 보입니다. URL-safe Base64(<code>-</code>, <code>_</code> 사용)는 그대로 넣으면 디코딩 오류가 나니 <code>+</code>, <code>/</code>로 바꿔서 넣으세요. 절감률이 음수로 나오는 것은 오류가 아니라 압축 후 크기가 더 커졌다는 뜻입니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>.gz 파일을 올려서 풀 수 있나요?</dt>
+      <dd>파일 입력은 없고 Base64 텍스트만 받습니다. 파일은 압축 해제 프로그램을 쓰거나, 먼저 Base64로 변환한 뒤 넣으세요.</dd>
+      <dt>압축 수준을 바꿀 수 있나요?</dt>
+      <dd>pako의 기본 수준(6)으로 고정되어 있습니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/pako-2.1/pako.min.js"></script>
 <script src="tool-shell.js"></script>

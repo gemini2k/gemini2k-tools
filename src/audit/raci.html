@@ -79,6 +79,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
 <script src="audit-kit.js"></script><script src="tool-shell.js"></script>
 <script>
 function _raciMount(){
+  document.getElementById('app').innerHTML='';
   AuditKit.register({mount:'#app',key:'raci',cols:[
     {k:'task',label:t('b_raci_col_task'),w:'180px',type:'area'},
     {k:'r',label:t('b_raci_col_r'),w:'90px'},{k:'a',label:t('b_raci_col_a'),w:'90px'},{k:'c',label:t('b_raci_col_c'),w:'90px'},{k:'i',label:t('b_raci_col_i'),w:'90px'}],

@@ -25,17 +25,54 @@
 <div class="list" id="list"></div>
 <div class="actions" id="zipact"><button class="btn" id="make" type="button" data-i18n="b_zipmaker_btn_download">⬇️ ZIP 다운로드</button></div>
 <div class="note" data-i18n-html="b_zipmaker_note">오픈소스 <b>JSZip</b>(MIT)을 자체 호스팅합니다. 파일은 서버로 전송되지 않고 브라우저에서만 압축·해제됩니다.</div>
-</div></div>
+</div>
+  <section class="toolhelp">
+    <h2>ZIP 압축·풀기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>JSZip 라이브러리로 브라우저 안에서 ZIP 파일을 만들거나 엽니다. 「압축(ZIP 만들기)」에서는 고른 파일들을 DEFLATE 방식으로 압축해 <code>archive.zip</code> 하나로 내려받게 하고, 「풀기(ZIP 열기)」에서는 ZIP 안의 파일 목록을 보여 주고 원하는 파일을 하나씩 저장하게 합니다. 파일은 이 사이트 서버로 올라가지 않습니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>압축 프로그램 설치가 막힌 업무 PC에서 첨부할 파일 여러 개를 하나로 묶을 때</li>
+      <li>메일로 받은 ZIP에서 필요한 파일 한두 개만 꺼낼 때</li>
+      <li>공용 PC에서 ZIP 안에 어떤 파일이 들었는지 열어 보기 전에 목록만 확인할 때</li>
+      <li>업로드 용량 제한이 있는 게시판에 텍스트 위주의 파일을 줄여 올릴 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>위쪽에서 「압축(ZIP 만들기)」 또는 「풀기(ZIP 열기)」를 고릅니다.</li>
+      <li>압축이면 파일들을 끌어다 놓거나 영역을 클릭해 고릅니다. 여러 번 나눠 추가할 수 있고 목록에 이름과 크기가 쌓입니다.</li>
+      <li>「⬇️ ZIP 다운로드」를 누르면 archive.zip이 저장됩니다.</li>
+      <li>풀기이면 ZIP 파일 하나를 올린 뒤 목록에서 필요한 파일 옆 「⬇️ 저장」을 누릅니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>압축률은 파일 종류에 따라 크게 다릅니다. 텍스트, CSV, 로그처럼 반복이 많은 파일은 많이 줄어들고, JPG·PNG·MP4나 이미 압축된 ZIP, 그리고 내부가 ZIP 구조인 DOCX·XLSX는 거의 줄지 않습니다. 풀기 목록에는 폴더 항목을 빼고 파일만 <code>폴더/파일명</code> 경로로 표시하며, 저장할 때는 경로를 떼고 파일 이름만 씁니다. 목록의 크기는 KB 단위로 반올림해 보여 주므로 아주 작은 파일은 0 KB로 나올 수 있습니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>압축할 때 폴더 구조는 만들지 않고 모든 파일을 ZIP 맨 위에 넣습니다. 이름이 같은 파일을 두 번 넣으면 하나만 남습니다. 추가한 파일을 빼려면 탭을 바꿨다가 돌아와 처음부터 다시 고르세요.</li>
+      <li>암호가 걸린 ZIP은 열 수 없습니다.</li>
+      <li>일부 압축 프로그램이 한글 파일명을 EUC-KR(CP949)로 기록한 ZIP은 목록의 파일 이름이 깨져 보일 수 있습니다.</li>
+      <li>모든 작업을 브라우저 메모리에서 하므로 파일이 아주 크면 느려지거나 탭이 멈출 수 있습니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>ZIP 안의 파일을 한 번에 모두 꺼낼 수 있나요?</dt>
+      <dd>전체 풀기 버튼은 없고 파일마다 「⬇️ 저장」을 눌러야 합니다. 파일이 많으면 운영체제 기본 압축 풀기 기능이 편합니다.</dd>
+      <dt>압축 파일에 암호를 걸 수 있나요?</dt>
+      <dd>지원하지 않습니다. 민감한 문서는 암호화를 지원하는 별도 프로그램을 쓰세요.</dd>
+    </dl>
+  </section>
+</div>
 <script src="/vendor/jszip-3.10.1/jszip.min.js"></script><script src="tool-shell.js"></script>
 <script>
 var $=function(id){return document.getElementById(id);};
 function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1500);}
 var mode='zip', files=[];
+function escH(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}  // ZIP 엔트리 이름은 신뢰 불가 → 이스케이프
 function setMode(m){mode=m;files=[];$('list').innerHTML='';$('file').multiple=(m==='zip');$('file').value='';$('droptxt').textContent=m==='zip'?t('b_zipmaker_drop_zip'):t('b_zipmaker_drop_unzip');$('zipact').style.display=m==='zip'?'':'none';
   Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x.dataset.m===m);});}
-function add(list){ if(mode==='zip'){ files=files.concat([].slice.call(list)); $('list').innerHTML=files.map(function(f){return '<div><span>'+f.name+'</span><span>'+Math.round(f.size/1024)+' KB</span></div>';}).join(''); }
+function add(list){ if(mode==='zip'){ files=files.concat([].slice.call(list)); $('list').innerHTML=files.map(function(f){return '<div><span>'+escH(f.name)+'</span><span>'+Math.round(f.size/1024)+' KB</span></div>';}).join(''); }
   else { var f=list[0]; if(!f)return; JSZip.loadAsync(f).then(function(zip){ var rows=[]; zip.forEach(function(path,entry){ if(!entry.dir) rows.push({path:path,entry:entry}); });
-    $('list').innerHTML=rows.map(function(r,i){return '<div><span>'+r.path+'</span><a href="#" data-i="'+i+'">⬇️ '+t('b_zipmaker_save')+'</a></div>';}).join('');
+    $('list').innerHTML=rows.map(function(r,i){return '<div><span>'+escH(r.path)+'</span><a href="#" data-i="'+i+'">⬇️ '+t('b_zipmaker_save')+'</a></div>';}).join('');
     window._rows=rows; }).catch(function(){toast(t('b_zipmaker_err_open'));}); } }
 $('drop').addEventListener('click',function(){$('file').click();});
 $('file').addEventListener('change',function(e){add(e.target.files);});

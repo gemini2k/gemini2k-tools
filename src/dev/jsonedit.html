@@ -29,6 +29,36 @@
     <div id="ed"></div>
     <div class="note" data-i18n-html="b_jsonedit_note">오픈소스 <b>jsoneditor</b>(Apache-2.0, <a href="https://github.com/josdejong/jsoneditor" target="_blank" rel="noopener">josdejong/jsoneditor</a>)를 자체 호스팅합니다. 우측 상단 모드 메뉴로 트리/코드/텍스트를 전환할 수 있어요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>JSON 트리 에디터 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>오픈소스 jsoneditor 10을 써서 JSON을 접고 펼 수 있는 트리로 보여 주고, 각 노드를 마우스로 추가·수정·삭제·이동할 수 있게 한 편집기입니다. 오른쪽 위 모드 메뉴에서 tree(트리 편집), code(문법 강조 코드 편집기), text(일반 텍스트), form(값만 수정, 구조 고정), view(읽기 전용) 다섯 가지 화면을 오갈 수 있습니다. 편집기 메뉴는 영어로 표시됩니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>깊게 중첩된 API 응답이나 설정 파일에서 원하는 노드를 찾아 구조를 파악할 때</li>
+      <li>테스트용 JSON 데이터의 값 몇 개를 오타 걱정 없이 고칠 때</li>
+      <li>배열 원소를 복제하거나 순서를 바꿔 픽스처 데이터를 늘릴 때</li>
+      <li>비개발자에게 구조를 바꾸지 않고 값만 수정하게 하고 싶을 때(form 모드)</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>모드를 code나 text로 바꾼 뒤 기존 내용을 지우고 내 JSON을 붙여넣습니다. [예시]를 누르면 샘플 데이터로 돌아갑니다.</li>
+      <li>tree 모드로 돌아와 노드를 펼치고, 값을 클릭해 고치거나 노드 왼쪽 메뉴 버튼으로 추가·복제·삭제합니다. 노드는 끌어서 옮길 수 있습니다.</li>
+      <li>상단 검색 칸에 키나 값을 입력하면 일치하는 노드로 이동합니다.</li>
+      <li>[📋 JSON 복사]나 [⬇️ .json 저장]으로 들여쓰기 2칸 JSON을 가져갑니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>예시 데이터를 tree 모드에서 보면 <code>categories</code> 옆에 원소 개수 <code>[3]</code>, <code>config</code> 옆에 키 개수 <code>{2}</code>가 표시되어 펼치지 않고도 크기를 알 수 있습니다. 값을 고칠 때 <code>true</code>나 <code>30</code>처럼 입력하면 불리언·숫자로, 그렇지 않으면 문자열로 저장되며 값의 타입은 색으로 구분됩니다. code 모드에서 문법이 틀리면 해당 줄에 오류 표시가 붙습니다.</p>
+    <h3>주의할 점</h3>
+    <p>code·text 모드에서 문법 오류가 있는 상태로 복사나 저장을 누르면 JSON 오류 알림만 뜨고 결과가 나오지 않습니다. 파일 열기 버튼은 없으니 파일 내용은 붙여넣기로 넣어야 합니다. 편집 내용은 브라우저에 자동 저장되지 않아 페이지를 새로 고치면 사라지므로, 작업이 끝나면 바로 저장하세요. 9007199254740991보다 큰 정수는 자바스크립트 숫자 한계로 값이 바뀔 수 있습니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>JSON Schema로 검증도 되나요?</dt>
+      <dd>이 페이지에서는 스키마를 연결하지 않았으므로 문법 검사만 됩니다. 스키마 검증은 JSON Schema 검증기 도구를 쓰세요.</dd>
+      <dt>되돌리기가 되나요?</dt>
+      <dd>tree 모드 상단의 undo·redo 버튼으로 편집 단계를 되돌릴 수 있습니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/jsoneditor-10/jsoneditor.min.js"></script>
 <script src="tool-shell.js"></script>

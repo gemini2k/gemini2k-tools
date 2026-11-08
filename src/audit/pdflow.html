@@ -76,7 +76,7 @@ AuditKit.register({mount:'#app',key:'pdflow',cols:[
     {k:'basis',label:t('b_pdflow_col_basis'),type:'select',opts:[t('b_pdflow_basis_consent'),t('b_pdflow_basis_law'),t('b_pdflow_basis_contract'),t('b_pdflow_basis_interest'),t('b_pdflow_basis_other')]},
     {k:'period',label:t('b_pdflow_col_period'),w:'90px'},{k:'dept',label:t('b_pdflow_col_dept'),w:'100px'},{k:'system',label:t('b_pdflow_col_system'),w:'100px'}],
     seed:[{stage:t('b_pdflow_stage_collect'),item:t('b_pdflow_seed_item'),purpose:t('b_pdflow_seed_purpose'),basis:t('b_pdflow_basis_consent'),period:t('b_pdflow_seed_period'),dept:t('b_pdflow_seed_dept'),system:t('b_pdflow_seed_system')}]});
-window.onI18n=function(){AuditKit.register({mount:'#app',key:'pdflow',cols:[
+window.onI18n=function(){document.getElementById('app').innerHTML='';AuditKit.register({mount:'#app',key:'pdflow',cols:[
     {k:'stage',label:t('b_pdflow_col_stage'),type:'select',opts:[t('b_pdflow_stage_collect'),t('b_pdflow_stage_use'),t('b_pdflow_stage_provide'),t('b_pdflow_stage_entrust'),t('b_pdflow_stage_retain'),t('b_pdflow_stage_destroy')]},
     {k:'item',label:t('b_pdflow_col_item'),w:'150px',type:'area'},
     {k:'purpose',label:t('b_pdflow_col_purpose'),w:'140px',type:'area'},

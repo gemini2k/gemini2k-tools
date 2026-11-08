@@ -83,7 +83,7 @@ AuditKit.register({mount:'#app',key:'riskreg',cols:[
     {k:'status',label:t('b_riskreg_col_status'),type:'select',opts:[t('b_riskreg_opt_identified'),t('b_riskreg_opt_inprogress'),t('b_riskreg_opt_resolved'),t('b_riskreg_opt_closed')]}],
     seed:[{id:'R-01',kind:t('b_riskreg_opt_risk'),content:t('b_riskreg_seed_content'),impact:t('b_riskreg_opt_high'),prob:t('b_riskreg_opt_mid'),plan:t('b_riskreg_seed_plan'),owner:'PM',status:t('b_riskreg_opt_inprogress')}],
     summary:function(rows){var open=rows.filter(function(r){return r.status!==t('b_riskreg_opt_resolved')&&r.status!==t('b_riskreg_opt_closed');}).length,hi=rows.filter(function(r){return r.impact===t('b_riskreg_opt_high')&&r.prob===t('b_riskreg_opt_high');}).length;return '<div class="ak-rate"><b>'+open+t('b_riskreg_summary_count')+'</b> '+t('b_riskreg_summary_open')+' <span>· '+t('b_riskreg_summary_hi_pre')+hi+t('b_riskreg_summary_hi_mid')+rows.length+t('b_riskreg_summary_hi_suf')+'</span></div>';}});
-window.onI18n=function(){AuditKit.register({mount:'#app',key:'riskreg',cols:[
+window.onI18n=function(){document.getElementById('app').innerHTML='';AuditKit.register({mount:'#app',key:'riskreg',cols:[
     {k:'id',label:'ID',w:'70px'},{k:'kind',label:t('b_riskreg_col_kind'),type:'select',opts:[t('b_riskreg_opt_risk'),t('b_riskreg_opt_issue')]},
     {k:'content',label:t('b_riskreg_col_content'),w:'180px',type:'area'},
     {k:'impact',label:t('b_riskreg_col_impact'),type:'select',opts:[t('b_riskreg_opt_high'),t('b_riskreg_opt_mid'),t('b_riskreg_opt_low')]},{k:'prob',label:t('b_riskreg_col_prob'),type:'select',opts:[t('b_riskreg_opt_high'),t('b_riskreg_opt_mid'),t('b_riskreg_opt_low')]},

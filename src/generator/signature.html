@@ -31,6 +31,40 @@
     <div class="actions" style="margin-top:.7rem;"><button class="btn" id="dl" type="button" data-i18n="b_signature_btn_save">⬇️ PNG 저장</button><button class="btn btn-ghost" id="undo" type="button" data-i18n="b_signature_btn_undo">↶ 실행취소</button><button class="btn btn-ghost" id="clear" type="button" data-i18n="b_signature_btn_clear">지우기</button></div>
     <div class="note" data-i18n-html="b_signature_note">오픈소스 <b>signature_pad</b>(MIT, <a href="https://github.com/szimek/signature_pad" target="_blank" rel="noopener">szimek/signature_pad</a>)을 자체 호스팅합니다. 기본은 투명 배경으로 저장되며, 서명 이미지는 서버로 전송되지 않습니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>전자 서명 패드 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>마우스, 터치펜, 손가락으로 그린 서명을 PNG 이미지로 저장하는 도구입니다. 필기 처리는 오픈소스 signature_pad가 맡으며, 펜을 빠르게 움직이면 선이 가늘어지고 천천히 움직이면 굵어지는 식으로 실제 펜 느낌을 냅니다. 기본 저장은 배경이 투명한 PNG라 문서 위에 얹어도 흰 사각형이 생기지 않습니다. 그린 서명은 서버로 전송되지 않습니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>PDF 계약서나 동의서에 붙일 서명 이미지를 만들 때</li>
+      <li>한글·워드 문서의 결재란, 견적서 하단 서명 칸에 넣을 이미지가 필요할 때</li>
+      <li>이메일 서명이나 작품 낙관처럼 손글씨 이미지를 쓰고 싶을 때</li>
+      <li>스캐너 없이 태블릿으로 바로 서명 파일을 만들어야 할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>「펜 색」과 「굵기」(1~6)를 먼저 정합니다. 굵기는 그리는 도중에도 바꿀 수 있습니다.</li>
+      <li>점선 영역 안에 서명합니다. 마음에 들지 않는 획은 「실행취소」로 한 획씩, 전부 다시 하려면 「지우기」를 누릅니다.</li>
+      <li>흰 바탕이 필요한 경우에만 「흰 배경 포함」을 켭니다.</li>
+      <li>「PNG 저장」을 누르면 signature.png 파일이 내려받아집니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>저장되는 이미지 크기는 화면에 보이는 서명 영역 크기에 기기 화소 배율을 곱한 값입니다. 예를 들어 폭 640, 높이 260으로 보이는 영역을 배율 2인 휴대폰에서 저장하면 1280×520 픽셀이 됩니다. 서명 주변 여백은 잘리지 않으므로, 문서에 넣을 때는 이미지 편집기나 문서 프로그램에서 여백을 잘라 쓰면 됩니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>이 이미지는 단순한 서명 그림입니다. 공인 전자서명이나 인증서 기반 전자서명처럼 본인 확인과 위변조 방지 기능이 없으므로, 법적 효력이 중요한 문서는 상대방이 정한 서명 방식을 따르세요.</li>
+      <li>서명 이미지가 남의 손에 들어가면 그대로 복사해 쓸 수 있습니다. 저장한 파일을 공유 폴더나 메신저에 오래 두지 마세요.</li>
+      <li>서명 도중 창 크기를 바꾸거나 화면을 회전하면 영역이 맞지 않을 수 있습니다. 그때는 새로고침 후 다시 그리세요.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>투명 배경인데 그림판에서 열면 검게 보여요.</dt>
+      <dd>투명 부분을 검게 표시하는 프로그램이 있습니다. 파일은 정상이며, 흰 배경이 필요하면 「흰 배경 포함」을 켜고 다시 저장하세요.</dd>
+      <dt>서명이 어딘가에 저장되나요?</dt>
+      <dd>아닙니다. 페이지를 닫으면 사라지며, 내려받은 파일만 남습니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/signature_pad-4/signature_pad.umd.min.js"></script>
 <script src="tool-shell.js"></script>

@@ -38,6 +38,44 @@
     <div class="prev" id="prev" data-i18n="b_graphviz_rendering">렌더링 중…</div>
     <div class="note" data-i18n-html="b_graphviz_note">오픈소스 <b>Viz.js</b>(Graphviz, MIT, <a href="https://github.com/mdaines/viz-js" target="_blank" rel="noopener">mdaines/viz-js</a>)를 자체 호스팅합니다. WebAssembly로 브라우저에서 직접 렌더링하며 데이터는 전송되지 않습니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>Graphviz DOT 다이어그램 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>Graphviz는 노드와 연결선만 텍스트로 적으면 배치를 알아서 계산해 그림을 만들어 주는 도구이고, 그 입력 형식이 DOT 언어입니다. 이 페이지는 Graphviz를 WebAssembly로 옮긴 Viz.js를 사이트에 직접 올려 두어, 프로그램 설치 없이 브라우저 안에서 DOT를 SVG 그림으로 바꿉니다. 결과는 확대해도 깨지지 않는 SVG 파일이나, 두 배 해상도의 흰 배경 PNG로 저장할 수 있습니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>업무 처리 절차나 결재 흐름을 순서도로 정리해 보고서에 넣을 때</li>
+      <li>시스템 구성도나 서버·데이터베이스 간 연계 관계를 그릴 때</li>
+      <li>조직도, 분류 체계처럼 위아래 단계가 있는 트리 구조를 그릴 때</li>
+      <li>항목이 자주 바뀌어 그림판으로 매번 다시 배치하기 번거로울 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>입력란에 DOT 코드를 적습니다. 입력을 멈추면 잠시 뒤 미리보기가 갱신되며, [그리기]로 바로 갱신할 수도 있습니다.</li>
+      <li>문법 오류가 있으면 미리보기 위에 오류 메시지가 나옵니다.</li>
+      <li>[⬇️ SVG]나 [⬇️ PNG]로 결과를 저장합니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>방향이 있는 그래프는 <code>digraph</code>, 방향 없는 그래프는 <code>graph</code>로 시작하며, 연결은 각각 <code>-&gt;</code>와 <code>--</code>로 적습니다. 아래는 위에서 아래로 내려가는 간단한 시스템 구성도입니다.</p>
+    <pre>digraph 구성도 {
+  rankdir=TB;
+  node [shape=box];
+  사용자 -&gt; "웹 서버";
+  "웹 서버" -&gt; "업무 서버";
+  "업무 서버" -&gt; DB [label="조회"];
+  DB [shape=cylinder];
+}</pre>
+    <p><code>rankdir</code>는 배치 방향(TB 위→아래, LR 왼쪽→오른쪽), <code>shape</code>는 상자 모양, <code>label</code>은 선이나 노드에 붙는 글자입니다. 이름에 공백이 있으면 큰따옴표로 감쌉니다. 같은 이름은 같은 노드로 보므로 한 노드를 여러 줄에서 언급해도 하나로 그려집니다.</p>
+    <h3>주의할 점</h3>
+    <p>배치는 Graphviz가 자동으로 정하므로 노드 위치를 손으로 옮길 수는 없습니다. 원하는 모양이 안 나오면 <code>rankdir</code>를 바꾸거나 <code>{rank=same; A; B;}</code>로 같은 줄에 놓을 노드를 묶어 보세요. 한글은 기기에 설치된 글꼴로 그려지므로, 저장한 SVG를 다른 컴퓨터에서 열면 글꼴이 달라 보일 수 있습니다. 이런 경우에는 PNG가 안전합니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>dot 말고 neato 같은 다른 배치 엔진도 쓸 수 있나요?</dt>
+      <dd>이 페이지는 엔진 선택 메뉴가 없어 기본 계층 배치(dot)로 그립니다. 계층이 뚜렷하지 않은 관계망이라면 <code>rankdir</code>를 바꾸거나 <code>rank=same</code> 묶음으로 모양을 다듬어 보세요.</dd>
+      <dt>작성한 코드가 서버로 전송되나요?</dt>
+      <dd>아니요. 렌더링 엔진이 브라우저 안에서 실행되므로 코드와 그림 모두 이 기기 밖으로 나가지 않습니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/vizjs-3/viz-standalone.js"></script>
 <script src="tool-shell.js"></script>

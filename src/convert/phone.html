@@ -41,6 +41,39 @@ table{width:100%;border-collapse:collapse;font-size:.95rem;}td{padding:.55rem .6
     <table><tbody id="tb"></tbody></table>
     <div class="note" data-i18n-html="b_phone_note">오픈소스 <b>libphonenumber-js</b>(MIT, <a href="https://github.com/catamphetamine/libphonenumber-js" target="_blank" rel="noopener">catamphetamine/libphonenumber-js</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>국제 전화번호 변환·검증 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>전화번호를 오픈소스 libphonenumber-js(전체 메타데이터판)로 해석해 유효성, 국가, E.164 표기, 국내표기, 국제표기, 국가번호, 번호 유형, RFC 3966 URI(<code>tel:</code>)를 표로 보여 줍니다. 국가 목록은 번호에 국가번호가 없을 때 어느 나라 번호로 볼지 정하는 기본값이며, 대한민국·미국·일본·중국·영국·독일·프랑스·호주 중에서 고릅니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>회원 DB의 휴대전화 열을 <code>+82…</code> 형식(E.164)으로 통일할 때</li>
+      <li>문자 발송 API나 해외 SMS 서비스에 넣을 번호 형식을 확인할 때</li>
+      <li>해외 거래처 명함 번호를 국내에서 걸 수 있는 형태로 바꿀 때</li>
+      <li>가입 폼 검증 규칙을 만들기 전에 국가별 번호 길이·유형을 확인할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>국가 목록에서 기본 국가를 고릅니다.</li>
+      <li>번호를 입력합니다. 하이픈·공백·괄호는 있어도 되고, <code>+81</code>처럼 국가번호로 시작하면 선택한 국가와 관계없이 그 나라 번호로 해석합니다.</li>
+      <li>표에서 필요한 표기를 확인해 복사합니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>대한민국을 고르고 기본값 01012345678을 넣으면 유효, E.164 <code>+821012345678</code>, 국내표기 <code>010-1234-5678</code>, 국제표기 <code>+82 10 1234 5678</code>, 유형은 휴대폰, URI는 <code>tel:+821012345678</code>로 나옵니다. 국제표기에서는 국내 식별번호 맨 앞의 0이 빠진다는 점을 확인할 수 있습니다. 서울 유선번호 0212345678은 <code>02-1234-5678</code>, 유형은 유선전화로 나옵니다.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>「유효」는 그 나라 번호 체계의 자릿수와 번호 대역에 맞는다는 뜻일 뿐, 실제로 개통된 번호인지는 알 수 없습니다.</li>
+      <li>번호 대역이 새로 열리면 내장 메타데이터가 이를 반영하지 못해 유효한 번호가 실패로 나올 수 있습니다.</li>
+      <li>개인정보인 전화번호를 대량으로 다룰 때는 이 화면에 붙여 넣기보다 같은 라이브러리를 시스템에 넣어 처리하는 편이 안전합니다. 이 페이지는 입력값을 전송하지 않습니다.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>E.164는 무엇인가요?</dt>
+      <dd>ITU-T가 정한 국제 전화번호 형식으로, + 뒤에 국가번호와 가입자 번호를 공백 없이 최대 15자리로 붙여 씁니다. DB 저장용으로 가장 많이 씁니다.</dd>
+      <dt>유형이 「유선/휴대폰」으로 나와요.</dt>
+      <dd>미국처럼 번호만으로 유선·휴대전화를 구분할 수 없는 나라에서 그렇게 표시됩니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/libphone-1/libphonenumber-max.js"></script>
 <script src="tool-shell.js"></script>

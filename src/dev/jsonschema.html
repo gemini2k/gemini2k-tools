@@ -72,6 +72,34 @@
     <div class="out" id="out"></div>
     <div class="note" data-i18n="b_jsonschema_note">값으로부터 타입을 추론합니다(정수/숫자/문자열/불리언/객체/배열/null). 배열은 첫 요소로 항목 스키마를 만들고, 객체는 키별로 분석합니다. 추론 결과이므로 필요에 맞게 다듬어 쓰세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>JSON 스키마 생성기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>예시 JSON 하나를 분석해 그 모양을 설명하는 JSON Schema를 draft-07 형식으로 만들어 줍니다. 값마다 타입을 <code>integer</code>, <code>number</code>, <code>string</code>, <code>boolean</code>, <code>object</code>, <code>array</code>, <code>null</code> 중 하나로 추론하고, 객체는 <code>properties</code>로, 배열은 첫 번째 원소를 기준으로 <code>items</code>를 만듭니다. 결과 맨 앞에는 <code>"$schema": "http://json-schema.org/draft-07/schema#"</code>가 붙습니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>OpenAPI 문서나 API 명세에 넣을 요청·응답 스키마 초안이 필요할 때</li>
+      <li>ajv 같은 검증 라이브러리로 입력 검증을 붙이려는데 스키마를 처음부터 쓰기 번거로울 때</li>
+      <li>VS Code의 json.schemas 설정으로 설정 파일 자동완성을 만들고 싶을 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>'예시 JSON'에 실제 데이터와 같은 모양의 객체나 배열을 붙여넣습니다. [샘플]로 예시를 불러올 수도 있습니다.</li>
+      <li>'모든 키를 required로'를 켜거나 끕니다(기본 켜짐).</li>
+      <li>입력이 바뀌면 스키마가 자동으로 다시 만들어지며, [📋 복사]로 가져갑니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>기본 예시에서 <code>id</code>는 1이라 <code>"type": "integer"</code>, <code>tags</code>는 <code>"type": "array"</code>에 <code>"items": {"type": "string"}</code>, <code>profile</code>은 <code>age</code>·<code>city</code>를 가진 중첩 object가 됩니다. required 옵션을 켜 두면 최상위에 <code>"required": ["id", "name", "active", "tags", "profile"]</code>, profile 안에 <code>["age", "city"]</code>가 들어갑니다. 예시에서 1.5처럼 소수였다면 <code>number</code>가 됩니다.</p>
+    <h3>주의할 점</h3>
+    <p>예시 하나로 추론한 결과라 그대로 쓰기보다 손을 봐야 합니다. 예시에서 <code>null</code>이던 필드는 <code>"type": "null"</code>만 허용하게 되므로 <code>["string", "null"]</code>처럼 고쳐야 하고, 가격처럼 정수·소수가 섞일 수 있는 필드가 예시에서 정수였다면 <code>number</code>로 바꿔야 합니다. 배열은 첫 원소만 보므로 원소마다 모양이 다르면 반영되지 않고, 빈 배열은 <code>items</code> 없이 나옵니다. email·date 같은 <code>format</code>, 최솟값·길이 제한, <code>additionalProperties</code>는 넣지 않습니다.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>최신 draft 2020-12 형식으로 받을 수 있나요?</dt>
+      <dd>이 도구는 draft-07 표기만 출력합니다. 생성되는 키워드가 기본적인 것뿐이라 <code>$schema</code> 값을 바꾸면 2020-12 검증기에서도 대부분 그대로 쓸 수 있습니다.</dd>
+      <dt>만든 스키마로 데이터를 검증하려면요?</dt>
+      <dd>JSON Schema 검증기 도구에 스키마와 데이터를 함께 넣어 확인하면 됩니다.</dd>
+    </dl>
+  </section>
 </div>
 
 <script src="tool-shell.js"></script>

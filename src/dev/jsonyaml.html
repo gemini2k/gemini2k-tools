@@ -84,6 +84,34 @@
     <div class="out" id="out"></div>
     <div class="note" data-i18n="b_jsonyaml_note">YAML 파싱·직렬화는 표준 라이브러리(js-yaml)를 사용하며 모두 브라우저 안에서 동작합니다. 함수·날짜 등 JSON으로 표현 불가능한 값은 변환되지 않을 수 있습니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>JSON ↔ YAML 변환기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>js-yaml 4.1.0으로 JSON을 YAML로, YAML을 JSON으로 바꿉니다. JSON → YAML에서는 긴 문자열도 줄을 접지 않고, 같은 객체가 여러 번 나와도 앵커(<code>&amp;</code>)·별칭(<code>*</code>) 없이 풀어서 씁니다. YAML → JSON에서는 js-yaml 기본 스키마(YAML 1.2 기준)로 읽어 들여쓰기 2칸 또는 4칸 JSON으로 출력합니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>쿠버네티스 매니페스트, docker-compose, GitHub Actions 워크플로를 JSON으로 바꿔 스크립트에서 다룰 때</li>
+      <li>OpenAPI 명세를 JSON과 YAML 사이에서 옮길 때</li>
+      <li>YAML 들여쓰기 오류 위치를 찾거나, 값이 실제로 어떤 타입으로 읽히는지 확인할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>[JSON → YAML] 또는 [YAML → JSON]을 고릅니다. 방향을 바꿔도 입력 내용은 그대로 남습니다.</li>
+      <li>입력 칸에 내용을 넣으면 아래에 바로 변환됩니다. '들여쓰기'에서 2칸·4칸을 고릅니다.</li>
+      <li>형식 오류는 결과 위에 표시되며, YAML 오류에는 줄·열 위치가 함께 나옵니다. [📋 복사]로 결과를 가져갑니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>기본 예시는 <code>name: gemini2k</code>, <code>tags:</code> 아래 <code>- tool</code>, <code>- free</code>, <code>config:</code> 아래 <code>dark: true</code>, <code>lang: ko</code>로 바뀝니다. 반대 방향에서는 따옴표 없는 값의 타입을 YAML 규칙대로 해석합니다. <code>ver: 1.0</code>은 숫자 1, <code>v: 1.10</code>은 1.1이 되어 버전 문자열이 망가지고, <code>d: 2024-01-05</code>는 날짜로 읽혀 <code>"2024-01-05T00:00:00.000Z"</code>가 됩니다. 반면 YAML 1.2 기준이라 <code>yes</code>, <code>on</code>은 불리언이 아니라 문자열로 남습니다.</p>
+    <h3>주의할 점</h3>
+    <p>버전 번호, 우편번호, 전화번호처럼 문자열로 남아야 하는 값은 YAML에서 따옴표로 감싸야 합니다. YAML 주석은 JSON으로 옮길 수 없어 사라지고, 앵커·별칭은 펼쳐진 값으로 바뀝니다. <code>---</code>로 구분한 여러 문서가 든 YAML(쿠버네티스 매니페스트 묶음 등)은 단일 문서만 받는다는 오류가 나므로 문서별로 나눠 넣으세요.</p>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>YAML 1.1을 쓰는 도구(구버전 PyYAML 등)와 결과가 다른가요?</dt>
+      <dd>그럴 수 있습니다. 1.1에서는 <code>yes</code>, <code>on</code>이 true로 읽히지만 여기서는 문자열입니다.</dd>
+      <dt>JSON의 키 순서는 유지되나요?</dt>
+      <dd>문자열 키는 입력 순서대로 나옵니다. 다만 숫자 모양의 키는 자바스크립트 규칙상 앞쪽으로 정렬됩니다.</dd>
+    </dl>
+  </section>
 </div>
 
 <script src="/vendor/js-yaml-4.1.0/js-yaml.min.js"></script>

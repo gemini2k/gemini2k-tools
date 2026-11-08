@@ -55,7 +55,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
       <li>[⬇️ CSV]를 누르면 그룹·점검항목·결과·비고 네 열로 내려받을 수 있어 점검 결과표나 감리 보고서 첨부로 쓸 수 있습니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>충족률은 '충족 수 ÷ (전체 항목 − 해당없음)'으로 계산하며 전체 단계를 합친 하나의 값입니다. 아직 고르지 않은 항목은 미충족과 똑같이 분모에 들어갑니다. 예를 들어 27개 중 해당없음 3개, 충족 18개라면 18 ÷ 24 = 75%입니다. 단계별로 보고 싶으면 CSV를 받아 엑셀에서 그룹 열로 피벗하면 됩니다. 숫자보다 중요한 것은 미충족 항목의 비고입니다. "작성은 됐으나 승인 전"인지 "아예 없음"인지에 따라 조치가 다릅니다.</p>
+    <p>충족률은 '충족 수 ÷ (전체 항목 − 해당없음)'으로 계산합니다. 맨 위 큰 숫자는 전체 단계를 합친 값이고, 그 아래에 분석·설계·구현·시험·종료/이행 단계별 충족률이 같은 방식으로 따로 표시됩니다. 아직 고르지 않은 항목은 미충족과 똑같이 분모에 들어갑니다. 예를 들어 27개 중 해당없음 3개, 충족 18개라면 전체는 18 ÷ 24 = 75%입니다. 설계 단계 7개 중 충족 5개, 해당없음 1개라면 설계 단계는 5 ÷ 6 ≈ 83%로 나옵니다. 한 단계의 항목이 모두 해당없음이면 그 단계 충족률은 '-'로 표시됩니다. 숫자보다 중요한 것은 미충족 항목의 비고입니다. "작성은 됐으나 승인 전"인지 "아예 없음"인지에 따라 조치가 다릅니다.</p>
     <h3>주의할 점</h3>
     <p>목록은 일반적인 단계형(폭포수) 사업을 기준으로 한 대표 항목이며, 특정 발주기관의 산출물 표준이나 감리 점검표를 그대로 옮긴 것이 아닙니다. 계약서·과업지시서에 명시된 산출물 목록이 우선이고, 애자일 방식 사업이라면 해당없음 처리와 비고 보충이 필요합니다. 이 도구는 문서가 있는지만 표시할 뿐 내용의 품질까지 판단하지는 않습니다. 입력한 내용은 이 브라우저에만 저장되어 다른 PC에서는 보이지 않습니다.</p>
     <h3>자주 묻는 질문</h3>
@@ -72,7 +72,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
 function _deliverableMount(){
   var app = document.getElementById('app');
   if(app) app.innerHTML = '';
-  AuditKit.checklist({mount:'#app',key:'deliverable',groups:[
+  AuditKit.checklist({mount:'#app',key:'deliverable',perGroup:true,groups:[
     {title:t('b_deliverable_g1'),items:[t('b_deliverable_g1_i1'),t('b_deliverable_g1_i2'),t('b_deliverable_g1_i3'),t('b_deliverable_g1_i4'),t('b_deliverable_g1_i5')]},
     {title:t('b_deliverable_g2'),items:[t('b_deliverable_g2_i1'),t('b_deliverable_g2_i2'),t('b_deliverable_g2_i3'),t('b_deliverable_g2_i4'),t('b_deliverable_g2_i5'),t('b_deliverable_g2_i6'),t('b_deliverable_g2_i7')]},
     {title:t('b_deliverable_g3'),items:[t('b_deliverable_g3_i1'),t('b_deliverable_g3_i2'),t('b_deliverable_g3_i3'),t('b_deliverable_g3_i4'),t('b_deliverable_g3_i5')]},

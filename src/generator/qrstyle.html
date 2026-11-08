@@ -40,6 +40,40 @@
     <div class="actions"><button class="btn" id="png" type="button" data-i18n="b_qrstyle_btn_png">⬇️ PNG 다운로드</button><button class="btn btn-ghost" id="svg" type="button" data-i18n="b_qrstyle_btn_svg">⬇️ SVG</button></div>
     <div class="note" data-i18n-html="b_qrstyle_note">오픈소스 <b>qr-code-styling</b>(MIT, <a href="https://github.com/kozakdenys/qr-code-styling" target="_blank" rel="noopener">kozakdenys/qr-code-styling</a>)을 자체 호스팅합니다. 로고가 너무 크면 인식률이 떨어질 수 있어요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
+  <section class="toolhelp">
+    <h2>디자인 QR코드 생성기 사용 안내</h2>
+    <h3>무엇을 하는 도구인가</h3>
+    <p>입력한 URL이나 텍스트를 QR코드로 만들되, 점 색·배경색·점 모양·위치 표시용 모서리 사각형 모양을 바꾸고 가운데에 로고 이미지를 얹을 수 있게 한 생성기입니다. 오픈소스 qr-code-styling 라이브러리를 사이트에 직접 올려 두고 쓰며, 미리보기는 280×280 크기로 그려지고 PNG 또는 SVG로 내려받습니다. 로고 파일은 브라우저 안에서 읽어 바로 그림에 합성할 뿐 어디로도 올라가지 않습니다.</p>
+    <h3>언제 쓰나</h3>
+    <ul>
+      <li>매장 전단이나 메뉴판에 흑백 QR 대신 브랜드 색을 맞춘 QR을 넣고 싶을 때</li>
+      <li>명함이나 발표 자료 마지막 장에 로고가 들어간 홈페이지 QR을 붙일 때</li>
+      <li>인쇄소에 넘길 벡터 파일이 필요해 SVG로 받아야 할 때</li>
+      <li>행사 안내판에 설문 링크 QR을 크게 출력할 때</li>
+    </ul>
+    <h3>사용 방법</h3>
+    <ol>
+      <li>「내용(URL·텍스트)」에 연결할 주소나 문장을 넣습니다. 입력하는 즉시 미리보기가 바뀝니다.</li>
+      <li>「점 색」과 「배경색」을 고르고, 「점 모양」(둥근·도트·사각·클래시·아주둥근)과 「모서리 모양」(둥근·도트·사각)을 정합니다.</li>
+      <li>필요하면 「가운데 로고(선택)」에서 이미지 파일을 고릅니다. 로고는 QR 한 변의 약 32% 크기로 가운데에 놓입니다.</li>
+      <li>「PNG 다운로드」 또는 「SVG」 버튼으로 qr 파일을 저장합니다.</li>
+    </ol>
+    <h3>결과 해석</h3>
+    <p>QR코드는 일부가 가려져도 오류 정정 데이터로 원래 내용을 복원합니다. 이 도구는 라이브러리 기본값인 Q 등급(약 25% 복원)을 쓰므로 가운데 로고 정도는 대개 읽힙니다. 다만 내용이 길수록 점이 촘촘해져 로고가 덮는 점의 비율도 커집니다. 저장한 뒤에는 꼭 휴대폰 카메라 두세 종으로 실제 스캔해 보세요.</p>
+    <h3>주의할 점</h3>
+    <ul>
+      <li>점 색과 배경색의 대비가 약하면 인식이 안 됩니다. 어두운 점에 밝은 배경이 기본이며, 밝은 점에 어두운 배경처럼 반전시키면 읽지 못하는 스캐너도 있습니다.</li>
+      <li>PNG는 280픽셀 크기라 큰 인쇄물에는 흐릿하게 나올 수 있습니다. 포스터처럼 크게 뽑을 때는 SVG를 쓰세요.</li>
+      <li>QR 안에는 입력한 문자열이 그대로 들어갑니다. 나중에 주소를 바꿀 수 없으므로 인쇄 전에 링크를 다시 확인하세요.</li>
+    </ul>
+    <h3>자주 묻는 질문</h3>
+    <dl class="faq">
+      <dt>만든 QR코드에 유효기간이 있나요?</dt>
+      <dd>없습니다. 단축 URL 서비스를 거치지 않고 내용을 그대로 새기므로, 담긴 주소가 살아 있는 한 계속 작동합니다.</dd>
+      <dt>로고를 넣었더니 인식이 안 됩니다.</dt>
+      <dd>내용을 짧게 줄이거나, 여백이 많은 로고로 바꾸거나, 점 모양을 사각으로 바꿔 보세요. 그래도 안 되면 로고 없이 쓰는 편이 안전합니다.</dd>
+    </dl>
+  </section>
 </div>
 <script src="/vendor/qrstyling-1.6/qr-code-styling.js"></script>
 <script src="tool-shell.js"></script>
