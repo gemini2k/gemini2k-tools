@@ -51,6 +51,27 @@ window.AuditKit = (function () {
     var mount = typeof o.mount === 'string' ? document.querySelector(o.mount) : o.mount;
     var KEY = 'chk:' + o.key, state = load(KEY, {});
     var sum = el('div', 'ak-sum'), bar = el('div', 'ak-bar'), body = el('div');
+    // 그룹에 tkey(제목 i18n 키)가 있으면 언어와 무관한 키(tkey#i)로 저장.
+    // 예전엔 번역된 제목을 키로 써서 언어를 바꾸면 저장값이 안 보였다 → 옛 키(각 언어 제목#i)를 한 번 옮긴다.
+    o.groups.forEach(function (g) { if (!g.id && g.tkey) g.id = g.tkey; });
+    (function migrate() {
+      var I = window.I18N || {}, cur = (window.curLang && window.curLang()) || 'ko', changed = false;
+      var langs = [cur, 'ko', 'en', 'zh', 'ja'];
+      o.groups.forEach(function (g) {
+        if (!g.tkey) return;
+        langs.forEach(function (l) {
+          var title = I[l] && I[l][g.tkey];
+          if (!title || title === g.id) return;
+          Object.keys(state).forEach(function (k) {
+            var rest = k.slice(title.length);
+            if (k.indexOf(title) !== 0 || !/^#\d+$/.test(rest)) return;
+            if (!state[g.id + rest]) state[g.id + rest] = state[k];   // 현재 언어 저장분 우선
+            delete state[k]; changed = true;
+          });
+        });
+      });
+      if (changed) save(KEY, state);
+    })();
     function gid(g, i) { return (g.id || g.title) + '#' + i; }
     function persist() { save(KEY, state); renderSum(); }
     function tally(g) { var c = { total: 0, ok: 0, na: 0 }; g.items.forEach(function (it, i) { c.total++; var s = state[gid(g, i)] && state[gid(g, i)].v; if (s === 'ok') c.ok++; else if (s === 'na') c.na++; }); return c; }

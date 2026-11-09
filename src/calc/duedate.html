@@ -121,14 +121,14 @@
     }
     return 'D+'+(- left);
   }
-  function calc(){ var v=$('lmp').value; if(!v)return; var lmp=new Date(v); var cyc=+$('cycle').value||28;
-    var due=new Date(lmp.getTime()+ (280+(cyc-28))*86400000);
+  function calc(){ var v=$('lmp').value; if(!v)return; var q=v.split('-'); var lmp=new Date(+q[0],+q[1]-1,+q[2]); var cyc=+$('cycle').value||28; // 로컬 자정 기준(UTC 파싱 시 한국에서 하루 어긋남)
+    var due=new Date(lmp); due.setDate(due.getDate()+280+(cyc-28));
     var today=new Date(); today.setHours(0,0,0,0);
-    var days=Math.floor((today-lmp)/86400000); var w=Math.floor(days/7), d=days%7;
+    var days=Math.round((today-lmp)/86400000); var w=Math.floor(days/7), d=days%7;
     $('due').textContent=formatDue(due);
     if(days<0){ $('weeks').textContent='-'; $('tri').textContent='-'; }
     else { $('weeks').textContent=formatWeeks(w,d); $('tri').textContent=formatTri(w); }
-    var left=Math.ceil((due-today)/86400000);
+    var left=Math.round((due-today)/86400000);
     $('left').textContent=formatLeft(left);
     var prog=Math.max(0,Math.min(100,Math.round(days/280*100))); $('prog').textContent=prog+'%';
   }

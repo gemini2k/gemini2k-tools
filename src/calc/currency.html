@@ -92,7 +92,7 @@
     <h3>결과 해석</h3>
     <p>환율 1390을 그대로 두고 위에 250을 넣으면 250 × 1390 = 347,500이 아래에 나옵니다. 반대로 아래에 100000을 넣으면 100,000 ÷ 1390 = 71.942…를 반올림한 71.94가 위에 표시됩니다. 실제로 은행에서 바꿀 때는 매매기준율이 아니라 살 때·팔 때 환율(현찰 또는 송금)이 적용되고 수수료 우대율에 따라 금액이 달라지므로, 정확한 금액을 원하면 그 거래에 실제 적용되는 환율을 넣어야 합니다.</p>
     <h3>주의할 점</h3>
-    <p>소수 둘째 자리 반올림 때문에 원화를 달러로 바꾸는 식처럼 환율이 1보다 훨씬 작아지는 경우 정밀도가 떨어집니다. 특히 1390 같은 큰 환율에서 ⇅를 누르면 역수 0.00072가 반올림되어 환율 칸이 0으로 바뀌는 현상이 있으니, 바꾼 뒤에는 환율 칸을 확인하고 필요하면 다시 입력하세요. 해외 카드 결제는 브랜드 수수료와 해외이용 수수료가 별도로 붙습니다. 실제 시세는 거래 은행, 한국은행 경제통계시스템, 포털 환율 정보에서 확인하세요.</p>
+    <p>⇅로 환율을 역수로 바꾸면 1390 → 0.000719424처럼 유효숫자 6자리까지 유지되므로 원래 환율로 되돌렸을 때 아주 작은 오차가 생길 수 있습니다. 정확한 값이 필요하면 환율 칸에 직접 입력하세요. 금액은 1 이상이면 소수 둘째 자리까지, 1 미만이면 유효숫자 4자리까지 표시합니다. 해외 카드 결제는 브랜드 수수료와 해외이용 수수료가 별도로 붙습니다. 실제 시세는 거래 은행, 한국은행 경제통계시스템, 포털 환율 정보에서 확인하세요.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>엔화는 100엔 기준으로 넣어야 하나요?</dt>
@@ -109,7 +109,15 @@
   function num(s){ var v=parseFloat(String(s).replace(/[^0-9.]/g,'')); return isFinite(v)?v:0; }
   function fmt(n){
     var locale = {ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'}[(typeof curLang==='function'?curLang():null)||'ko'] || 'ko-KR';
-    return (Math.round(n*100)/100).toLocaleString(locale,{maximumFractionDigits:2});
+    // 1 미만 금액은 소수 둘째 자리 반올림 시 0이 되지 않도록 유효숫자 4자리까지 표시
+    var a=Math.abs(n), md = (a>0 && a<1) ? Math.min(8, 3 - Math.floor(Math.log10(a))) : 2;
+    return n.toLocaleString(locale,{maximumFractionDigits:md});
+  }
+  // 환율은 1보다 훨씬 작을 수 있으므로(예: 1/1390) 유효숫자 6자리 기준으로 표시
+  function fmtRate(n){
+    if(!isFinite(n)||n<=0) return '';
+    var d = n>=1 ? 4 : Math.min(10, 5 - Math.floor(Math.log10(n)));
+    return String(parseFloat(n.toFixed(d)));
   }
   function labels(){ $('r1').textContent=$('cur1').value.toUpperCase()||'?'; $('r2').textContent=$('cur2').value.toUpperCase()||'?'; }
   function from1(){ var r=num($('rate').value); $('amt2').value=fmt(num($('amt1').value)*r); }
@@ -120,7 +128,7 @@
   ['cur1','cur2'].forEach(function(id){ $(id).addEventListener('input', labels); });
   $('swap').addEventListener('click', function(){
     var c1=$('cur1').value, c2=$('cur2').value; $('cur1').value=c2; $('cur2').value=c1;
-    var r=num($('rate').value); if(r) $('rate').value=fmt(1/r);
+    var r=num($('rate').value); if(r) $('rate').value=fmtRate(1/r);
     labels(); from1();
   });
   window.onI18n = function(){ labels(); from1(); };

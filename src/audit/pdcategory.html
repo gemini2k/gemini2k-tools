@@ -73,10 +73,10 @@ function renderChecklist() {
   var appEl = document.getElementById('app');
   appEl.innerHTML = '';
   AuditKit.checklist({mount:'#app',key:'pdcategory',groups:[
-    {title:t('b_pdcategory_grp1'),items:[t('b_pdcategory_item_name'),t('b_pdcategory_item_contact'),t('b_pdcategory_item_address'),t('b_pdcategory_item_dob'),t('b_pdcategory_item_account'),t('b_pdcategory_item_ip')]},
-    {title:t('b_pdcategory_grp2'),items:[t('b_pdcategory_item_rrn'),t('b_pdcategory_item_passport'),t('b_pdcategory_item_license'),t('b_pdcategory_item_alien')]},
-    {title:t('b_pdcategory_grp3'),items:[t('b_pdcategory_item_health'),t('b_pdcategory_item_belief'),t('b_pdcategory_item_union'),t('b_pdcategory_item_political'),t('b_pdcategory_item_genetic'),t('b_pdcategory_item_biometric')]},
-    {title:t('b_pdcategory_grp4'),items:[t('b_pdcategory_item_bankacct'),t('b_pdcategory_item_card'),t('b_pdcategory_item_transaction'),t('b_pdcategory_item_asset')]}
+    {tkey:'b_pdcategory_grp1',title:t('b_pdcategory_grp1'),items:[t('b_pdcategory_item_name'),t('b_pdcategory_item_contact'),t('b_pdcategory_item_address'),t('b_pdcategory_item_dob'),t('b_pdcategory_item_account'),t('b_pdcategory_item_ip')]},
+    {tkey:'b_pdcategory_grp2',title:t('b_pdcategory_grp2'),items:[t('b_pdcategory_item_rrn'),t('b_pdcategory_item_passport'),t('b_pdcategory_item_license'),t('b_pdcategory_item_alien')]},
+    {tkey:'b_pdcategory_grp3',title:t('b_pdcategory_grp3'),items:[t('b_pdcategory_item_health'),t('b_pdcategory_item_belief'),t('b_pdcategory_item_union'),t('b_pdcategory_item_political'),t('b_pdcategory_item_genetic'),t('b_pdcategory_item_biometric')]},
+    {tkey:'b_pdcategory_grp4',title:t('b_pdcategory_grp4'),items:[t('b_pdcategory_item_bankacct'),t('b_pdcategory_item_card'),t('b_pdcategory_item_transaction'),t('b_pdcategory_item_asset')]}
   ]});
 }
 window.onI18n = renderChecklist;

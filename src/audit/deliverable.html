@@ -73,11 +73,11 @@ function _deliverableMount(){
   var app = document.getElementById('app');
   if(app) app.innerHTML = '';
   AuditKit.checklist({mount:'#app',key:'deliverable',perGroup:true,groups:[
-    {title:t('b_deliverable_g1'),items:[t('b_deliverable_g1_i1'),t('b_deliverable_g1_i2'),t('b_deliverable_g1_i3'),t('b_deliverable_g1_i4'),t('b_deliverable_g1_i5')]},
-    {title:t('b_deliverable_g2'),items:[t('b_deliverable_g2_i1'),t('b_deliverable_g2_i2'),t('b_deliverable_g2_i3'),t('b_deliverable_g2_i4'),t('b_deliverable_g2_i5'),t('b_deliverable_g2_i6'),t('b_deliverable_g2_i7')]},
-    {title:t('b_deliverable_g3'),items:[t('b_deliverable_g3_i1'),t('b_deliverable_g3_i2'),t('b_deliverable_g3_i3'),t('b_deliverable_g3_i4'),t('b_deliverable_g3_i5')]},
-    {title:t('b_deliverable_g4'),items:[t('b_deliverable_g4_i1'),t('b_deliverable_g4_i2'),t('b_deliverable_g4_i3'),t('b_deliverable_g4_i4'),t('b_deliverable_g4_i5')]},
-    {title:t('b_deliverable_g5'),items:[t('b_deliverable_g5_i1'),t('b_deliverable_g5_i2'),t('b_deliverable_g5_i3'),t('b_deliverable_g5_i4'),t('b_deliverable_g5_i5')]}]});
+    {tkey:'b_deliverable_g1',title:t('b_deliverable_g1'),items:[t('b_deliverable_g1_i1'),t('b_deliverable_g1_i2'),t('b_deliverable_g1_i3'),t('b_deliverable_g1_i4'),t('b_deliverable_g1_i5')]},
+    {tkey:'b_deliverable_g2',title:t('b_deliverable_g2'),items:[t('b_deliverable_g2_i1'),t('b_deliverable_g2_i2'),t('b_deliverable_g2_i3'),t('b_deliverable_g2_i4'),t('b_deliverable_g2_i5'),t('b_deliverable_g2_i6'),t('b_deliverable_g2_i7')]},
+    {tkey:'b_deliverable_g3',title:t('b_deliverable_g3'),items:[t('b_deliverable_g3_i1'),t('b_deliverable_g3_i2'),t('b_deliverable_g3_i3'),t('b_deliverable_g3_i4'),t('b_deliverable_g3_i5')]},
+    {tkey:'b_deliverable_g4',title:t('b_deliverable_g4'),items:[t('b_deliverable_g4_i1'),t('b_deliverable_g4_i2'),t('b_deliverable_g4_i3'),t('b_deliverable_g4_i4'),t('b_deliverable_g4_i5')]},
+    {tkey:'b_deliverable_g5',title:t('b_deliverable_g5'),items:[t('b_deliverable_g5_i1'),t('b_deliverable_g5_i2'),t('b_deliverable_g5_i3'),t('b_deliverable_g5_i4'),t('b_deliverable_g5_i5')]}]});
 }
 window.onI18n = _deliverableMount;
 _deliverableMount();

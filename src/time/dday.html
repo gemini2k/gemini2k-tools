@@ -154,7 +154,7 @@
   $('list').addEventListener('click', function(e){ var b=e.target.closest('.del'); if(b){ var arr=load();
     // 정렬 후 인덱스 매칭 위해 다시 정렬 동일 적용
     arr.sort(function(a,b){ return parse(a.dt)-parse(b.dt); }); arr.splice(+b.dataset.i,1); save(arr); render(); } });
-  (function(){ var d=new Date(); $('dt').value=d.toISOString().slice(0,10); })();
+  (function(){ var d=new Date(); $('dt').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
   render();
 </script>
 </body>

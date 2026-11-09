@@ -40,7 +40,7 @@ textarea{min-height:130px;resize:vertical;font-family:ui-monospace,monospace;}
 강원특별자치도 춘천시
 제주특별자치도</textarea>
     <label class="lbl" data-i18n="b_fuzzysearch_lbl_query">검색어</label>
-    <input type="text" id="q" value="과주"/>
+    <input type="text" id="q" value="부산광역"/>
     <div class="row"><span data-i18n="b_fuzzysearch_lbl_threshold">정밀도(threshold)</span> <input type="range" id="th" min="0" max="1" step="0.1" value="0.4" style="flex:1;"><span id="thv">0.4</span></div>
     <label class="lbl" data-i18n="b_fuzzysearch_lbl_result">결과 (점수 낮을수록 일치)</label>
     <div class="res" id="res"></div>
@@ -63,7 +63,7 @@ textarea{min-height:130px;resize:vertical;font-family:ui-monospace,monospace;}
       <li>'정밀도(threshold)' 슬라이더를 0~1 사이에서 움직이며 결과가 어떻게 바뀌는지 봅니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>점수는 0이 완전 일치, 1에 가까울수록 다른 것이며 점수가 낮은 순으로 정렬됩니다. 기본 목록에서 <code>수원</code>을 찾으면 "경기도 수원시"가 0.103 정도로 나옵니다. 예시 검색어 <code>과주</code>는 threshold 0.4에서는 결과가 없고, 0.6으로 올리면 "광주광역시"와 "제주특별자치도"가 둘 다 0.500으로 나옵니다. 오타를 받아 주려고 threshold를 올리면 엉뚱한 항목도 같이 걸린다는 점을 이렇게 확인할 수 있습니다.</p>
+    <p>점수는 0이 완전 일치, 1에 가까울수록 다른 것이며 점수가 낮은 순으로 정렬됩니다. 기본 목록에서 <code>수원</code>을 찾으면 "경기도 수원시"가 0.103 정도로 나옵니다. 처음 화면의 검색어 <code>부산광역</code>은 "부산광역시"(0.001)와 한 글자만 다른 "울산광역시"(0.250)를 함께 보여 줍니다. 오타 예시로 <code>과주</code>를 넣으면 threshold 0.4에서는 결과가 없고, 0.6으로 올리면 "광주광역시"와 "제주특별자치도"가 둘 다 0.500으로 나옵니다. 오타를 받아 주려고 threshold를 올리면 엉뚱한 항목도 같이 걸린다는 점을 이렇게 확인할 수 있습니다.</p>
     <h3>주의할 점</h3>
     <p>Fuse.js 기본값은 문자열 앞부분에서 멀리 떨어진 일치일수록 점수를 깎습니다(location 0, distance 100). 긴 문장 끝쪽의 단어는 잘 안 찾아질 수 있으니 실제 서비스에서는 ignoreLocation 등의 옵션도 함께 검토하세요. 한글은 음절 단위로 비교하므로 초성 검색이나 자모 단위 오타(예: '광'과 '과')는 별도 처리 없이는 잘 잡히지 않습니다.</p>
     <h3>자주 묻는 질문</h3>
