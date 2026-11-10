@@ -133,9 +133,10 @@
     var data=xs.getData(); var sheet=Array.isArray(data)?data[0]:data; var rows=(sheet&&sheet.rows)||{};
     var calc=makeEvaluator(rows);
     var maxC=0; Object.keys(rows).forEach(function(r){ if(rows[r]&&rows[r].cells){ Object.keys(rows[r].cells).forEach(function(c){ if(+c+1>maxC)maxC=+c+1; }); } });
+  function csvGuard(v){ v=v==null?'':String(v); return (/^[=+\-@\t\r]/.test(v) && !/^[+\-]?(\d[\d,]*\.?\d*|\.\d+)([eE][+\-]?\d+)?$/.test(v)) ? "'"+v : v; }
     var out=[]; var maxR=0; Object.keys(rows).forEach(function(r){ if(/^\d+$/.test(r)&&+r+1>maxR)maxR=+r+1; });
     for(var r=0;r<maxR;r++){ var line=[]; var cells=(rows[r]&&rows[r].cells)||{};
-      for(var c=0;c<maxC;c++){ var v=cells[c]?calc(r,c):''; if(/[",\n]/.test(v))v='"'+v.replace(/"/g,'""')+'"'; line.push(v); } out.push(line.join(',')); }
+      for(var c=0;c<maxC;c++){ var v=cells[c]?csvGuard(calc(r,c)):''; if(/[",\n]/.test(v))v='"'+v.replace(/"/g,'""')+'"'; line.push(v); } out.push(line.join(',')); }
     var blob=new Blob(['﻿'+out.join('\n')],{type:'text/csv'}); var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sheet.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120);
   });
 </script>

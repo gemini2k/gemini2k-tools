@@ -177,7 +177,8 @@
     $('cols').appendChild(d);
   }
   function getCols(){ return [].map.call($('cols').children,function(r){ return {name:r.querySelector('.cn').value.trim()||'col', type:r.querySelector('.ct').value}; }); }
-  function csvCell(v){ v=String(v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+  function csvGuard(v){ v=v==null?'':String(v); return (/^[=+\-@\t\r]/.test(v) && !/^[+\-]?(\d[\d,]*\.?\d*|\.\d+)([eE][+\-]?\d+)?$/.test(v)) ? "'"+v : v; }
+  function csvCell(v){ v=csvGuard(v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
   var last='';
   function gen(){
     var cols=getCols(); if(!cols.length){ toast(t('b_mockdata_toast_no_col')); return; }

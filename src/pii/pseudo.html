@@ -153,7 +153,8 @@
         $('res').innerHTML=html; $('resWrap').style.display='';
       });
   }
-  function csvCell(s){ s=String(s); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+  function csvGuard(v){ v=v==null?'':String(v); return (/^[=+\-@\t\r]/.test(v) && !/^[+\-]?(\d[\d,]*\.?\d*|\.\d+)([eE][+\-]?\d+)?$/.test(v)) ? "'"+v : v; }
+  function csvCell(s){ s=csvGuard(s); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
 
   $('run').addEventListener('click', run);
   $('genSalt').addEventListener('click', function(){

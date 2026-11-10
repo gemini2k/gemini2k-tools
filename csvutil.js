@@ -61,11 +61,14 @@
       return '"' + v.replace(/"/g,'""') + '"';
     return v;
   }
-  // matrix = 2차원 배열(헤더 포함해 호출측이 구성)
+  // CSV 수식 인젝션 방지: =,+,-,@,탭,CR 로 시작하는 문자열 앞에 ' 를 붙인다(순수 숫자는 제외).
+  // 엑셀에서 열었을 때 =HYPERLINK(...) 같은 값이 수식으로 실행되는 것을 막는다.
+  function guard(v){ v=v==null?'':String(v); return (/^[=+\-@\t\r]/.test(v) && !/^[+\-]?(\d[\d,]*\.?\d*|\.\d+)([eE][+\-]?\d+)?$/.test(v)) ? "'"+v : v; }
+  // matrix = 2차원 배열(헤더 포함해 호출측이 구성). opt.safe===false 면 수식 방지 끔(원본 그대로 왕복)
   function toText(matrix, opt){
     opt = opt || {};
-    var delim = opt.delimiter || ',';
-    return matrix.map(function(r){ return r.map(function(c){ return quote(c, delim); }).join(delim); }).join('\r\n');
+    var delim = opt.delimiter || ',', safe = opt.safe !== false;
+    return matrix.map(function(r){ return r.map(function(c){ return quote(safe ? guard(c) : c, delim); }).join(delim); }).join('\r\n');
   }
 
   // 헤더+행 → 객체 배열
@@ -73,5 +76,5 @@
     return parsed.rows.map(function(r){ var o={}; parsed.header.forEach(function(h,i){ o[h]=r[i]; }); return o; });
   }
 
-  window.CSV = { detectDelimiter: detectDelimiter, parse: parse, toText: toText, toObjects: toObjects, quote: quote };
+  window.CSV = { detectDelimiter: detectDelimiter, parse: parse, toText: toText, toObjects: toObjects, quote: quote, guard: guard };
 })();

@@ -9,7 +9,8 @@ window.AuditKit = (function () {
   function L(k, d) { return (window.t && window.t(k) !== k) ? window.t(k) : d; }   // i18n: 키 있으면 번역, 없으면 한국어 기본
   function load(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
-  function csvCell(v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  function csvGuard(v){ v=v==null?'':String(v); return (/^[=+\-@\t\r]/.test(v) && !/^[+\-]?(\d[\d,]*\.?\d*|\.\d+)([eE][+\-]?\d+)?$/.test(v)) ? "'"+v : v; }
+  function csvCell(v) { v = csvGuard(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
   function downloadCSV(name, rows) {
     var csv = '﻿' + rows.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n');
     var blob = new Blob([csv], { type: 'text/csv' }); var a = document.createElement('a');

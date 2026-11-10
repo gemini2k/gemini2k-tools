@@ -827,7 +827,8 @@ function exportCsv(){
   });
   download('재식별위험_집합별리포트.csv','\uFEFF'+lines.join('\r\n'),'text/csv;charset=utf-8');
 }
-function csvCell(v){ v=String(v); return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+function csvGuard(v){ v=v==null?'':String(v); return (/^[=+\-@\t\r]/.test(v) && !/^[+\-]?(\d[\d,]*\.?\d*|\.\d+)([eE][+\-]?\d+)?$/.test(v)) ? "'"+v : v; }
+function csvCell(v){ v=csvGuard(v); return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
 function exportJson(){
   if(!LAST)return; const R=LAST;
   const summary={

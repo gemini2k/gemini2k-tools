@@ -145,7 +145,8 @@
       || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1rem">'+t('b_wordfreq_empty')+'</td></tr>';
   }
   function esc(s){ return String(s).replace(/[&<>]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]);}); }
-  function csv(){ return t('b_wordfreq_csv_header')+'\n'+rows.map(function(r){ var w=/[",\n]/.test(r[0])?'"'+r[0].replace(/"/g,'""')+'"':r[0]; return w+','+r[1]; }).join('\n'); }
+  function csvGuard(v){ v=v==null?'':String(v); return (/^[=+\-@\t\r]/.test(v) && !/^[+\-]?(\d[\d,]*\.?\d*|\.\d+)([eE][+\-]?\d+)?$/.test(v)) ? "'"+v : v; }
+  function csv(){ return t('b_wordfreq_csv_header')+'\n'+rows.map(function(r){ var w0=csvGuard(r[0]), w=/[",\n]/.test(w0)?'"'+w0.replace(/"/g,'""')+'"':w0; return w+','+r[1]; }).join('\n'); }
   ['input','minlen','stop','lower','top'].forEach(function(id){ $(id).addEventListener('input',analyze); $(id).addEventListener('change',analyze); });
   $('copy').addEventListener('click',function(){ if(rows.length) navigator.clipboard.writeText(csv()).then(function(){toast(t('b_wordfreq_toast_copied'));}); });
   $('dl').addEventListener('click',function(){ if(!rows.length){toast(t('b_wordfreq_toast_nodata'));return;} var blob=new Blob(['﻿'+csv()],{type:'text/csv;charset=utf-8'});

@@ -196,7 +196,8 @@
       if(c==='\n'){row.push(field);rows.push(row);row=[];field='';i++;continue;} field+=c;i++; }
     row.push(field);rows.push(row); if(rows.length&&rows[rows.length-1].length===1&&rows[rows.length-1][0]==='')rows.pop(); return rows; }
   function detectDelim(t){ var l=(t.split(/\r?\n/)[0]||''); return (l.match(/\t/g)||[]).length>(l.match(/,/g)||[]).length?'\t':','; }
-  function csvCell(v){ v=String(v==null?'':v); return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+  function csvGuard(v){ v=v==null?'':String(v); return (/^[=+\-@\t\r]/.test(v) && !/^[+\-]?(\d[\d,]*\.?\d*|\.\d+)([eE][+\-]?\d+)?$/.test(v)) ? "'"+v : v; }
+  function csvCell(v){ v=csvGuard(v); return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
 
   function loadCSV(text){
     $('err').textContent='';
