@@ -90,11 +90,11 @@
     <h3>결과 해석</h3>
     <p>처음 열었을 때의 샘플에서 <code>users[*].name</code>은 <code>["홍길동", "김영희"]</code>, <code>users[0].name</code>은 <code>"홍길동"</code>입니다. 일치하는 값이 여러 개면 배열로 모으고, 하나면 그 값만 보여 주므로 결과가 배열인지 단일 값인지는 원본 구조가 아니라 일치 개수에 따라 달라집니다. 일치하는 값이 없으면 일치 없음 문구가 나옵니다.</p>
     <h3>주의할 점</h3>
-    <p>표준 JSONPath의 루트 기호 <code>$</code>는 지원하지 않으니 <code>$.users</code> 대신 <code>users</code>로 시작하세요. 필터식 <code>[?(@.age &gt; 20)]</code>, 재귀 탐색 <code>..</code>, 음수 인덱스 <code>[-1]</code>, 따옴표 키 <code>['first name']</code>도 지원하지 않습니다. 키는 영문·숫자·한글·<code>_</code>·<code>-</code>로 된 것만 인식하며, 인식하지 못한 문자는 오류 없이 건너뛰기 때문에 지원하지 않는 문법을 넣으면 엉뚱한 결과가 나올 수 있습니다. 조건 검색이 필요하면 JSONata 도구를 쓰세요.</p>
+    <p>표준 JSONPath의 루트 기호 <code>$</code>는 붙여도 되고 생략해도 됩니다(<code>$.users</code> = <code>users</code>). 재귀 탐색 <code>..</code>(예: <code>$..email</code>은 깊이와 상관없이 모든 email), 음수 인덱스 <code>[-1]</code>(마지막 원소), 따옴표 키 <code>['first name']</code>를 지원합니다. 필터식 <code>[?(@.age &gt; 20)]</code>, 슬라이스 <code>[0:2]</code>, 여러 키 선택 <code>['a','b']</code>는 지원하지 않으며, 해석할 수 없는 문법을 넣으면 결과 대신 문제가 시작된 위치를 오류로 보여 줍니다. 조건 검색이 필요하면 JSONata 도구를 쓰세요.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>점이나 공백이 들어간 키는 어떻게 지정하나요?</dt>
-      <dd>이 도구로는 지정할 수 없습니다. 경로를 비워 전체 구조를 본 뒤 상위 객체까지 꺼내서 확인하세요.</dd>
+      <dd>대괄호와 따옴표로 감싸면 됩니다. 예: <code>users[0]['first name']</code>, <code>config["a.b"]</code>.</dd>
       <dt>jq 문법을 써도 되나요?</dt>
       <dd><code>.users[0].name</code>처럼 앞에 점을 붙인 단순한 경로는 같은 결과가 나오지만, 파이프나 함수 같은 jq 문법은 지원하지 않습니다.</dd>
     </dl>
@@ -105,21 +105,49 @@
 <script>
   var $ = function(id){ return document.getElementById(id); };
   function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
+  // 경로 해석기: $ 루트(생략 가능), .key, ..key(재귀), [n]/[-n], [*]/.*, ['key']/["key"], 선행 점(jq식) 허용.
+  // 인식 못 하는 문법은 건너뛰지 않고 위치와 함께 오류를 낸다.
   function tokens(path){
-    var tmp=[], re=/\s*\.?\s*([A-Za-z0-9_$가-힣-]+|\*)|\[\s*(\*|\d+)\s*\]/g, m;
-    while((m=re.exec(path))!==null){ tmp.push(m[1]!=null?m[1]:m[2]); }
-    return tmp;
+    var i=0, n=path.length, out=[];
+    function ws(){ while(i<n && /\s/.test(path[i])) i++; }
+    function fail(){ var e=new Error('path'); e.pos=i; throw e; }
+    function key(){ var m=/^[A-Za-z0-9_$À-￿-]+/.exec(path.slice(i)); if(!m) return null; i+=m[0].length; return m[0]; }
+    function bracket(rec){
+      i++; ws(); var tk;
+      if(path[i]==='*'){ i++; tk={t:'wild'}; }
+      else if(path[i]==="'"||path[i]==='"'){ var q=path[i++], v=''; while(i<n && path[i]!==q){ if(path[i]==='\\' && i+1<n) i++; v+=path[i++]; } if(i>=n) fail(); i++; tk={t:'key',v:v}; }
+      else { var m=/^-?\d+/.exec(path.slice(i)); if(!m) fail(); i+=m[0].length; tk={t:'idx',v:+m[0]}; }
+      ws(); if(path[i]!==']') fail(); i++; tk.rec=rec; out.push(tk);
+    }
+    ws(); if(path[i]==='$'){ i++; }
+    var first=true;
+    while(ws(), i<n){
+      var c=path[i];
+      if(c==='['){ bracket(false); }
+      else if(c==='.'){
+        var rec = path[i+1]==='.'; i += rec?2:1; ws();
+        if(path[i]==='['){ bracket(rec); }
+        else if(path[i]==='*'){ i++; out.push({t:'wild',rec:rec}); }
+        else { var k=key(); if(k==null) fail(); out.push({t:'key',v:k,rec:rec}); }
+      }
+      else if(first){ if(c==='*'){ i++; out.push({t:'wild'}); } else { var k2=key(); if(k2==null) fail(); out.push({t:'key',v:k2}); } }
+      else fail();
+      first=false;
+    }
+    return out;
+  }
+  function descend(v, acc){ acc.push(v); if(v && typeof v==='object'){ (Array.isArray(v)?v:Object.keys(v).map(function(k){return v[k];})).forEach(function(x){ descend(x, acc); }); } return acc; }
+  function step(v, tk, next){
+    if(v==null || typeof v!=='object') return;
+    if(tk.t==='wild'){ if(Array.isArray(v)) v.forEach(function(x){next.push(x);}); else Object.keys(v).forEach(function(k){next.push(v[k]);}); }
+    else if(tk.t==='idx'){ if(Array.isArray(v)){ var ix=tk.v<0?v.length+tk.v:tk.v; if(ix>=0 && ix<v.length) next.push(v[ix]); } }
+    else if(!Array.isArray(v) || /^\d+$/.test(tk.v)){ if(Object.prototype.hasOwnProperty.call(v, tk.v)) next.push(v[tk.v]); }
   }
   function query(obj, toks){
     var cur=[obj];
     toks.forEach(function(tk){
       var next=[];
-      cur.forEach(function(v){
-        if(v==null) return;
-        if(tk==='*'){ if(Array.isArray(v)) v.forEach(function(x){next.push(x);}); else if(typeof v==='object') Object.keys(v).forEach(function(k){next.push(v[k]);}); }
-        else if(/^\d+$/.test(tk)){ if(Array.isArray(v)) next.push(v[+tk]); }
-        else { if(typeof v==='object') next.push(v[tk]); }
-      });
+      cur.forEach(function(v){ (tk.rec ? descend(v, []) : [v]).forEach(function(x){ step(x, tk, next); }); });
       cur=next;
     });
     return cur;
@@ -130,7 +158,8 @@
     var data; try{ data=JSON.parse(src); }catch(e){ $('err').textContent=t('b_jsonpath_err_invalid_json'); $('out').value=''; return; }
     var p=$('path').value.trim();
     if(!p){ $('out').value=JSON.stringify(data,null,2); return; }
-    var toks=tokens(p); if(!toks.length){ $('err').textContent=t('b_jsonpath_err_invalid_path'); return; }
+    var toks; try{ toks=tokens(p); }catch(e){ $('err').textContent=t('b_jsonpath_err_invalid_path')+' — '+p.slice(0,e.pos)+' ⟶ '+(p.slice(e.pos)||'∅'); $('out').value=''; return; }
+    if(!toks.length){ $('out').value=JSON.stringify(data,null,2); return; }
     var res=query(data, toks).filter(function(v){return v!==undefined;});
     var out = res.length<=1 ? (res.length?res[0]:undefined) : res;
     $('out').value = out===undefined ? t('b_jsonpath_no_match') : JSON.stringify(out,null,2);

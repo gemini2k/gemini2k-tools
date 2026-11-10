@@ -17,10 +17,34 @@ window.AuditKit = (function () {
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 120);
   }
 
+  // select 열은 화면 언어의 번역 문자열을 그대로 저장한다. 다른 언어로 저장된 값('High' 등)을
+  // 현재 언어 표기('높음')로 바꿔 주지 않으면 선택이 첫 항목으로 보이고 집계에서도 빠진다.
+  // 옵션 문자열과 같은 현재 언어 값을 가진 i18n 키를 찾아(도구 접두사 우선) 4개 언어 번역 → 현재 옵션으로 매핑.
+  function normalizeSelects(key, cols, rows) {
+    var I = window.I18N || {}, cur = (window.curLang && window.curLang()) || 'ko', D = I[cur];
+    if (!D || !rows.length) return false;
+    var langs = ['ko', 'en', 'zh', 'ja'], pre = 'b_' + key + '_', changed = false;
+    cols.forEach(function (c) {
+      if (c.type !== 'select' || !c.opts) return;
+      var want = {}, found = {}, map = {};
+      c.opts.forEach(function (op) { want[String(op)] = 1; });
+      Object.keys(D).forEach(function (k) {
+        var v = D[k]; if (typeof v !== 'string' || !want[v]) return;
+        if (!found[v] || (k.indexOf(pre) === 0 && found[v].indexOf(pre) !== 0)) found[v] = k;
+      });
+      Object.keys(found).forEach(function (v) {
+        langs.forEach(function (l) { var tr = I[l] && I[l][found[v]]; if (typeof tr === 'string' && !(tr in want)) map[tr] = v; });
+      });
+      rows.forEach(function (r) { var v = r[c.k]; if (v != null && map.hasOwnProperty(v)) { r[c.k] = map[v]; changed = true; } });
+    });
+    return changed;
+  }
+
   function register(o) {
     var mount = typeof o.mount === 'string' ? document.querySelector(o.mount) : o.mount;
     var KEY = 'reg:' + o.key, cols = o.cols;
     var rows = load(KEY, (o.seed || []).slice());
+    normalizeSelects(o.key, cols, rows) && save(KEY, rows);
     var table = el('table', 'ak-tbl'), bar = el('div', 'ak-bar'), tw = el('div', 'ak-tw'), sum = el('div', 'ak-sum');
     function persist() { save(KEY, rows); renderSummary(); }
     function renderSummary() { if (o.summary) sum.innerHTML = o.summary(rows) || ''; }
