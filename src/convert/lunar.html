@@ -9,17 +9,17 @@
 <meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/>
 <meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
 <title>양력↔음력 변환기 — 빛의여행(gemini2k) 도구</title>
-<meta name="description" content="양력과 음력(동아시아 음력·중국 농력)을 서로 변환하고 간지(干支)·띠를 알려주는 무료 도구. 윤달 지원, 1900~2100년. 설치 없이 브라우저에서 바로."/>
+<meta name="description" content="양력과 한국 음력을 서로 변환하고 간지(干支)·띠를 알려주는 무료 도구. 한국천문연구원 기준 음력 자료, 윤달 지원, 1583~2050년. 설치 없이 브라우저에서 바로."/>
 <link rel="canonical" href="https://gemini2k.co.kr/lunar.html"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="빛의여행(gemini2k) 도구"/>
 <meta property="og:title" content="양력↔음력 변환기 — 빛의여행(gemini2k) 도구"/>
-<meta property="og:description" content="양력과 음력(동아시아 음력·중국 농력)을 서로 변환하고 간지(干支)·띠를 알려주는 무료 도구. 윤달 지원, 1900~2100년. 설치 없이 브라우저에서 바로."/>
+<meta property="og:description" content="양력과 한국 음력을 서로 변환하고 간지(干支)·띠를 알려주는 무료 도구. 한국천문연구원 기준 음력 자료, 윤달 지원, 1583~2050년. 설치 없이 브라우저에서 바로."/>
 <meta property="og:url" content="https://gemini2k.co.kr/lunar.html"/>
 <meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="양력↔음력 변환기 — 빛의여행(gemini2k) 도구"/>
-<meta name="twitter:description" content="양력과 음력(동아시아 음력·중국 농력)을 서로 변환하고 간지(干支)·띠를 알려주는 무료 도구. 윤달 지원, 1900~2100년. 설치 없이 브라우저에서 바로."/>
+<meta name="twitter:description" content="양력과 한국 음력을 서로 변환하고 간지(干支)·띠를 알려주는 무료 도구. 한국천문연구원 기준 음력 자료, 윤달 지원, 1583~2050년. 설치 없이 브라우저에서 바로."/>
 <meta name="twitter:image" content="https://gemini2k.co.kr/og.png"/>
 
 <link rel="stylesheet" href="/fonts/pretendard.css"/>
@@ -41,7 +41,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "양력↔음력 변환기",
-  "description": "양력과 음력(동아시아 음력·중국 농력)을 서로 변환하고 간지(干支)·띠를 알려주는 무료 도구. 윤달 지원, 1900~2100년. 설치 없이 브라우저에서 바로.",
+  "description": "양력과 한국 음력을 서로 변환하고 간지(干支)·띠를 알려주는 무료 도구. 한국천문연구원 기준 음력 자료, 윤달 지원, 1583~2050년. 설치 없이 브라우저에서 바로.",
   "url": "https://gemini2k.co.kr/lunar.html",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Web",
@@ -64,29 +64,29 @@
 
 <div class="toolwrap">
   <h1 data-i18n="tool.lunar.t">양력↔음력 변환기</h1>
-  <p class="sub" data-i18n="ln.sub">양력과 음력(동아시아 음력)을 서로 변환합니다.</p>
+  <p class="sub" data-i18n="ln.sub">양력과 한국 음력(한국천문연구원 기준)을 서로 변환합니다.</p>
 
   <div class="card">
     <label for="solar" data-i18n="ln.s2l">양력 → 음력</label>
-    <input type="date" id="solar"/>
+    <input type="date" id="solar" min="1583-01-01" max="2050-12-31"/>
     <div class="out" id="outA">—</div>
   </div>
 
   <div class="card">
     <label data-i18n="ln.l2s">음력 → 양력</label>
     <div class="lrow">
-      <div class="f"><label for="ly" style="margin-top:.4rem;" data-i18n="ln.year">년</label><input type="number" id="ly" min="1900" max="2100" value="2026"/></div>
+      <div class="f"><label for="ly" style="margin-top:.4rem;" data-i18n="ln.year">년</label><input type="number" id="ly" min="1583" max="2050" value="2026"/></div>
       <div class="f"><label for="lm" style="margin-top:.4rem;" data-i18n="ln.month">월</label><input type="number" id="lm" min="1" max="12" value="1"/></div>
       <div class="f"><label for="ld" style="margin-top:.4rem;" data-i18n="ln.day">일</label><input type="number" id="ld" min="1" max="30" value="1"/></div>
     </div>
     <label class="chk"><input type="checkbox" id="leap"/> <span data-i18n="ln.leap">윤달</span></label>
     <div class="out" id="outB">—</div>
   </div>
-  <p class="hint" data-i18n="ln.range">지원 범위: 1900년 ~ 2100년. 모든 계산은 브라우저에서 이루어집니다.</p>
+  <p class="hint" data-i18n="ln.range">지원 범위: 양력 1583년 1월 1일 ~ 2050년 12월 31일(음력 2050년 11월 18일까지). 한국천문연구원 기준 음력 자료로 계산하며, 모든 계산은 브라우저에서 이루어집니다.</p>
   <section class="toolhelp">
     <h2>양력↔음력 변환기 사용 안내</h2>
     <h3>무엇을 하는 도구인가</h3>
-    <p>양력 날짜를 음력으로, 음력 날짜를 양력으로 바꿉니다. 1900년부터 2100년까지 각 해의 큰달·작은달과 윤달 정보를 담은 표를 브라우저에 내장해 계산하며, 양력→음력 결과에는 그해 음력 연도의 간지(예: 丙午)와 띠를, 음력→양력 결과에는 요일을 함께 표시합니다.</p>
+    <p>양력 날짜를 음력으로, 음력 날짜를 양력으로 바꿉니다. 한국천문연구원이 발표하는 한국 음력과 같은 기준의 달력 자료(오픈소스 korean-lunar-calendar, MIT)를 브라우저에 내장해 계산하므로 각 해의 큰달·작은달과 윤달이 우리나라 달력과 일치하며, 양력→음력 결과에는 그해 음력 연도의 간지(예: 丙午)와 띠를, 음력→양력 결과에는 요일을 함께 표시합니다.</p>
     <h3>언제 쓰나</h3>
     <ul>
       <li>음력 생일·제사·기일이 올해 양력으로 며칠인지 달력에 옮겨 적을 때</li>
@@ -104,74 +104,39 @@
     <p>양력 2026년 2월 17일을 고르면 「음력 2026년 1월 1일」과 「丙午년 · 말띠」가 나옵니다. 그날이 설날이라는 뜻입니다. 2023년에는 윤2월이 있어서, 음력 2023년 2월 1일에 「윤달」을 체크하면 양력 2023년 3월 22일(수)이, 체크하지 않으면 평달인 2월 1일에 해당하는 양력 날짜가 나옵니다. 간지와 띠는 음력 설을 기준으로 바뀝니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>지원 범위는 1900년~2100년입니다. 음력표가 음력 1900년 1월 1일(양력 1900년 1월 31일)부터 시작하므로, 양력 1900년 1월 1일~30일과 2101년 이후 날짜를 넣으면 범위를 벗어났다는 안내가 나옵니다.</li>
-      <li>내장된 음력표는 중국 표준시 기준으로 널리 쓰이는 표입니다. 한국천문연구원이 발표하는 한국 음력은 시차 때문에 드물게 초하루나 윤달이 다를 수 있어(예: 2017년 윤달을 한국은 5월, 이 표는 6월로 계산), 법적·공식 날짜는 천문연구원 자료로 확인하세요.</li>
+      <li>지원 범위는 양력 1583년 1월 1일부터 2050년 12월 31일까지, 음력으로는 1583년부터 2050년 11월 18일까지입니다. 한국천문연구원이 공식 음력을 2050년까지만 계산해 두었기 때문에 그 뒤 날짜는 변환하지 않습니다. 1582년 이전은 서양에서 율리우스력을 쓰던 시기라 양력 날짜 자체의 기준이 달라져 범위에서 뺐습니다.</li>
+      <li>중국 달력(농력)과는 같은 날이 아닐 수 있습니다. 한국은 동경 135도(UTC+9), 중국은 동경 120도(UTC+8) 기준으로 초하루를 정하기 때문에 가끔 하루씩 어긋나고, 윤달이 다른 해도 있습니다. 예를 들어 2017년 윤달은 한국이 윤5월, 중국이 윤6월이고, 2027년 설날은 한국이 2월 7일, 중국이 2월 6일입니다. 중국 쪽 날짜가 필요하면 중국 자료를 따로 확인하세요.</li>
       <li>윤달이 없는 달에 「윤달」을 체크하면 변환하지 않고 그해에는 해당 윤달이 없다는 경고와 함께 실제 윤달이 몇 월인지(있으면) 알려 줍니다. 체크를 해제하면 평달로 계산됩니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>음력 생일은 매년 양력으로 같은 날인가요?</dt>
       <dd>아닙니다. 해마다 양력 날짜가 달라지므로 매년 이 도구로 다시 변환해야 합니다.</dd>
+      <dt>예전에 다른 사이트에서 본 날짜와 하루 차이가 나요.</dt>
+      <dd>중국 기준 음력표를 쓰는 프로그램이 적지 않아서, 초하루가 갈리는 달에는 하루 차이가 날 수 있습니다. 이 도구는 한국천문연구원 기준이므로 국내 달력·공휴일과 맞습니다.</dd>
       <dt>띠는 1월 1일에 바뀌나요?</dt>
       <dd>이 도구는 음력 설을 기준으로 바꿉니다. 사주명리처럼 입춘을 기준으로 삼는 분야와는 설과 입춘 사이 기간의 결과가 다를 수 있습니다.</dd>
     </dl>
   </section>
 </div>
 
+<script src="/vendor/korean-lunar-calendar-0/korean-lunar-calendar.min.js"></script>
 <script src="tool-shell.js"></script>
 <script>
   function T(k){ return window.t ? window.t(k) : k; }
-  var lunarInfo=[0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
-  0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
-  0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
-  0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
-  0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
-  0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
-  0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
-  0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,
-  0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
-  0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,
-  0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,
-  0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,
-  0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,
-  0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,
-  0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0,
-  0x14b63,0x09370,0x049f8,0x04970,0x064b0,0x168a6,0x0ea50,0x06b20,0x1a6c4,0x0aae0,
-  0x0a2e0,0x0d2e3,0x0c960,0x0d557,0x0d4a0,0x0da50,0x05d55,0x056a0,0x0a6d0,0x055d4,
-  0x052d0,0x0a9b8,0x0a950,0x0b4a0,0x0b6a6,0x0ad50,0x055a0,0x0aba4,0x0a5b0,0x052b0,
-  0x0b273,0x06930,0x07337,0x06aa0,0x0ad50,0x14b55,0x04b60,0x0a570,0x054e4,0x0d160,
-  0x0e968,0x0d520,0x0daa0,0x16aa6,0x056d0,0x04ae0,0x0a9d4,0x0a2d0,0x0d150,0x0f252,0x0d520];
-  function leapMonth(y){ return lunarInfo[y-1900]&0xf; }
-  function leapDays(y){ return leapMonth(y)?((lunarInfo[y-1900]&0x10000)?30:29):0; }
-  function monthDays(y,m){ return (lunarInfo[y-1900]&(0x10000>>m))?30:29; }
-  function lYearDays(y){ var s=348,i; for(i=0x8000;i>0x8;i>>=1) s+=(lunarInfo[y-1900]&i)?1:0; return s+leapDays(y); }
+  /* 한국천문연구원(KASI) 기준 음력 자료: korean-lunar-calendar(MIT). 지원 범위 안에서만 사용한다 */
+  var KLC=new KoreanLunarCalendar();
+  var MIN_SOLAR=15830101, MAX_SOLAR=20501231, MIN_LY=1583, MAX_LUNAR=20501118;
+  function leapMonth(y){ for(var m=1;m<=12;m++){ if(KLC.setLunarDate(y,m,1,true)) return m; } return 0; }
   function solar2lunar(yy,mm,dd){
-    if(yy<1900||yy>2100) return null;
-    var offset=Math.round((Date.UTC(yy,mm-1,dd)-Date.UTC(1900,0,31))/86400000), i,temp=0,year;
-    for(i=1900;i<2101&&offset>0;i++){ temp=lYearDays(i); offset-=temp; }
-    if(offset<0){ offset+=temp; i--; } year=i;
-    var leap=leapMonth(year), isLeap=false;
-    for(i=1;i<13&&offset>0;i++){
-      if(leap>0&&i===(leap+1)&&isLeap===false){ --i; isLeap=true; temp=leapDays(year); }
-      else { temp=monthDays(year,i); }
-      if(isLeap===true&&i===(leap+1)) isLeap=false;
-      offset-=temp;
-    }
-    if(offset===0&&leap>0&&i===leap+1){ if(isLeap){ isLeap=false; } else { isLeap=true; --i; } }
-    if(offset<0){ offset+=temp; --i; }
-    return { y:year, m:i, d:offset+1, leap:isLeap };
+    var v=yy*10000+mm*100+dd; if(v<MIN_SOLAR||v>MAX_SOLAR) return null;
+    if(!KLC.setSolarDate(yy,mm,dd)) return null;
+    var r=KLC.getLunarCalendar(); return { y:r.year, m:r.month, d:r.day, leap:!!r.intercalation };
   }
   function lunar2solar(y,m,d,wantLeap){
-    if(y<1900||y>2100) return null;
-    var leap=leapMonth(y), offset=0, i;
-    var maxd = (wantLeap&&m===leap)?leapDays(y):monthDays(y,m);
-    if(m<1||m>12||d<1||d>maxd) return null;
-    for(i=1900;i<y;i++) offset+=lYearDays(i);
-    for(i=1;i<m;i++) offset+=monthDays(y,i);
-    if(leap>0){ if(wantLeap&&m===leap){ offset+=monthDays(y,leap); } else if(m>leap){ offset+=leapDays(y); } }
-    offset+=d-1;
-    var dt=new Date(Date.UTC(1900,0,31)+offset*86400000);
-    return { y:dt.getUTCFullYear(), m:dt.getUTCMonth()+1, d:dt.getUTCDate() };
+    if(y<MIN_LY||y*10000+m*100+d>MAX_LUNAR) return null;
+    if(!KLC.setLunarDate(y,m,d,!!wantLeap)) return null;
+    var r=KLC.getSolarCalendar(); return { y:r.year, m:r.month, d:r.day };
   }
 
   var STEMS=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
@@ -191,9 +156,9 @@
   function runA(){
     var v=solar.value; if(!v){ outA.textContent='—'; return; }
     var p=v.split('-');
-    /* 음력표는 음력 1900-01-01 = 양력 1900-01-31부터 시작하므로 그 이전·2100년 이후는 범위 밖으로 안내한다 */
-    var ut=Date.UTC(+p[0],+p[1]-1,+p[2]);
-    if(ut<Date.UTC(1900,0,31)||ut>Date.UTC(2100,11,31)){ outA.textContent=T('ln.outofrange'); return; }
+    /* KASI 자료 범위(양력 1583-01-01 ~ 2050-12-31) 밖은 범위 안내 */
+    var sv=(+p[0])*10000+(+p[1])*100+(+p[2]);
+    if(!(sv>=MIN_SOLAR&&sv<=MAX_SOLAR)){ outA.textContent=T('ln.outofrange'); return; }
     var r=solar2lunar(+p[0],+p[1],+p[2]);
     if(!r){ outA.textContent=T('ln.invalid'); return; }
     var s=T('ln.lunarout').replace('{y}',r.y).replace('{m}',r.m).replace('{d}',r.d);
@@ -202,7 +167,7 @@
   }
   function runB(){
     var y=+ly.value, m=+lm.value, d=+ld.value;
-    if(y<1900||y>2100){ outB.textContent=T('ln.outofrange'); return; }
+    if(!(y>=MIN_LY&&y<=2050)||(m>=1&&m<=12&&d>=1&&y*10000+m*100+d>MAX_LUNAR)){ outB.textContent=T('ln.outofrange'); return; }
     /* 그해에 없는 윤달을 체크하면 평달 결과를 조용히 내지 않고 경고한다 */
     if(leap.checked&&m>=1&&m<=12&&leapMonth(y)!==m){ var L=leapMonth(y);
       outB.textContent=T('ln.noleap').replace('{y}',y).replace('{m}',m)+(L?T('ln.leapis').replace('{l}',L):''); return; }

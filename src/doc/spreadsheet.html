@@ -30,7 +30,7 @@
   <section class="toolhelp">
     <h2>온라인 스프레드시트 사용 안내</h2>
     <h3>무엇을 하는 도구인가</h3>
-    <p>브라우저에서 바로 쓰는 간단한 표 편집기입니다. 오픈소스 x-spreadsheet를 바탕으로 셀 입력, 글꼴·색·테두리·정렬 같은 서식, 셀 병합, 행·열 추가와 삭제, 시트 추가를 지원하고, <code>=SUM(A1:A5)</code>처럼 등호로 시작하는 수식도 계산합니다. 수식 함수는 SUM, AVERAGE, MAX, MIN, IF, AND, OR, CONCAT 정도로 기본적인 것만 들어 있습니다. 작업한 첫 번째 시트는 CSV 파일로 내보낼 수 있습니다.</p>
+    <p>브라우저에서 바로 쓰는 간단한 표 편집기입니다. 오픈소스 x-spreadsheet를 바탕으로 셀 입력, 글꼴·색·테두리·정렬 같은 서식, 셀 병합, 행·열 추가와 삭제, 시트 추가를 지원하고, <code>=SUM(A1:A5)</code>처럼 등호로 시작하는 수식도 계산합니다. 수식 함수는 SUM, AVERAGE, MAX, MIN, IF, AND, OR, CONCAT 정도로 기본적인 것만 들어 있습니다. 지금 보고 있는 시트를 CSV 파일로 내보낼 수 있습니다.</p>
     <h3>언제 쓰나</h3>
     <ul>
       <li>엑셀이 없는 PC에서 참석자 명단이나 물품 목록을 표로 빠르게 정리할 때</li>
@@ -41,14 +41,14 @@
     <ol>
       <li>셀을 클릭하고 입력하거나 더블클릭해 내용을 고칩니다. 위쪽 도구 모음에서 서식을, 오른쪽 클릭 메뉴에서 행·열 삽입과 삭제를 고릅니다.</li>
       <li>합계가 필요한 칸에 <code>=SUM(B2:B10)</code>처럼 입력합니다.</li>
-      <li>끝나면 「⬇️ CSV 내보내기」를 눌러 sheet.csv를 받습니다.</li>
+      <li>끝나면 내보낼 시트를 아래쪽 탭에서 고른 뒤 「⬇️ CSV 내보내기」를 누릅니다. 파일 이름은 시트 이름을 따라 sheet1.csv처럼 붙습니다.</li>
     </ol>
     <h3>결과 해석</h3>
     <p>CSV에는 수식 대신 계산된 값이 들어갑니다. B11에 <code>=SUM(B2:B10)</code>을 넣었다면 CSV의 그 칸에는 합계 숫자가 저장되므로, 다른 시스템에 그대로 올려도 됩니다. 반대로 수식 자체는 CSV에 남지 않으니 나중에 다시 고칠 표라면 수식을 따로 적어 두세요. 지원하지 않는 함수, 0으로 나누기, 순환 참조처럼 계산할 수 없는 수식은 <code>#ERROR!</code>로 저장되고, 셀에 지정한 % 같은 표시 형식은 적용되지 않은 원래 숫자로 나갑니다. 쉼표나 큰따옴표가 든 셀은 따옴표로 감싸 저장하고, 파일 앞에 BOM을 붙여 엑셀에서 한글이 깨지지 않게 했습니다.</p>
     <h3>주의할 점</h3>
     <ul>
       <li>작업 내용은 어디에도 저장되지 않습니다. 새로고침하거나 탭을 닫으면 모두 사라지니 중간중간 CSV로 받아 두세요.</li>
-      <li>아래쪽 탭으로 시트를 여러 개 만들 수 있지만 CSV로 나가는 것은 지금 보고 있는 시트와 관계없이 첫 번째 시트뿐입니다. 다른 시트의 내용은 첫 시트로 옮겨서 내보내세요.</li>
+      <li>CSV 한 파일에는 시트 하나만 담깁니다. 시트가 여러 개라면 탭을 하나씩 골라 각각 내보내세요. 수식은 같은 시트 안의 셀만 참조해 계산합니다.</li>
       <li>서식, 병합, 색은 CSV에 담기지 않습니다. 기존 엑셀 파일을 불러오는 기능도 없습니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
@@ -130,14 +130,19 @@
     };
   }
   $('csv').addEventListener('click',function(){
-    var data=xs.getData(); var sheet=Array.isArray(data)?data[0]:data; var rows=(sheet&&sheet.rows)||{};
+    // 지금 보고 있는 시트(아래 탭에서 선택한 시트)를 내보낸다
+    var cur=xs.sheet&&xs.sheet.data, sheet;
+    if(cur&&typeof cur.getData==='function') sheet=cur.getData();
+    else { var data=xs.getData(); sheet=Array.isArray(data)?data[0]:data; }
+    var rows=(sheet&&sheet.rows)||{};
+    var fname=String((sheet&&sheet.name)||'sheet').replace(/[\\\/:*?"<>|\x00-\x1f]+/g,'_').trim()||'sheet';
     var calc=makeEvaluator(rows);
     var maxC=0; Object.keys(rows).forEach(function(r){ if(rows[r]&&rows[r].cells){ Object.keys(rows[r].cells).forEach(function(c){ if(+c+1>maxC)maxC=+c+1; }); } });
   function csvGuard(v){ v=v==null?'':String(v); return (/^[=+\-@\t\r]/.test(v) && !/^[+\-]?(\d[\d,]*\.?\d*|\.\d+)([eE][+\-]?\d+)?$/.test(v)) ? "'"+v : v; }
     var out=[]; var maxR=0; Object.keys(rows).forEach(function(r){ if(/^\d+$/.test(r)&&+r+1>maxR)maxR=+r+1; });
     for(var r=0;r<maxR;r++){ var line=[]; var cells=(rows[r]&&rows[r].cells)||{};
       for(var c=0;c<maxC;c++){ var v=cells[c]?csvGuard(calc(r,c)):''; if(/[",\n]/.test(v))v='"'+v.replace(/"/g,'""')+'"'; line.push(v); } out.push(line.join(',')); }
-    var blob=new Blob(['﻿'+out.join('\n')],{type:'text/csv'}); var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sheet.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120);
+    var blob=new Blob(['﻿'+out.join('\n')],{type:'text/csv'}); var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname+'.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120);
   });
 </script>
 </body>

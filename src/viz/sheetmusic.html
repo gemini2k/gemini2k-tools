@@ -15,6 +15,7 @@
 .row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.6rem 0;}select,button.mini{padding:.5rem;border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font-family:inherit;}
 #score{background:#fff;border:1px solid var(--border);border-radius:11px;padding:.5rem;overflow:auto;margin-top:.5rem;}
 .err{color:#e0563b;font-size:.85rem;min-height:1.1em;}
+.warn{font-size:.85rem;line-height:1.55;margin:.2rem 0 .3rem;padding:0;list-style:none;}.warn:empty{display:none;}.warn li{padding:.15rem 0;}.warn li.w{color:#c2410c;}.warn li.i{color:var(--muted);}
 .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}</style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5930096672475061" crossorigin="anonymous"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"악보 그리기","description":"음표를 입력해 오선보(악보)로 그립니다(VexFlow).","url":"https://gemini2k.co.kr/sheetmusic.html","applicationCategory":"MultimediaApplication","operatingSystem":"Web","inLanguage":"ko","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"publisher":{"@type":"Organization","name":"빛의여행(gemini2k) 도구","url":"https://gemini2k.co.kr/"}}</script>
@@ -29,6 +30,7 @@
       <span data-i18n="b_sheetmusic_dur_label">음표길이</span> <select id="dur"><option value="q" data-i18n="b_sheetmusic_dur_q">4분음표</option><option value="8" data-i18n="b_sheetmusic_dur_8">8분음표</option><option value="h" data-i18n="b_sheetmusic_dur_h">2분음표</option><option value="w" data-i18n="b_sheetmusic_dur_w">온음표</option></select>
       <button class="mini" id="png" type="button" data-i18n="b_sheetmusic_btn_png">⬇️ PNG 저장</button></div>
     <div class="err" id="err"></div>
+    <ul class="warn" id="warn" aria-live="polite"></ul>
     <div id="score"></div>
     <div class="note" data-i18n-html="b_sheetmusic_note">오픈소스 <b>VexFlow</b>(MIT, <a href="https://github.com/0xfe/vexflow" target="_blank" rel="noopener">0xfe/vexflow</a>)를 자체 호스팅합니다. 음이름은 <code>C D E F G A B</code>, 반음은 <code>C#4</code>, 옥타브는 숫자(4=가운데 도), 마디 구분은 <code>|</code>. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
@@ -47,13 +49,13 @@
     <ol>
       <li>입력란에 음을 띄어쓰기로 구분해 적고, 마디마다 <code>|</code>를 넣습니다.</li>
       <li>'박자표'와 '음표길이'를 고릅니다. 음표길이는 모든 음에 똑같이 적용됩니다.</li>
-      <li>오류 문구가 나오면 해당 음의 표기를 고칩니다.</li>
+      <li>오류 문구가 나오면 해당 음의 표기를 고칩니다. 박자 경고가 나오면 그 마디의 음 개수를 박자표에 맞춥니다.</li>
       <li>[⬇️ PNG 저장]으로 이미지를 내려받습니다.</li>
     </ol>
     <h3>결과 해석</h3>
     <p>음 하나는 '음이름 + (반음 기호) + 옥타브 숫자'로 적습니다. 숫자 4가 가운데 도(C4)가 있는 옥타브이고, 반음은 <code>#</code>(올림)이나 <code>b</code>(내림)를 음이름 바로 뒤에 붙입니다.</p>
     <pre>G4 G4 A4 A4 | G4 G4 E4 | G4 G4 E4 E4 | D4 F#4 Bb4 C5</pre>
-    <p>위처럼 적으면 네 마디가 그려지며, <code>F#4</code>와 <code>Bb4</code>에는 올림표와 내림표가 붙습니다. <code>C5</code>는 가운데 도보다 한 옥타브 높은 도로, 오선 셋째 칸에 놓입니다. 이 도구는 마디 안 음표의 길이 합이 박자표와 맞는지 검사하지 않으므로, 4/4 박자에 4분음표 다섯 개를 넣어도 그대로 그려집니다. 박자에 맞는 개수는 직접 맞춰야 합니다.</p>
+    <p>위처럼 적으면 네 마디가 그려지며, <code>F#4</code>와 <code>Bb4</code>에는 올림표와 내림표가 붙습니다. <code>C5</code>는 가운데 도보다 한 옥타브 높은 도로, 오선 셋째 칸에 놓입니다. 악보를 그린 뒤에는 마디마다 음표 길이의 합을 박자표와 비교합니다. 4/4 박자에 4분음표 다섯 개를 넣으면 악보는 그대로 그리되 '2번째 마디: 박자 합 5/4 (기대 4/4)'처럼 어느 마디가 넘치거나 모자라는지 입력란 아래에 알려 줍니다. 첫 마디나 마지막 마디만 모자라면 못갖춘마디일 수 있어 경고 대신 안내로 표시합니다. 위 예시의 둘째 마디는 음이 세 개뿐이라 '모자랍니다' 경고가 나오니, 하나를 더 적으면 사라집니다.</p>
     <h3>주의할 점</h3>
     <p>높은음자리표만 지원하고 쉼표, 붙임줄, 점음표, 조표, 음표마다 다른 길이는 표현할 수 없습니다. 옥타브는 한 자리 숫자만 받으며, 음 사이에 쉼표나 다른 기호가 섞이면 오류가 납니다. 리듬까지 담은 악보가 필요하면 ABC 악보 에디터를 쓰는 것이 낫습니다.</p>
     <h3>자주 묻는 질문</h3>
@@ -70,7 +72,19 @@
 <script>
   var $=function(id){return document.getElementById(id);};
   var VF=Vex.Flow;
-  function render(){ $('err').textContent=''; var host=$('score'); host.innerHTML='';
+  function tx(k,fb,o){ var v=(typeof t==='function')?t(k):k; if(!v||v===k)v=fb; for(var p in o)v=v.split('{'+p+'}').join(o[p]); return v; }
+  // 박자 검사: 마디마다 음표 길이 합(8분음표 단위)을 박자표와 비교. 첫·마지막 마디가 모자라면 못갖춘마디로 보고 안내만 함
+  var EIGHTHS={w:8,h:4,q:2,'8':1};
+  function fmt(e,den){ return (e*den)%8===0 ? (e*den/8)+'/'+den : (function(){ var a=e,b=8; while(a%2===0&&b>1){a/=2;b/=2;} return a+'/'+b; })(); }
+  function checkMeter(bars,dur,time){ var ul=$('warn'); ul.innerHTML='';
+    var ts=time.split('/'), num=+ts[0], den=+ts[1], expE=num*8/den, unit=EIGHTHS[dur]||2, items=[];
+    bars.forEach(function(bar,bi){ var n=bar.split(/\s+/).filter(Boolean).length, sumE=n*unit; if(sumE===expE)return;
+      var o={i:bi+1,s:fmt(sumE,den),e:time}, edge=(bi===0||bi===bars.length-1)&&bars.length>1;
+      if(sumE<expE&&edge) items.push(['i',tx('b_sheetmusic_info_pickup','{i}번째 마디: 박자 합 {s} (기대 {e}) — 첫·마지막 마디라 못갖춘마디로 보고 넘어갑니다',o)]);
+      else items.push(['w',tx(sumE>expE?'b_sheetmusic_warn_over':'b_sheetmusic_warn_under',sumE>expE?'{i}번째 마디: 박자 합 {s} (기대 {e}) — 음표가 많습니다':'{i}번째 마디: 박자 합 {s} (기대 {e}) — 음표가 모자랍니다',o)]); });
+    items.forEach(function(it){ var li=document.createElement('li'); li.className=it[0]; li.textContent=(it[0]==='w'?'⚠️ ':'ℹ️ ')+it[1]; ul.appendChild(li); });
+    return items; }
+  function render(){ $('err').textContent=''; $('warn').innerHTML=''; var host=$('score'); host.innerHTML='';
     try{
       var bars=$('in').value.split('|').map(function(s){return s.trim();}).filter(Boolean);
       var dur=$('dur').value, time=$('time').value;
@@ -84,6 +98,7 @@
           var key=m[1].toLowerCase()+(m[2]||'')+'/'+m[3];
           var sn=new VF.StaveNote({clef:'treble',keys:[key],duration:dur}); if(m[2]==='#')sn.addAccidental(0,new VF.Accidental('#')); if(m[2]==='b')sn.addAccidental(0,new VF.Accidental('b')); return sn; });
         VF.Formatter.FormatAndDraw(ctx,stave,notes); x+=width; });
+      checkMeter(bars,dur,time);
     }catch(e){ $('err').textContent='⚠️ '+(e.message||e); } }
   var _t; ['in','time','dur'].forEach(function(id){$(id).addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(render,300);});$(id).addEventListener('change',render);});
   $('png').addEventListener('click',function(){ var svg=$('score').querySelector('svg'); if(!svg)return;

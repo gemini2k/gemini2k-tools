@@ -61,7 +61,7 @@
 설계, 2026-09-21, 2026-10-16, 0</pre>
     <p>앞 작업의 막대가 끝나기 전에 다음 막대가 시작하면 두 작업이 병행된다는 뜻입니다. 오늘 날짜가 지났는데 진행률이 낮은 막대는 지연 후보로 볼 수 있습니다. 화면의 막대는 마우스로 끌어 옮기거나 진행률 손잡이를 움직일 수 있지만, 그렇게 바꾼 내용은 입력란에 반영되지 않고 다시 그리면 원래대로 돌아갑니다. 일정을 고치려면 입력란의 날짜를 수정하세요.</p>
     <h3>주의할 점</h3>
-    <p>날짜 형식이 틀리면 오류 문구가 뜨고 차트가 그려지지 않습니다. 작업 이름에 쉼표가 들어가면 구분자로 읽혀 칸이 밀리니 쉼표를 빼세요. 월 이름은 한국어·일본어·중국어 화면에서는 각 언어로, 영어 화면에서는 영어로 표시됩니다. 차트의 막대를 끌어 기간을 옮기거나 진행률 손잡이를 움직이면 입력 칸의 해당 줄 날짜·진행률도 함께 바뀝니다. 작업 간 선후 관계(의존성) 화살표는 제공하지 않습니다. [⬇️ PNG 저장]은 가로로 스크롤되는 부분까지 차트 전체를 흰 바탕의 2배 해상도 이미지로 저장합니다.</p>
+    <p>날짜 형식이 틀리면 오류 문구가 뜨고 차트가 그려지지 않습니다. 작업 이름에 쉼표가 들어가면 구분자로 읽혀 칸이 밀리니 쉼표를 빼세요. 월 이름은 한국어·일본어·중국어 화면에서는 각 언어로, 영어 화면에서는 영어로 표시됩니다. 차트의 막대를 끌어 기간을 옮기거나 진행률 손잡이를 움직이면 입력 칸의 해당 줄 날짜·진행률도 함께 바뀝니다. 작업 간 선후 관계(의존성) 화살표는 제공하지 않습니다. [⬇️ PNG 저장]은 가로로 스크롤되는 부분까지 차트 전체를 흰 바탕의 2배 해상도 이미지로 저장하며, 마지막 작업 줄 아래에 빈 여백을 남기지 않습니다.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>주말이나 공휴일을 빼고 계산하나요?</dt>
@@ -87,6 +87,8 @@
   function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   // 막대를 끌어 바꾼 날짜·진행률을 입력 칸의 해당 줄에 되써 넣는다(다시 그려도 유지)
   function writeBack(task,fn){ var i=+String(task.id).slice(1), L=$('in').value.split(/\r?\n/); if(!L[i])return; var p=L[i].split(',').map(function(x){return x.trim();}); fn(p); L[i]=p.join(', '); $('in').value=L.join('\n'); }
+  // frappe-gantt는 SVG 높이를 표 높이 + 여백 + 100px로 잡아 아래가 비므로(PNG에 흰 띠) 표 높이에 맞춘다
+  function fitHeight(){ var sv=$('gantt'), bg=sv.querySelector('.grid-background'); if(!bg) return; var h=+bg.getAttribute('height'); if(h>0) sv.setAttribute('height', Math.ceil(h)+2); }
   function render(){ $('err').textContent='';
     try{ var tasks=$('in').value.split(/\r?\n/).map(function(l,i){ var p=l.split(',').map(function(x){return x.trim();}); if(p.length<3||!p[0])return null;
         return {id:'t'+i,name:p[0],start:p[1],end:p[2],progress:+(p[3]||0)}; }).filter(Boolean);
@@ -94,8 +96,9 @@
       $('gantt').innerHTML=''; gantt=new Gantt('#gantt',tasks,{view_mode:$('mode').value,language:gLang(),
         on_date_change:function(task,s,e){ writeBack(task,function(p){ p[1]=ymd(s); p[2]=ymd(e); }); },
         on_progress_change:function(task,pr){ writeBack(task,function(p){ while(p.length<4)p.push(''); p[3]=String(Math.round(pr)); }); }});
+      fitHeight();
     }catch(e){ $('err').textContent='⚠️ '+(e.message||e)+' '+t('b_gantt_err_date_hint'); } }
-  $('png').addEventListener('click',function(){ savePng($('gantt'),'gantt.png'); });
+  $('png').addEventListener('click',function(){ fitHeight(); savePng($('gantt'),'gantt.png'); });
   $('render').addEventListener('click',render); $('mode').addEventListener('change',render);
   var _t; $('in').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(render,500);});
   window.onI18n=render;

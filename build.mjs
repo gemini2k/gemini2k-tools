@@ -22,7 +22,7 @@ const SKIP = new Set([
 let assets = 0;
 const DIST_BASE = path.basename(DIST);
 for (const name of fs.readdirSync(ROOT)) {
-  if (SKIP.has(name) || name === DIST_BASE) continue;   // 출력 폴더 자체는 복사 제외(override 포함)
+  if (SKIP.has(name) || name === DIST_BASE || /^dist[\w-]*$/.test(name)) continue;   // 출력 폴더 자체는 복사 제외(override 포함)
   if (name.endsWith('.csv')) continue;          // 법정동 원본(대용량) 제외
   if (name.endsWith('.html')) continue;         // 루트 html 없음(있어도 무시)
   fs.cpSync(path.join(ROOT, name), path.join(DIST, name), { recursive: true });

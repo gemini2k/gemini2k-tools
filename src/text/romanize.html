@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="google-site-verification" content="21lomLkO-jad8-GrfWyLlP2mW99lqPI9WTLL34GY1kU"/><meta name="naver-site-verification" content="f9485999829eaa979c75b76aa887816429bb18f3"/>
 <title>한글 로마자 변환기 (이름·주소 영문 표기) — 빛의여행(gemini2k) 도구</title>
-<meta name="description" content="한글을 국어의 로마자 표기법(근사)으로 변환합니다. 이름·주소·간판 영문 표기에. 연음 처리 포함. 참고용. 업로드 없이 브라우저에서만 처리됩니다."/>
+<meta name="description" content="한글을 국어의 로마자 표기법으로 변환합니다. 이름·주소·간판 영문 표기에. 연음·자음동화·구개음화 반영. 참고용. 업로드 없이 브라우저에서만 처리됩니다."/>
 <link rel="canonical" href="https://gemini2k.co.kr/romanize.html"/>
 <meta property="og:type" content="website"/><meta property="og:site_name" content="빛의여행(gemini2k) 도구"/><meta property="og:title" content="한글 로마자 변환기 — 빛의여행(gemini2k) 도구"/><meta property="og:description" content="한글→로마자 표기(근사). 이름·주소 영문에. 브라우저에서만."/><meta property="og:url" content="https://gemini2k.co.kr/romanize.html"/><meta property="og:image" content="https://gemini2k.co.kr/og.png"/>
 <link rel="stylesheet" href="/fonts/pretendard.css"/><link rel="stylesheet" href="style.css"/>
@@ -28,16 +28,24 @@
   <p class="sub" data-i18n="b_romanize_sub">한글을 로마자(국어의 로마자 표기법 근사)로 바꿉니다. 이름·주소·간판 영문 표기에 참고하세요.</p>
   <div class="card">
     <textarea id="in">안녕하세요 빛의여행</textarea>
-    <div class="opts"><label><input type="checkbox" id="cap"/> <span data-i18n="b_romanize_cap_label">단어 첫 글자 대문자</span></label></div>
+    <div class="opts"><label><input type="checkbox" id="cap"/> <span data-i18n="b_romanize_cap_label">단어 첫 글자 대문자</span></label> &nbsp; <label><input type="checkbox" id="phon" checked/> <span data-i18n="b_romanize_phon_label">발음 변화 반영 (사람 이름은 끄기)</span></label></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>
     <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 <span data-i18n="b_romanize_copy">복사</span></button></div>
-    <div class="note" data-i18n="b_romanize_note">표준 로마자 표기법의 자모 대응과 기본 연음을 적용한 <b>근사 변환</b>입니다. 사람 이름·일부 음운변화(된소리·구개음화 등)는 규칙이 달라질 수 있어 참고용입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_romanize_note">국어의 로마자 표기법 자모 대응에 연음·자음동화·구개음화·거센소리되기를 반영한 <b>자동 변환</b>입니다. 품사나 낱말 경계를 알 수 없어 일부 예외(묵호 Mukho 등)는 다르게 나올 수 있으니 참고용으로 쓰세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
   <section class="toolhelp">
     <h2>한글 로마자 변환기 사용 안내</h2>
     <h3>무엇을 하는 도구인가</h3>
-    <p>한글 음절을 초성·중성·종성으로 나눈 뒤 국어의 로마자 표기법의 자모 대응표에 맞춰 로마자로 바꿉니다. 예를 들어 ㅓ는 eo, ㅡ는 eu, ㅢ는 ui, 받침 ㄱ은 k, 받침 ㅇ은 ng입니다. 받침 뒤에 ㅇ으로 시작하는 음절이 오면 받침을 다음 음절로 넘겨 읽는 연음과, ㄹ 받침 뒤 ㄹ을 ll로 적는 규칙만 추가로 반영합니다. 그 밖의 음운 변화는 계산하지 않는 근사 변환입니다.</p>
+    <p>한글 음절을 초성·중성·종성으로 나눈 뒤 국어의 로마자 표기법의 자모 대응표에 맞춰 로마자로 바꿉니다. ㅓ는 eo, ㅡ는 eu, ㅢ는 ui, 받침 ㄱ은 k, 받침 ㅇ은 ng입니다. 표기법 제3장 제1항에 따라 발음이 바뀌는 자리는 바뀐 발음대로 적습니다. 한 낱말 안의 음절 사이에서만 계산하고, 띄어 쓴 낱말끼리는 서로 영향을 주지 않습니다.</p>
+    <ul>
+      <li>연음: 한국어 → hangugeo, ㅎ 받침 뒤 모음은 ㅎ을 뺍니다(좋아 → joa).</li>
+      <li>비음화: 백마 → baengma, 국물 → gungmul, 종로 → jongno, 합리 → hamni, 왕십리 → wangsimni</li>
+      <li>유음화: 신라 → silla, 별내 → byeollae, 빨래 → ppallae</li>
+      <li>구개음화: 해돋이 → haedoji, 같이 → gachi, 굳히다 → guchida</li>
+      <li>거센소리되기: 좋고 → joko, 놓다 → nota, 잡혀 → japyeo</li>
+    </ul>
+    <p>된소리되기는 표기법대로 적지 않습니다. 압구정은 apgujeong, 낙동강은 nakdonggang입니다.</p>
     <h3>언제 쓰나</h3>
     <ul>
       <li>외국 거래처에 보낼 메일이나 명함 시안에 회사·지명 영문 표기를 잡아 볼 때</li>
@@ -48,14 +56,16 @@
     <ol>
       <li>입력칸에 한글을 씁니다. 여러 줄도 줄 단위로 변환됩니다.</li>
       <li>「단어 첫 글자 대문자」를 켜면 띄어쓰기로 나뉜 단어마다 첫 글자가 대문자가 됩니다.</li>
+      <li>사람 이름을 바꿀 때는 「발음 변화 반영」을 끕니다. 표기법은 인명에 음운 변화를 반영하지 않으므로, 끄면 음절마다 글자 그대로 적습니다. 성과 이름을 띄어 「한 복남」으로 넣으면 Han Boknam이 됩니다.</li>
       <li>결과를 확인하고 「📋 복사」를 누릅니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>「안녕하세요」는 annyeonghaseyo, 「한국어」는 받침 ㄱ이 다음 음절로 넘어가 hangugeo가 되어 표기법 결과와 같습니다. 반면 「신라」는 실제 발음 [실라]를 반영하지 못해 표기법상 Silla가 아닌 sinra로, 「빨래」처럼 ㄹ 받침 뒤에 ㄹ이 오면 표기법대로 ll로 적어 ppallae가 됩니다. 「좋아」처럼 ㅎ이 탈락하는 말도 joha로 나옵니다. 영문·숫자·기호는 그대로 둡니다.</p>
+    <p>「안녕하세요」는 annyeonghaseyo, 「신문로」는 [신문노]로 소리 나므로 sinmunno입니다. 영문·숫자·기호는 그대로 두며, 기호나 공백이 끼면 그 앞뒤는 별개의 낱말로 봅니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>연음과 ㄹㄹ(ll) 표기 외에 자음동화(신라, 종로), ㅎ 탈락·축약, 구개음화 같은 표기법의 발음 규칙은 반영되지 않습니다. 결과는 반드시 표기법이나 국립국어원 자료로 다시 확인하세요.</li>
-      <li>사람 이름은 관용 표기가 따로 있는 경우가 많습니다. 이 도구는 「이」를 i, 「박」을 bak으로 바꾸므로 여권이나 공식 서류의 영문 성명은 기존에 쓰던 표기를 따르세요.</li>
+      <li>품사를 구별하지 못합니다. 표기법은 체언에서 ㄱ·ㄷ·ㅂ 뒤에 오는 ㅎ을 거센소리로 합치지 않고 h로 적지만(묵호 Mukho, 집현전 Jiphyeonjeon), 이 도구는 용언처럼 늘 거센소리로 바꿔 muko로 냅니다. 지명·명사라면 이 부분을 직접 고치세요.</li>
+      <li>ㄴ과 ㄹ이 만날 때는 보통 ll로 적고, 둘째 음절 이후의 로·란·량·론·력 앞에서만 nn으로 적습니다(신라 silla, 신문로 sinmunno). 이 밖의 [ㄴㄴ] 발음이나 ㄴ·ㄹ 첨가(학여울 Hangnyeoul)는 계산하지 않습니다.</li>
+      <li>사람 이름은 관용 표기가 따로 있는 경우가 많습니다. 「이」는 i, 「박」은 bak으로 나오므로 여권이나 공식 서류의 영문 성명은 기존에 쓰던 표기를 따르세요.</li>
       <li>도로명주소의 공식 영문 표기는 도로명주소 안내 시스템에서 확인해야 합니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
@@ -73,29 +83,65 @@
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
   var CHO=['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h'];
   var JUNG=['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo','u','wo','we','wi','yu','eu','ui','i'];
-  var JONG=['', 'k','k','k','n','n','n','t','l','k','m','p','l','l','p','l','m','p','p','t','t','ng','t','t','k','t','p','h'];
-  // 종성→다음초성 연음용 초성 발음(종성 인덱스 → 초성 발음)
-  var JONG_LINK=['', 'g','kk','ks','n','nj','nh','d','r','lg','lm','lb','ls','lt','lp','lh','m','b','bs','s','ss','ng','j','ch','k','t','p','h'];
-  function rr(s){
-    // 1) 자모 분해 배열
+  // 받침 대표음 분류(K N T L M P NG) — 겹받침·ㅎ 포함. 낱말 끝 ㅎ은 [ㄷ]
+  var CAT=['', 'K','K','K','N','N','N','T','L','K','M','L','L','L','P','L','M','P','P','T','T','NG','T','T','K','T','P','T'];
+  var FIN={K:'k',N:'n',T:'t',L:'l',M:'m',P:'p',NG:'ng'};
+  // 받침 뒤 모음(초성 ㅇ)으로 넘어가는 연음 발음. ㅎ은 탈락(좋아 joa, 많아 mana, 싫어 sireo)
+  var JONG_LINK=['', 'g','kk','ks','n','nj','n','d','r','lg','lm','lb','ls','lt','lp','r','m','b','bs','s','ss','ng','j','ch','k','t','p',''];
+  // 받침 + 초성 ㅎ → 거센소리 [앞 받침 표기, 뒤 초성 표기]
+  var ASP={1:['','k'],2:['','k'],3:['','k'],24:['','k'],9:['l','k'],7:['','t'],19:['','t'],20:['','t'],25:['','t'],22:['','ch'],23:['','ch'],5:['n','ch'],17:['','p'],18:['','p'],26:['','p'],14:['','p'],11:['l','p']};
+  // ㄴ+ㄹ이 [ㄴㄴ]으로 나는 접미 한자(신문로·의견란·생산량·이원론·판단력) — 둘째 음절 이후에서만 적용
+  var NN_SUF={'로':1,'란':1,'량':1,'론':1,'력':1};
+  // 음절 경계 음운 변화: 앞 받침 J, 뒤 초성 C, 뒤 중성 V → [앞 받침 표기, 뒤 초성 표기]
+  function joint(J,C,V,nextCh,idx){
+    var c=CAT[J];
+    if(C===11){ // 연음 + 구개음화(해돋이 haedoji, 같이 gachi)
+      if(V===20){ if(J===7)return['','j']; if(J===25)return['','ch']; if(J===13)return['l','ch']; }
+      return ['',JONG_LINK[J]];
+    }
+    if(C===18){ // 거센소리되기(잡혀 japyeo, 굳히다 guchida)
+      if(J===7&&V===20)return['','ch'];
+      if(ASP[J])return ASP[J];
+      return [FIN[c],'h'];
+    }
+    if(J===27||J===6||J===15){ // ㅎ·ㄶ·ㅀ 받침 + ㄱ·ㄷ·ㅈ·ㅅ·ㄴ (좋고 joko, 놓다 nota, 놓는 nonneun)
+      var pre=J===27?'':(J===6?'n':'l');
+      if(C===0)return[pre,'k']; if(C===3)return[pre,'t']; if(C===12)return[pre,'ch']; if(C===9)return[pre,'s'];
+      if(C===2)return J===15?['l','l']:['n','n'];
+    }
+    if(C===2||C===6){ // 비음화(백마 baengma, 국물 gungmul) · 유음화(별내 byeollae)
+      if(c==='K')return['ng',CHO[C]]; if(c==='T')return['n',CHO[C]]; if(c==='P')return['m',CHO[C]];
+      if(c==='L'&&C===2)return['l','l'];
+      return [FIN[c],CHO[C]];
+    }
+    if(C===5){ // 뒤 초성 ㄹ
+      if(c==='L')return['l','l']; // 빨래 ppallae
+      if(c==='N')return (idx>=1&&NN_SUF[nextCh])?['n','n']:['l','l']; // 신라 silla / 신문로 sinmunno
+      if(c==='K')return['ng','n']; if(c==='P')return['m','n']; if(c==='T')return['n','n']; // 백리 baengni, 합리 hamni
+      return [FIN[c],'n']; // ㅁ·ㅇ + ㄹ (종로 jongno)
+    }
+    return [FIN[c],CHO[C]]; // 된소리는 반영하지 않음(압구정 apgujeong)
+  }
+  function rr(s,phon){
     var arr=[]; for(var i=0;i<s.length;i++){ var c=s.charCodeAt(i);
-      if(c>=0xAC00&&c<=0xD7A3){ var x=c-0xAC00; arr.push({cho:Math.floor(x/588),jung:Math.floor((x%588)/28),jong:x%28}); }
+      if(c>=0xAC00&&c<=0xD7A3){ var x=c-0xAC00; arr.push({cho:Math.floor(x/588),jung:Math.floor((x%588)/28),jong:x%28,s:s[i]}); }
       else arr.push({ch:s[i]}); }
-    var res='';
-    for(var k=0;k<arr.length;k++){ var a=arr[k]; if(a.ch!=null){ res+=a.ch; continue; }
-      var onset=CHO[a.cho];
-      if(a.cho===11 && k>0 && arr[k-1] && arr[k-1]._carry){ onset=arr[k-1]._carry; }
-      // ㄹㄹ은 ll로 적는다(표기법 제2장 제2항 붙임 2: 빨래 ppallae, 울릉 Ulleung)
-      if(a.cho===5 && k>0 && arr[k-1] && arr[k-1].ch==null && arr[k-1].jong===8){ onset='l'; }
-      res+=onset+JUNG[a.jung];
-      if(a.jong>0){ var nb=arr[k+1]; if(nb&&nb.ch==null&&nb.cho===11){ a._carry=JONG_LINK[a.jong]; }
-        else { res+=JONG[a.jong]; } }
+    var res='', idx=0;
+    for(var k=0;k<arr.length;k++){ var a=arr[k]; if(a.ch!=null){ res+=a.ch; idx=0; continue; }
+      res+=(a.on!=null?a.on:CHO[a.cho])+JUNG[a.jung];
+      if(a.jong>0){ var nb=arr[k+1], fin;
+        if(nb&&nb.ch==null){
+          if(phon){ var r=joint(a.jong,nb.cho,nb.jung,nb.s,idx); fin=r[0]; nb.on=r[1]; }
+          else { fin=FIN[CAT[a.jong]]; if(a.jong===8&&nb.cho===5)nb.on='l'; } // 표기 그대로(인명): ㄹㄹ만 ll
+        } else fin=FIN[CAT[a.jong]];
+        res+=fin; }
+      idx++;
     }
     return res;
   }
-  function run(){ var lines=$('in').value.split('\n').map(function(line){ return line.split(' ').map(function(w){ var r=rr(w); if($('cap').checked&&r)r=r.charAt(0).toUpperCase()+r.slice(1); return r; }).join(' '); }).join('\n');
+  function run(){ var lines=$('in').value.split('\n').map(function(line){ return line.split(' ').map(function(w){ var r=rr(w,$('phon').checked); if($('cap').checked&&r)r=r.charAt(0).toUpperCase()+r.slice(1); return r; }).join(' '); }).join('\n');
     $('out').textContent=lines; }
-  ['in','cap'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
+  ['in','cap','phon'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});
   $('copy').addEventListener('click',function(){if($('out').textContent)navigator.clipboard.writeText($('out').textContent).then(function(){toast(t('b_romanize_copied'));});});
   run();
 </script>
