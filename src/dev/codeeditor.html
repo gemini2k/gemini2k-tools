@@ -58,15 +58,15 @@ for (let i = 1; i <= 5; i++) {
     <p>처음 들어 있는 예제를 실행하면 <code>줄 1 : 1</code>부터 <code>줄 5 : 25</code>까지 다섯 줄이 출력됩니다. 객체는 JSON 문자열로 바꿔 보여 주고, 코드 맨 바깥에서 <code>return</code>한 값이 있으면 <code>→</code> 표시와 함께 마지막 줄에 나옵니다. 오류가 나면 ⚠️ 표시와 오류 메시지가 출력됩니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>작성한 코드는 자동 저장되지 않습니다. 새로고침하거나 탭을 닫으면 사라지니 중요한 코드는 「저장」으로 내려받으세요.</li>
-      <li>결과 칸에는 <code>console.log</code>와 <code>console.error</code>만, 그것도 실행 도중 동기적으로 찍힌 것만 나옵니다. <code>setTimeout</code>·<code>Promise</code> 이후의 출력이나 <code>console.warn</code>은 브라우저 개발자 도구 콘솔에 찍힙니다.</li>
+      <li>작성한 코드와 언어 선택은 이 브라우저에 자동 저장되어 새로고침해도 남습니다. 다른 기기나 시크릿 창에서는 보이지 않고 브라우저 데이터를 지우면 사라지니, 중요한 코드는 「저장」으로 내려받으세요.</li>
+      <li>결과 칸에는 <code>console.log</code>·<code>info</code>·<code>warn</code>·<code>error</code>·<code>debug</code> 출력이 나오며, <code>setTimeout</code>·<code>Promise</code> 이후의 출력도 실행 후 3초까지는 이어서 표시합니다. 그보다 늦은 출력은 브라우저 개발자 도구 콘솔에서 확인하세요.</li>
       <li>코드는 이 페이지와 같은 환경에서 실행되므로 무한 루프를 돌리면 탭이 멈춥니다. 출처를 모르는 코드는 실행하지 마세요.</li>
       <li>Python·SQL은 문법 강조만 하며 실행하지 않습니다. 편집기 안의 실시간 문법 오류 표시도 꺼져 있습니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>await를 쓸 수 있나요?</dt>
-      <dd>코드가 일반 함수로 감싸져 실행되므로 맨 바깥에서 <code>await</code>를 쓰면 문법 오류가 납니다. <code>(async () =&gt; { … })()</code>로 감싸고, 결과는 개발자 도구 콘솔에서 확인하세요.</dd>
+      <dd>코드가 일반 함수로 감싸져 실행되므로 맨 바깥에서 <code>await</code>를 쓰면 문법 오류가 납니다. <code>(async () =&gt; { … })()</code>로 감싸면 되고, 3초 안에 찍힌 출력은 결과 칸에 나옵니다.</dd>
       <dt>코드가 서버로 전송되나요?</dt>
       <dd>아닙니다. 편집과 실행 모두 브라우저 안에서만 이루어집니다.</dd>
     </dl>
@@ -80,11 +80,25 @@ for (let i = 1; i <= 5; i++) {
   var ed=ace.edit('editor'); ed.setTheme('ace/theme/github'); ed.session.setMode('ace/mode/javascript'); ed.setOptions({fontSize:'14px',showPrintMargin:false,useWorker:false});
   $('lang').addEventListener('change',function(){ ed.session.setMode('ace/mode/'+$('lang').value); $('run').style.display=$('lang').value==='javascript'?'':'none'; });
   $('theme').addEventListener('change',function(){ ed.setTheme('ace/theme/'+$('theme').value); });
-  $('run').addEventListener('click',function(){ var logs=[]; var oc=console.log, oe=console.error;
-    console.log=function(){logs.push([].slice.call(arguments).map(function(a){try{return typeof a==='object'?JSON.stringify(a):String(a);}catch(e){return String(a);}}).join(' '));};
-    console.error=console.log;
-    try{ var r=new Function(ed.getValue())(); if(r!==undefined)logs.push('→ '+r); }catch(e){ logs.push('⚠️ '+e.message); }
-    console.log=oc; console.error=oe; $('out').textContent=logs.join('\n')||t('b_codeeditor_no_output'); });
+  // 자동 저장(이 브라우저에만): 코드·언어를 localStorage 에 보관
+  var SK='codeeditor.v1';
+  try{ var sv=JSON.parse(localStorage.getItem(SK)||'null'); if(sv&&typeof sv.code==='string'){ if(sv.lang){$('lang').value=sv.lang; ed.session.setMode('ace/mode/'+sv.lang); $('run').style.display=sv.lang==='javascript'?'':'none';} ed.setValue(sv.code,-1); } }catch(e){}
+  var _sv; function save(){ clearTimeout(_sv); _sv=setTimeout(function(){ try{ localStorage.setItem(SK,JSON.stringify({code:ed.getValue(),lang:$('lang').value})); }catch(e){} },400); }
+  ed.session.on('change',save); $('lang').addEventListener('change',save);
+  // 실행: console.log/info/warn/error/debug 를 가로채 결과 칸에 쌓는다. 실행 후 3초 동안은 setTimeout·Promise 이후의 출력도 이어서 붙인다.
+  var CM=['log','info','warn','error','debug'], orig={}; CM.forEach(function(m){ orig[m]=console[m]; });
+  var runId=0, restoreT=null;
+  function fmt(a){ if(a instanceof Error) return a.name+': '+a.message; try{ return typeof a==='object'&&a!==null?JSON.stringify(a):String(a); }catch(e){ return String(a); } }
+  function restore(){ CM.forEach(function(m){ console[m]=orig[m]; }); window.removeEventListener('unhandledrejection',onRej); }
+  function onRej(ev){ push('⚠️ (Promise) '+fmt(ev.reason)); }
+  var lines=[];
+  function push(x){ lines.push(x); $('out').textContent=lines.join('\n'); }
+  $('run').addEventListener('click',function(){ var id=++runId; lines=[]; clearTimeout(restoreT); restore();
+    CM.forEach(function(m){ var tag=m==='warn'?'⚠ ':m==='error'?'⚠️ ':m==='info'?'ℹ ':''; console[m]=function(){ if(id===runId) push(tag+[].slice.call(arguments).map(fmt).join(' ')); orig[m].apply(console,arguments); }; });
+    window.addEventListener('unhandledrejection',onRej);
+    try{ var r=new Function(ed.getValue())(); if(r!==undefined && !(r&&typeof r.then==='function')) push('→ '+fmt(r)); }catch(e){ push('⚠️ '+e.message); }
+    if(!lines.length) $('out').textContent=t('b_codeeditor_no_output');
+    restoreT=setTimeout(restore,3000); });
   $('dl').addEventListener('click',function(){ var ext={javascript:'js',html:'html',css:'css',json:'json',python:'py',sql:'sql'}[$('lang').value];
     var blob=new Blob([ed.getValue()],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='code.'+ext;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); });
 </script>

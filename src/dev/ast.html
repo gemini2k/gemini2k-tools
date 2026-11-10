@@ -26,6 +26,7 @@ textarea{width:100%;min-height:300px;padding:.7rem;border:1px solid var(--border
   <p class="sub" data-i18n="b_ast_sub">자바스크립트 코드를 파싱해 추상 구문 트리(AST)를 보여 줍니다. 컴파일러·린터 학습에 좋아요.</p>
   <div class="card" style="max-width:none;">
     <div class="row">ECMA <select id="ecma"><option>latest</option><option>2020</option><option>2017</option><option>2015</option><option>5</option></select>
+      sourceType <select id="stype"><option>module</option><option>script</option></select>
       <label style="font-weight:600;font-size:.9rem;"><input type="checkbox" id="loc"/> <span data-i18n="b_ast_loc_label">위치정보(start/end) 표시</span></label></div>
     <div class="grid2">
       <div><label class="lbl" data-i18n="b_ast_lbl_code">JavaScript 코드</label><textarea id="in">function fib(n) {
@@ -59,7 +60,7 @@ const arr = [1, 2, 3].map(x =&gt; x * 2);</textarea></div>
     <p><code>const x = 1;</code>을 넣으면 <code>Program</code>의 <code>body</code> 안에 <code>VariableDeclaration</code>(kind: "const")이 있고, 그 아래 <code>VariableDeclarator</code>의 <code>id</code>는 <code>Identifier</code>(name: "x"), <code>init</code>은 <code>Literal</code>(value: 1, raw: "1")로 나옵니다. ECMA를 2017로 두고 <code>a?.b</code>를 넣으면 옵셔널 체이닝이 ES2020 문법이라 「Unexpected token」 오류가 나므로, 해당 버전에서 쓸 수 없는 문법임을 알 수 있습니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>코드는 항상 모듈(sourceType: module)로 파싱하므로 엄격 모드가 적용됩니다. <code>with</code> 문처럼 엄격 모드에서 금지된 문법은 버전과 관계없이 오류가 납니다.</li>
+      <li>기본값은 모듈(sourceType: module)이라 엄격 모드가 적용되어 <code>with</code> 문처럼 엄격 모드에서 금지된 문법은 오류가 납니다. 일반 스크립트로 파싱하려면 sourceType을 script로 바꾸세요. 반대로 script에서는 <code>import</code>·<code>export</code>가 오류가 납니다.</li>
       <li>JSX와 TypeScript 문법은 지원하지 않습니다.</li>
       <li>start/end는 줄·열이 아니라 소스 처음부터 센 문자 위치입니다.</li>
       <li>코드가 길면 JSON도 매우 길어집니다. 확인하려는 부분만 잘라 넣는 편이 읽기 쉽습니다.</li>
@@ -78,7 +79,7 @@ const arr = [1, 2, 3].map(x =&gt; x * 2);</textarea></div>
 <script>
   var $=function(id){return document.getElementById(id);};
   function run(){ $('err').textContent='';
-    try{ var opts={ecmaVersion:$('ecma').value==='latest'?'latest':+$('ecma').value,sourceType:'module'};
+    try{ var opts={ecmaVersion:$('ecma').value==='latest'?'latest':+$('ecma').value,sourceType:$('stype').value};
       var ast=acorn.parse($('in').value,opts);
       var seen=new WeakSet();
       var json=JSON.stringify(ast,function(k,v){ if((k==='start'||k==='end')&&!$('loc').checked)return undefined;
@@ -86,7 +87,7 @@ const arr = [1, 2, 3].map(x =&gt; x * 2);</textarea></div>
       $('out').textContent=json; }
     catch(e){ $('err').textContent='⚠️ '+e.message; } }
   var _t; $('in').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(run,300);});
-  ['ecma','loc'].forEach(function(id){$(id).addEventListener('change',run);});
+  ['ecma','loc','stype'].forEach(function(id){$(id).addEventListener('change',run);});
   run();
 </script>
 </body>
