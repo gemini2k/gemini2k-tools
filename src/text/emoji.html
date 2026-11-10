@@ -122,7 +122,7 @@
   function render(){
     var q=$('q').value.trim().toLowerCase();
     if(q){ var out=''; CATS.forEach(function(c){ var hits=DATA[c].filter(function(it){ return it[0].indexOf(q)>=0 || it[1].toLowerCase().indexOf(q)>=0; });
-      if(hits.length) out+='<div class="cat-h" style="grid-column:1/-1">'+c+'</div>'+hits.map(function(it){return cell(it[0]);}).join(''); });
+      if(hits.length) out+='<div class="cat-h" style="grid-column:1/-1">'+catLabel(c)+'</div>'+hits.map(function(it){return cell(it[0]);}).join(''); });
       $('grid').innerHTML=out||'<div class="empty" style="grid-column:1/-1">'+t('b_emoji_no_result')+'</div>'; return; }
     if(active===t('b_emoji_tab_recent')){ var r=recent(); $('grid').innerHTML= r.length? r.map(cell).join('') : '<div class="empty" style="grid-column:1/-1">'+t('b_emoji_recent_empty')+'</div>'; return; }
     $('grid').innerHTML=DATA[active].map(function(it){return cell(it[0]);}).join('');

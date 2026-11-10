@@ -62,7 +62,7 @@ console.log(total);</textarea>
     <h3>결과 해석</h3>
     <p>기본 예시(209바이트)는 mangle을 켜면 <code>function add(n,o){return n+o}const numbers=[1,2,3,4,5],total=numbers.reduce(((n,o)=&gt;add(n,o)),0);console.log(total);</code> 116바이트로 약 44% 줄어듭니다. 함수 안의 <code>result</code> 변수는 compress 단계에서 없어지고, 매개변수 이름만 짧아진 것을 볼 수 있습니다. <code>add</code>, <code>numbers</code>, <code>total</code>처럼 최상위에 선언된 이름은 다른 스크립트가 참조할 수 있어 그대로 둡니다. mangle을 끄면 138바이트입니다.</p>
     <h3>주의할 점</h3>
-    <p>'주석 유지'를 끄면 <code>/*! ... */</code>나 <code>@license</code>가 붙은 라이선스 주석까지 모두 지워집니다. 오픈소스 코드를 배포한다면 이 옵션을 켜거나 라이선스 고지를 따로 남기세요. 문법 오류가 있으면 오류 메시지만 나오고 결과는 비어 있습니다. TypeScript나 JSX는 먼저 자바스크립트로 변환한 뒤 넣어야 합니다. 압축 결과는 사람이 고치기 어려우므로 원본은 반드시 따로 보관하세요.</p>
+    <p>'주석 유지'를 꺼도 <code>/*! ... */</code>나 <code>@license</code>·<code>@preserve</code>가 붙은 라이선스 주석은 남기고 나머지 주석만 지웁니다. 켜면 일반 주석까지 모두 남습니다. 다른 사람의 라이선스 고지를 일부러 지우는 일은 없도록 하세요. 문법 오류가 있으면 오류 메시지만 나오고 결과는 비어 있습니다. TypeScript나 JSX는 먼저 자바스크립트로 변환한 뒤 넣어야 합니다. 압축 결과는 사람이 고치기 어려우므로 원본은 반드시 따로 보관하세요.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>압축하면 코드 동작이 바뀌지 않나요?</dt>
@@ -78,7 +78,7 @@ console.log(total);</textarea>
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
   function run(){ var src=$('in').value;
-    Terser.minify(src,{mangle:$('mangle').checked,format:{comments:$('comments').checked}}).then(function(res){
+    Terser.minify(src,{mangle:$('mangle').checked,format:{comments:$('comments').checked?'all':'some'}}).then(function(res){
       if(res.error){ $('out').textContent='⚠️ '+res.error.message; $('meta').textContent=''; window._o=''; return; }
       $('out').textContent=res.code; window._o=res.code;
       var b1=new Blob([src]).size, b2=new Blob([res.code]).size;

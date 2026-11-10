@@ -58,12 +58,12 @@
       <li>「PNG 다운로드」로 vcard-qr.png 파일을 저장해 명함 디자인에 넣습니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>QR 안에는 <code>BEGIN:VCARD</code>로 시작해 <code>FN:홍길동</code>, <code>TEL;TYPE=CELL:010-1234-5678</code>처럼 항목별 줄이 이어지는 텍스트가 들어갑니다. 전화번호는 휴대전화(CELL) 유형으로 저장됩니다. 입력 항목이 늘거나 길어질수록 QR 점이 촘촘해지므로, 작은 명함에 넣을 때는 꼭 필요한 항목만 남기는 편이 인식에 유리합니다.</p>
+    <p>QR 안에는 <code>BEGIN:VCARD</code>로 시작해 <code>N:홍;길동;;;</code>, <code>FN:홍길동</code>, <code>TEL;TYPE=CELL:010-1234-5678</code>처럼 항목별 줄이 이어지는 텍스트가 들어갑니다. 전화번호는 휴대전화(CELL) 유형으로 저장됩니다. 입력 항목이 늘거나 길어질수록 QR 점이 촘촘해지므로, 작은 명함에 넣을 때는 꼭 필요한 항목만 남기는 편이 인식에 유리합니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>이름은 성과 이름으로 나누지 않고 한 칸 그대로 저장합니다. 일부 주소록 앱에서는 성 칸에 전체 이름이 들어갈 수 있습니다.</li>
-      <li>쉼표(,)나 세미콜론(;)은 vCard에서 구분 기호로 쓰입니다. 회사명 등에 넣으면 일부 기기에서 잘려 보일 수 있으니 빼는 것이 안전합니다.</li>
-      <li>빈칸으로 둔 항목도 빈 줄로 들어갑니다. 대부분의 기기는 무시하지만 스캔 결과를 한 번 확인하세요.</li>
+      <li>이름 칸은 자동으로 성과 이름으로 나눠 <code>N:</code> 줄에 넣습니다. 한글 이름은 첫 글자(띄어 썼다면 첫 단어)를 성으로, 영문 이름은 마지막 단어를 성으로 봅니다. 남궁·제갈처럼 두 글자 성은 「남궁 민수」처럼 띄어 쓰면 제대로 나뉩니다.</li>
+      <li>쉼표(,)·세미콜론(;)·역슬래시(\)는 vCard 규칙대로 앞에 역슬래시를 붙여 넣으므로 회사명 등에 그대로 써도 됩니다.</li>
+      <li>빈칸으로 둔 항목은 QR에 넣지 않습니다.</li>
       <li>개인 휴대전화 번호가 담긴 QR을 공개 게시물에 올리면 누구나 번호를 얻을 수 있습니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
@@ -80,8 +80,19 @@
 <script>
   var $=function(id){return document.getElementById(id);};
   var qr=null;
+  // vCard 3.0(RFC 2426) 텍스트 값 이스케이프: \ , ; 와 줄바꿈
+  function esc(s){ return String(s).replace(/\\/g,'\\\\').replace(/,/g,'\\,').replace(/;/g,'\\;').replace(/\r\n|\r|\n/g,'\\n'); }
+  // 이름 → [성, 이름]. 한글 이름은 첫 글자(띄어 썼으면 첫 단어)를 성으로, 그 밖은 마지막 단어를 성으로 본다.
+  function splitName(n){ if(!n) return ['',''];
+    var parts=n.split(/\s+/);
+    if(/^[\uAC00-\uD7A3]/.test(n)){ if(parts.length>1) return [parts[0],parts.slice(1).join(' ')]; return (n.length>=2&&n.length<=4)?[n.charAt(0),n.slice(1)]:[n,'']; }
+    if(parts.length>1) return [parts[parts.length-1],parts.slice(0,-1).join(' ')];
+    return [n,'']; }
   function vcard(){ var v=function(id){return $(id).value.trim();};
-    return 'BEGIN:VCARD\nVERSION:3.0\nN:'+v('name')+'\nFN:'+v('name')+'\nORG:'+v('org')+'\nTITLE:'+v('title')+'\nTEL;TYPE=CELL:'+v('tel')+'\nEMAIL:'+v('email')+'\nURL:'+v('url')+'\nEND:VCARD'; }
+    var nm=v('name'), sp=splitName(nm), L=['BEGIN:VCARD','VERSION:3.0'];
+    L.push('N:'+esc(sp[0])+';'+esc(sp[1])+';;;'); L.push('FN:'+esc(nm));
+    [['ORG','org'],['TITLE','title'],['TEL;TYPE=CELL','tel'],['EMAIL','email'],['URL','url']].forEach(function(p){ var x=v(p[1]); if(x) L.push(p[0]+':'+esc(x)); });
+    L.push('END:VCARD'); return L.join('\n'); }
   function build(){ var opt={width:260,height:260,data:vcard(),margin:8,dotsOptions:{color:'#111',type:'rounded'},backgroundOptions:{color:'#fff'}};
     if(!qr){ qr=new QRCodeStyling(opt); $('qr').innerHTML=''; qr.append($('qr')); } else qr.update(opt); }
   ['name','org','title','tel','email','url'].forEach(function(id){$(id).addEventListener('input',build);});

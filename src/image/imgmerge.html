@@ -125,7 +125,9 @@
   var imgs=[]; var cv=$('cv'), x=cv.getContext('2d');
   function addFiles(list){ var arr=[].slice.call(list).filter(function(f){return /^image\//.test(f.type);});
     var left=arr.length; if(!left) return;
-    arr.forEach(function(f){ var url=URL.createObjectURL(f); var im=new Image(); im.onload=function(){ URL.revokeObjectURL(url); imgs.push(im); if(--left===0){ renderThumbs(); draw(); } }; im.onerror=function(){ if(--left===0){renderThumbs();draw();} }; im.src=url; });
+    var slots=new Array(arr.length);
+    function done(){ if(--left===0){ slots.forEach(function(im){ if(im) imgs.push(im); }); renderThumbs(); draw(); } }
+    arr.forEach(function(f,k){ var url=URL.createObjectURL(f); var im=new Image(); im.onload=function(){ slots[k]=im; done(); }; im.onerror=function(){ URL.revokeObjectURL(url); done(); }; im.src=url; });
   }
   function renderThumbs(){ $('thumbs').innerHTML=imgs.map(function(im,i){ return '<div class="thumb"><img src="'+im.src+'"/><span class="ord">'+(i+1)+'</span><button data-i="'+i+'" type="button">✕</button></div>'; }).join('');
     var has=imgs.length>0; $('opts').classList.toggle('hide',!has); $('cvwrap').classList.toggle('hide',!has); }
@@ -147,7 +149,7 @@
   ['dragover','dragenter'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.add('over');}); });
   ['dragleave','drop'].forEach(function(ev){ $('drop').addEventListener(ev,function(e){e.preventDefault();$('drop').classList.remove('over');}); });
   $('drop').addEventListener('drop',function(e){ if(e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
-  $('thumbs').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b){ imgs.splice(+b.dataset.i,1); renderThumbs(); draw(); } });
+  $('thumbs').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b){ var rm=imgs.splice(+b.dataset.i,1)[0]; if(rm) URL.revokeObjectURL(rm.src); renderThumbs(); draw(); } });
   $('dir').addEventListener('change',function(){ $('colwrap').style.display=$('dir').value==='grid'?'':'none'; draw(); });
   ['cols','gap','bg'].forEach(function(id){ $(id).addEventListener('input',draw); });
   $('dl').addEventListener('click',function(){ if(!imgs.length) return; cv.toBlob(function(b){ var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='merged.png'; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); }); });

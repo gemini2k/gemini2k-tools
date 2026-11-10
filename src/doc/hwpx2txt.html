@@ -131,9 +131,14 @@
   }
   function extract(xml){
     // 문단 경계(</hp:p>)에서 줄바꿈 처리 후, 모든 태그를 제거해 본문 텍스트만 남김
-    var s=xml.replace(/<\/hp:p>/g,'\n');
+    // 한 문단 안의 런(hp:run)들은 줄바꿈 없이 이어지고, 강제 줄바꿈(hp:lineBreak)·탭(hp:tab)은 살린다
+    var s=xml.replace(/<\/hp:p>/g,'\n').replace(/<hp:lineBreak\b[^>]*\/?>/g,'\n').replace(/<hp:tab\b[^>]*\/?>/g,'\t');
     s=s.replace(/<[^>]+>/g,'');
-    s=s.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'");
+    // 엔티티는 한 번만 해석(&amp;lt; 를 < 로 이중 해석하지 않음)
+    s=s.replace(/&(amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);/g,function(all,e){
+      if(e[0]==='#'){ var cp=(e[1]==='x'||e[1]==='X')? parseInt(e.slice(2),16) : parseInt(e.slice(1),10); try{ return String.fromCodePoint(cp); }catch(x){ return all; } }
+      return {amp:'&',lt:'<',gt:'>',quot:'"',apos:"'"}[e];
+    });
     s=s.replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n');
     return s.trim();
   }

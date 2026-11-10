@@ -53,10 +53,10 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
       <li>「복사」로 결과를 가져갑니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>압축할 때는 입력란 아래에 「원본 ○자 → 압축 ○자 (○% 절감)」이 표시됩니다. 처음 들어 있는 예제 JSON은 「원본 88자 → 압축 129자 (-47% 절감)」으로 나와 오히려 길어집니다. 사전에 쌓일 반복이 적은 짧은 글은 늘어나기 쉽고, 같은 키 이름이 수십 번 반복되는 긴 JSON일수록 효과가 큽니다. 해제했는데 「해제 실패」 문구가 나오면 방식이 압축할 때와 다르거나 복사 과정에서 문자열 끝이 잘린 경우가 대부분입니다.</p>
+    <p>압축할 때는 입력란 아래에 「원본 ○바이트 → 압축 ○바이트 (○% 절감)」이 표시됩니다. 처음 들어 있는 예제 JSON은 URL용 방식에서 「원본 88바이트 → 압축 129바이트 (-47% 절감)」으로 나와 오히려 길어지고, UTF16 방식에서는 53글자 × 2바이트 = 106바이트(-20%)입니다. 사전에 쌓일 반복이 적은 짧은 글은 늘어나기 쉽고, 같은 키 이름이 수십 번 반복되는 긴 JSON일수록 효과가 큽니다. 해제했는데 「해제 실패」 문구가 나오면 방식이 압축할 때와 다르거나 복사 과정에서 문자열 끝이 잘린 경우가 대부분입니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>원본 수치는 UTF-8 바이트 수, 압축 수치는 글자 수입니다. 한글이 섞이면 원본 숫자가 실제 글자 수보다 크게 나오고, UTF16 방식은 결과 한 글자가 2바이트라 실제 저장 용량은 표시값의 두 배로 봐야 합니다.</li>
+      <li>두 수치 모두 바이트 수입니다. 원본은 UTF-8 기준(한글 한 글자 = 3바이트)이고, 압축 결과는 URL용·Base64가 ASCII라 글자 수 그대로, UTF16은 결과 한 글자가 2바이트라 글자 수의 두 배로 셉니다. 브라우저 저장소(localStorage)는 원본도 UTF-16으로 저장하므로 실제 절감 폭은 이 표시와 조금 다를 수 있습니다.</li>
       <li>UTF16 결과에는 화면에서 깨져 보이는 문자가 섞여 있어 URL이나 메일 본문에 쓰면 안 됩니다. Base64 결과도 <code>+ / =</code>가 들어 있어 URL에 넣으려면 추가 인코딩이 필요합니다.</li>
       <li>압축은 암호화가 아닙니다. 누구나 같은 라이브러리로 풀 수 있으니 토큰이나 개인정보를 링크에 담지 마세요.</li>
     </ul>
@@ -76,7 +76,7 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
   var dir='c';
   function run(){ var s=$('in').value, m=$('mode').value, out='';
-    try{ if(dir==='c'){ out=LZString['compressTo'+m](s); var b1=new Blob([s]).size, b2=out.length;
+    try{ if(dir==='c'){ out=LZString['compressTo'+m](s); var b1=new Blob([s]).size, b2= m==='UTF16' ? out.length*2 : out.length;   // 원본=UTF-8 바이트, 결과=UTF16은 글자당 2바이트·나머지는 ASCII 1바이트
         $('meta').textContent=t('b_lzstring_meta_compress').replace('{b1}',b1).replace('{b2}',b2).replace('{pct}',(b1?Math.round((1-b2/(b1))*100):0)); }
       else { out=LZString['decompressFrom'+m](s)||(t('b_lzstring_decomp_fail')); $('meta').textContent=''; }
       $('out').textContent=out; window._o=out;

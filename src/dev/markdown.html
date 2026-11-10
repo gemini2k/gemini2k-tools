@@ -199,7 +199,9 @@ console.log("Hello, world!");
   });
   md.addEventListener('input', render);
   document.getElementById('copyhtml').addEventListener('click', function(){
-    navigator.clipboard.writeText(preview.innerHTML).then(function(){toast(T('toast.copied'));}).catch(function(){toast(T('toast.copied'));});
+    // 실패(권한 거부·비보안 컨텍스트 등)했는데 '복사됨'을 띄우지 않도록 실패 문구를 따로 보여 준다
+    var p; try{ p=navigator.clipboard.writeText(preview.innerHTML); }catch(e){ p=Promise.reject(e); }
+    p.then(function(){toast(T('toast.copied'));}).catch(function(){toast(T('md.copyfail'));});
   });
   function save(name, content, type){
     var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type:type})); a.download=name;

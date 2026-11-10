@@ -80,7 +80,7 @@
     </div>
 
     <label for="text" data-i18n="fav.text">글자 또는 이모지</label>
-    <input type="text" id="text" maxlength="3" value="G" data-i18n-ph="fav.textph" placeholder="예: G, 📚, 빛"/>
+    <input type="text" id="text" maxlength="40" value="G" data-i18n-ph="fav.textph" placeholder="예: G, 📚, 빛"/>
     <label for="img" style="margin-top:1rem;" data-i18n="fav.img">이미지로 만들기 (선택)</label>
     <input type="file" id="img" accept="image/*"/>
 
@@ -131,7 +131,7 @@
     <h3>주의할 점</h3>
     <ul>
       <li>16px에서는 글자 두세 개가 거의 뭉개집니다. 탭 아이콘으로는 한 글자나 단순한 이모지가 가장 잘 보입니다.</li>
-      <li>이모지는 운영체제의 이모지 글꼴로 그려지므로, 윈도우와 맥에서 만든 결과 모양이 다를 수 있습니다. 국기처럼 여러 문자가 결합된 이모지는 세 글자 제한에 걸려 잘릴 수 있습니다.</li>
+      <li>이모지는 운영체제의 이모지 글꼴로 그려지므로, 윈도우와 맥에서 만든 결과 모양이 다를 수 있습니다. 국기·피부색·가족처럼 여러 문자가 결합된 이모지도 한 글자로 세며, 네 번째 글자부터는 아이콘에 그리지 않습니다.</li>
       <li>브라우저는 파비콘을 오래 캐시합니다. 바꿨는데 그대로 보이면 강력 새로고침을 하거나 시간을 두고 확인하세요.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
@@ -152,6 +152,15 @@
       bgEl=document.getElementById('bg'), fgEl=document.getElementById('fg'), shapeEl=document.getElementById('shape'),
       snippet=document.getElementById('snippet');
   var uploaded=null;
+  // 사용자가 보는 글자(grapheme) 단위로 나눔: 국기·피부색·ZWJ 결합 이모지를 한 글자로 센다
+  function graphemes(s){
+    if(window.Intl&&Intl.Segmenter){ try{ return Array.from(new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(s),function(x){return x.segment;}); }catch(e){} }
+    var out=[], cps=Array.from(s);
+    cps.forEach(function(c){ var cp=c.codePointAt(0), prev=out.length?out[out.length-1]:'', last=prev?Array.from(prev).pop().codePointAt(0):0;
+      var join = prev && (cp===0x200D || last===0x200D || (cp>=0xFE00&&cp<=0xFE0F) || (cp>=0x1F3FB&&cp<=0x1F3FF) || (cp>=0xE0020&&cp<=0xE007F) || cp===0x20E3
+        || (cp>=0x1F1E6&&cp<=0x1F1FF && last>=0x1F1E6&&last<=0x1F1FF && Array.from(prev).length%2===1));
+      if(join) out[out.length-1]+=c; else out.push(c); });
+    return out; }
 
   function shapePath(ctx, s, shape){
     ctx.beginPath();
@@ -168,9 +177,9 @@
       ctx.drawImage(uploaded, (size-w)/2, (size-h)/2, w, h); ctx.restore();
     } else {
       ctx.fillStyle=bgEl.value; shapePath(ctx,size,shapeEl.value); ctx.fill();
-      var t=textEl.value || 'G';
+      var gs=graphemes(textEl.value||'G').slice(0,3), t=gs.join(''), n=gs.length;
       ctx.fillStyle=fgEl.value; ctx.textAlign='center'; ctx.textBaseline='middle';
-      var fs = size * (t.length>=3?0.42:t.length===2?0.52:0.62);
+      var fs = size * (n>=3?0.42:n===2?0.52:0.62);
       ctx.font='700 '+fs+"px 'Pretendard Variable',Pretendard,system-ui,'Apple Color Emoji','Segoe UI Emoji',sans-serif";
       ctx.fillText(t, size/2, size/2 + size*0.04);
     }

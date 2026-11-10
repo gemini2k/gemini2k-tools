@@ -27,7 +27,11 @@
   <h1 data-i18n="b_codehl_title">코드 신택스 하이라이터</h1>
   <p class="sub" data-i18n="b_codehl_sub">코드를 붙여넣으면 색을 입히고, 블로그·문서에 그대로 붙일 수 있는 HTML을 만들어 줍니다.</p>
   <div class="card">
-    <textarea id="in">function greet(name){\n  // 인사\n  return `Hello, ${name}!`;\n}\nconsole.log(greet("gemini2k"));</textarea>
+    <textarea id="in">function greet(name){
+  // 인사
+  return `Hello, ${name}!`;
+}
+console.log(greet("gemini2k"));</textarea>
     <div class="opts">
       <label><span data-i18n="b_codehl_lang_label">언어</span> <select id="lang"><option value="" data-i18n="b_codehl_lang_auto">자동 감지</option><option>javascript</option><option>typescript</option><option>python</option><option>java</option><option>c</option><option>cpp</option><option>csharp</option><option>go</option><option>rust</option><option>php</option><option>ruby</option><option>kotlin</option><option>swift</option><option>sql</option><option>json</option><option>xml</option><option>css</option><option>bash</option><option>yaml</option></select></label>
       <label><span data-i18n="b_codehl_theme_label">테마</span> <select id="theme"><option value="github.min.css" data-i18n="b_codehl_theme_light">라이트</option><option value="github-dark.min.css" data-i18n="b_codehl_theme_dark">다크</option></select></label>
@@ -57,7 +61,7 @@
     <h3>결과 해석</h3>
     <p>언어를 javascript로 두고 <code>const x = 1;</code>을 넣으면 복사되는 HTML 안쪽은 <code>&lt;span class="hljs-keyword"&gt;const&lt;/span&gt; x = &lt;span class="hljs-number"&gt;1&lt;/span&gt;;</code>처럼 됩니다. 즉 색 정보가 인라인 스타일이 아니라 <code>hljs-keyword</code>, <code>hljs-string</code> 같은 클래스 이름으로 들어갑니다.</p>
     <h3>주의할 점</h3>
-    <p>복사한 HTML을 그대로 붙이면 클래스만 있고 색 규칙이 없으므로, 붙여넣을 페이지에 highlight.js 테마 CSS(github.css 등)가 함께 로드돼 있어야 색이 보입니다. 또 이 도구는 입력의 <code>\n</code> 두 글자를 실제 줄바꿈으로 바꾸어 처리하므로, <code>printf("a\n")</code>처럼 문자열 안에 백슬래시 n이 들어 있는 코드는 결과에서 줄이 갈라집니다. 짧은 코드는 자동 감지가 엉뚱한 언어를 고르기 쉽습니다.</p>
+    <p>복사한 HTML을 그대로 붙이면 클래스만 있고 색 규칙이 없으므로, 붙여넣을 페이지에 highlight.js 테마 CSS(github.css 등)가 함께 로드돼 있어야 색이 보입니다. 입력한 코드는 한 글자도 바꾸지 않고 그대로 처리하므로, <code>printf("a\n")</code>처럼 문자열 안에 들어 있는 백슬래시 이스케이프도 원래 모양대로 남습니다.짧은 코드는 자동 감지가 엉뚱한 언어를 고르기 쉽습니다.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>목록에 없는 언어도 되나요?</dt>
@@ -72,8 +76,8 @@
 <script>
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
-  function render(){ var code=$('in').value.replace(/\\n/g,'\n'); var lang=$('lang').value, res;
-    try{ res = lang? hljs.highlight(code,{language:lang}) : hljs.highlightAuto(code); }catch(e){ res={value:code.replace(/</g,'&lt;'),language:''}; }
+  function render(){ var code=$('in').value; var lang=$('lang').value, res;
+    try{ res = lang? hljs.highlight(code,{language:lang}) : hljs.highlightAuto(code); }catch(e){ res={value:code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'),language:''}; }
     $('out').innerHTML=res.value; $('out').className=''; $('detected').textContent= res.language? t('b_codehl_detected')+': '+res.language : '';
     window._html='<pre><code class="hljs">'+res.value+'</code></pre>';
   }

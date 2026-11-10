@@ -75,9 +75,11 @@
   var db=null;
   function seed(){ db.run("DROP TABLE IF EXISTS emp; CREATE TABLE emp(id INTEGER PRIMARY KEY, name TEXT, dept TEXT, salary INTEGER);"
     +"INSERT INTO emp(name,dept,salary) VALUES ('홍길동','기획',3200),('김영희','개발',4100),('이철수','디자인',2800),('박민수','개발',3600),('최지우','영업',2500);"); }
+  function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function show(res){ if(!res.length){ $('result').innerHTML='<div style="padding:.8rem;color:var(--muted)">'+t('b_sqlplay_no_rows')+'</div>'; return; }
-    var r=res[0]; var h='<table><thead><tr>'+r.columns.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>';
-    h+=r.values.map(function(row){return '<tr>'+row.map(function(v){return '<td>'+(v==null?'<i style="color:var(--muted)">NULL</i>':String(v).replace(/</g,'&lt;'))+'</td>';}).join('')+'</tr>';}).join('');
+    // 컬럼명(SELECT 1 AS "<img ...>" 등)과 값 모두 이스케이프해 innerHTML에 넣는다
+    var r=res[0]; var h='<table><thead><tr>'+r.columns.map(function(c){return '<th>'+escH(c)+'</th>';}).join('')+'</tr></thead><tbody>';
+    h+=r.values.map(function(row){return '<tr>'+row.map(function(v){return '<td>'+(v==null?'<i style="color:var(--muted)">NULL</i>':escH(v))+'</td>';}).join('')+'</tr>';}).join('');
     $('result').innerHTML=h+'</tbody></table>';
   }
   function run(){ if(!db){$('err').textContent=t('b_sqlplay_loading');return;} $('err').textContent='';

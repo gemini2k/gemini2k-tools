@@ -129,7 +129,7 @@
     sort:function(s){var lc=window.curLang?window.curLang():'ko';return lines(s).sort(function(a,b){return a.localeCompare(b,lc);}).join('\n');},
     nl2sp:function(s){return s.replace(/\r?\n/g,' ').replace(/\s+/g,' ').trim();}
   };
-  function update(){ var n=ta.value?lines(ta.value).length:0; info.textContent=T('tt.info').replace('{c}',ta.value.length).replace('{l}',n); }
+  function update(){ var n=ta.value?lines(ta.value).length:0; info.textContent=T('tt.info').replace('{c}',Array.from(ta.value).length).replace('{l}',n); }
   document.querySelectorAll('[data-act]').forEach(function(btn){
     btn.addEventListener('click', function(){
       var a=btn.dataset.act;

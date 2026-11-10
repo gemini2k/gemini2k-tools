@@ -51,7 +51,7 @@ table{width:100%;border-collapse:collapse;font-size:.95rem;}td{padding:.55rem .6
     <ul>
       <li>최근 크롬 계열 브라우저는 UA를 축소해 보내므로 안드로이드 버전이나 기기 모델이 실제와 다르게 고정된 값으로 나올 수 있습니다. 맥의 OS 버전도 실제보다 낮게 고정되어 나오는 경우가 많습니다.</li>
       <li>아이패드는 기본 설정에서 맥과 같은 UA를 보내므로 macOS 데스크톱으로 판정될 수 있습니다.</li>
-      <li>아이폰용 크롬(CriOS)·파이어폭스(FxiOS)처럼 규칙에 없는 표기는 브라우저가 「알 수 없음」으로 나올 수 있습니다.</li>
+      <li>아이폰·아이패드용 크롬(CriOS)·파이어폭스(FxiOS)·엣지(EdgiOS)는 각각 크롬·파이어폭스·엣지로 판정하지만, iOS의 모든 브라우저는 실제로 사파리와 같은 WebKit 엔진을 씁니다. 규칙에 없는 드문 브라우저는 「알 수 없음」이나 기반 브라우저 이름으로 나올 수 있습니다.</li>
       <li>UA는 누구나 바꿔 보낼 수 있습니다. 보안 판단이나 접근 차단의 유일한 근거로 쓰지 마세요.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
@@ -77,6 +77,9 @@ table{width:100%;border-collapse:collapse;font-size:.95rem;}td{padding:.55rem .6
     else if((m=ua.match(/SamsungBrowser\/([\d.]+)/))){br='Samsung Internet';bv=m[1];}
     else if((m=ua.match(/OPR\/([\d.]+)/))||(m=ua.match(/Opera[ /]([\d.]+)/))){br='Opera';bv=m[1];}
     else if((m=ua.match(/Whale\/([\d.]+)/))){br=t('b_uaparser_browser_whale');bv=m[1];}
+    // iOS용 크롬·파이어폭스는 WebKit 위에서 돌며 Chrome/·Firefox/ 대신 CriOS/·FxiOS/로 표기한다
+    else if((m=ua.match(/CriOS\/([\d.]+)/))){br='Google Chrome';bv=m[1];}
+    else if((m=ua.match(/FxiOS\/([\d.]+)/))){br='Mozilla Firefox';bv=m[1];}
     else if((m=ua.match(/Edge\/([\d.]+)/))){br='Edge (Legacy)';bv=m[1];}
     else if(/Chrome\//.test(ua)&&!/Chromium/.test(ua)&&(m=ua.match(/Chrome\/([\d.]+)/))){br='Google Chrome';bv=m[1];}
     else if((m=ua.match(/Chromium\/([\d.]+)/))){br='Chromium';bv=m[1];}

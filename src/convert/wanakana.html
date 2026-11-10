@@ -45,7 +45,7 @@
     </ul>
     <h3>사용 방법</h3>
     <ol>
-      <li>「→ 히라가나」, 「→ 가타카나」, 「→ 로마자」 중 원하는 변환 버튼을 먼저 고릅니다. 버튼을 누르면 입력칸이 예시 문장으로 바뀌니, 모드를 고른 다음 내용을 입력하세요.</li>
+      <li>「→ 히라가나」, 「→ 가타카나」, 「→ 로마자」 중 원하는 변환 버튼을 먼저 고릅니다. 입력칸이 비어 있거나 예시 문장 그대로일 때만 모드에 맞는 예시로 바뀌고, 직접 입력한 내용은 그대로 둔 채 결과만 다시 변환합니다.</li>
       <li>입력칸에 로마자 또는 가나를 입력합니다.</li>
       <li>결과를 확인하고 「복사」를 누릅니다.</li>
     </ol>
@@ -74,7 +74,8 @@
   var mode='hira';
   function run(){ var tmp=$('in').value; var o; try{ o = mode==='hira'?wanakana.toHiragana(tmp): mode==='kata'?wanakana.toKatakana(tmp): wanakana.toRomaji(tmp); }catch(e){o='';} $('out').textContent=o; window._o=o; }
   $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;mode=b.dataset.m;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
-    $('in').value = mode==='roma'?'こんにちは ありがとう':'konnichiwa arigatou'; run();});
+    /* 직접 넣은 내용은 지우지 않는다: 비어 있거나 예제 그대로일 때만 모드에 맞는 예제로 바꾼다 */
+    var cur=$('in').value; if(!cur.trim()||cur==='こんにちは ありがとう'||cur==='konnichiwa arigatou')$('in').value = mode==='roma'?'こんにちは ありがとう':'konnichiwa arigatou'; run();});
   $('in').addEventListener('input',run);
   $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_wanakana_toast_copied'));});});
   run();

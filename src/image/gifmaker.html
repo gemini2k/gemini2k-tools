@@ -61,7 +61,7 @@
     <ul>
       <li>GIF는 한 프레임에 256색까지만 담을 수 있어 사진은 그라데이션 부분에 얼룩이 생기기 쉽습니다. 캡처 화면이나 단순한 그림에 더 잘 맞습니다.</li>
       <li>투명 배경은 유지되지 않고 흰색으로 채워집니다.</li>
-      <li>여러 장을 한꺼번에 올리면 파일 읽기가 끝나는 순서대로 목록에 붙어 선택한 순서와 다를 수 있습니다. 순서가 중요하면 한 장씩 차례로 추가하세요.</li>
+      <li>여러 장을 한꺼번에 올리면 파일 선택 창(또는 끌어다 놓은 목록)이 넘겨준 순서대로 붙습니다. 이 순서는 운영체제에 따라 이름순일 수 있으니, 원하는 순서가 따로 있다면 파일 이름 앞에 번호를 붙이거나 한 장씩 차례로 추가하세요.</li>
       <li>프레임별 간격을 다르게 하거나 순서를 끌어서 바꾸는 기능은 없습니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
@@ -80,14 +80,16 @@
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1500);}
   var imgs=[];
   function add(list){ var arr=[].slice.call(list).filter(function(f){return /^image\//.test(f.type);}); var left=arr.length; if(!left)return;
-    arr.forEach(function(f){ var u=URL.createObjectURL(f); var im=new Image(); im.onload=function(){URL.revokeObjectURL(u);imgs.push(im);if(--left===0)render();}; im.onerror=function(){if(--left===0)render();}; im.src=u; }); }
+    var slots=new Array(arr.length);
+    function done(){ if(--left===0){ slots.forEach(function(im){ if(im) imgs.push(im); }); render(); } }
+    arr.forEach(function(f,k){ var u=URL.createObjectURL(f); var im=new Image(); im.onload=function(){slots[k]=im;done();}; im.onerror=function(){URL.revokeObjectURL(u);done();}; im.src=u; }); }
   function render(){ $('thumbs').innerHTML=imgs.map(function(im,i){return '<div class="thumb"><img src="'+im.src+'"/><span class="ord">'+(i+1)+'</span><button data-i="'+i+'">✕</button></div>';}).join('');
     var has=imgs.length>=2; $('opts').classList.toggle('hide',!has); $('actions').classList.toggle('hide',!has); }
   $('drop').addEventListener('click',function(){$('file').click();});
   $('file').addEventListener('change',function(e){add(e.target.files);e.target.value='';});
   ['dragover','dragenter'].forEach(function(ev){$('drop').addEventListener(ev,function(e){e.preventDefault();});});
   $('drop').addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files.length)add(e.dataTransfer.files);});
-  $('thumbs').addEventListener('click',function(e){var b=e.target.closest('button');if(b){imgs.splice(+b.dataset.i,1);render();}});
+  $('thumbs').addEventListener('click',function(e){var b=e.target.closest('button');if(b){var rm=imgs.splice(+b.dataset.i,1)[0];if(rm)URL.revokeObjectURL(rm.src);render();}});
   $('make').addEventListener('click',function(){ if(imgs.length<2){toast(t('b_gifmaker_toast_min'));return;}
     var w=Math.max(60,Math.min(800,+$('w').value||320)); var ratios=imgs.map(function(im){return im.height/im.width;}); var h=Math.round(w*Math.max.apply(null,ratios));
     $('prog').textContent=t('b_gifmaker_prog_preparing'); $('result').classList.add('hide');

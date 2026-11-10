@@ -34,7 +34,7 @@
     <div class="opts"><label><span data-i18n="b_ulid_count_label">개수</span> <input id="cnt" type="number" min="1" max="100" value="5"/></label></div>
     <div class="actions"><button class="btn" id="gen" type="button" data-i18n="b_ulid_btn_gen">🔄 생성</button><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_ulid_btn_copy">📋 복사</button></div>
     <div class="out" id="out"></div>
-    <div class="note" data-i18n="b_ulid_note">ULID = 48비트 타임스탬프(밀리초) + 80비트 난수, Crockford Base32 26자. 같은 밀리초 내에서도 사전식 정렬이 보장되도록 난수 부분을 사용합니다. 난수는 암호학적(crypto)입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_ulid_note">ULID = 48비트 타임스탬프(밀리초) + 80비트 난수, Crockford Base32 26자. 같은 밀리초에 만든 ID는 난수 부분을 1씩 늘려(단조 증가) 생성 순서대로 정렬됩니다. 난수는 암호학적(crypto)입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
   <section class="toolhelp">
     <h2>ULID 생성기 사용 안내</h2>
@@ -54,10 +54,10 @@
       <li>「복사」로 목록 전체를 줄바꿈으로 구분해 가져갑니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>ULID 명세의 예시인 <code>01ARZ3NDEKTSV4RRFFQ69G5FAV</code>로 보면 <code>01ARZ3NDEK</code>가 시각, <code>TSV4RRFFQ69G5FAV</code>가 난수입니다. 시각 부분이 앞에 있으므로 문자열 정렬만으로 생성 시각 순서가 맞춰지고, 첫 글자는 48비트 범위 때문에 항상 0~7 중 하나입니다. 이 도구는 버튼을 한 번 누를 때 시각을 한 번만 읽으므로, 같이 만든 ID들은 앞 10자가 모두 같고 뒤 16자만 다릅니다.</p>
+    <p>ULID 명세의 예시인 <code>01ARZ3NDEKTSV4RRFFQ69G5FAV</code>로 보면 <code>01ARZ3NDEK</code>가 시각, <code>TSV4RRFFQ69G5FAV</code>가 난수입니다. 시각 부분이 앞에 있으므로 문자열 정렬만으로 생성 시각 순서가 맞춰지고, 첫 글자는 48비트 범위 때문에 항상 0~7 중 하나입니다. 이 도구는 버튼을 한 번 누를 때 시각을 한 번만 읽으므로, 같이 만든 ID들은 앞 10자가 모두 같고 뒤 16자는 첫 값에서 1씩 커집니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>같은 밀리초 안에서 난수 부분을 1씩 늘려 순서를 지키는 단조 증가(monotonic) 방식은 구현하지 않았습니다. 한 번에 만든 여러 개는 화면에 나온 순서와 정렬 순서가 다를 수 있으니, 생성 순서가 중요한 데이터라면 애플리케이션 쪽 라이브러리로 만드세요.</li>
+      <li>같은 밀리초에 만든 ID는 명세의 단조 증가(monotonic) 방식대로 첫 ID의 난수에 1씩 더해 만듭니다. 그래서 한 번에 만든 여러 개는 화면에 나온 순서와 정렬 순서가 같지만, 뒤 16자가 연속된 값이라 서로 추측하기 쉽습니다. 다른 ID를 짐작할 수 없어야 하는 용도라면 한 번에 하나씩 만드세요.</li>
       <li>ID에 생성 시각이 그대로 드러납니다. 가입 시각처럼 감춰야 할 정보가 추정되면 곤란한 곳에는 UUID v4가 낫습니다.</li>
       <li>DB에 저장할 때는 26자 문자열 그대로 넣거나, 16바이트 이진값으로 바꿔 넣는 방식 중 하나로 통일하세요.</li>
     </ul>
@@ -84,7 +84,14 @@
     for(var k=0;k<10;k++){ buffer=(buffer<<8)|bytes[k]; bitsLeft+=8; while(bitsLeft>=5){ bitsLeft-=5; chars+=ENC[(buffer>>bitsLeft)&31]; } }
     return chars.slice(0,16);
   }
-  function ulid(t){ return encTime(t)+rand(); }
+  // 단조 증가(monotonic): 직전과 같은 밀리초(또는 시계가 뒤로 간 경우)면 직전 난수 부분에 1을 더해 정렬 순서를 보장
+  var lastT=-1, lastR='';
+  function incr32(s){ var a=s.split(''), i=a.length-1;
+    while(i>=0){ var v=ENC.indexOf(a[i]); if(v<31){ a[i]=ENC[v+1]; return a.join(''); } a[i]=ENC[0]; i--; }
+    throw new Error('ULID random overflow'); }
+  function ulid(t){
+    if(t<=lastT){ lastR=incr32(lastR); t=lastT; } else { lastT=t; lastR=rand(); }
+    return encTime(t)+lastR; }
   function gen(){ var n=Math.max(1,Math.min(100,parseInt($('cnt').value,10)||1)), now=performance.timing?Date.now():Date.now();
     // performance: avoid Date.now in restricted env? browser ok. use a base time read once
     var base=Number(new Date().getTime ? Date.now() : 0);

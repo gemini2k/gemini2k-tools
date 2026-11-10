@@ -108,7 +108,7 @@
 20,88</pre>
     <p>점이 오른쪽 위로 올라가면 두 값이 함께 커진다는 뜻이지만, 원인과 결과를 말해 주지는 않습니다. 막대·선의 세로축 눈금은 최댓값을 1·2·5·10 단위의 보기 좋은 값으로 올려 다섯 칸으로 나누며, 값에 음수가 있으면 0 아래까지 축이 내려갑니다. 원형의 범례 비율은 반올림 값이라 합이 100%에서 1% 정도 어긋날 수 있습니다.</p>
     <h3>주의할 점</h3>
-    <p>산점도는 세로축의 최솟값·최댓값만 표시하고 가로축 눈금은 그리지 않으므로, 보고서에 쓸 때는 축 설명을 본문에 따로 적어 주세요. 원형에서 음수는 0으로 처리됩니다. 항목이 많거나 이름이 길면 가로축 라벨이 겹치니 이름을 줄이거나 항목을 묶으세요. 천 단위 쉼표(1,200)는 구분자로 읽히므로 숫자에 쉼표를 넣지 마세요.</p>
+    <p>산점도는 세로축의 최솟값·최댓값만 표시하고 가로축 눈금은 그리지 않으므로, 보고서에 쓸 때는 축 설명을 본문에 따로 적어 주세요. 원형에서 음수는 0으로 처리됩니다. 항목이 많거나 이름이 길면 가로축 라벨이 겹치니 이름을 줄이거나 항목을 묶으세요. 막대·선·원형에서는 <code>항목,1,200</code>처럼 값에 천 단위 쉼표가 들어가도 1200으로 읽습니다. 산점도는 x,y 두 숫자를 쉼표로 나누므로 천 단위 쉼표를 빼고 넣거나 x와 y를 탭으로 구분하세요.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>여러 계열(작년·올해)을 한 차트에 그릴 수 있나요?</dt>
@@ -124,9 +124,13 @@
   var $=function(id){return document.getElementById(id);};
   var cv=$('cv'), x=cv.getContext('2d'), W=820, H=460;
   var PALETTE=['#5B5BF5','#15C39A','#F59E0B','#EF4444','#3D7BF0','#A855F7','#14B8A6','#F97316','#EC4899','#22C55E'];
-  function parse(){
+  /* 천 단위 쉼표(1,200)가 쉼표 구분자와 겹치므로: 탭이 있으면 탭으로만 나누고, 쉼표 줄에서 둘째 칸 이후가 1,200·"12,345.6" 같은 천 단위 숫자 모양이면 하나의 값으로 합친다 */
+  function splitRow(l,merge){ if(l.indexOf('\t')>=0)return l.split('\t').map(function(c){ return /^\s*"?\s*-?\d{1,3}(,\d{3})+(\.\d+)?\s*"?\s*$/.test(c)?c.replace(/[",\s]/g,''):c; }); var p=l.split(',');
+    if(merge&&p.length>2){ var rest=p.slice(1).join(','); if(/^\s*"?\s*-?\d{1,3}(,\d{3})+(\.\d+)?\s*"?\s*$/.test(rest))return [p[0],rest.replace(/[",\s]/g,'')]; }
+    return p; }
+  function parse(merge){
     var lines=$('data').value.split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean);
-    var rows=[]; for(var i=0;i<lines.length;i++){ var p=lines[i].split(/[,\t]/); rows.push(p); }
+    var rows=[]; for(var i=0;i<lines.length;i++){ var p=splitRow(lines[i],merge); rows.push(p); }
     return rows;
   }
   function clear(){ x.fillStyle='#ffffff'; x.fillRect(0,0,W,H); }
@@ -135,7 +139,7 @@
 
   function draw(){
     errMsg(''); clear();
-    var type=$('type').value, color=$('color').value, title=$('title').value, rows=parse();
+    var type=$('type').value, color=$('color').value, title=$('title').value, rows=parse(type!=='scatter');
     x.fillStyle='#16181f'; x.font='bold 22px Pretendard,system-ui,sans-serif'; x.textAlign='center';
     if(title) x.fillText(title, W/2, 34);
     var PAD={l:60,r:24,t:54,b:54};

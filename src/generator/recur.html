@@ -70,12 +70,12 @@ select,input{padding:.55rem .65rem;border:1px solid var(--border);border-radius:
       <li>RRULE 칸의 문자열을 「복사」해 캘린더나 코드에 붙여 넣습니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>예를 들어 매주, 간격 2, 화·목, 횟수 6을 고르면 <code>RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=TU,TH;COUNT=6</code> 형태가 나오고, 아래 목록에 2주 간격의 화·목 날짜 6개가 찍힙니다. 첫 줄의 DTSTART는 끝에 Z가 붙은 협정세계시(UTC)로 표시되므로, 한국 시간 09:00은 <code>T000000Z</code>로 보입니다. 시간이 틀린 것이 아니라 표기 기준이 다른 것입니다.</p>
+    <p>예를 들어 매주, 간격 2, 화·목, 횟수 6을 고르면 <code>RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=TU,TH;COUNT=6</code> 형태가 나오고, 아래 목록에 2주 간격의 화·목 날짜 6개가 찍힙니다. 첫 줄의 DTSTART는 브라우저의 시간대를 붙여 <code>DTSTART;TZID=Asia/Seoul:20261110T090000</code>처럼 입력한 현지 시각 그대로 표시됩니다. 「날짜까지」로 끝내면 UNTIL에는 그날 현지 23:59:59를 협정세계시(UTC)로 바꾼 값이 들어가므로, 한국 시간이라면 <code>T145959Z</code>로 끝납니다. 표준이 UNTIL을 UTC로 쓰도록 정해 둔 것이라 정상입니다.</p>
     <h3>주의할 점</h3>
     <ul>
       <li>매월은 시작일의 날짜를 따라갑니다. 31일에 시작하면 31일이 없는 달은 건너뛰는 것이 표준 동작입니다. 말일 반복이 필요하면 캘린더 앱에서 따로 지정하세요.</li>
       <li>매월 “둘째 주 화요일” 같은 규칙과 특정 날짜 제외(EXDATE)는 이 화면에서 만들 수 없습니다.</li>
-      <li>한국 시간 오전 9시 이전으로 시작 시각을 잡으면 UTC 기준으로는 전날이 되어, 매주 요일 계산이 하루 어긋나 보일 수 있습니다. 목록의 날짜를 반드시 확인하세요.</li>
+      <li>요일과 날짜는 모두 브라우저 시간대의 현지 시각 기준으로 계산합니다. 다른 시간대의 일정을 만들려면 그 시간대로 설정된 기기에서 만들거나, 복사한 DTSTART의 TZID를 직접 고치세요.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
@@ -109,14 +109,22 @@ select,input{padding:.55rem .65rem;border:1px solid var(--border);border-radius:
   function build(){
     var freq=$('freq').value; $('iunit').textContent=t(unitMap[freq]);
     $('wdbox').style.display=freq==='WEEKLY'?'':'none';
-    var opts={freq:RRule[freq],interval:Math.max(1,+$('interval').value||1),dtstart:new Date($('start').value||Date.now())};
+    // rrule.js 권장 방식: 벽시계 시각을 UTC 필드에 담은 '떠 있는(floating)' 날짜 + tzid(브라우저 시간대)
+    var tz=''; try{ tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''; }catch(e){}
+    var sm=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec($('start').value||''), now=new Date();
+    var dtstart=sm?new Date(Date.UTC(+sm[1],sm[2]-1,+sm[3],+sm[4],+sm[5])):new Date(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate(),now.getHours(),now.getMinutes()));
+    var opts={freq:RRule[freq],interval:Math.max(1,+$('interval').value||1),dtstart:dtstart};
+    if(tz) opts.tzid=tz;
+    var untilReal=null;
     if(freq==='WEEKLY'){ var sel=[]; Array.prototype.forEach.call($('wd').querySelectorAll('input:checked'),function(c){sel.push(RRule[c.value]);}); if(sel.length)opts.byweekday=sel; }
     var et=$('endtype').value; $('count').style.display=et==='count'?'':'none'; $('until').style.display=et==='until'?'':'none';
-    if(et==='count')opts.count=Math.max(1,+$('count').value||10); else if(et==='until')opts.until=new Date($('until').value);
-    var rule=new RRule(opts);
-    $('rrule').textContent=rule.toString(); window._r=rule.toString();
+    if(et==='count')opts.count=Math.max(1,+$('count').value||10); else if(et==='until'){ var um=/^(\d{4})-(\d{2})-(\d{2})/.exec($('until').value||''); if(um){ opts.until=new Date(Date.UTC(+um[1],um[2]-1,+um[3],23,59,59)); untilReal=new Date(+um[1],um[2]-1,+um[3],23,59,59); } }
+    var rule=new RRule(opts), str=rule.toString();
+    // RFC 5545: DTSTART에 TZID가 있으면 UNTIL은 실제 UTC 시각이어야 한다 → 그날 현지 23:59:59를 UTC로 환산
+    if(untilReal&&tz){ var z=function(n){return(n<10?'0':'')+n;}; str=str.replace(/UNTIL=\d{8}T\d{6}Z?/,'UNTIL='+untilReal.getUTCFullYear()+z(untilReal.getUTCMonth()+1)+z(untilReal.getUTCDate())+'T'+z(untilReal.getUTCHours())+z(untilReal.getUTCMinutes())+z(untilReal.getUTCSeconds())+'Z'); }
+    $('rrule').textContent=str; window._r=str;
     var all=et==='never'?rule.all(function(d,i){return i<10;}):rule.all();
-    var items=all.slice(0,10).map(function(d){ return '• '+d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes()); });
+    var items=all.slice(0,10).map(function(d){ return '• '+d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate())+' '+pad(d.getUTCHours())+':'+pad(d.getUTCMinutes()); });
     $('list').innerHTML=items.join('<br>')||t('b_recur_none');
   }
   renderWd();

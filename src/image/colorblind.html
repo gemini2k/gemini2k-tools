@@ -24,7 +24,7 @@
   <h1 data-i18n="b_colorblind_title">색각이상(색맹) 시뮬레이터</h1>
   <p class="sub" data-i18n="b_colorblind_sub">이미지가 색각이상 사용자에게 어떻게 보이는지 보여 줍니다. 웹·디자인 접근성 점검에 활용하세요.</p>
   <div class="card">
-    <div class="drop" id="drop" data-i18n="b_colorblind_drop">🖼️ 이미지를 끌어다 놓거나 클릭해서 선택<input type="file" id="file" accept="image/*" hidden/></div>
+    <div class="drop" id="drop" data-i18n="b_colorblind_drop">🖼️ 이미지를 끌어다 놓거나 클릭해서 선택</div><input type="file" id="file" accept="image/*" hidden/>
     <div class="row"><span data-i18n="b_colorblind_type_label">유형</span> <select id="type">
       <option value="protanopia" data-i18n="b_colorblind_opt_protanopia">적색맹 (Protanopia)</option>
       <option value="deuteranopia" selected data-i18n="b_colorblind_opt_deuteranopia">녹색맹 (Deuteranopia)</option>
@@ -35,12 +35,12 @@
       <figure><figcaption data-i18n="b_colorblind_original">원본</figcaption><canvas id="orig"></canvas></figure>
       <figure><figcaption id="cap" data-i18n="b_colorblind_simulation">시뮬레이션</figcaption><canvas id="sim"></canvas></figure>
     </div>
-    <div class="note" data-i18n="b_colorblind_note">Brettel/Viénot 계열의 표준 변환 행렬을 사용한 근사 시뮬레이션입니다. 실제 인지는 개인차가 있어 참고용입니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 업로드되지 않습니다.</div>
+    <div class="note" data-i18n="b_colorblind_note">Machado(2009) 모델의 변환 행렬을 선형 RGB에 적용한 근사 시뮬레이션입니다. 실제 인지는 개인차가 있어 참고용입니다. 모든 처리는 브라우저에서만 이루어지며 이미지는 업로드되지 않습니다.</div>
   </div>
   <section class="toolhelp">
     <h2>색각이상 시뮬레이터 사용 안내</h2>
     <h3>무엇을 하는 도구인가</h3>
-    <p>올린 이미지의 각 픽셀 RGB 값에 3×3 변환 행렬을 곱해, 적색맹·녹색맹·청색맹·전색맹인 사람에게 대략 어떻게 보이는지 흉내 낸 이미지를 원본 옆에 나란히 보여 줍니다. 전색맹은 R·G·B에 0.299, 0.587, 0.114를 곱해 더하는 밝기 계산으로 흑백을 만듭니다. 이미지는 브라우저의 캔버스에서만 처리되고 서버로 올라가지 않습니다.</p>
+    <p>올린 이미지의 각 픽셀을 감마가 풀린 선형 RGB로 바꾼 뒤 3×3 변환 행렬을 곱하고 다시 화면용 sRGB로 되돌려, 적색맹·녹색맹·청색맹·전색맹인 사람에게 대략 어떻게 보이는지 흉내 낸 이미지를 원본 옆에 나란히 보여 줍니다. 행렬은 색각 시뮬레이션에 널리 쓰이는 Machado·Oliveira·Fernandes(2009) 모델의 완전 이색형(심도 100%) 값입니다. 전색맹은 선형 RGB에 0.2126, 0.7152, 0.0722를 곱해 더한 휘도로 흑백을 만듭니다. 이미지는 브라우저의 캔버스에서만 처리되고 서버로 올라가지 않습니다.</p>
     <h3>언제 쓰나</h3>
     <ul>
       <li>그래프 범례를 빨강·초록으로만 구분해 놓았는데 괜찮은지 확인할 때</li>
@@ -55,10 +55,10 @@
       <li>보고서에 쓸 이미지는 「결과 저장」으로 colorblind.png를 받습니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>녹색맹 변환에서는 순수한 빨강(255, 0, 0)이 약 (159, 179, 0)의 탁한 황록색으로, 순수한 초록(0, 255, 0)이 약 (96, 77, 77)의 어두운 회갈색으로 바뀝니다. 원본에서 빨강과 초록으로 나눈 두 계열이 결과에서 비슷한 색으로 뭉쳐 보이면 색만으로 정보를 전달하고 있다는 뜻입니다. 이때는 선 모양, 무늬, 아이콘, 글자 표시를 함께 써서 색 없이도 구분되게 고치는 것이 일반적인 해법입니다.</p>
+    <p>녹색맹 변환에서는 순수한 빨강(255, 0, 0)이 약 (163, 144, 0)의 탁한 황갈색으로, 순수한 초록(0, 255, 0)이 약 (239, 214, 58)의 누런색으로 바뀝니다. 원본에서 빨강과 초록으로 나눈 두 계열이 결과에서 비슷한 색으로 뭉쳐 보이면 색만으로 정보를 전달하고 있다는 뜻입니다. 이때는 선 모양, 무늬, 아이콘, 글자 표시를 함께 써서 색 없이도 구분되게 고치는 것이 일반적인 해법입니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>단순화한 근사 변환입니다. 실제 색각이상은 정도가 사람마다 다르고 약한 이상(색약)이 더 흔하므로, 결과는 “이렇게 보일 수도 있다”는 점검용으로 쓰세요.</li>
+      <li>모델 하나로 계산한 근사 결과입니다. 청색맹은 이 모델에서 정확도가 상대적으로 낮다고 알려져 있습니다. 실제 색각이상은 정도가 사람마다 다르고 약한 이상(색약)이 더 흔하므로, 결과는 “이렇게 보일 수도 있다”는 점검용으로 쓰세요.</li>
       <li>가로가 520픽셀보다 큰 이미지는 비율을 유지한 채 520픽셀로 줄여 처리하며, 저장 파일도 그 크기입니다.</li>
       <li>모니터 색 설정이나 야간 모드가 켜져 있으면 비교가 부정확해질 수 있습니다.</li>
     </ul>
@@ -74,12 +74,16 @@
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
+  // Machado·Oliveira·Fernandes(2009) 이색형(심도 1.0) 행렬 — 선형 RGB에 적용. 전색맹은 선형 휘도(Rec.709)
   var M={
-    protanopia:[0.567,0.433,0,0.558,0.442,0,0,0.242,0.758],
-    deuteranopia:[0.625,0.375,0,0.7,0.3,0,0,0.3,0.7],
-    tritanopia:[0.95,0.05,0,0,0.433,0.567,0,0.475,0.525],
-    achromatopsia:[0.299,0.587,0.114,0.299,0.587,0.114,0.299,0.587,0.114]
+    protanopia:[0.152286,1.052583,-0.204868,0.114503,0.786281,0.099216,-0.003882,-0.048116,1.051998],
+    deuteranopia:[0.367322,0.860646,-0.227968,0.280085,0.672501,0.047413,-0.011820,0.042940,0.968881],
+    tritanopia:[1.255528,-0.076749,-0.178779,-0.078411,0.930809,0.147602,0.004733,0.691367,0.303900],
+    achromatopsia:[0.2126,0.7152,0.0722,0.2126,0.7152,0.0722,0.2126,0.7152,0.0722]
   };
+  // sRGB 감마 ↔ 선형 변환(조회표/역변환)
+  var LIN=new Float32Array(256); for(var k=0;k<256;k++){ var c=k/255; LIN[k]=c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4); }
+  function enc(v){ if(v<=0) return 0; if(v>=1) return 255; return Math.round(255*(v<=0.0031308?12.92*v:1.055*Math.pow(v,1/2.4)-0.055)); }
   var img=new Image(), loaded=false;
   var drop=$('drop'), file=$('file');
   drop.addEventListener('click',function(){file.click();});
@@ -94,8 +98,8 @@
     var octx=oc.getContext('2d'); octx.drawImage(img,0,0,w,h);
     var data=octx.getImageData(0,0,w,h), d=data.data, m=M[$('type').value];
     var out=$('sim').getContext('2d').createImageData(w,h), o=out.data;
-    for(var i=0;i<d.length;i+=4){ var r=d[i],g=d[i+1],b=d[i+2];
-      o[i]=Math.min(255,r*m[0]+g*m[1]+b*m[2]); o[i+1]=Math.min(255,r*m[3]+g*m[4]+b*m[5]); o[i+2]=Math.min(255,r*m[6]+g*m[7]+b*m[8]); o[i+3]=d[i+3]; }
+    for(var i=0;i<d.length;i+=4){ var r=LIN[d[i]],g=LIN[d[i+1]],b=LIN[d[i+2]];
+      o[i]=enc(r*m[0]+g*m[1]+b*m[2]); o[i+1]=enc(r*m[3]+g*m[4]+b*m[5]); o[i+2]=enc(r*m[6]+g*m[7]+b*m[8]); o[i+3]=d[i+3]; }
     $('sim').getContext('2d').putImageData(out,0,0);
     $('cap').textContent=$('type').options[$('type').selectedIndex].text; }
   $('type').addEventListener('change',draw);

@@ -50,16 +50,16 @@
     <ol>
       <li>입력칸에 숫자를 넣습니다. 쉼표나 통화 기호가 섞여 있어도 숫자·소수점·부호만 골라 읽습니다.</li>
       <li>아래 「영어 단어」, 「첫 글자 대문자」, 「금액(달러)」, 「서수(ordinal)」 줄에서 결과를 확인합니다.</li>
-      <li>필요한 줄의 문장을 선택해 복사합니다.</li>
+      <li>필요한 줄을 클릭하면 그 줄의 결과가 클립보드에 복사됩니다.</li>
     </ol>
     <h3>결과 해석</h3>
     <p>기본값 1234.56을 넣으면 영어 단어는 <code>one thousand two hundred thirty-four</code>, 금액은 <code>One thousand two hundred thirty-four dollars and fifty-six cents</code>, 서수는 <code>one thousand two hundred thirty-fourth</code>입니다. 영국식처럼 hundred 뒤에 and를 넣지 않는 미국식 표기이며, 21~99는 하이픈으로 잇습니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>금액 줄은 항상 dollars로 끝납니다. 1달러는 문법상 <code>One dollar</code>가 맞으므로 직접 고쳐 쓰세요.</li>
-      <li>센트는 소수 둘째 자리에서 반올림합니다. 0.999처럼 반올림하면 100센트가 되는 값은 달러로 올림 처리되지 않으니 미리 반올림한 금액을 넣으세요.</li>
-      <li>음수는 단어 표기에 negative가 붙지만 금액 줄에는 부호가 반영되지 않습니다.</li>
-      <li>자바스크립트 숫자 정밀도 한계로 약 9천조(2의 53제곱)를 넘는 정수는 끝자리가 정확하지 않을 수 있습니다.</li>
+      <li>금액 줄은 1달러·1센트일 때 단수형(<code>One dollar</code>, <code>one cent</code>)으로, 나머지는 복수형으로 씁니다.</li>
+      <li>센트는 소수 셋째 자리에서 반올림합니다. 0.999처럼 반올림 결과가 100센트가 되면 <code>One dollar</code>로 올려 표기합니다. 「영어 단어」 줄은 정수부만 읽으므로 이 경우 zero로 남습니다.</li>
+      <li>음수는 단어 표기와 금액 줄 모두 앞에 negative가 붙습니다. 수표나 계약서에는 보통 음수 금액을 쓰지 않으니 용도에 맞는지 확인하세요.</li>
+      <li>자바스크립트 숫자 정밀도 한계 때문에 약 9천조(2의 53제곱, 9,007,199,254,740,991)를 넘는 수는 변환하지 않고 안내 문구만 보여 줍니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
@@ -80,17 +80,25 @@
   function under1000(n){ var s=''; if(n>=100){ s+=ONES[Math.floor(n/100)]+' hundred'; n%=100; if(n)s+=' '; } if(n>=20){ s+=TENS[Math.floor(n/10)]; n%=10; if(n)s+='-'+ONES[n]; } else if(n>0){ s+=ONES[n]; } return s; }
   function words(n){ if(n===0)return 'zero'; var neg=n<0; n=Math.abs(n); var parts=[],i=0; while(n>0&&i<SCALE.length){ var c=n%1000; if(c){ parts.unshift(under1000(c)+(SCALE[i]?' '+SCALE[i]:'')); } n=Math.floor(n/1000); i++; } return (neg?'negative ':'')+parts.join(' '); }
   function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
-  function render(){ var raw=$('in').value.replace(/[^0-9.\-]/g,''); var n=parseFloat(raw);
+  function render(){ var raw=$('in').value.replace(/[^0-9.\-]/g,''); var ex=$('in').value.replace(/[,\s_$]/g,''); var n=/^[+\-]?(\d+\.?\d*|\.\d+)e[+\-]?\d+$/i.test(ex)?Number(ex):parseFloat(raw); // 1e5 같은 지수 표기
     var items;
     if(isNaN(n)){ items=[['안내',t('b_num2en_enter_number')]]; }
-    else { var intp=Math.floor(Math.abs(n)); var dec=Math.round((Math.abs(n)-intp)*100);
-      var w=words(n<0?-intp:intp); var amount=cap(words(intp))+' dollars'+(dec>0?' and '+words(dec)+' cents':'');
+    else if(Math.abs(n)>9007199254740991){ items=[['안내',t('b_num2en_too_large')]]; }
+    else { var intp=Math.floor(Math.abs(n));
+      /* 센트 반올림이 100이 되면(0.999 등) 달러로 올린다 */
+      var dec=Math.round((Math.abs(n)-intp)*100), dol=intp; if(dec>=100){ dol++; dec=0; } var neg=n<0&&(dol>0||dec>0);
+      var w=words(n<0?-intp:intp);
+      var amount=cap((neg?'negative ':'')+words(dol))+(dol===1?' dollar':' dollars')+(dec>0?' and '+words(dec)+(dec===1?' cent':' cents'):'');
       items=[ [t('b_num2en_label_words'), w], [t('b_num2en_label_cap'), cap(w)], [t('b_num2en_label_amount'), amount], [t('b_num2en_label_ordinal'), ordinal(intp)] ]; }
     $('res').innerHTML=items.map(function(it){ return '<div class="item" data-v="'+(''+it[1]).replace(/"/g,'&quot;')+'"><div class="l">'+it[0]+'</div><div class="v">'+it[1]+'</div></div>'; }).join('');
   }
   function ordinal(n){ var w=words(n); var map={one:'first',two:'second',three:'third',five:'fifth',eight:'eighth',nine:'ninth',twelve:'twelfth'}; var last=w.split(/[\s-]/).pop();
     var rep; if(map[last])rep=map[last]; else if(/y$/.test(last))rep=last.slice(0,-1)+'ieth'; else rep=last+'th'; return w.replace(new RegExp(last+'$'),rep); }
   $('in').addEventListener('input',render);
+  $('res').addEventListener('click',function(e){ var el=e.target; while(el&&el!==this&&!(el.classList&&el.classList.contains('item')))el=el.parentNode;
+    if(!el||el===this||!el.getAttribute('data-v'))return; var v=el.getAttribute('data-v');
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(v).then(function(){toast(t('toast.copied'));},function(){toast(t('toast.nocopy'));}); }
+    else { var ta=document.createElement('textarea'); ta.value=v; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');toast(t('toast.copied'));}catch(_){} document.body.removeChild(ta); } });
   window.onI18n=render;
   render();
 </script>

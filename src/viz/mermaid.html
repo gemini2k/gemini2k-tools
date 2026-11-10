@@ -61,7 +61,7 @@
   C --&gt; E[결과 통보]</pre>
     <p><code>[ ]</code>는 사각형, <code>{ }</code>는 판단(마름모), <code>( )</code>는 둥근 상자이고, <code>--&gt;|글자|</code>는 화살표 위에 조건을 적습니다. 앞의 A, B 같은 영문 ID로 노드를 구분하므로 한 노드를 여러 줄에서 쓸 때는 같은 ID를 쓰면 됩니다. 시퀀스 다이어그램에서 <code>-&gt;&gt;</code>는 실선(요청), <code>--&gt;&gt;</code>는 점선(응답) 화살표입니다.</p>
     <h3>주의할 점</h3>
-    <p>보안 설정이 엄격 모드라 노드 클릭 링크 같은 상호작용 문법은 동작하지 않습니다. 다크 모드로 페이지를 열면 다크 테마로 그려지는데, PNG는 흰 배경으로 저장되므로 글자가 흐리게 보일 수 있습니다. 보고서용 이미지는 라이트 모드에서 저장하는 것이 안전합니다. 괄호나 따옴표가 들어간 문구는 <code>A["처리(1차)"]</code>처럼 큰따옴표로 감싸야 오류가 나지 않습니다.</p>
+    <p>보안 설정이 엄격 모드라 노드 클릭 링크 같은 상호작용 문법은 동작하지 않습니다. 미리보기는 화면 테마(라이트·다크)를 따라 그려지지만, SVG·PNG 저장은 테마와 관계없이 기본(라이트) 테마로 다시 그려 흰 문서에 붙여도 글자가 잘 보입니다. 괄호나 따옴표가 들어간 문구는 <code>A["처리(1차)"]</code>처럼 큰따옴표로 감싸야 오류가 나지 않습니다.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>GitHub에서 쓰는 Mermaid 코드와 같은가요?</dt>
@@ -83,9 +83,16 @@
     class:'classDiagram\n  class Animal{\n    +String name\n    +eat()\n  }\n  Animal <|-- Dog\n  Animal <|-- Cat',
     pie:'pie title 점유율\n  "A" : 45\n  "B" : 30\n  "C" : 25'
   };
-  var dark=document.documentElement.getAttribute('data-theme')==='dark';
-  mermaid.initialize({startOnLoad:false, theme: dark?'dark':'default', securityLevel:'strict'});
+  function isDark(){ return document.documentElement.getAttribute('data-theme')==='dark'; }
+  function initTheme(th){ mermaid.initialize({startOnLoad:false, theme: th, securityLevel:'strict'}); }
+  initTheme(isDark()?'dark':'default');
   var seq=0;
+  // 내보내기용: 화면 테마와 무관하게 라이트(default) 테마로 다시 그린 SVG
+  function lightSvg(){ var code=$('in').value.trim(); if(!code) return Promise.reject();
+    initTheme('default');
+    var restore=function(){ initTheme(isDark()?'dark':'default'); };
+    return mermaid.render('mx'+(seq++),code).then(function(r){ restore(); return r.svg; },function(e){ restore(); throw e; }); }
+  try{ new MutationObserver(function(){ initTheme(isDark()?'dark':'default'); render(); }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); }catch(e){}
   function render(){ var code=$('in').value.trim(); $('err').textContent=''; if(!code){$('prev').innerHTML='';return;}
     var mid='m'+(seq++);
     mermaid.render(mid,code).then(function(r){ $('prev').innerHTML=r.svg; window._svg=r.svg; })
@@ -93,13 +100,20 @@
   }
   var tmr=null; $('in').addEventListener('input',function(){ clearTimeout(tmr); tmr=setTimeout(render,300); });
   document.querySelector('.ex').addEventListener('click',function(e){var b=e.target.closest('button');if(b){$('in').value=EX[b.dataset.k];render();}});
-  $('svg').addEventListener('click',function(){ if(!window._svg){toast(t('b_mermaid_toast_nodraw'));return;} var blob=new Blob([window._svg],{type:'image/svg+xml'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mermaid.svg';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); });
-  $('png').addEventListener('click',function(){ var svgEl=$('prev').querySelector('svg'); if(!svgEl){toast(t('b_mermaid_toast_nodraw'));return;}
-    var data=new XMLSerializer().serializeToString(svgEl); var img=new Image();
+  $('svg').addEventListener('click',function(){ if(!window._svg){toast(t('b_mermaid_toast_nodraw'));return;}
+    lightSvg().then(function(svgStr){ var blob=new Blob([svgStr],{type:'image/svg+xml'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mermaid.svg';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120); }).catch(function(){ toast(t('b_mermaid_toast_nodraw')); }); });
+  $('png').addEventListener('click',function(){ if(!$('prev').querySelector('svg')){toast(t('b_mermaid_toast_nodraw'));return;}
+    lightSvg().then(function(svgStr){
+    // 크기 측정을 위해 화면 밖에 잠시 붙였다 뗀다
+    var holder=document.createElement('div'); holder.style.cssText='position:absolute;left:-99999px;top:0;'; holder.innerHTML=svgStr; document.body.appendChild(holder);
+    var svgEl=holder.querySelector('svg'); var vb=svgEl.viewBox&&svgEl.viewBox.baseVal, cw=svgEl.getBoundingClientRect().width, chh=svgEl.getBoundingClientRect().height; holder.remove();
+    svgEl={viewBox:{baseVal:{width:(vb&&vb.width)||cw, height:(vb&&vb.height)||chh}}, clientWidth:cw, clientHeight:chh};
+    var data=svgStr; var img=new Image();
     img.onload=function(){ var sc=2,w=(svgEl.viewBox&&svgEl.viewBox.baseVal.width)||svgEl.clientWidth||800,h=(svgEl.viewBox&&svgEl.viewBox.baseVal.height)||svgEl.clientHeight||600;
       var cv=document.createElement('canvas');cv.width=w*sc;cv.height=h*sc;var x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.scale(sc,sc);x.drawImage(img,0,0,w,h);
       var a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='mermaid.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},100); };
-    img.onerror=function(){toast(t('b_mermaid_toast_png_fail'));}; img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data); });
+    img.onerror=function(){toast(t('b_mermaid_toast_png_fail'));}; img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data);
+    }).catch(function(){ toast(t('b_mermaid_toast_png_fail')); }); });
   $('in').value=EX.flow; render();
 </script>
 </body>

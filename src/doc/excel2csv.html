@@ -97,7 +97,7 @@
       <li>「⬇️ 다운로드」로 파일을 받거나 「📋 복사」로 클립보드에 담습니다. 파일 이름은 「원본이름_시트이름.csv」 형식입니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>첫 행이 「이름, 부서」이고 둘째 행이 「김철수, 총무과」인 시트라면 CSV는 그 두 줄이 그대로 나오고, JSON은 <code>[{"이름":"김철수","부서":"총무과"}]</code>처럼 머리글이 키가 됩니다. JSON에서 빈 셀은 빈 문자열로 채워집니다. CSV는 화면에 보이는 표시 형식(예: 2026-03-02, 1,200)대로 나오지만, JSON은 서식 없는 원래 값을 쓰므로 날짜가 45000대의 일련번호 숫자로 나올 수 있습니다. 미리보기 칸은 2만 자까지만 보여 주지만 다운로드와 복사에는 전체가 들어갑니다.</p>
+    <p>첫 행이 「이름, 부서」이고 둘째 행이 「김철수, 총무과」인 시트라면 CSV는 그 두 줄이 그대로 나오고, JSON은 <code>[{"이름":"김철수","부서":"총무과"}]</code>처럼 머리글이 키가 됩니다. JSON에서 빈 셀은 빈 문자열로 채워집니다. CSV는 화면에 보이는 표시 형식(예: 2026-03-02, 1,200)대로 나오고, JSON은 서식 없는 원래 값을 씁니다. 다만 날짜 서식이 지정된 셀은 엑셀 내부의 일련번호 숫자 대신 <code>"2026-03-02"</code>처럼 ISO 형식 문자열로 바꾸며, 시각이 있으면 <code>"2026-03-02T09:30:00"</code>처럼 붙입니다. 미리보기 칸은 2만 자까지만 보여 주지만 다운로드와 복사에는 전체가 들어갑니다.</p>
     <h3>주의할 점</h3>
     <ul>
       <li>수식은 다시 계산하지 않고 파일에 저장된 마지막 결과값을 씁니다. 글꼴·색·테두리·메모·차트는 모두 빠집니다.</li>
@@ -122,7 +122,7 @@
   var wb=null, baseName='data';
   function readFile(f){ if(!f) return; baseName=f.name.replace(/\.[^.]+$/,'')||'data';
     var fr=new FileReader();
-    fr.onload=function(e){ try{ wb=XLSX.read(e.target.result,{type:'array'}); buildSheets(); }
+    fr.onload=function(e){ try{ wb=XLSX.read(e.target.result,{type:'array',cellNF:true}); buildSheets(); }
       catch(err){ $('meta').classList.remove('hide'); $('meta').textContent=t('b_excel2csv_err_read'); } };
     fr.onerror=function(){ $('meta').classList.remove('hide'); $('meta').textContent=t('b_excel2csv_err_load'); };
     fr.readAsArrayBuffer(f);
@@ -134,9 +134,23 @@
     $('opts').classList.remove('hide'); $('actions').classList.remove('hide'); $('out').classList.remove('hide');
     render();
   }
+  // JSON용: 날짜 서식 셀의 일련번호(예: 46083)를 ISO 날짜(2026-03-02, 시각이 있으면 …T09:30:00, 시각만이면 09:30:00)로 바꾼 사본 시트
+  function isoDateSheet(ws){
+    var d1904=!!(wb.Workbook&&wb.Workbook.WBProps&&wb.Workbook.WBProps.date1904), o={};
+    function p(n){ return (n<10?'0':'')+n; }
+    Object.keys(ws).forEach(function(k){ var c=ws[k];
+      if(k[0]!=='!' && c && c.t==='n' && c.z && XLSX.SSF.is_date(c.z)){
+        var d=XLSX.SSF.parse_date_code(c.v,{date1904:d1904});
+        if(d){ var tm=p(d.H)+':'+p(d.M)+':'+p(d.S), iso= Math.floor(c.v)===0 ? tm : d.y+'-'+p(d.m)+'-'+p(d.d)+((d.H||d.M||d.S)?'T'+tm:'');
+          o[k]={t:'s',v:iso,w:iso}; return; }
+      }
+      o[k]=c;
+    });
+    return o;
+  }
   function curText(){
     var ws=wb.Sheets[$('sheet').value];
-    if($('fmt').value==='json'){ return JSON.stringify(XLSX.utils.sheet_to_json(ws,{defval:''}),null,2); }
+    if($('fmt').value==='json'){ return JSON.stringify(XLSX.utils.sheet_to_json(isoDateSheet(ws),{defval:''}),null,2); }
     return XLSX.utils.sheet_to_csv(ws);
   }
   function render(){ if(!wb) return; var tmp=curText(); $('out').textContent = tmp.length>20000 ? tmp.slice(0,20000)+'\n'+t('b_excel2csv_preview_truncated') : tmp; }

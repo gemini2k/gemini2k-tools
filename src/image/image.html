@@ -143,8 +143,8 @@
     var rd=new FileReader();
     rd.onload=function(){ img.onload=function(){
       renderOrig();
-      maxw.value=Math.min(img.naturalWidth,4000); maxwv.textContent=maxw.value;
       maxw.max=Math.max(img.naturalWidth,100);
+      maxw.value=Math.min(img.naturalWidth,4000); maxwv.textContent=maxw.value;
       opts.style.display=''; process();
     }; img.src=rd.result; };
     rd.readAsDataURL(f);

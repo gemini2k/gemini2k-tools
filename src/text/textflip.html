@@ -56,7 +56,7 @@
     <h3>주의할 점</h3>
     <ul>
       <li>상하 반전은 모양이 비슷한 다른 문자를 빌려 쓰는 재미용 변환입니다. 2, 4, 7 등은 한글 자모(ᄅ, ㄣ, ㄥ)를 빌려 쓰는 식이라 글꼴에 따라 어색하게 보일 수 있고, 표에 없는 글자는 그대로 남습니다.</li>
-      <li>이모지가 섞인 글을 뒤집으면 이모지가 깨진 문자로 바뀔 수 있습니다.</li>
+      <li>😀 같은 이모지는 한 글자로 묶어 뒤집으므로 깨지지 않습니다. 다만 가족·피부색 이모지처럼 여러 코드가 합쳐진 이모지나 결합 문자는 구성 요소 순서가 바뀌어 모양이 달라질 수 있습니다.</li>
       <li>바뀐 글자는 보통 글자와 다른 문자라 검색되지 않고, 화면 낭독기도 제대로 읽지 못합니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
@@ -73,9 +73,9 @@
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
   var FLIP={'a':'ɐ','b':'q','c':'ɔ','d':'p','e':'ǝ','f':'ɟ','g':'ƃ','h':'ɥ','i':'ı','j':'ɾ','k':'ʞ','l':'l','m':'ɯ','n':'u','o':'o','p':'d','q':'b','r':'ɹ','s':'s','t':'ʇ','u':'n','v':'ʌ','w':'ʍ','x':'x','y':'ʎ','z':'z','A':'∀','B':'B','C':'Ɔ','D':'D','E':'Ǝ','F':'Ⅎ','G':'פ','H':'H','I':'I','J':'ſ','K':'K','L':'˥','M':'W','N':'N','O':'O','P':'Ԁ','Q':'Q','R':'R','S':'S','T':'┴','U':'∩','V':'Λ','W':'M','X':'X','Y':'⅄','Z':'Z','0':'0','1':'Ɩ','2':'ᄅ','3':'Ɛ','4':'ㄣ','5':'ϛ','6':'9','7':'ㄥ','8':'8','9':'6','.':'˙',',':"'",'?':'¿','!':'¡',"'":',','(':')',')':'(','[':']',']':'[','{':'}','}':'{','<':'>','>':'<','_':'‾','&':'⅋'};
-  function reverse(s){ return s.split('').reverse().join(''); }
-  function upside(s){ return s.split('').map(function(c){return FLIP[c]||FLIP[c.toLowerCase()]||c;}).reverse().join(''); }
-  function mirror(s){ return s.split('').map(function(c){return FLIP[c]||c;}).join(''); }
+  function reverse(s){ return Array.from(s).reverse().join(''); }
+  function upside(s){ return Array.from(s).map(function(c){return FLIP[c]||FLIP[c.toLowerCase()]||c;}).reverse().join(''); }
+  function mirror(s){ return Array.from(s).map(function(c){return FLIP[c]||c;}).join(''); }
   function render(){ var s=$('in').value; var items=[[t('b_textflip_label_reverse'),reverse(s)],[t('b_textflip_label_upside'),upside(s)],[t('b_textflip_label_mirror'),mirror(s)]];
     $('res').innerHTML=items.map(function(it){ return '<div class="item" data-v="'+(''+it[1]).replace(/"/g,'&quot;')+'"><div class="l">'+it[0]+'</div><div class="v">'+(it[1]||'…')+'</div></div>'; }).join(''); }
   $('in').addEventListener('input',render);

@@ -97,7 +97,7 @@
   <section class="toolhelp">
     <h2>해시 생성기 사용 안내</h2>
     <h3>무엇을 하는 도구인가</h3>
-    <p>입력한 텍스트를 UTF-8 바이트로 바꿔 MD5, SHA-1, SHA-256, SHA-512 해시를 16진수로 계산합니다. SHA 계열은 브라우저 내장 Web Crypto API로, MD5는 페이지에 포함된 자바스크립트 구현으로 계산합니다. 파일 탭에서는 선택한 파일의 바이트 전체로 SHA-1, SHA-256, SHA-512를 계산합니다.</p>
+    <p>입력한 텍스트를 UTF-8 바이트로 바꿔 MD5, SHA-1, SHA-256, SHA-512 해시를 16진수로 계산합니다. SHA 계열은 브라우저 내장 Web Crypto API로, MD5는 페이지에 포함된 자바스크립트 구현으로 계산합니다. 파일 탭에서도 선택한 파일의 바이트 전체로 MD5, SHA-1, SHA-256, SHA-512를 모두 계산합니다.</p>
     <h3>언제 쓰나</h3>
     <ul>
       <li>내려받은 ISO나 설치 파일의 SHA-256을 배포처에 공개된 체크섬과 맞춰 볼 때</li>
@@ -113,7 +113,7 @@
     <h3>결과 해석</h3>
     <p><code>abc</code> 세 글자의 결과는 표준 테스트 값과 같아야 합니다. MD5는 <code>900150983cd24fb0d6963f7d28e17f72</code>, SHA-1은 <code>a9993e364706816aba3e25717850c26c9cd0d89d</code>, SHA-256은 <code>ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad</code>입니다. 끝에 줄바꿈 하나만 더 들어가도 값이 완전히 달라지므로, 터미널의 <code>echo abc | sha256sum</code>과 비교할 때는 <code>echo -n</code>을 써야 같은 값이 나옵니다. 대소문자는 의미가 없으며 이 도구는 소문자로 표시합니다.</p>
     <h3>주의할 점</h3>
-    <p>MD5와 SHA-1은 충돌을 만드는 공격이 알려져 있어 서명이나 위변조 방지에는 쓰지 않습니다. 비밀번호 저장에는 SHA-256도 그대로 쓰면 안 되고, bcrypt·scrypt·Argon2처럼 솔트와 반복 비용이 있는 전용 함수를 써야 합니다. 파일 탭에는 MD5가 없고, 파일 전체를 메모리로 읽어 계산하므로 수 GB 파일은 브라우저가 멈출 수 있습니다.</p>
+    <p>MD5와 SHA-1은 충돌을 만드는 공격이 알려져 있어 서명이나 위변조 방지에는 쓰지 않습니다. 비밀번호 저장에는 SHA-256도 그대로 쓰면 안 되고, bcrypt·scrypt·Argon2처럼 솔트와 반복 비용이 있는 전용 함수를 써야 합니다. 파일 전체를 메모리로 읽어 계산하므로 수 GB 파일은 브라우저가 멈출 수 있고, 특히 MD5는 자바스크립트로 계산해 큰 파일에서 SHA 계열보다 느립니다.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>윈도우에서 파일 해시를 직접 확인하려면요?</dt>
@@ -179,7 +179,11 @@
   }
   async function hashFile(file){
     var buf = await file.arrayBuffer();
+    // MD5 구현은 바이트 문자열을 받으므로 파일 바이트를 8KB씩 끊어 문자열로 바꾼다(큰 배열을 한 번에 apply하면 스택 초과)
+    var u8=new Uint8Array(buf), parts=[];
+    for(var i=0;i<u8.length;i+=8192) parts.push(String.fromCharCode.apply(null, u8.subarray(i,i+8192)));
     var rows = [
+      ['MD5', md5(parts.join(''))],
       ['SHA-1', await shaHex('SHA-1', buf)],
       ['SHA-256', await shaHex('SHA-256', buf)],
       ['SHA-512', await shaHex('SHA-512', buf)],

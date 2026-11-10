@@ -73,7 +73,7 @@
     <div class="desc" id="desc"></div>
     <div style="font-size:.82rem;color:var(--muted);font-weight:700;" data-i18n="b_cron_next_label">다음 실행 시각</div>
     <div class="next" id="next"></div>
-    <div class="note" data-i18n-html="b_cron_note">5필드(분 시 일 월 요일)를 지원합니다. <code>*</code>(전체), <code>*/n</code>(n단계), <code>a-b</code>(범위), <code>a,b</code>(목록)를 인식합니다. 요일은 0=일요일입니다. 다음 실행 시각은 이 기기의 현지 시간 기준으로 계산합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n-html="b_cron_note">5필드(분 시 일 월 요일)를 지원합니다. <code>*</code>(전체), <code>*/n</code>(n단계), <code>a-b</code>(범위), <code>a,b</code>(목록)를 인식합니다. 요일은 0과 7이 일요일이며 MON~SUN, JAN~DEC 이름도 인식합니다. 다음 실행 시각은 이 기기의 현지 시간 기준으로 계산합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
   <section class="toolhelp">
     <h2>Cron 표현식 해석기 사용 안내</h2>
@@ -94,7 +94,7 @@
     <h3>결과 해석</h3>
     <p>기본값 <code>0 9 * * 1-5</code>는 "월요일, 화요일, 수요일, 목요일, 금요일 · 9:00"으로 풀이됩니다. 지금이 2026-11-07(토) 15:00이라면 다음 실행은 2026-11-09 (월) 09:00부터 11-13 (금) 09:00까지 평일 5회로 나옵니다. 일과 요일을 둘 다 지정하면 표준 cron처럼 둘 중 하나만 맞아도 실행되므로, <code>0 0 13 * 5</code>는 "13일의 금요일"이 아니라 매월 13일과 매주 금요일 모두에 실행됩니다.</p>
     <h3>주의할 점</h3>
-    <p>시각은 이 브라우저가 놓인 기기의 현지 시간으로 계산합니다. 서버가 UTC로 돌고 있다면 한국 시간보다 9시간 늦게 실행되니 서버 시간대를 따로 확인하세요. 요일은 0~6(0=일요일)만 받으며, 일부 구현이 허용하는 7(일요일), <code>MON</code>·<code>JAN</code> 같은 이름, Quartz의 초 필드와 <code>?</code>, <code>L</code>, <code>#</code>은 지원하지 않습니다. 실행 시각은 약 1년 범위까지만 찾습니다.</p>
+    <p>시각은 이 브라우저가 놓인 기기의 현지 시간으로 계산합니다. 서버가 UTC로 돌고 있다면 한국 시간보다 9시간 늦게 실행되니 서버 시간대를 따로 확인하세요. 요일은 0~7을 받으며 0과 7은 모두 일요일입니다. <code>MON</code>~<code>SUN</code>, <code>JAN</code>~<code>DEC</code> 같은 영문 약어(대소문자 무관)도 쓸 수 있고, <code>5/10</code>처럼 시작값에 간격만 붙이면 표준 cron과 같이 5, 15, 25…로 끝까지 반복합니다. Quartz의 초 필드와 <code>?</code>, <code>L</code>, <code>#</code>은 지원하지 않습니다. 실행 시각은 약 1년 범위까지만 찾습니다.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>Spring이나 Quartz의 6~7자리 표현식을 넣으면요?</dt>
@@ -119,23 +119,36 @@
   function getLang(){ return (typeof curLang === 'function' ? curLang() : null) || 'ko'; }
   function getWD(){ var l=getLang(); return l==='en'?WD_en:l==='zh'?WD_zh:l==='ja'?WD_ja:WD_ko; }
   function getMON(){ var l=getLang(); return l==='en'?MON_en:l==='zh'?MON_zh:l==='ja'?MON_ja:MON_ko; }
-  function parseField(f, min, max){
+  var DOW_NAMES=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  var MON_NAMES=['','JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  // names: 영문 약어 배열(인덱스=값). starMax: '*'가 뜻하는 상한(요일은 7을 허용하되 *는 0~6).
+  function parseField(f, min, max, names, starMax){
     var out={};
+    function num(s){
+      s=String(s).toUpperCase();
+      if(names){ var k=names.indexOf(s); if(k>=0 && k>=min) return k; }
+      return /^\d+$/.test(s) ? parseInt(s,10) : NaN;
+    }
     f.split(',').forEach(function(part){
       var step=1, range=part;
-      var sl=part.split('/'); if(sl.length===2){ step=parseInt(sl[1]); range=sl[0]; }
+      var sl=part.split('/'); if(sl.length>2) throw new Error(t('b_cron_err_range'));
+      if(sl.length===2){ step=/^\d+$/.test(sl[1])?parseInt(sl[1],10):NaN; range=sl[0]; }
       var lo,hi;
-      if(range==='*'){ lo=min; hi=max; }
-      else if(range.indexOf('-')>=0){ var r=range.split('-'); lo=parseInt(r[0]); hi=parseInt(r[1]); }
-      else { lo=hi=parseInt(range); }
+      if(range==='*'){ lo=min; hi=(starMax!=null?starMax:max); }
+      else if(range.indexOf('-')>=0){ var r=range.split('-'); if(r.length!==2) throw new Error(t('b_cron_err_range')); lo=num(r[0]); hi=num(r[1]); }
+      else { lo=num(range); hi=(sl.length===2)?(starMax!=null?starMax:max):lo; }   // "5/10" = 5부터 끝까지 10 간격
       if(isNaN(lo)||isNaN(hi)||isNaN(step)||step<1||lo<min||hi>max||lo>hi) throw new Error(t('b_cron_err_range'));
       for(var v=lo;v<=hi;v+=step) out[v]=1;
     });
     return Object.keys(out).map(Number).sort(function(a,b){return a-b;});
   }
+  function parseDow(f){
+    var arr=parseField(f,0,7,DOW_NAMES,6), seen={};
+    return arr.map(function(d){ return d===7?0:d; }).filter(function(d){ if(seen[d]) return false; seen[d]=1; return true; }).sort(function(a,b){return a-b;});
+  }
   function parseCron(s){
     var f=s.trim().split(/\s+/); if(f.length!==5) throw new Error(t('b_cron_err_fields'));
-    return { min:parseField(f[0],0,59), hour:parseField(f[1],0,23), dom:parseField(f[2],1,31), mon:parseField(f[3],1,12), dow:parseField(f[4],0,6),
+    return { min:parseField(f[0],0,59), hour:parseField(f[1],0,23), dom:parseField(f[2],1,31), mon:parseField(f[3],1,12,MON_NAMES), dow:parseDow(f[4]),
              domStar:f[2]==='*', dowStar:f[4]==='*' };
   }
   function listDesc(arr,total,fmt){ if(arr.length===total) return null; return arr.map(fmt).join(', '); }

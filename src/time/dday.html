@@ -125,7 +125,7 @@
     // 다가오는 100일 단위 / 다음 주년 중 가장 가까운 미래(또는 오늘)
     var tmp=today(), cands=[];
     var days100=[100,200,300,365,500,1000,2000,3000];
-    days100.forEach(function(n){ var d=new Date(base); d.setDate(d.getDate()+n); if(diffDays(d)>=0) cands.push({d:d,label:(n%365===0?'':n+t('b_dday_unit_day')), n:n}); });
+    days100.forEach(function(n){ var d=new Date(base); d.setDate(d.getDate()+n); if(diffDays(d)>=0) cands.push({d:d,label:n+t('b_dday_unit_day'), n:n}); });
     for(var y=1;y<=100;y++){ var d=new Date(base); d.setFullYear(d.getFullYear()+y); if(diffDays(d)>=0){ cands.push({d:d,label:y+t('b_dday_unit_anniv'),n:99999}); break; } }
     cands.sort(function(a,b){ return a.d-b.d; });
     return cands[0];

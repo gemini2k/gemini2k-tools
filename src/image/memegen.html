@@ -55,7 +55,7 @@
       <li>「⬇️ PNG」로 meme.png를 저장합니다. 저장할 때 선택 테두리는 자동으로 빠집니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>사진은 너비 600px을 넘으면 600px로 줄여서 올라가고, 저장되는 PNG도 그 캔버스 크기 그대로입니다. 예를 들어 4000×3000px 사진을 올리면 600×450px 이미지가 나옵니다. 자막 기본 글자 크기는 캔버스 높이의 10분의 1이므로 위 예에서는 45px 정도로 시작합니다.</p>
+    <p>편집 화면에서는 사진이 너비 600px을 넘으면 600px로 줄여 보여 주지만, PNG는 원본 해상도로 다시 그려 저장합니다. 다만 파일이 지나치게 커지지 않도록 너비는 최대 2000px로 제한합니다. 예를 들어 1200×900px 사진은 1200×900px로, 4000×3000px 사진은 2000×1500px로 저장됩니다. 자막도 같은 비율로 커지므로 화면에서 본 배치가 그대로 유지됩니다. 자막 기본 글자 크기는 편집 화면 높이의 10분의 1입니다.</p>
     <h3>주의할 점</h3>
     <ul>
       <li>결과 해상도가 낮아 인쇄물이나 큰 화면용으로는 부족합니다. 메신저·SNS용으로 생각하세요.</li>
@@ -75,9 +75,9 @@
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
-  var cv=new fabric.Canvas('cv',{backgroundColor:'#222'});
+  var cv=new fabric.Canvas('cv',{backgroundColor:'#222'}), origW=0;
   function read(f){ if(!f||!/^image\//.test(f.type))return; var u=URL.createObjectURL(f); fabric.Image.fromURL(u,function(img){
-    var maxW=600; var sc=Math.min(1,maxW/img.width); cv.setWidth(img.width*sc); cv.setHeight(img.height*sc);
+    var maxW=600; origW=img.width; var sc=Math.min(1,maxW/img.width); cv.setWidth(img.width*sc); cv.setHeight(img.height*sc);
     img.set({selectable:false,evented:false}); img.scale(sc); cv.clear(); cv.backgroundColor='#222'; cv.add(img); cv.sendToBack(img); cv.renderAll(); $('bar').classList.remove('hide'); URL.revokeObjectURL(u);
   }); }
   function addText(txt,y){ var tmp=new fabric.Textbox(txt,{ left:cv.getWidth()/2, top:y, originX:'center', width:cv.getWidth()*0.9, textAlign:'center',
@@ -92,7 +92,7 @@
   $('addText').addEventListener('click',function(){addText(t('b_memegen_caption_text'),cv.getHeight()/2);});
   $('color').addEventListener('input',function(){var o=cv.getActiveObject();if(o&&o.set){o.set('fill',$('color').value);cv.renderAll();}});
   $('del').addEventListener('click',function(){var o=cv.getActiveObject();if(o&&o.type!=='image'){cv.remove(o);cv.renderAll();}});
-  $('png').addEventListener('click',function(){ cv.discardActiveObject(); cv.renderAll(); var a=document.createElement('a'); a.href=cv.toDataURL({format:'png'}); a.download='meme.png'; document.body.appendChild(a); a.click(); setTimeout(function(){a.remove();},100); });
+  $('png').addEventListener('click',function(){ cv.discardActiveObject(); cv.renderAll(); var a=document.createElement('a'); var mult=origW?Math.max(1,Math.min(origW,2000)/cv.getWidth()):1; a.href=cv.toDataURL({format:'png',multiplier:mult}); a.download='meme.png'; document.body.appendChild(a); a.click(); setTimeout(function(){a.remove();},100); });
 </script>
 </body>
 </html>

@@ -52,7 +52,7 @@
     <h3>주의할 점</h3>
     <ul>
       <li>커서 이동, 화면 지우기 같은 제어 코드는 화면 동작으로 재현되지 않고 지워집니다. 진행률 표시줄처럼 같은 줄을 덮어쓰는 출력은 여러 줄이 이어진 모양으로 남습니다.</li>
-      <li>글자로 적힌 <code>\e</code>도 ESC로 바꾸기 때문에, <code>C:\example</code>처럼 경로에 역슬래시와 e가 붙어 있으면 그 부분이 깨질 수 있습니다.</li>
+      <li>글자로 적힌 <code>\e</code>는 바로 뒤에 <code>[</code>가 올 때(<code>\e[31m</code> 등)만 ESC로 바꿉니다. 그래서 <code>C:\example</code> 같은 경로는 그대로 남습니다. <code>\x1b</code>, <code>\033</code>, <code>\u001b</code>는 위치와 상관없이 ESC로 바꿉니다.</li>
       <li>결과 HTML은 인라인 style을 쓰므로 배경색은 붙여 넣는 페이지의 배경을 따릅니다. 밝은 배경에서는 노랑·흰색 글씨가 잘 보이지 않을 수 있습니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
@@ -73,7 +73,7 @@
   var E='\\'+'u001b';
   var sample=[E+'[32m✔ '+t('b_ansi_sample_ok')+E+'[0m',E+'[33m⚠ '+t('b_ansi_sample_warn')+E+'[0m',E+'[31m✘ '+t('b_ansi_sample_err')+E+'[0m',E+'[1;34m[INFO]'+E+'[0m '+t('b_ansi_sample_info')].join('\n');
   function toEsc(s){ var esc=String.fromCharCode(27);
-    return s.split('\\u001b').join(esc).split('\\x1b').join(esc).split('\\033').join(esc).split('\\e').join(esc).split('^[').join(esc); }
+    return s.split('\\u001b').join(esc).split('\\x1b').join(esc).split('\\033').join(esc).replace(/\\e(?=\[)/g,esc).split('^[').join(esc); }
   function run(){ var html=au.ansi_to_html(toEsc($('in').value)); $('term').innerHTML=html; $('out').textContent=html; window._o=html; }
   $('sample').addEventListener('click',function(){
     sample=[E+'[32m✔ '+t('b_ansi_sample_ok')+E+'[0m',E+'[33m⚠ '+t('b_ansi_sample_warn')+E+'[0m',E+'[31m✘ '+t('b_ansi_sample_err')+E+'[0m',E+'[1;34m[INFO]'+E+'[0m '+t('b_ansi_sample_info')].join('\n');

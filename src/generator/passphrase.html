@@ -60,11 +60,11 @@
       <li>「🔄 새로 생성」으로 다시 뽑고, 결과 글자를 클릭하면 복사됩니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>위쪽 「약 n 비트 엔트로피」는 단어 하나당 log2(64) = 6비트로 계산하고, 숫자를 붙이면 9.4비트를 더한 값입니다. 기본값인 4단어 + 숫자는 약 33비트로 「보통」, 단어만 4개면 24비트입니다. 대문자 옵션은 모든 단어에 똑같이 적용되므로 엔트로피를 늘리지 않습니다. 비교하면 비밀번호 생성기의 16자 무작위 비밀번호는 약 103비트입니다.</p>
+    <p>위쪽 「약 n 비트 엔트로피」는 단어 하나당 log2(64) = 6비트로 계산하고, 숫자를 붙이면 10~99 중 하나(90가지)라서 log2(90) ≈ 6.5비트를 더한 값입니다. 판정은 40비트 미만 「약함」, 60비트 미만 「보통」, 80비트 미만 「강함」, 그 이상 「매우 강함」입니다. 기본값인 4단어 + 숫자는 약 30비트로 「약함」, 최대인 10단어 + 숫자도 약 66비트로 「강함」까지이며, 이 단어 목록으로는 「매우 강함」에 도달하지 않습니다. 대문자 옵션은 모든 단어에 똑같이 적용되므로 엔트로피를 늘리지 않습니다. 비교하면 비밀번호 생성기의 16자 무작위 비밀번호는 약 103비트입니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>단어 목록이 64개로 작기 때문에 단어 수가 적으면 강하지 않습니다. 공격자가 이 목록을 안다고 가정하는 것이 보안 계산의 기본이므로, 중요한 계정에는 단어를 8개 이상 쓰거나 비밀번호 생성기를 함께 쓰세요.</li>
-      <li>두 자리 숫자는 실제로는 90가지(약 6.5비트)라서, 표시되는 엔트로피는 실제보다 약 3비트 높게 나옵니다. 숫자 하나로 계산값이 크게 달라지지는 않지만 수치를 과신하지 마세요.</li>
+      <li>단어 목록이 64개로 작기 때문에 단어 수가 적으면 강하지 않습니다. 공격자가 이 목록을 안다고 가정하는 것이 보안 계산의 기본이므로, 중요한 계정에는 단어를 10개까지 늘리거나 비밀번호 생성기를 함께 쓰세요.</li>
+      <li>표시되는 엔트로피는 실제로 더해진 무작위성만 셉니다. 대문자 옵션과 구분자는 고정된 규칙이라 비트를 늘리지 않고, 두 자리 숫자는 약 6.5비트만 더합니다.</li>
       <li>뽑힌 단어를 마음에 드는 것으로 바꾸거나 여러 번 생성해 고르면 무작위성이 줄어듭니다. 처음 나온 결과를 쓰는 것이 원칙입니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
@@ -81,17 +81,26 @@
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
   var W="apple river stone tiger cloud maple ocean piano amber forest comet pixel mango brave lunar quartz ember willow harbor falcon cedar mint rocket violet copper galaxy honey ledge marble nimbus orchid pebble quokka raven summit thunder umbra velvet walnut yonder zephyr basil cobalt dune echo frost glacier hazel ivory jade koala lemon meadow nectar opal prairie ripple sienna tulip valley whisper crimson denim azure".split(' ');
-  function rnd(n){ var a=new Uint32Array(1); (window.crypto||{}).getRandomValues?crypto.getRandomValues(a):a[0]=Math.floor(Math.random()*4294967296); return a[0]%n; }
+  // 0..n-1 균등 난수: 2^32를 n으로 나눈 나머지 구간은 버리고 다시 뽑아 모듈로 편향을 없앤다
+  function rnd(n){ var a=new Uint32Array(1), lim=4294967296-(4294967296%n);
+    do{ if(window.crypto&&crypto.getRandomValues) crypto.getRandomValues(a); else a[0]=Math.floor(Math.random()*4294967296); }while(a[0]>=lim);
+    return a[0]%n; }
+  var _bits=0;
+  function showEnt(){
+    // 판정 기준: 40비트 미만 약함, 60 미만 보통, 80 미만 강함, 그 이상 매우 강함(64단어 목록으로는 최대 약 66비트)
+    var strength=_bits>=80?t('b_passphrase_strength_very_strong'):_bits>=60?t('b_passphrase_strength_strong'):_bits>=40?t('b_passphrase_strength_moderate'):t('b_passphrase_strength_weak');
+    $('ent').textContent=t('b_passphrase_entropy_label').replace('{bits}',_bits).replace('{strength}',strength);
+  }
   function gen(){ var n=Math.max(2,Math.min(10,parseInt($('words').value,10)||4)), sep=$('sep').value, cap=$('cap').checked, num=$('num').checked;
     var parts=[]; for(var i=0;i<n;i++){ var w=W[rnd(W.length)]; if(cap)w=w.charAt(0).toUpperCase()+w.slice(1); parts.push(w); }
     var pw=parts.join(sep); if(num)pw+=sep+(rnd(90)+10);
     $('out').textContent=pw;
-    var bits=Math.round(n*Math.log2(W.length)+(num?9.4:0));
-    var strength=bits>=70?t('b_passphrase_strength_very_strong'):bits>=50?t('b_passphrase_strength_strong'):t('b_passphrase_strength_moderate');
-    $('ent').textContent=t('b_passphrase_entropy_label').replace('{bits}',bits).replace('{strength}',strength);
+    // 단어당 log2(64)=6비트 + 붙인 숫자는 10~99 중 하나라 log2(90)≈6.5비트
+    _bits=Math.round(n*Math.log2(W.length)+(num?Math.log2(90):0));
+    showEnt();
     window._pw=pw;
   }
-  window.onI18n=gen;
+  window.onI18n=function(){ if(window._pw) showEnt(); else gen(); };   // 언어 전환 시 이미 만든 결과는 유지
   ['words','sep','cap','num'].forEach(function(id){$(id).addEventListener('input',gen);$(id).addEventListener('change',gen);});
   $('gen').addEventListener('click',gen);
   $('out').addEventListener('click',function(){if(window._pw)navigator.clipboard.writeText(window._pw).then(function(){toast(t('b_passphrase_copied'));});});

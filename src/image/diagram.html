@@ -174,7 +174,10 @@
   function snapV(v){ return snapOn ? Math.round(v/GRID)*GRID : v; }
   function lum(hex){ var c=hex.replace('#',''); return 0.299*parseInt(c.substr(0,2),16)+0.587*parseInt(c.substr(2,2),16)+0.114*parseInt(c.substr(4,2),16); }
   function textColor(bg){ return lum(bg)>150 ? '#1f2937' : '#ffffff'; }
-  function nodeW(n){ var base=Math.max(86,(n.text?n.text.length:1)*9+34);
+  // 실제 글자 폭 측정(한글·영문 폭 차이 반영). 캔버스를 못 쓰면 글자 수 기반 근사로 대체
+  var _mctx=null; try{ _mctx=document.createElement('canvas').getContext('2d'); }catch(_){}
+  function textW(s, font, fallbackPer){ if(!s) return 0; if(_mctx){ _mctx.font=font; return _mctx.measureText(s).width; } return s.length*fallbackPer; }
+  function nodeW(n){ var base=Math.max(86,Math.ceil(textW(n.text||' ',"600 14px Pretendard,system-ui,sans-serif",14))+34);
     if(n.shape==='diamond') return Math.round(base*1.4);
     if(n.shape==='ellipse') return base+24;
     if(n.shape==='parallelogram') return base+28;
@@ -209,7 +212,7 @@
   }
   function labelMarkup(text, lx, ly){
     if(!text) return '';
-    var lw=text.length*8+12;
+    var lw=Math.ceil(textW(text,"12px Pretendard,system-ui,sans-serif",12))+14;
     return '<rect x="'+(lx-lw/2).toFixed(1)+'" y="'+(ly-10).toFixed(1)+'" width="'+lw+'" height="20" rx="5" fill="#ffffff" opacity="0.92" style="pointer-events:none"/>'
          + '<text x="'+lx.toFixed(1)+'" y="'+(ly+1).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" font-family="Pretendard,system-ui,sans-serif" font-size="12" fill="#334155" style="pointer-events:none">'+esc(text)+'</text>';
   }
@@ -359,11 +362,12 @@
   nodes=[ {id:seq++,x:170,y:90,text:T('dg.start'),color:COLORS[1],shape:'ellipse'},
           {id:seq++,x:170,y:250,text:T('dg.process'),color:COLORS[0],shape:'round'},
           {id:seq++,x:500,y:360,text:T('dg.decision'),color:COLORS[2],shape:'diamond'},
-          {id:seq++,x:500,y:490,text:T('dg.box'),color:COLORS[0],shape:'round'} ];
+          {id:seq++,x:500,y:480,text:T('dg.box'),color:COLORS[0],shape:'round'} ];
   edges=[ {id:eseq++,a:1,b:2,line:'solid',arrow:'end',route:'straight',label:''},
           {id:eseq++,a:2,b:3,line:'solid',arrow:'end',route:'ortho',label:''},
           {id:eseq++,a:3,b:4,line:'dashed',arrow:'end',route:'straight',label:T('dg.yes')} ];
   render();
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ render(); });
   window.onI18n = function(){ render(); };
 </script>
 </body>

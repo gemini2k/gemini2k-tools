@@ -111,7 +111,7 @@
     <h3>주의할 점</h3>
     <ul>
       <li>래스터화된 결과는 글자 선택·검색·복사가 되지 않고, 링크와 입력 양식, 책갈피도 사라집니다. 원본은 지우지 말고 보관하세요.</li>
-      <li>해상도를 100%가 아닌 값으로 두면 래스터화 결과의 페이지 규격도 같은 비율로 바뀝니다. 예를 들어 200%면 A4 페이지가 가로·세로 2배 크기로 기록되므로 인쇄 시 배율을 확인하세요.</li>
+      <li>해상도는 페이지 안 그림의 픽셀 수만 바꾸고 페이지 규격은 원본 그대로 둡니다. 200%로 두면 A4 페이지에 약 144dpi 그림이 들어가 글씨는 또렷해지지만 용량은 커지고, 50%로 두면 그 반대입니다.</li>
       <li>암호가 걸린 PDF는 처리 중 오류가 날 수 있습니다. 페이지가 많으면 브라우저 메모리를 많이 써서 시간이 걸립니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
@@ -166,8 +166,10 @@
         var dataUrl = cv.toDataURL('image/jpeg', quality);
         var jpg = await (await fetch(dataUrl)).arrayBuffer();
         var img = await rout.embedJpg(jpg);
-        var pg = rout.addPage([cv.width, cv.height]);
-        pg.drawImage(img, {x:0, y:0, width:cv.width, height:cv.height});
+        // 페이지 규격은 원본(배율 1) 크기를 유지하고, 해상도 배율로 그린 그림을 그 안에 맞춰 넣는다
+        var vp1 = page.getViewport({scale:1});
+        var pg = rout.addPage([vp1.width, vp1.height]);
+        pg.drawImage(img, {x:0, y:0, width:vp1.width, height:vp1.height});
       }
       var best = await rout.save();
       // ② 무손실 재저장(구조 최적화) — 텍스트 PDF에 효과적. 더 작으면 채택

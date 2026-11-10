@@ -96,7 +96,7 @@
       <li>「셀 내용 검색…」 칸에 입력하면 입력하는 즉시 결과가 걸러집니다. 대소문자는 구분하지 않습니다. 칸을 비우면 전체 행이 다시 보입니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>왼쪽 번호는 걸러진 뒤에도 원래 행 순서를 유지하므로, 검색 결과에서 「57」로 표시된 행은 표의 57번째 줄입니다. 셀에는 서식을 입히지 않은 원래 값이 나옵니다. 그래서 엑셀에서 「1,200,000」으로 보이던 금액은 1200000으로, 날짜는 45000대의 일련번호 숫자로 보일 수 있습니다. 수식이 든 셀은 파일에 저장된 마지막 계산 결과가 표시됩니다.</p>
+    <p>왼쪽 번호는 걸러진 뒤에도 원래 행 순서를 유지하므로, 검색 결과에서 「57」로 표시된 행은 표의 57번째 줄입니다. 셀에는 서식을 입히지 않은 원래 값이 나옵니다. 그래서 엑셀에서 「1,200,000」으로 보이던 금액은 1200000으로 나옵니다. 날짜 서식이 지정된 셀은 내부 일련번호 대신 <code>2026-03-02</code>처럼 ISO 형식 날짜로 바꿔 보여 주고, 시각이 있으면 <code>2026-03-02T09:30:00</code>처럼 붙입니다. 수식이 든 셀은 파일에 저장된 마지막 계산 결과가 표시됩니다.</p>
     <h3>주의할 점</h3>
     <ul>
       <li>시트마다 처음 1,000행까지만 표시하며, 검색도 그 범위 안에서만 됩니다. 더 큰 파일은 엑셀 → CSV 변환기로 바꿔 다른 도구에서 보는 편이 낫습니다.</li>
@@ -120,12 +120,26 @@
   var $=function(id){return document.getElementById(id);};
   var wb=null, sheets={}, cur=null, MAXROW=1000;
   function readFile(f){ if(!f) return; var fr=new FileReader();
-    fr.onload=function(e){ try{ wb=XLSX.read(e.target.result,{type:'array'}); build(); }
+    fr.onload=function(e){ try{ wb=XLSX.read(e.target.result,{type:'array',cellNF:true}); build(); }
       catch(err){ $('tblwrap').classList.remove('hide'); $('tblwrap').innerHTML='<div style="padding:1rem;color:var(--muted)">'+t('b_xlsxview_err_open')+'</div>'; } };
     fr.readAsArrayBuffer(f);
   }
+  // 날짜 서식 셀의 일련번호(예: 46083)를 ISO 날짜(2026-03-02, 시각이 있으면 2026-03-02T09:30:00, 시각만이면 09:30:00)로 바꾼 사본 시트
+  function isoDateSheet(ws){
+    var d1904=!!(wb.Workbook&&wb.Workbook.WBProps&&wb.Workbook.WBProps.date1904), o={};
+    function p(n){ return (n<10?'0':'')+n; }
+    Object.keys(ws).forEach(function(k){ var c=ws[k];
+      if(k[0]!=='!' && c && c.t==='n' && c.z && XLSX.SSF.is_date(c.z)){
+        var d=XLSX.SSF.parse_date_code(c.v,{date1904:d1904});
+        if(d){ var tm=p(d.H)+':'+p(d.M)+':'+p(d.S), iso= Math.floor(c.v)===0 ? tm : d.y+'-'+p(d.m)+'-'+p(d.d)+((d.H||d.M||d.S)?'T'+tm:'');
+          o[k]={t:'s',v:iso,w:iso}; return; }
+      }
+      o[k]=c;
+    });
+    return o;
+  }
   function build(){
-    sheets={}; wb.SheetNames.forEach(function(n){ sheets[n]=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,defval:''}); });
+    sheets={}; wb.SheetNames.forEach(function(n){ sheets[n]=XLSX.utils.sheet_to_json(isoDateSheet(wb.Sheets[n]),{header:1,defval:''}); });
     $('tabs').innerHTML=wb.SheetNames.map(function(n,i){ return '<button data-n="'+i+'">'+n.replace(/</g,'&lt;')+'</button>'; }).join('');
     $('bar').classList.remove('hide');
     select(wb.SheetNames[0]);

@@ -57,7 +57,7 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
 복지팀: 2,3,2,4,3,5,2</pre>
     <p>박스플롯의 상자는 가운데 50% 값이 모인 범위이고, 상자 안의 선이 중앙값입니다. 위 예에서 민원팀의 12처럼 다른 값과 동떨어진 값은 수염 밖의 점으로 따로 찍혀 이상값 후보로 보입니다. 평균만 비교하면 놓치는 '들쭉날쭉함'을 상자 높이로 비교할 수 있는 것이 장점입니다. 히트맵·표면·등고선의 색이 어떤 값에 해당하는지는 오른쪽 색 막대(컬러바)에서 확인합니다.</p>
     <h3>주의할 점</h3>
-    <p>행렬형 차트는 행마다 값 개수가 같아야 모양이 바르게 나옵니다. 숫자가 아닌 값은 계산에서 빠지므로 머리글 행이나 단위 문자는 지우고 넣으세요. 박스플롯은 그룹명 뒤에 콜론(:)이 꼭 있어야 합니다. 차트 배경이 투명하고 글자색이 현재 화면 테마를 따르므로, 다크 모드에서 저장하면 흰 문서에 붙였을 때 글자가 보이지 않을 수 있습니다. 보고서용은 라이트 모드에서 저장하세요.</p>
+    <p>행렬형 차트는 행마다 값 개수가 같아야 모양이 바르게 나옵니다. 숫자가 아닌 값은 계산에서 빠지므로 머리글 행이나 단위 문자는 지우고 넣으세요. 박스플롯은 그룹명 뒤에 콜론(:)이 꼭 있어야 합니다. 화면의 차트는 배경이 투명하고 글자색이 현재 테마를 따르지만, PNG 저장은 테마와 관계없이 흰 바탕·어두운 글자로 만들어 보고서에 바로 붙일 수 있습니다.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>축 이름이나 행·열 이름을 넣을 수 있나요?</dt>
@@ -91,7 +91,13 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
     }catch(e){ $('err').textContent='⚠️ '+(e.message||e); } }
   $('type').addEventListener('change',function(){ $('data').value=demos[$('type').value]; $('hint').textContent=t(hintKeys[$('type').value]); render(); });
   var _t; $('data').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(render,500);});
-  $('png').addEventListener('click',function(){ Plotly.downloadImage('chart',{format:'png',width:1000,height:560,filename:'chart'}); });
+  // 저장은 화면 테마와 무관하게 흰 바탕·어두운 글자로(다크 모드에서 저장해도 문서에 붙였을 때 보이도록)
+  $('png').addEventListener('click',function(){ var gd=$('chart'); if(!gd||!gd.data)return;
+    var lay=JSON.parse(JSON.stringify(gd.layout||{})); lay.paper_bgcolor='#ffffff'; lay.plot_bgcolor='#ffffff'; lay.font=Object.assign({},lay.font,{color:'#222222'});
+    ['scene'].forEach(function(k){ if(lay[k]) ['xaxis','yaxis','zaxis'].forEach(function(a){ if(lay[k][a]){ delete lay[k][a].color; delete lay[k][a].gridcolor; } }); });
+    Plotly.downloadImage({data:gd.data,layout:lay},{format:'png',width:1000,height:560,filename:'chart'}); });
+  // 테마 전환 시 화면 차트 글자색 다시 맞춤
+  try{ new MutationObserver(function(){ render(); }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); }catch(e){}
   window.onI18n=function(){ $('hint').textContent=t(hintKeys[$('type').value]); };
   $('data').value=demos.surface; $('hint').textContent=t(hintKeys.surface); render();
 </script>

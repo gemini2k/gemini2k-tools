@@ -95,7 +95,7 @@
     <ul>
       <li>본문 파일만 읽으므로 머리글·바닥글·각주·미주·메모의 글자는 빠집니다.</li>
       <li>자동 번호 목록의 「1.」 「가.」 같은 번호는 워드가 화면에 그릴 때 붙이는 것이라 결과에 나오지 않습니다.</li>
-      <li>변경 내용 추적 중인 문서는 삭제 표시된 글자도 함께 나올 수 있고, 목차·페이지 번호 같은 필드는 필드 코드 문구가 섞일 수 있습니다. 결과를 한 번 훑어보세요.</li>
+      <li>변경 내용 추적 중인 문서는 삭제 표시된 글자를 빼고, 아직 수락하지 않은 삽입 글자는 포함해 「모두 수락」한 상태의 글을 보여 줍니다. 목차·페이지 번호 같은 필드는 필드 코드(<code>PAGE</code>, <code>TOC \o</code> 등)는 빼고 문서에 마지막으로 저장된 결과값만 남깁니다.</li>
       <li>구형 .doc, 암호가 걸린 .docx, 한글(.hwp) 파일은 읽지 못합니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
@@ -126,14 +126,22 @@
   function extract(xml){
     // 줄바꿈/탭/문단 경계를 자리표시자로 치환 후 태그 제거
     var s=xml
-      .replace(/<w:tab[^>]*\/>/g,'\t')
-      .replace(/<w:br[^>]*\/>/g,'\n')
+      // 화면에 보이지 않는 요소 제거: 문단 속성의 탭 정의(<w:tabs>), 변경 추적으로 삭제된 글자(w:delText), 필드 코드(w:instrText)
+      .replace(/<w:tabs\b[^>]*>[\s\S]*?<\/w:tabs>/g,'')
+      .replace(/<w:(delText|instrText|delInstrText)\b[^>]*\/>/g,'')
+      .replace(/<w:(delText|instrText|delInstrText)\b[^>]*>[\s\S]*?<\/w:\1>/g,'')
+      .replace(/<w:tab\b[^>]*\/>/g,'\t')
+      .replace(/<w:(br|cr)\b[^>]*\/>/g,'\n')
       .replace(/<\/w:p>/g,'\n')
       .replace(/<\/w:tr>/g,'\n')
       .replace(/<\/w:tc>/g,'\t');
     // <w:t ...>텍스트</w:t> 안의 내용만 모으기 위해, 우선 모든 태그 제거 후 엔티티 복원
     s=s.replace(/<[^>]+>/g,'');
-    s=s.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'");
+    // 엔티티는 한 번만 해석(&amp;lt; 를 < 로 이중 해석하지 않음)
+    s=s.replace(/&(amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);/g,function(all,e){
+      if(e[0]==='#'){ var cp=(e[1]==='x'||e[1]==='X')? parseInt(e.slice(2),16) : parseInt(e.slice(1),10); try{ return String.fromCodePoint(cp); }catch(x){ return all; } }
+      return {amp:'&',lt:'<',gt:'>',quot:'"',apos:"'"}[e];
+    });
     s=s.replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').replace(/\t+/g,'\t').trim();
     return s;
   }

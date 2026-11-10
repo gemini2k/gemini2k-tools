@@ -59,7 +59,7 @@
     <ul>
       <li>꾸밈 문자는 보통 글자와 다른 문자입니다. 검색에 걸리지 않고, 화면 낭독기는 엉뚱하게 읽거나 건너뜁니다. 공지나 안내처럼 정보 전달이 중요한 글에는 쓰지 마세요.</li>
       <li>아이디, 이메일, 비밀번호, 해시태그에 쓰면 인식되지 않습니다.</li>
-      <li>손글씨·더블스트럭·기울임에서는 유니코드에서 해당 글자가 다른 위치에 있는 일부 문자(예: 손글씨의 B·E·H, 더블스트럭의 C·N·R, 기울임의 h)가 이 도구에서는 빈 네모(□)로 나올 수 있습니다. 결과를 눈으로 확인하고 쓰세요.</li>
+      <li>손글씨의 B·E·H, 더블스트럭의 C·N·R, 기울임의 h처럼 유니코드에서 따로 떨어진 자리에 있는 글자는 ℬ·ℰ·ℋ, ℂ·ℕ·ℝ, ℎ 같은 정식 문자로 바꿔 넣습니다. 이 문자들은 다른 글자와 글꼴이 달라 모양이나 굵기가 조금 어긋나 보일 수 있습니다.</li>
     </ul>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
@@ -74,9 +74,13 @@
 <script>
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
+  // 수학 영숫자 블록에서 비어 있는(예약된) 자리는 '글자꼴 기호(Letterlike Symbols)' 블록의 정식 문자로 대체
+  var HOLES={0x1D455:0x210E,
+    0x1D49D:0x212C,0x1D4A0:0x2130,0x1D4A1:0x2131,0x1D4A3:0x210B,0x1D4A4:0x2110,0x1D4A7:0x2112,0x1D4A8:0x2133,0x1D4AD:0x211B,0x1D4BA:0x212F,0x1D4BC:0x210A,0x1D4C4:0x2134,
+    0x1D53A:0x2102,0x1D53F:0x210D,0x1D545:0x2115,0x1D547:0x2119,0x1D548:0x211A,0x1D549:0x211D,0x1D551:0x2124};
   function mapper(upA,loA,d0){ return function(s){ return s.replace(/[A-Za-z0-9]/g,function(c){ var n=c.charCodeAt(0);
     if(c>='A'&&c<='Z')return cp(upA+(n-65)); if(c>='a'&&c<='z')return cp(loA+(n-97)); if(c>='0'&&c<='9'&&d0)return cp(d0+(n-48)); return c; }); }; }
-  function cp(n){ return String.fromCodePoint(n); }
+  function cp(n){ return String.fromCodePoint(HOLES[n]||n); }
   function circled(s){ return s.replace(/[A-Za-z0-9]/g,function(c){ var n=c.charCodeAt(0);
     if(c>='A'&&c<='Z')return cp(0x24B6+(n-65)); if(c>='a'&&c<='z')return cp(0x24D0+(n-97)); if(c==='0')return '⓪'; if(c>='1'&&c<='9')return cp(0x2460+(n-49)); return c; }); }
   function squared(s){ return s.replace(/[A-Za-z]/g,function(c){ var n=c.charCodeAt(0); if(c>='A'&&c<='Z')return cp(0x1F130+(n-65)); return c.toUpperCase()===c?c:cp(0x1F130+(c.toUpperCase().charCodeAt(0)-65)); }); }

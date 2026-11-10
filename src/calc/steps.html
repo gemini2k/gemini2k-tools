@@ -71,7 +71,8 @@
   function calc(){ var st=+$('steps').value||0, h=+$('h').value||170, wt=+$('wt').value||65;
     var stride=h*0.415/100; var km=st*stride/1000; var kcal=wt*km*0.9; var min=km/4.8*60;
     $('dist').textContent=km.toFixed(2)+' km'; $('kcal').textContent=Math.round(kcal)+' kcal'; $('stride').textContent=Math.round(stride*100)+' cm';
-    $('time').textContent=(min>=60?Math.floor(min/60)+t('b_steps_hour')+' ':'')+Math.round(min%60)+t('b_steps_min');
+    var tm=Math.round(min), hh=Math.floor(tm/60), mm=tm%60; /* 분을 먼저 반올림해야 '1시간 60분' 같은 올림 누락이 없다 */
+    $('time').textContent=(hh>0?hh+t('b_steps_hour')+' ':'')+mm+t('b_steps_min');
   }
   window.onI18n=calc;
   ['steps','h','wt'].forEach(function(id){$(id).addEventListener('input',calc);});

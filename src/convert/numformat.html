@@ -33,12 +33,12 @@
   <div class="card">
     <input class="in" id="in" type="text" inputmode="decimal" value="1234567.89" data-i18n-ph="b_numformat_input_ph"/>
     <div id="res"></div>
-    <div class="note" data-i18n="b_numformat_note">입력에서 숫자·소수점·부호만 인식합니다. 한글 단위는 만(10^4)·억(10^8)·조(10^12) 기준입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
+    <div class="note" data-i18n="b_numformat_note">콤마·통화기호를 무시하고 지수 표기(1e5)와 한글 단위(3억 2천만)도 읽습니다. 한글 단위는 만(10^4)·억(10^8)·조(10^12) 기준입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
   <section class="toolhelp">
     <h2>숫자 포맷 변환기 사용 안내</h2>
     <h3>무엇을 하는 도구인가</h3>
-    <p>숫자 하나를 여덟 가지 표기로 동시에 보여 줍니다. 천 단위 콤마, 만·억·조를 쓰는 한국식 단위, 원화(₩), 달러($ 소수 둘째 자리), 반올림 정수, 소수 2자리, 퍼센트(값×100), 지수 표기입니다. 입력에서는 숫자·소수점·마이너스 부호만 골라 읽습니다.</p>
+    <p>숫자 하나를 여덟 가지 표기로 동시에 보여 줍니다. 천 단위 콤마, 만·억·조를 쓰는 한국식 단위, 원화(₩), 달러($ 소수 둘째 자리), 반올림 정수, 소수 2자리, 퍼센트(값×100), 지수 표기입니다. 입력은 콤마·통화기호를 무시하고 읽으며, <code>1e5</code> 같은 지수 표기와 <code>3억 2천만</code> 같은 한글 단위도 알아듣습니다.</p>
     <h3>언제 쓰나</h3>
     <ul>
       <li>예산서·보고서에 들어갈 큰 금액을 「12억 3,456만」처럼 읽기 쉬운 형태로 바꿀 때</li>
@@ -50,13 +50,13 @@
     <ol>
       <li>입력칸에 숫자를 붙여 넣습니다. <code>1,234,567.89</code>처럼 콤마가 있어도 됩니다.</li>
       <li>아래 줄에서 「천 단위 콤마」, 「한국식 단위」, 「원화(₩)」, 「달러($)」, 「반올림(정수)」, 「소수 2자리」, 「퍼센트」, 지수 표기를 확인합니다.</li>
-      <li>필요한 값을 선택해 복사합니다.</li>
+      <li>필요한 줄을 클릭하면 그 값이 클립보드에 복사됩니다.</li>
     </ol>
     <h3>결과 해석</h3>
     <p>기본값 1234567.89는 천 단위 콤마 <code>1,234,567.89</code>, 한국식 <code>123만 4,568</code>, 원화 <code>₩1,234,568</code>, 달러 <code>$1,234,567.89</code>, 퍼센트 <code>123,456,789%</code>, 지수 <code>1.235e+6</code>로 나옵니다. 한국식 단위와 원화는 정수로 반올림한 뒤 바꾸므로 .89가 올라가 끝자리가 8이 됩니다. 퍼센트는 입력값을 비율로 보고 100을 곱한 값입니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>숫자·소수점·부호 이외의 글자는 지우고 읽습니다. 그래서 <code>1e5</code>는 e가 빠져 15로, <code>3억</code>은 3으로 읽힙니다. 단위가 붙은 글자는 넣지 마세요.</li>
+      <li><code>1e5</code> 같은 지수 표기와 <code>3억</code>, <code>1.5조</code>, <code>3억 2천만</code> 같은 한글 단위도 읽습니다. 콤마·₩·$·원은 무시하고, 그 밖의 글자가 섞이면 숫자만 골라 읽으니 결과 첫 줄로 의도한 값인지 확인하세요.</li>
       <li>한국식 단위는 조까지만 씁니다. 1경 이상은 「10,000조」처럼 조 앞에 큰 수가 붙습니다.</li>
       <li>퍼센트 줄은 이미 퍼센트인 값(예: 12.5)에 다시 100을 곱하니, 비율(0.125)을 넣었을 때만 의미가 있습니다.</li>
     </ul>
@@ -75,7 +75,19 @@
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
   function korUnit(n){ if(!isFinite(n))return '-'; var neg=n<0; n=Math.abs(Math.round(n)); if(n===0)return '0';
     var u=[['조',1e12],['억',1e8],['만',1e4],['',1]], out=''; u.forEach(function(p){ var q=Math.floor(n/p[1]); if(q>0){ out+=q.toLocaleString()+p[0]+' '; n-=q*p[1]; } }); return (neg?'-':'')+out.trim(); }
-  function render(){ var raw=$('in').value.replace(/[^0-9.\-]/g,''); var n=parseFloat(raw);
+  /* 입력 해석: 한글 단위(3억 2천만, 1.5조), 지수 표기(1e5), 콤마·통화기호를 모두 처리 */
+  function parseNum(str){ var s=String(str).replace(/[,\s₩$원]/g,''); if(!s)return NaN;
+    if(/[조억만천백십]/.test(s)){ var neg=/^-/.test(s), BIG={'조':1e12,'억':1e8,'만':1e4}, SMALL={'천':1e3,'백':100,'십':10};
+      var re=/(\d+(?:\.\d+)?)|([천백십])|([조억만])/g, m, total=0, cur=0, num=null, hit=false;
+      while((m=re.exec(s))){ hit=true;
+        if(m[1]!=null){ if(num!=null)cur+=num; num=parseFloat(m[1]); }
+        else if(m[2]){ cur+=(num==null?1:num)*SMALL[m[2]]; num=null; }
+        else { cur+=(num==null?0:num); total+=(cur||1)*BIG[m[3]]; cur=0; num=null; } }
+      if(!hit)return NaN; total+=cur+(num==null?0:num); return neg?-total:total; }
+    var e=s.replace(/[^0-9.eE+\-]/g,'');
+    if(/^[+\-]?(\d+\.?\d*|\.\d+)(e[+\-]?\d+)?$/i.test(e))return Number(e);
+    return parseFloat(s.replace(/[^0-9.\-]/g,'')); }
+  function render(){ var n=parseNum($('in').value);
     var items;
     if(isNaN(n)){ items=[[t('b_numformat_label_guide'), t('b_numformat_msg_enter')]]; }
     else { items=[
@@ -92,6 +104,10 @@
   }
   window.onI18n=render;
   $('in').addEventListener('input',render); render();
+  $('res').addEventListener('click',function(e){ var el=e.target; while(el&&el!==this&&!(el.classList&&el.classList.contains('item')))el=el.parentNode;
+    if(!el||el===this||!el.getAttribute('data-v'))return; var v=el.getAttribute('data-v');
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(v).then(function(){toast(t('toast.copied'));},function(){toast(t('toast.nocopy'));}); }
+    else { var ta=document.createElement('textarea'); ta.value=v; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');toast(t('toast.copied'));}catch(_){} document.body.removeChild(ta); } });
 </script>
 </body>
 </html>

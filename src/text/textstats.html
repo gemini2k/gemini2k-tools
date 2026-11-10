@@ -89,7 +89,7 @@
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>글자 수가 글자수 세기 도구와 다를 때가 있어요.</dt>
-      <dd>이 도구는 일부 이모지를 2자로 세는 등 계산 방식이 조금 다릅니다. 제출용 글자 수는 글자수 세기 도구를 기준으로 삼으세요.</dd>
+      <dd>글자 수는 글자수 세기 도구와 같은 방식(유니코드 코드 포인트 기준, 😀 같은 이모지는 1자)으로 셉니다. 다만 가족·국기 이모지처럼 여러 코드가 합쳐진 문자는 2자 이상으로 셀 수 있고, 제출처마다 줄바꿈이나 공백을 세는 규칙이 다를 수 있으니 제출 기준을 함께 확인하세요.</dd>
       <dt>한 문단인데 문단이 여러 개로 나와요.</dt>
       <dd>문단 사이에 빈 줄이 있으면 나뉩니다. 문단 안에 빈 줄이 섞여 있지 않은지 확인하세요.</dd>
     </dl>
@@ -101,7 +101,7 @@
   var $ = function(id){ return document.getElementById(id); };
   function calc(){
     var tmp=$('t').value;
-    var chars=tmp.length, noSpace=tmp.replace(/\s/g,'').length;
+    var chars=Array.from(tmp).length, noSpace=Array.from(tmp.replace(/\s/g,'')).length; // 코드포인트 기준(글자수 세기 도구와 동일, 이모지 1자)
     var words=(tmp.trim().match(/\S+/g)||[]).length;
     var sentences=(tmp.match(/[^.!?。\n]+[.!?。]+|\S[^.!?。\n]*$/g)||[]).filter(function(s){return s.trim();}).length;
     var paras=tmp.split(/\n\s*\n/).filter(function(p){return p.trim();}).length;

@@ -87,8 +87,10 @@
     mammoth.convertToMarkdown({arrayBuffer:buf}).then(function(res){ mdText=res.value; if(mode==='md')show(); }); }
   function show(){ var tmp=mode==='html'?htmlText:(mdText||''); $('out').textContent=tmp||t('b_word2html_empty'); $('prev').innerHTML=htmlText; }
   $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;mode=b.dataset.m;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});show();});
-  $('copy').addEventListener('click',function(){var tmp=$('out').textContent;if(tmp)navigator.clipboard.writeText(tmp).then(function(){toast(t('b_word2html_copied'));});});
-  $('dl').addEventListener('click',function(){var tmp=$('out').textContent;if(!tmp)return;var blob=new Blob([tmp],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='word.'+(mode==='html'?'html':'md');document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120);});
+  // 복사·저장은 화면 문구(안내·빈 결과 메시지)가 아니라 실제 변환 결과만 대상으로 한다
+  function curText(){ return buf? (mode==='html'?htmlText:(mdText||'')) : ''; }
+  $('copy').addEventListener('click',function(){var tmp=curText();if(!tmp){toast(t('b_word2html_empty'));return;}navigator.clipboard.writeText(tmp).then(function(){toast(t('b_word2html_copied'));});});
+  $('dl').addEventListener('click',function(){var tmp=curText();if(!tmp){toast(t('b_word2html_empty'));return;}var blob=new Blob([tmp],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='word.'+(mode==='html'?'html':'md');document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},120);});
   window.onI18n=function(){
     var outEl=$('out');
     if(outEl&&!buf)outEl.textContent=t('b_word2html_placeholder');

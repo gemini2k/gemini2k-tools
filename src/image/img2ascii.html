@@ -48,11 +48,11 @@
     <ol>
       <li>점선 영역에 이미지를 끌어다 놓거나 클릭해서 고릅니다.</li>
       <li>「너비」 슬라이더로 한 줄의 글자 수를 40~160 사이에서 정합니다(기본 100).</li>
-      <li>결과가 음화처럼 보이면 「반전」을 켭니다.</li>
+      <li>검은 바탕 터미널처럼 어두운 배경에 붙일 결과라면 「반전」을 켭니다.</li>
       <li>「복사」를 눌러 텍스트를 클립보드에 담고 원하는 곳에 붙여 넣습니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>이 도구는 밝은 칸일수록 @, % 같은 꽉 찬 글자를, 어두운 칸일수록 공백을 넣습니다. 그래서 흰 바탕에 검은 글씨로 볼 때는 명암이 뒤집힌 듯 보이고, 「반전」을 켜야 밝은 곳이 비고 어두운 곳이 채워져 원본과 같은 느낌이 됩니다. 검은 바탕 터미널에 붙일 생각이라면 반전을 끈 상태가 맞습니다. 줄 수는 글자의 세로가 가로보다 길다는 점을 고려해 <code>너비 × 세로/가로 비율 × 0.5</code>로 정해지므로, 가로 1000·세로 800 사진을 너비 100으로 바꾸면 40줄이 나옵니다.</p>
+    <p>기본 상태에서는 어두운 칸일수록 @, % 같은 꽉 찬 글자를, 밝은 칸일수록 공백을 넣습니다. 흰 바탕에 검은 글씨로 보는 문서·편집기에서 원본과 같은 명암으로 보이도록 맞춘 것입니다. 검은 바탕에 밝은 글씨를 쓰는 터미널에 붙일 생각이라면 「반전」을 켜세요. 밝은 곳이 글자로 채워져 그쪽에서 원본처럼 보입니다. 줄 수는 글자의 세로가 가로보다 길다는 점을 고려해 <code>너비 × 세로/가로 비율 × 0.5</code>로 정해지므로, 가로 1000·세로 800 사진을 너비 100으로 바꾸면 40줄이 나옵니다.</p>
     <h3>주의할 점</h3>
     <ul>
       <li>고정폭 글꼴에서만 모양이 유지됩니다. 일반 문서나 메신저처럼 글자 폭이 제각각인 곳에 붙이면 형태가 무너집니다.</li>
@@ -77,7 +77,7 @@
   function render(){ if(!img)return; var W=+$('w').value; $('wv').textContent=W; var ratio=img.naturalHeight/img.naturalWidth; var H=Math.max(1,Math.round(W*ratio*0.5));
     var cv=document.createElement('canvas'); cv.width=W; cv.height=H; var x=cv.getContext('2d'); x.drawImage(img,0,0,W,H); var d;
     try{ d=x.getImageData(0,0,W,H).data; }catch(e){ $('out').textContent=t('b_img2ascii_err_cors'); return; }
-    var inv=$('inv').checked, out=''; for(var y=0;y<H;y++){ for(var xx=0;xx<W;xx++){ var i=(y*W+xx)*4; var l=(d[i]*0.3+d[i+1]*0.59+d[i+2]*0.11)/255; if(inv)l=1-l; out+=RAMP[Math.min(RAMP.length-1,Math.floor(l*(RAMP.length-1)))]; } out+='\n'; }
+    var inv=$('inv').checked, out=''; for(var y=0;y<H;y++){ for(var xx=0;xx<W;xx++){ var i=(y*W+xx)*4; var l=(d[i]*0.3+d[i+1]*0.59+d[i+2]*0.11)/255; if(!inv)l=1-l; out+=RAMP[Math.min(RAMP.length-1,Math.floor(l*(RAMP.length-1)))]; } out+='\n'; }
     $('out').textContent=out; window._ascii=out;
   }
   $('drop').addEventListener('click',function(){$('file').click();});

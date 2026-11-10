@@ -134,7 +134,7 @@
       x.save(); x.translate(cx,cy); x.rotate(a0+seg/2); x.textAlign='right'; x.fillStyle='#fff'; x.font='bold 15px Pretendard,sans-serif';
       var label=arr[i].length>10?arr[i].slice(0,9)+'…':arr[i]; x.fillText(label, R-12, 5); x.restore();
     }
-    x.beginPath(); x.arc(cx,cy,26,0,Math.PI*2); x.fillStyle='#fff'; x.fill(); x.strokeStyle='var(--border)'; x.lineWidth=2; x.stroke();
+    x.beginPath(); x.arc(cx,cy,26,0,Math.PI*2); x.fillStyle='#fff'; x.fill(); x.strokeStyle=(getComputedStyle(document.documentElement).getPropertyValue('--border').trim()||'#ccc'); x.lineWidth=2; x.stroke();
   }
   function spin(){ var arr=items(); if(spinning||arr.length<2){ if(arr.length<2)$('winner').textContent=t('b_roulette_msg_min2'); return; }
     spinning=true; $('winner').textContent=''; $('spin').disabled=true;
@@ -148,9 +148,8 @@
     var start=angle, dur=4200+Math.random()*800, t0=performance.now();
     function step(now){ var p=Math.min(1,(now-t0)/dur); var e=1-Math.pow(1-p,3); angle=start+(finalAngle-start)*e; draw();
       if(p<1){ requestAnimationFrame(step); } else { spinning=false; $('spin').disabled=false; angle=((finalAngle%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
-        $('winner').textContent='🎉 '+arr[target];
+        var won=arr[target]; $('winner').textContent='🎉 '+won; window._winner=won;
         if($('remove').checked){ arr.splice(target,1); $('items').value=arr.join('\n'); draw(); }
-        window._winner=arr[target]||$('winner').textContent;
       } }
     requestAnimationFrame(step);
   }

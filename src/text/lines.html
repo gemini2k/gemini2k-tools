@@ -119,7 +119,7 @@
       <li>「📋 복사」로 결과를 가져갑니다. 잘못 눌렀으면 「↶ 되돌리기」, 처음부터 다시 하려면 「입력으로 초기화」를 누릅니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>기본 예문에 바로 「중복 제거」를 누르면 「바나나, 사과, ␣␣딸기, (빈 줄), 포도, 체리」가 남습니다. 두 번째 「바나나」와 「사과」는 지워지고 처음 나온 줄이 남습니다. 결과 아래 「총 ○줄 · 내용 있는 줄 ○개 · 글자 ○자」로 변화를 확인할 수 있습니다. 「숫자순」은 각 줄에서 처음 나오는 숫자로 정렬하고 숫자가 없는 줄은 뒤로 보냅니다.</p>
+    <p>기본 예문에 바로 「중복 제거」를 누르면 「바나나, 사과, ␣␣딸기, (빈 줄), 포도, 체리」가 남습니다. 두 번째 「바나나」와 「사과」는 지워지고 처음 나온 줄이 남습니다. 결과 아래 「총 ○줄 · 내용 있는 줄 ○개 · 글자 ○자」로 변화를 확인할 수 있습니다. 「숫자순」은 각 줄에서 처음 나오는 숫자로 정렬하고 숫자가 없는 줄은 원래 순서를 유지한 채 뒤로 보냅니다.</p>
     <h3>주의할 점</h3>
     <ul>
       <li>중복 판단은 줄 전체가 글자 그대로 같은지로 합니다. 「딸기」와 「␣␣딸기」는 다른 줄로 보므로 「앞뒤 공백 제거」를 먼저 누르세요.</li>
@@ -150,7 +150,7 @@
     sortAsc:function(a){ return a.slice().sort(function(p,q){ return keyFn(p).localeCompare(keyFn(q),'ko',{numeric:true}); }); },
     sortDesc:function(a){ return a.slice().sort(function(p,q){ return keyFn(q).localeCompare(keyFn(p),'ko',{numeric:true}); }); },
     sortLen:function(a){ return a.slice().sort(function(p,q){ return p.length-q.length; }); },
-    sortNum:function(a){ return a.slice().sort(function(p,q){ var x=firstNum(p),y=firstNum(q); if(isNaN(x))return 1; if(isNaN(y))return -1; return x-y; }); },
+    sortNum:function(a){ return a.slice().sort(function(p,q){ var x=firstNum(p),y=firstNum(q), nx=isNaN(x), ny=isNaN(y); /* 일관된 전순서: 숫자 없는 줄끼리는 0(원래 순서 유지)이어야 정렬 결과가 흔들리지 않는다 */ if(nx||ny)return nx===ny?0:(nx?1:-1); return x-y; }); },
     shuffle:function(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=(Math.random()*(i+1))|0; var tmp=a[i];a[i]=a[j];a[j]=tmp; } return a; },
     dedup:function(a){ var seen={},out=[]; a.forEach(function(l){ var k=keyFn(l); if(!seen[k]){ seen[k]=1; out.push(l); } }); return out; },
     blank:function(a){ return a.filter(function(l){ return l.trim().length; }); },

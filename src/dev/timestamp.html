@@ -75,7 +75,7 @@
 
     <div class="blk">
       <h3 data-i18n="b_timestamp_ts_to_date">타임스탬프 → 날짜</h3>
-      <div class="fld"><input id="ts" type="text" inputmode="numeric" data-i18n-ph="b_timestamp_ts_placeholder" placeholder="예: 1700000000 또는 1700000000000"/></div>
+      <div class="fld"><input id="ts" type="text"data-i18n-ph="b_timestamp_ts_placeholder" placeholder="예: 1700000000 또는 1700000000000"/></div>
       <div class="out" id="ts-out"></div>
     </div>
 
@@ -110,7 +110,7 @@
     <p><code>1700000000</code>을 넣으면 UTC로 2023-11-14 22:13:20, 한국 시간으로는 9시간 뒤인 2023-11-15 07:13:20이고 요일은 수요일로 나옵니다. 요일은 현지 시각 기준이라 UTC 날짜와 하루 차이가 날 수 있습니다. 같은 순간을 밀리초로 쓴 <code>1700000000000</code>을 넣어도 결과는 같습니다. 10자리 이하는 초, 그보다 길면 밀리초로 판단하기 때문입니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>입력에서 숫자가 아닌 글자는 모두 지우고 읽습니다. 마이너스 부호나 소수점도 사라지므로 1970년 이전 시각(음수)이나 <code>1700000000.5</code> 같은 값은 잘못 해석됩니다. 소수점 이하는 지우고 넣으세요.</li>
+      <li>마이너스 부호와 소수점을 읽으므로 1970년 이전 시각(<code>-86400</code> = 1969-12-31 00:00:00 UTC)이나 <code>1700000000.5</code> 같은 소수 초도 넣을 수 있습니다. 초인지 밀리초인지는 정수 부분의 자릿수(10자리 이하면 초)로 판단하며, 밀리초보다 작은 단위는 버립니다. 공백·쉼표·밑줄 같은 자릿수 구분 기호는 무시하지만 그 밖의 글자가 섞이면 오류로 표시합니다.</li>
       <li>마이크로초(16자리) 값은 밀리초로 읽혀 엉뚱한 먼 미래 날짜가 나옵니다. 끝 세 자리를 지워 밀리초로 바꿔 넣으세요.</li>
       <li>「날짜 → 타임스탬프」는 입력한 날짜를 이 브라우저의 시간대로 해석합니다. 다른 시간대 기준 시각이 필요하면 시차만큼 더하거나 빼야 합니다.</li>
     </ul>
@@ -128,17 +128,20 @@
 <script>
   var $ = function(id){ return document.getElementById(id); };
   function pad(n){ return String(n).padStart(2,'0'); }
-  function localStr(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds()); }
-  function utcStr(d){ return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate())+' '+pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds())+' UTC'; }
+  function msStr(n){ return n? '.'+String(n).padStart(3,'0') : ''; }   // 밀리초가 있을 때만 .mmm 표시
+  function localStr(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds())+msStr(d.getMilliseconds()); }
+  function utcStr(d){ return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate())+' '+pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds())+msStr(d.getUTCMilliseconds())+' UTC'; }
   function rows(box, arr){ $(box).innerHTML = arr.map(function(r){ return '<div class="orow"><span class="k">'+r[0]+'</span><span class="v">'+r[1]+'</span></div>'; }).join(''); }
 
   var DOW_KEYS = ['b_timestamp_dow_sun','b_timestamp_dow_mon','b_timestamp_dow_tue','b_timestamp_dow_wed','b_timestamp_dow_thu','b_timestamp_dow_fri','b_timestamp_dow_sat'];
 
   function tsToDate(){
-    var raw=$('ts').value.trim().replace(/[^0-9]/g,'');
+    var raw=$('ts').value.trim().replace(/[\s,_]/g,'');   // 자릿수 구분 기호만 제거(부호·소수점은 유지)
     if(!raw){ $('ts-out').innerHTML=''; return; }
-    var num=Number(raw); var ms = raw.length<=10 ? num*1000 : num;  // 10자리=초
-    var d=new Date(ms);
+    var m=raw.match(/^([+-]?)(\d*)(?:\.(\d+))?$/);
+    if(!m || (!m[2] && !m[3])){ rows('ts-out',[[t('b_timestamp_row_error'),t('b_timestamp_err_invalid_ts')]]); return; }
+    var num=Number(raw); var ms = m[2].length<=10 ? num*1000 : num;  // 정수부 10자리 이하=초
+    var d=new Date(Math.round(ms));
     if(isNaN(d.getTime())){ rows('ts-out',[[t('b_timestamp_row_error'),t('b_timestamp_err_invalid_ts')]]); return; }
     rows('ts-out',[ [t('b_timestamp_row_local'), localStr(d)], [t('b_timestamp_row_utc'), utcStr(d)], ['ISO 8601', d.toISOString()], [t('b_timestamp_row_dow'), t(DOW_KEYS[d.getDay()])] ]);
   }

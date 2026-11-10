@@ -204,9 +204,11 @@
       var t2=el('text',{x:colX(i3),y:botY+26,'text-anchor':'middle','font-size':12.5,'font-weight':700,fill:(endHi?'#fff':'#2b2f3a')}); t2.textContent=prizes[i3]||('?'); svg.appendChild(t2);
     }
   }
+  // 이름·결과는 사용자가 입력한 글자이므로 innerHTML에 넣기 전에 이스케이프
+  function escH(s){ return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function pick(i){ draw(i); var tmp=traceCol(i); toast((names[i]||('#'+(i+1)))+' → '+(prizes[tmp.end]||'?')); }
   function reveal(){
-    var html=''; for(var i=0;i<C;i++){ var tmp=traceCol(i); html+='<div class="resrow"><span class="a">'+(names[i]||('#'+(i+1)))+'</span><span class="b">'+(prizes[tmp.end]||'?')+'</span></div>'; }
+    var html=''; for(var i=0;i<C;i++){ var tmp=traceCol(i); html+='<div class="resrow"><span class="a">'+escH(names[i]||('#'+(i+1)))+'</span><span class="b">'+escH(prizes[tmp.end]||'?')+'</span></div>'; }
     $('resbox').innerHTML=html; $('resbox').style.display='';
   }
   function toast(m){ var el=$('toast'); el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1800); }

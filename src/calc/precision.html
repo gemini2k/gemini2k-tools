@@ -57,7 +57,7 @@
     <h3>결과 해석</h3>
     <p>기본값 0.1 + 0.2는 위에 0.3, 아래 일반 결과에 0.30000000000000004가 나오고 '오차 발생' 표시가 붙습니다. 1 ÷ 3을 정밀도 40으로 계산하면 3이 40개 이어진 0.333…이 나오며, 일반 결과는 16자리 정도에서 끝납니다. 이때도 두 문자열이 다르므로 오차 표시가 붙는데, 이 경우는 계산이 틀렸다기보다 표현 자릿수의 한계입니다. 1.1 × 1.1은 정확히 1.21이고 일반 결과는 1.2100000000000002입니다.</p>
     <h3>주의할 점</h3>
-    <p>'정확하다'는 것은 정한 유효자릿수 안에서 10진수로 정확하다는 뜻입니다. 1 ÷ 3이나 2의 0.5제곱(√2)처럼 끝나지 않는 값은 마지막 자리에서 반올림됩니다. 오차 표시는 두 결과의 문자열이 다르기만 하면 붙으므로, 자릿수 차이만 있는 경우도 포함된다는 점을 감안하세요. 0으로 나누면 Infinity가 표시됩니다. 숫자가 아닌 값을 넣으면 입력 오류가 나옵니다.</p>
+    <p>'정확하다'는 것은 정한 유효자릿수 안에서 10진수로 정확하다는 뜻입니다. 1 ÷ 3이나 2의 0.5제곱(√2)처럼 끝나지 않는 값은 마지막 자리에서 반올림됩니다. 오차 표시는 두 결과를 값으로 비교해 실제로 다를 때만 붙습니다. 0.1과 0.10, 지수 표기 여부처럼 표기만 다른 경우는 오차로 보지 않습니다. 반대로 1 ÷ 3처럼 끝나지 않는 값은 일반 계산이 약 17자리에서 끊기므로 항상 오차로 표시됩니다. 0으로 나누면 Infinity가 표시됩니다. 숫자가 아닌 값을 넣으면 입력 오류가 나옵니다.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>쉼표를 넣은 금액(1,000)도 되나요?</dt>
@@ -79,7 +79,9 @@
       $('main').textContent=r.toString();
       var fa=parseFloat($('a').value),fb=parseFloat($('b').value),fr;
       if(op==='add')fr=fa+fb;else if(op==='sub')fr=fa-fb;else if(op==='mul')fr=fa*fb;else if(op==='div')fr=fa/fb;else fr=Math.pow(fa,fb);
-      $('sub').textContent=t('b_precision_float_label')+fr+(r.toString()!==String(fr)?t('b_precision_float_diff'):'');
+      /* 문자열이 아니라 값으로 비교: 0.1과 0.10, 지수 표기 차이 등 자릿수 표기만 다른 경우는 오차가 아니다 */
+      var same; try{ same=(r.isNaN()&&isNaN(fr))||r.equals(new Decimal(String(fr)))||(isFinite(fr)&&r.equals(new Decimal(fr.toPrecision(100)))); }catch(_){ same=r.toString()===String(fr); }
+      $('sub').textContent=t('b_precision_float_label')+fr+(same?'':t('b_precision_float_diff'));
     }catch(e){ $('main').textContent=t('b_precision_err_title'); $('sub').textContent=e.message; } }
   window.onI18n=run;
   ['a','b','op','prec'].forEach(function(id){$(id).addEventListener('input',run);$(id).addEventListener('change',run);});

@@ -93,10 +93,10 @@
       <li>「📋 전체 복사」나 「⬇️ .txt 다운로드」를 누르면 각 슬라이드 앞에 「=== 슬라이드 n ===」 구분선이 붙은 전체 텍스트를 가져갑니다.</li>
     </ol>
     <h3>결과 해석</h3>
-    <p>글자 조각마다 줄을 바꾸기 때문에, 한 문장 안에서 일부 단어만 굵게 하거나 색을 바꿨다면 그 지점에서 줄이 끊겨 나옵니다. 「매출이 <b>12%</b> 늘었다」는 세 줄이 될 수 있습니다. 그림이나 차트만 있는 슬라이드는 「(텍스트 없음)」으로 표시됩니다. 단어 수는 공백 기준으로 센 값이라 한국어에서는 어절 수에 가깝습니다.</p>
+    <p>줄은 파워포인트의 문단 단위로 나뉩니다. 한 문장 안에서 일부 단어만 굵게 하거나 색을 바꿔 글자 조각이 나뉘어 있어도 「매출이 <b>12%</b> 늘었다」는 한 줄로 이어서 나오고, Shift+Enter로 넣은 줄바꿈은 그대로 줄바꿈이 됩니다. 그림이나 차트만 있는 슬라이드는 「(텍스트 없음)」으로 표시됩니다. 단어 수는 공백 기준으로 센 값이라 한국어에서는 어절 수에 가깝습니다.</p>
     <h3>주의할 점</h3>
     <ul>
-      <li>순서는 파일 내부의 슬라이드 파일 번호 기준입니다. 파워포인트에서 슬라이드 순서를 많이 바꾼 파일은 화면의 순서와 다르게 나올 수 있으니 번호를 확인하세요.</li>
+      <li>순서는 파워포인트 화면의 슬라이드 순서(presentation.xml에 기록된 순서)를 따릅니다. 이 정보가 깨진 파일만 내부 파일 번호 순(slide2가 slide10보다 앞)으로 정렬합니다.</li>
       <li>숨긴 슬라이드도 함께 추출되며, 발표자 노트와 슬라이드 마스터에 들어간 글자는 포함되지 않습니다.</li>
       <li>차트의 축·데이터 레이블, 그림 속 글자는 나오지 않습니다.</li>
       <li>구형 .ppt는 지원하지 않습니다. 파워포인트에서 .pptx로 저장한 뒤 넣으세요.</li>
@@ -124,16 +124,36 @@
       var names=Object.keys(zip.files).filter(function(n){ return /^ppt\/slides\/slide\d+\.xml$/.test(n); });
       if(!names.length) throw new Error(t('b_pptx2txt_err_no_slide'));
       names.sort(function(a,b){ return (+a.match(/slide(\d+)/)[1]) - (+b.match(/slide(\d+)/)[1]); });
-      return Promise.all(names.map(function(n){ return zip.file(n).async('string'); }));
+      // 실제 발표 순서는 presentation.xml의 <p:sldId r:id> 목록 → _rels로 파일을 찾는다. 읽지 못하면 파일 번호(숫자) 순서.
+      var pres=zip.file('ppt/presentation.xml'), rels=zip.file('ppt/_rels/presentation.xml.rels');
+      var ordered = (pres&&rels)? Promise.all([pres.async('string'), rels.async('string')]).then(function(r){
+        var map={}, m, re=/<Relationship\b[^>]*>/g;
+        while((m=re.exec(r[1]))){ var id=(m[0].match(/\bId="([^"]+)"/)||[])[1], tg=(m[0].match(/\bTarget="([^"]+)"/)||[])[1]; if(id&&tg) map[id]=tg.replace(/^\/?(ppt\/)?/,'ppt/'); }
+        var list=[], sre=/<p:sldId\b[^>]*\br:id="([^"]+)"/g;
+        while((m=sre.exec(r[0]))){ var p=map[m[1]]; if(p && names.indexOf(p)>=0 && list.indexOf(p)<0) list.push(p); }
+        names.forEach(function(n){ if(list.indexOf(n)<0) list.push(n); });   // 목록에 없는 슬라이드는 뒤에
+        return list;
+      }).catch(function(){ return names; }) : Promise.resolve(names);
+      return ordered.then(function(list){ return Promise.all(list.map(function(n){ return zip.file(n).async('string'); })); });
     }).then(function(xmls){ slides=xmls.map(extract); show(); })
     .catch(function(e){ fail(t('b_pptx2txt_err_read')); });
   }
+  // XML 엔티티를 한 번만 해석(&amp;lt; → &lt; 로 끝나야 하며 < 로 이중 해석하면 안 됨)
+  function decodeXml(s){
+    return s.replace(/&(amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);/g,function(_,e){
+      if(e[0]==='#'){ var cp=e[1]==='x'||e[1]==='X'? parseInt(e.slice(2),16) : parseInt(e.slice(1),10); try{ return String.fromCodePoint(cp); }catch(x){ return _; } }
+      return {amp:'&',lt:'<',gt:'>',quot:'"',apos:"'"}[e];
+    });
+  }
+  // 문단(<a:p>) 안의 런(<a:t>)은 이어 붙이고 문단마다 한 줄, <a:br/>은 줄바꿈, <a:tab/>은 탭
   function extract(xml){
-    var out=[]; var re=/<a:t>([\s\S]*?)<\/a:t>/g, m;
-    while((m=re.exec(xml))){ out.push(m[1]); }
-    var s=out.join('\n')
-      .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'");
-    return s.replace(/\n{3,}/g,'\n\n').trim();
+    var lines=[], pre=/<a:p\b[^>]*\/>|<a:p\b[^>]*>([\s\S]*?)<\/a:p>/g, m;
+    while((m=pre.exec(xml))){
+      var body=m[1]||'', s='', tre=/<a:t(?:\s[^>]*)?>([\s\S]*?)<\/a:t>|<a:br\b[^>]*\/?>|<a:tab\b[^>]*\/?>/g, k;
+      while((k=tre.exec(body))){ if(k[1]!=null) s+=decodeXml(k[1]); else s+= /^<a:br/.test(k[0])?'\n':'\t'; }
+      lines.push(s);
+    }
+    return lines.join('\n').replace(/\n{3,}/g,'\n\n').trim();
   }
   function allText(){ return slides.map(function(s,i){ return t('b_pptx2txt_slide_sep').replace('{n}',i+1)+'\n'+(s||t('b_pptx2txt_no_text')); }).join('\n\n'); }
   function show(){

@@ -59,7 +59,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     <h3>주의할 점</h3>
     <ul>
       <li>부하시험은 본인이 운영하거나 허락받은 서버에만 하세요. 남의 서비스에 부하를 주면 업무 방해가 될 수 있습니다.</li>
-      <li>JMeter 파일에는 Content-Type 헤더가 들어 있지 않습니다. JSON 본문을 보내려면 HTTP Header Manager를 추가하세요.</li>
+      <li>본문이 있는 POST·PUT 요청에는 k6와 JMeter 모두 <code>Content-Type: application/json</code> 헤더가 들어갑니다(JMeter는 요청 아래 HTTP Header Manager로 추가). 폼 데이터나 XML을 보낸다면 이 값을 맞게 고치세요.</li>
       <li>임계값과 200 확인은 예시입니다. 201·204를 돌려주는 API라면 check 조건과 목표 응답시간을 서비스 기준에 맞게 고치세요.</li>
       <li>로그인 토큰, 여러 단계의 사용자 흐름, 테스트 데이터 변수화는 생성되지 않으므로 직접 추가해야 합니다.</li>
     </ul>
@@ -148,6 +148,10 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     X.push('          <boolProp name="HTTPSampler.follow_redirects">true</boolProp><boolProp name="HTTPSampler.use_keepalive">true</boolProp>');
     X.push('        </HTTPSamplerProxy>');
     X.push('        <hashTree>');
+    if(post){   // 본문이 있으면 k6 스크립트와 같이 Content-Type: application/json 헤더를 붙인다(샘플러 하위 Header Manager)
+      X.push('          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true"><collectionProp name="HeaderManager.headers"><elementProp name="" elementType="Header"><stringProp name="Header.name">Content-Type</stringProp><stringProp name="Header.value">application/json</stringProp></elementProp></collectionProp></HeaderManager>');
+      X.push('          <hashTree/>');
+    }
     if(v.think>0){
       X.push('          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think Time" enabled="true"><stringProp name="ConstantTimer.delay">'+Math.round(v.think*1000)+'</stringProp></ConstantTimer>');
       X.push('          <hashTree/>');

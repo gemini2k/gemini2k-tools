@@ -87,7 +87,7 @@
     <h3>결과 해석</h3>
     <p>기본 예시 <code>&lt;div class="box"&gt;안녕 &amp; 환영&lt;/div&gt;</code>를 인코딩하면 <code>&amp;lt;div class=&amp;quot;box&amp;quot;&amp;gt;안녕 &amp;amp; 환영&amp;lt;/div&amp;gt;</code>가 됩니다. 옵션을 켜면 한글도 바뀌어 <code>안녕</code>이 <code>&amp;#50504;&amp;#45397;</code>가 됩니다. 디코딩 결과에 아직 <code>&amp;amp;lt;</code> 같은 형태가 남아 있다면 두 번 인코딩된 것이니 디코딩을 한 번 더 하면 됩니다.</p>
     <h3>주의할 점</h3>
-    <p>여기서 하는 인코딩은 HTML 본문과 따옴표로 감싼 속성값에 넣을 때 기준입니다. 자바스크립트 문자열, URL, CSS 안에 넣는 값은 각각 다른 이스케이프가 필요하므로 이 결과만으로 XSS가 막히지 않습니다. 또 '모든 비ASCII 문자도 인코딩' 옵션은 이모지처럼 두 개의 UTF-16 코드 단위로 된 문자를 반쪽씩 따로 바꾸어 <code>&amp;#55357;&amp;#56832;</code> 같은 잘못된 엔티티를 만드므로, 이모지가 섞인 글에는 이 옵션을 쓰지 마세요.</p>
+    <p>여기서 하는 인코딩은 HTML 본문과 따옴표로 감싼 속성값에 넣을 때 기준입니다. 자바스크립트 문자열, URL, CSS 안에 넣는 값은 각각 다른 이스케이프가 필요하므로 이 결과만으로 XSS가 막히지 않습니다. '모든 비ASCII 문자도 인코딩' 옵션은 이모지처럼 두 개의 UTF-16 코드 단위로 된 문자도 한 글자로 묶어 <code>&amp;#128512;</code>처럼 유니코드 코드 포인트 하나짜리 엔티티로 바꿉니다.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>디코딩하면 스크립트가 실행될 위험은 없나요?</dt>
@@ -104,7 +104,7 @@
   function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
   function encode(s, all){
     s=s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-    if(all) s=s.replace(/[^\x00-\x7F]/g, function(c){ return '&#'+c.codePointAt(0)+';'; });
+    if(all) s=s.replace(/[^\x00-\x7F]/gu, function(c){ /* u 플래그: 이모지 등 서로게이트 쌍을 한 문자로 묶어 &#128512; 하나로 바꾼다 */ return '&#'+c.codePointAt(0)+';'; });
     return s;
   }
   function decode(s){ var ta=document.createElement('textarea'); ta.innerHTML=s; return ta.value; }

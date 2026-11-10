@@ -58,9 +58,9 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
 서류 합격, 96
 면접, 40
 최종 합격, 12</pre>
-    <p>게이지는 첫 줄 값 하나만 바늘로 표시하고, 눈금의 최댓값은 입력된 값 중 가장 큰 값으로 잡습니다. 그래서 '달성, 72'와 '목표, 100' 두 줄을 넣으면 100 만점 기준 72로 읽을 수 있습니다. 레이더는 각 축의 최댓값을 전체 최댓값의 1.2배로 맞춰 모든 축이 같은 눈금을 씁니다. 산점도는 가로축이 입력 순서(0, 1, 2…)이고 세로축이 값이라, 두 변수의 관계를 보는 일반적인 산점도와는 다릅니다.</p>
+    <p>게이지는 첫 줄 값 하나만 바늘로 표시하고, 눈금의 최댓값은 입력된 값 중 가장 큰 값으로 잡습니다. 그래서 '달성, 72'와 '목표, 100' 두 줄을 넣으면 100 만점 기준 72로 읽을 수 있습니다. 레이더는 각 축의 최댓값을 전체 최댓값의 1.2배로 맞춰 모든 축이 같은 눈금을 씁니다. 산점도는 첫 열을 가로축(X), 둘째 열을 세로축(Y)으로 씁니다. 예를 들어 <code>170, 65</code>처럼 키와 몸무게를 넣으면 두 변수의 관계가 보입니다. 첫 열에 숫자가 아닌 레이블이 하나라도 섞이면 가로축은 입력 순서(0, 1, 2…)로 바뀝니다.</p>
     <h3>주의할 점</h3>
-    <p>계열은 하나만 그립니다. 구분자는 쉼표만 인식하므로 엑셀에서 복사한 탭 구분 데이터는 쉼표로 바꿔야 하고, 숫자에 천 단위 쉼표를 넣으면 값이 잘립니다. 값이 숫자가 아니면 차트에 빈 값으로 나타날 수 있습니다.</p>
+    <p>계열은 하나만 그립니다. 엑셀에서 복사한 탭 구분 데이터는 그대로 붙여도 되고, 이때는 값의 천 단위 쉼표(1,234)도 인식합니다. 쉼표로 구분해 직접 적을 때는 천 단위 쉼표를 넣으면 값이 잘리니 빼고 적으세요. 값이 숫자가 아니면 차트에 빈 값으로 나타날 수 있습니다.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>차트 색을 바꿀 수 있나요?</dt>
@@ -75,12 +75,13 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
 <script>
   var $=function(id){return document.getElementById(id);};
   var chart=echarts.init($('chart'));
-  function parse(){ return $('data').value.split(/\r?\n/).map(function(l){var p=l.split(',');return {name:(p[0]||'').trim(),value:+(p[1]||0)};}).filter(function(d){return d.name;}); }
+  // 줄에 탭이 있으면 탭 구분(엑셀 붙여넣기, 값의 천 단위 쉼표 허용), 없으면 쉼표 구분
+  function parse(){ return $('data').value.split(/\r?\n/).map(function(l){var tab=l.indexOf('\t')>=0, p=tab?l.split('\t'):l.split(','); var v=String(p[1]||0).trim(); if(tab) v=v.replace(/,/g,''); return {name:(p[0]||'').trim(),value:+v};}).filter(function(d){return d.name;}); }
   function render(){ var d=parse(), names=d.map(function(x){return x.name;}), vals=d.map(function(x){return x.value;}); var tmp=$('type').value, opt;
     var acc=getComputedStyle(document.documentElement).getPropertyValue('--accent')||'#2563eb';
     if(tmp==='pie')opt={tooltip:{},legend:{top:'bottom'},series:[{type:'pie',radius:['35%','65%'],data:d}]};
     else if(tmp==='radar')opt={tooltip:{},radar:{indicator:d.map(function(x){return {name:x.name,max:Math.max.apply(null,vals)*1.2};})},series:[{type:'radar',data:[{value:vals}]}]};
-    else if(tmp==='scatter')opt={tooltip:{},xAxis:{},yAxis:{},series:[{type:'scatter',symbolSize:14,data:d.map(function(x,i){return [i,x.value];})}]};
+    else if(tmp==='scatter')opt={tooltip:{},xAxis:{},yAxis:{},series:[{type:'scatter',symbolSize:14,data:(function(){ var allNum=d.length&&d.every(function(x){return isFinite(+x.name.replace(/,/g,''));}); return d.map(function(x,i){return [allNum?+x.name.replace(/,/g,''):i,x.value];}); })()}]};
     else if(tmp==='gauge')opt={series:[{type:'gauge',max:Math.max.apply(null,vals)||100,data:[{value:vals[0]||0,name:names[0]||''}]}]};
     else if(tmp==='funnel')opt={tooltip:{},legend:{top:'bottom'},series:[{type:'funnel',data:d}]};
     else opt={tooltip:{},xAxis:{type:'category',data:names},yAxis:{type:'value'},series:[{type:tmp,data:vals,itemStyle:{color:acc.trim()||'#2563eb'}}]};
