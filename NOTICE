@@ -36,7 +36,7 @@ JavaScript / CSS 라이브러리  (vendor/ 디렉터리)
 7) marked 12.0.2  ─  vendor/marked-12.0.2/   (마크다운 파싱)
    - 라이선스: MIT · 출처: https://github.com/markedjs/marked
 
-8) DOMPurify 3.1.6  ─  vendor/dompurify-3.1.6/  (마크다운 XSS 정화)
+8) DOMPurify 3.2.6  ─  vendor/dompurify-3.2.6/  (마크다운·HTML 살균기 XSS 정화)
    - 라이선스: Apache-2.0 또는 MPL-2.0 (택일) · 출처: https://github.com/cure53/DOMPurify
 
 9) qrcode-generator 1.4.4  ─  vendor/qrcode-generator-1.4.4/  (QR 코드 생성)

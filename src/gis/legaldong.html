@@ -209,7 +209,7 @@
   $('sido').addEventListener('change', render);
 
   // 데이터 로드
-  fetch('legaldong.json').then(function(res){
+  fetch('/legaldong.json').then(function(res){
     if(!res.ok) throw new Error('HTTP '+res.status); return res.json();
   }).then(function(d){
     DATA=d;

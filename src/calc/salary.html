@@ -83,6 +83,7 @@
       <div class="fld">
         <label for="annual"><span data-i18n="b_salary_lbl_annual">연봉</span> <span class="unit" data-i18n="b_salary_unit_annual">(만원)</span></label>
         <input id="annual" type="number" inputmode="numeric" value="4000" min="0" step="100"/>
+        <div id="annualHint" class="note" style="display:none;color:#b45309" data-i18n="b_salary_warn_unit">연봉은 만원 단위로 입력합니다. 예: 연봉 5천만 원 → 5000</div>
       </div>
       <div class="fld">
         <label for="deps"><span data-i18n="b_salary_lbl_deps">부양가족 수</span> <span class="unit" data-i18n="b_salary_unit_deps">(본인 포함)</span></label>
@@ -194,7 +195,15 @@
   }
 
   function calc(){
-    var annual = num('annual') * 10000;           // 원
+    // 만원 단위 입력칸에 원 단위(예: 50000000)를 넣거나 비워 두면 터무니없는 값·음수가 나온다 → 계산 중단
+    var rawAnnual = num('annual');
+    var unitBad = rawAnnual >= 100000;             // 10억 원 이상 = 원 단위로 넣은 것으로 봄
+    $('annualHint').style.display = unitBad ? '' : 'none';
+    if (!(rawAnnual > 0) || unitBad) {
+      $('net-month').textContent = '-'; $('net-year').textContent = ''; $('breakdown').innerHTML = '';
+      return;
+    }
+    var annual = rawAnnual * 10000;               // 원
     var deps = Math.max(1, num('deps'));
     var nontaxM = num('nontax');                   // 월 비과세
     var children = num('children');

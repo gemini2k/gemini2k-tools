@@ -288,10 +288,12 @@ input[type=range]{width:100%;accent-color:var(--accent);}
 .toolhelp{margin-top:1.4rem;border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;background:var(--surface);}
 .toolhelp h2{font-size:1.05rem;margin:.2rem 0 .6rem;}
 .toolhelp h3{font-size:.95rem;margin:1rem 0 .3rem;}
-.toolhelp p,.toolhelp li{font-size:.9rem;line-height:1.65;color:var(--text);}
+.toolhelp p,.toolhelp li{font-size:.9rem;line-height:1.65;color:var(--text);overflow-wrap:anywhere;}
 .toolhelp ul,.toolhelp ol{padding-left:1.2rem;margin:.3rem 0;}
 .toolhelp .faq dt{font-weight:700;margin-top:.7rem;}
 .toolhelp .faq dd{margin:.15rem 0 0;color:var(--muted);}
+.toolhelp code,.toolhelp pre{overflow-wrap:anywhere;word-break:break-all;white-space:pre-wrap;}
+.toolhelp pre{max-width:100%;overflow-x:auto;}
 .help-tools{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
 .btn-help{font-size:.82rem;padding:.4rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);cursor:pointer;font-family:inherit;}
 .btn-help:hover{border-color:var(--accent);color:var(--accent);}

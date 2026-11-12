@@ -37,6 +37,7 @@
     <div class="fld"><label data-i18n="b_severance_lbl_pay">최근 3개월 총급여 (세전, 원)</label><input id="pay" type="number" inputmode="numeric" value="9000000"/></div>
     <div class="fld"><label data-i18n="b_severance_lbl_bonus">연간 상여금 (선택, 원)</label><input id="bonus" type="number" inputmode="numeric" value="0"/></div>
     <div class="big"><div class="n" id="sev">-</div><div class="u" data-i18n="b_severance_result_label">예상 퇴직금(세전)</div></div>
+    <div id="warn1y" class="note" style="display:none;border-left:3px solid #f59e0b;padding-left:.6rem;color:var(--text)" data-i18n="b_severance_warn_1y">재직 기간이 1년 미만이면 법정 퇴직금 지급 대상이 아닙니다(근로자퇴직급여 보장법 제4조). 위 금액은 참고용 계산값입니다.</div>
     <div class="lines"><div class="r"><span data-i18n="b_severance_stat_days">재직일수</span><span id="days">-</span></div><div class="r"><span data-i18n="b_severance_stat_avg">1일 평균임금</span><span id="avg">-</span></div></div>
     <div class="note" data-i18n="b_severance_note">평균임금 = (3개월 총급여 + 연간상여×3/12) ÷ 3개월 일수. 퇴직금 = 1일 평균임금 × 30 × (재직일수/365). 실제 금액은 통상임금 비교·세금 등으로 달라질 수 있어 참고용입니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>
@@ -61,7 +62,7 @@
     <h3>결과 해석</h3>
     <p>2024년 3월 1일 입사, 2026년 3월 1일 퇴사이면 재직일수는 730일(2.0년)입니다. 3개월 급여 900만원, 상여 없음이면 1일 평균임금은 900만 ÷ 91 = 약 98,901원이고, 퇴직금은 98,901 × 30 × 730/365 = 약 5,934,066원입니다. 연간 상여금 400만원을 넣으면 3개월분 100만원이 더해져 평균임금 약 109,890원, 퇴직금 약 6,593,407원으로 늘어납니다. 대략 '월급 한 달치 × 근속연수'에 가깝게 나온다고 보면 됩니다.</p>
     <h3>주의할 점</h3>
-    <p>법정 퇴직금은 일반적으로 계속근로기간 1년 이상, 4주 평균 주 15시간 이상 일한 근로자에게 지급되는데, 이 도구는 1년 미만이어도 금액을 계산해 보여 주므로 수급 자격은 따로 확인해야 합니다. 평균임금이 통상임금보다 적으면 통상임금을 기준으로 하는 규정, 연차수당 반영 방식, 휴직 기간 처리, 실제 3개월 일수(89~92일) 차이, 퇴직소득세는 반영하지 않습니다. 정확한 산정과 분쟁 상담은 고용노동부 누리집의 퇴직금 계산기나 상담센터(국번 없이 1350)를 이용하세요.</p>
+    <p>법정 퇴직금은 일반적으로 계속근로기간 1년 이상, 4주 평균 주 15시간 이상 일한 근로자에게 지급되는데, 이 도구는 재직 1년 미만이면 결과 아래에 지급 대상이 아니라는 안내를 함께 보여 줍니다. 주 15시간 요건 등 수급 자격은 따로 확인해야 합니다. 평균임금이 통상임금보다 적으면 통상임금을 기준으로 하는 규정, 연차수당 반영 방식, 휴직 기간 처리, 실제 3개월 일수(89~92일) 차이, 퇴직소득세는 반영하지 않습니다. 정확한 산정과 분쟁 상담은 고용노동부 누리집의 퇴직금 계산기나 상담센터(국번 없이 1350)를 이용하세요.</p>
     <h3>자주 묻는 질문</h3>
     <dl class="faq">
       <dt>퇴직연금(DC형)에 가입했으면 이 결과와 같나요?</dt>
@@ -81,7 +82,8 @@
     return Math.round(n).toLocaleString(loc)+' '+t('b_severance_unit_won');
   }
   function calc(){ var j=$('join').value,l=$('leave').value; if(!j||!l)return;
-    var jd=new Date(j),ld=new Date(l); var days=Math.round((ld-jd)/86400000); if(days<=0){$('sev').textContent=t('b_severance_err_date');return;}
+    var jd=new Date(j),ld=new Date(l); var days=Math.round((ld-jd)/86400000); if(days<=0){$('sev').textContent=t('b_severance_err_date');$('days').textContent='-';$('avg').textContent='-';$('warn1y').style.display='none';return;}
+    $('warn1y').style.display = days<365 ? '' : 'none';
     var pay=+$('pay').value||0, bonus=+$('bonus').value||0;
     var base3=pay + bonus*3/12;          // 3개월 산정 임금
     var avgDaily=base3/91;                // 3개월 약 91일 근사

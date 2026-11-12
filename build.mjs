@@ -288,7 +288,8 @@ function hreflangBlock(file) {
   out += '<link rel="alternate" hreflang="x-default" href="' + koLoc + '"/>';
   return out;
 }
-const absolutize = html => html.replace(/(src|href)="([^"\/][^"]*\.(?:js|css))(\?[^"]*)?"/g, (m, a, p, q) => a + '="/' + p + (q || '') + '"');
+// 상대경로 자산만 루트 기준으로(https:·data: 등 스킴 있는 주소는 제외 — 11-12 애드센스 /https:// 404 버그)
+const absolutize = html => html.replace(/(src|href)="(?![a-z][a-z0-9+.-]*:)([^"\/][^"]*\.(?:js|css))(\?[^"]*)?"/gi, (m, a, p, q) => a + '="/' + p + (q || '') + '"');
 
 // (a) ko 루트 페이지에 hreflang 주입
 for (const f of pageFiles) {
@@ -303,7 +304,11 @@ let langPages = 0;
 function localize(html, file, lang, htmlLang) {
   const loc = file === 'index.html' ? BASE + '/' + lang + '/' : BASE + '/' + lang + '/' + file;
   html = html.replace(/<html lang="[^"]*"/, '<html lang="' + htmlLang + '"');
-  html = html.replace('<meta charset="utf-8"/>', '<meta charset="utf-8"/><script>window.__FORCE_LANG=' + JSON.stringify(lang) + ';</script>');
+  // 언어 고정 스크립트는 <head> 안 charset 뒤에만(본문 인라인 JS 속 같은 문자열에 꽂히면 문법오류 — reid 사례)
+  { const he = html.indexOf('</head>'); const head = he >= 0 ? html.slice(0, he) : html;
+    const head2 = head.replace(/<meta charset="utf-8"\s*\/?>/i, m => m + '<script>window.__FORCE_LANG=' + JSON.stringify(lang) + ';</script>');
+    if (head2 === head) console.warn('  ⚠ __FORCE_LANG 주입 실패(charset 없음):', file);
+    html = head2 + html.slice(head.length); }
   html = html.replace(/(<link rel="canonical" href=")[^"]*(")/, '$1' + loc + '$2');
   html = html.replace(/(<meta property="og:url" content=")[^"]*(")/, '$1' + loc + '$2');
   html = html.replace(/(<meta property="og:site_name" content=")[^"]*(")/, '$1' + attrEsc(SITE[lang]) + '$2');

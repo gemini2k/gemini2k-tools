@@ -53,7 +53,7 @@ tools/
 │  ├─ pdf-lib-1.17.1/       pdf-lib                      — PDF 합치기·쪼개기·이미지변환·압축
 │  ├─ pdfjs-3.11.174/       pdf.js (+ pdf.worker)        — PDF 압축
 │  ├─ marked-12.0.2/        marked                       — 마크다운 파싱
-│  ├─ dompurify-3.1.6/      DOMPurify                    — 마크다운 XSS 정화
+│  ├─ dompurify-3.2.6/      DOMPurify                    — 마크다운·HTML 살균 XSS 정화
 │  └─ qrcode-generator-1.4.4/ qrcode                     — QR 생성
 ├─ sitemap.xml / robots.txt / og.png / favicon.*  (deploy/seo_build.py 가 생성)
 ├─ LICENSE / NOTICE
