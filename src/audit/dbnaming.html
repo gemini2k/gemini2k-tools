@@ -34,8 +34,8 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <p class="sub" data-i18n="b_dbnaming_sub">테이블/컬럼명이 표준 명명규칙을 지키는지 점검합니다.</p>
   <div class="card" style="max-width:none;">
     <div class="frm"><label><span data-i18n="b_dbnaming_max_len">최대 길이</span><input type="number" id="max" value="30" style="width:90px"></label>
-  <label style="flex-direction:row;align-items:center;gap:.4rem"><input type="checkbox" id="upper"><span data-i18n="b_dbnaming_upper">대문자 허용</span></label></div>
-  <textarea class="in" id="in" spellcheck="false">user_master
+  <label style="flex-direction:row;align-items:center;gap:.4rem"><input type="checkbox" id="upper"><span id="lbl-in" data-i18n="b_dbnaming_upper">대문자 허용</span></label></div>
+  <textarea aria-labelledby="lbl-in" class="in" id="in" spellcheck="false">user_master
 USER_LOG
 2nd_table
 order

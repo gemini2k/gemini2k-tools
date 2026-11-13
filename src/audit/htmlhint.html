@@ -33,7 +33,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <h1 data-i18n="b_htmlhint_title">HTML 마크업 품질 점검</h1>
   <p class="sub" data-i18n="b_htmlhint_sub">중복 id·필수 속성·태그 규칙 등 마크업 품질을 점검합니다.</p>
   <div class="card" style="max-width:none;">
-    <textarea class="in" id="in" spellcheck="false">&lt;div id="a"&gt;&lt;/div&gt;\n&lt;div id="a"&gt;&lt;img src="x.png"&gt;&lt;/div&gt;\n&lt;A HREF="#"&gt;링크&lt;/A&gt;</textarea><div class="res" id="res" style="margin-top:.6rem"></div>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" class="in" id="in" spellcheck="false">&lt;div id="a"&gt;&lt;/div&gt;\n&lt;div id="a"&gt;&lt;img src="x.png"&gt;&lt;/div&gt;\n&lt;A HREF="#"&gt;링크&lt;/A&gt;</textarea><div class="res" id="res" style="margin-top:.6rem"></div>
     <div class="note" data-i18n-html="b_htmlhint_note">오픈소스 <b>HTMLHint</b>(MIT, <a href="https://github.com/htmlhint/HTMLHint" target="_blank" rel="noopener">htmlhint/HTMLHint</a>)를 자체 호스팅합니다. 접근성 자동 점검은 별도의 axe 도구를 함께 쓰세요. 모든 분석은 브라우저에서만 이루어집니다.</div>
   </div>
   <section class="toolhelp">

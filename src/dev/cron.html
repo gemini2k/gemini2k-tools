@@ -56,14 +56,14 @@
   <h1 data-i18n="b_cron_title">Cron 표현식 해석기</h1>
   <p class="sub" data-i18n="b_cron_sub">crontab 표현식이 무슨 뜻인지 풀어 주고, 앞으로 언제 실행될지 미리 보여 줍니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_cron_howto_title">사용 방법</b><ol>
+  <div class="howto"><span class="ic">📖</span><div><b id="lbl-cron" data-i18n="b_cron_howto_title">사용 방법</b><ol>
     <li data-i18n="b_cron_howto1">cron 표현식을 입력합니다(분 시 일 월 요일, 5칸)</li>
     <li data-i18n="b_cron_howto2">아래에 한국어 설명과 다음 실행 시각이 표시됩니다</li>
     <li data-i18n="b_cron_howto3">예시 버튼을 눌러 빠르게 확인할 수도 있습니다</li>
   </ol></div></div>
 
   <div class="card">
-    <input id="cron" class="cronin" value="0 9 * * 1-5" autocomplete="off" spellcheck="false"/>
+    <input aria-labelledby="lbl-cron" id="cron" class="cronin" value="0 9 * * 1-5" autocomplete="off" spellcheck="false"/>
     <div class="presets">
       <button data-c="* * * * *" data-i18n="b_cron_p_everymin">매분</button><button data-c="0 * * * *" data-i18n="b_cron_p_everyhour">매시 정각</button>
       <button data-c="0 9 * * *" data-i18n="b_cron_p_daily9">매일 9시</button><button data-c="0 9 * * 1-5" data-i18n="b_cron_p_weekday9">평일 9시</button>

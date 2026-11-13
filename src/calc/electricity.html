@@ -31,8 +31,8 @@
   <h1 data-i18n="b_electricity_h1">전기요금 계산기</h1>
   <p class="sub" data-i18n="b_electricity_sub">한 달 사용량(kWh)을 넣으면 주택용 누진제 기준 예상 전기요금을 추정합니다(참고용).</p>
   <div class="card">
-    <div class="fld"><label data-i18n="b_electricity_lbl_kwh">월 사용량 (kWh)</label><input id="kwh" type="number" inputmode="numeric" value="300"/></div>
-    <div class="fld"><label data-i18n="b_electricity_lbl_type">공급 방식</label><select id="type"><option value="low" data-i18n="b_electricity_opt_low">주택용 저압</option><option value="high" data-i18n="b_electricity_opt_high">주택용 고압(아파트 등)</option></select></div>
+    <div class="fld"><label for="kwh" data-i18n="b_electricity_lbl_kwh">월 사용량 (kWh)</label><input id="kwh" type="number" inputmode="numeric" value="300"/></div>
+    <div class="fld"><label for="type" data-i18n="b_electricity_lbl_type">공급 방식</label><select id="type"><option value="low" data-i18n="b_electricity_opt_low">주택용 저압</option><option value="high" data-i18n="b_electricity_opt_high">주택용 고압(아파트 등)</option></select></div>
     <div class="big"><div class="n" id="total">-</div><div class="u" data-i18n="b_electricity_total_label">예상 청구금액 (부가세·기금 포함)</div></div>
     <div class="lines">
       <div class="r"><span data-i18n="b_electricity_row_base">기본요금</span><span id="base">-</span></div>

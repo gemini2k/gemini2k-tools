@@ -25,9 +25,9 @@ table{width:100%;border-collapse:collapse;font-size:.95rem;}td{padding:.55rem .6
   <p class="sub" data-i18n="b_sun_sub">위치와 날짜를 넣으면 해·달의 시각과 위상을 알려 줍니다.</p>
   <div class="card">
     <div class="row">
-      <input type="date" id="date">
-      <span data-i18n="b_sun_lat">위도</span> <input type="number" id="lat" value="37.5665" step="0.0001">
-      <span data-i18n="b_sun_lng">경도</span> <input type="number" id="lng" value="126.9780" step="0.0001">
+      <input aria-label="날짜" data-i18n-aria="a11y.date" type="date" id="date">
+      <span id="lbl-lat" data-i18n="b_sun_lat">위도</span> <input aria-labelledby="lbl-lat" type="number" id="lat" value="37.5665" step="0.0001">
+      <span id="lbl-lng" data-i18n="b_sun_lng">경도</span> <input aria-labelledby="lbl-lng" type="number" id="lng" value="126.9780" step="0.0001">
       <button class="btn btn-ghost" id="loc" type="button">📍 <span data-i18n="b_sun_myloc">내 위치</span></button>
     </div>
     <div class="moon" id="moon"></div>

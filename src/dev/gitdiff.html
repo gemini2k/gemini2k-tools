@@ -24,7 +24,7 @@
   <h1 data-i18n="b_gitdiff_title">Git Diff 뷰어</h1>
   <p class="sub" data-i18n-html="b_gitdiff_sub"><code>git diff</code> 결과(unified diff)를 붙여넣으면 GitHub처럼 보기 좋게 그려 줍니다.</p>
   <div class="card" style="max-width:none;">
-    <textarea id="in">diff --git a/app.js b/app.js
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="in">diff --git a/app.js b/app.js
 index 1234567..89abcde 100644
 --- a/app.js
 +++ b/app.js
@@ -37,7 +37,7 @@ index 1234567..89abcde 100644
 
 -console.log(greet("world"));
 +console.log(greet("방문자"));</textarea>
-    <div class="row"><span data-i18n="b_gitdiff_view_label">보기</span> <select id="format"><option value="line-by-line" data-i18n="b_gitdiff_opt_line">한 줄씩</option><option value="side-by-side" data-i18n="b_gitdiff_opt_side">좌우 분할</option></select></div>
+    <div class="row"><span id="lbl-format" data-i18n="b_gitdiff_view_label">보기</span> <select aria-labelledby="lbl-format" id="format"><option value="line-by-line" data-i18n="b_gitdiff_opt_line">한 줄씩</option><option value="side-by-side" data-i18n="b_gitdiff_opt_side">좌우 분할</option></select></div>
     <div id="out"></div>
     <div class="note" data-i18n-html="b_gitdiff_note">오픈소스 <b>diff2html</b>(MIT, <a href="https://github.com/rtfpessoa/diff2html" target="_blank" rel="noopener">rtfpessoa/diff2html</a>)을 자체 호스팅합니다. <code>git diff</code> 또는 <code>diff -u</code> 형식의 텍스트를 넣으세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>

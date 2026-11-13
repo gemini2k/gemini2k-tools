@@ -51,10 +51,11 @@ window.AuditKit = (function () {
     function renderSummary() { if (o.summary) sum.innerHTML = o.summary(rows) || ''; }
     function field(r, ri, c) {
       var v = r[c.k] == null ? '' : r[c.k];
-      if (c.type === 'select') return '<select data-ri="' + ri + '" data-k="' + c.k + '">' + (c.opts || []).map(function (op) { return '<option' + (String(op) === String(v) ? ' selected' : '') + '>' + esc(op) + '</option>'; }).join('') + '</select>';
-      if (c.type === 'area') return '<textarea data-ri="' + ri + '" data-k="' + c.k + '" rows="1">' + esc(v) + '</textarea>';
+      var al = ' aria-label="' + esc(String(c.label || c.k) + ' ' + (ri + 1)) + '"';  // 표 안 입력칸 접근성 이름 = 열 제목 + 행 번호
+      if (c.type === 'select') return '<select data-ri="' + ri + '" data-k="' + c.k + '"' + al + '>' + (c.opts || []).map(function (op) { return '<option' + (String(op) === String(v) ? ' selected' : '') + '>' + esc(op) + '</option>'; }).join('') + '</select>';
+      if (c.type === 'area') return '<textarea data-ri="' + ri + '" data-k="' + c.k + '"' + al + ' rows="1">' + esc(v) + '</textarea>';
       var tp = c.type === 'num' ? 'number' : (c.type === 'date' ? 'date' : 'text');
-      return '<input type="' + tp + '" data-ri="' + ri + '" data-k="' + c.k + '" value="' + esc(v) + '"/>';
+      return '<input type="' + tp + '" data-ri="' + ri + '" data-k="' + c.k + '"' + al + ' value="' + esc(v) + '"/>';
     }
     function render() {
       table.innerHTML = '<thead><tr>' + cols.map(function (c) { return '<th' + (c.w ? ' style="min-width:' + c.w + '"' : '') + '>' + esc(c.label) + '</th>'; }).join('') + '<th class="ak-x"></th></tr></thead><tbody>' +

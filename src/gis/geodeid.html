@@ -83,16 +83,16 @@
   <p class="sub" data-i18n="gd.sub">위경도 좌표를 격자 스냅·라운딩·지오마스킹·공간 k-익명성으로 비식별화하고, 원본과 비교하며 GeoJSON·CSV로 내보냅니다.</p>
 
   <div class="card">
-    <textarea id="din" data-i18n-ph="gd.ph" placeholder="CSV/TSV 를 붙여넣으세요. 첫 줄은 헤더…&#10;예)&#10;id,lat,lng&#10;1,37.5663,126.9779"></textarea>
+    <textarea aria-label="CSV/TSV 를 붙여넣으세요. 첫 줄은 헤더…&#10;예)&#10;id,lat,lng&#10;1,37.5663,126.9779" data-i18n-aria="gd.ph" id="din" data-i18n-ph="gd.ph" placeholder="CSV/TSV 를 붙여넣으세요. 첫 줄은 헤더…&#10;예)&#10;id,lat,lng&#10;1,37.5663,126.9779"></textarea>
     <div class="row" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem;">
       <button class="btn btn-ghost" id="fileBtn" data-i18n="gd.file">파일 선택</button>
-      <input type="file" id="file" accept=".csv,.tsv,.txt" style="display:none"/>
+      <input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept=".csv,.tsv,.txt" style="display:none"/>
       <button class="btn btn-ghost" id="sampleBtn" data-i18n="gd.sample">예시</button>
       <button class="btn btn-ghost" id="clearBtn" data-i18n="gd.clear">지우기</button>
     </div>
 
     <div class="ctrls">
-      <div class="fld"><label data-i18n="gd.crs">좌표계</label>
+      <div class="fld"><label for="crs" data-i18n="gd.crs">좌표계</label>
         <select id="crs">
           <option value="EPSG:4326">WGS84 경위도</option>
           <option value="EPSG:5179">UTM-K (5179)</option>
@@ -101,8 +101,8 @@
           <option value="EPSG:5185">서부원점 (5185)</option>
         </select>
       </div>
-      <div class="fld"><label data-i18n="gd.xcol">X (경도/E)</label><select id="xcol"></select></div>
-      <div class="fld"><label data-i18n="gd.ycol">Y (위도/N)</label><select id="ycol"></select></div>
+      <div class="fld"><label for="xcol" data-i18n="gd.xcol">X (경도/E)</label><select id="xcol"></select></div>
+      <div class="fld"><label for="ycol" data-i18n="gd.ycol">Y (위도/N)</label><select id="ycol"></select></div>
     </div>
 
     <div class="methods" id="methods">
@@ -230,10 +230,10 @@
   function curMethod(){ return (document.querySelector('input[name=m]:checked')||{}).value||'grid'; }
   function renderParams(){
     var m=curMethod(), html='';
-    if(m==='grid') html='<div class="mdesc" data-i18n="gd.d.grid"></div><div class="row"><div class="fld"><label data-i18n="gd.p.cell">격자 크기(m)</label><input type="number" id="p_cell" value="100" min="1" step="10"></div></div>';
-    else if(m==='round') html='<div class="mdesc" data-i18n="gd.d.round"></div><div class="row"><div class="fld"><label data-i18n="gd.p.dec">소수점 자리</label><input type="number" id="p_dec" value="3" min="0" max="8" step="1"></div></div>';
-    else if(m==='geomask') html='<div class="mdesc" data-i18n="gd.d.geomask"></div><div class="row"><div class="fld"><label data-i18n="gd.p.rmax">최대 반경(m)</label><input type="number" id="p_rmax" value="500" min="1" step="10"></div><div class="fld"><label data-i18n="gd.p.rmin">최소 반경(m)</label><input type="number" id="p_rmin" value="0" min="0" step="10"></div></div>';
-    else if(m==='kanon') html='<div class="mdesc" data-i18n="gd.d.kanon"></div><div class="row"><div class="fld"><label>k</label><input type="number" id="p_k" value="5" min="2" step="1"></div><div class="fld"><label data-i18n="gd.p.cell">격자 크기(m)</label><input type="number" id="p_kcell" value="1000" min="1" step="10"></div></div>';
+    if(m==='grid') html='<div class="mdesc" data-i18n="gd.d.grid"></div><div class="row"><div class="fld"><label for="p_cell" data-i18n="gd.p.cell">격자 크기(m)</label><input type="number" id="p_cell" value="100" min="1" step="10"></div></div>';
+    else if(m==='round') html='<div class="mdesc" data-i18n="gd.d.round"></div><div class="row"><div class="fld"><label for="p_dec" data-i18n="gd.p.dec">소수점 자리</label><input type="number" id="p_dec" value="3" min="0" max="8" step="1"></div></div>';
+    else if(m==='geomask') html='<div class="mdesc" data-i18n="gd.d.geomask"></div><div class="row"><div class="fld"><label for="p_rmax" data-i18n="gd.p.rmax">최대 반경(m)</label><input type="number" id="p_rmax" value="500" min="1" step="10"></div><div class="fld"><label for="p_rmin" data-i18n="gd.p.rmin">최소 반경(m)</label><input type="number" id="p_rmin" value="0" min="0" step="10"></div></div>';
+    else if(m==='kanon') html='<div class="mdesc" data-i18n="gd.d.kanon"></div><div class="row"><div class="fld"><label>k</label><input type="number" id="p_k" value="5" min="2" step="1"></div><div class="fld"><label for="p_kcell" data-i18n="gd.p.cell">격자 크기(m)</label><input type="number" id="p_kcell" value="1000" min="1" step="10"></div></div>';
     $('params').innerHTML=html;
     if(window.applyI18n) window.applyI18n(); else if(window.t){ document.querySelectorAll('#params [data-i18n]').forEach(function(el){ el.textContent=T(el.getAttribute('data-i18n')); }); }
   }

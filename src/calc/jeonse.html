@@ -36,15 +36,15 @@
   <div class="card">
     <div class="seg" id="seg"><button data-m="j2w" class="on" type="button" data-i18n="b_jeonse_btn_j2w">전세 → 월세</button><button data-m="w2j" type="button" data-i18n="b_jeonse_btn_w2j">월세 → 전세</button></div>
     <div id="m-j2w">
-      <div class="fld"><label data-i18n="b_jeonse_lbl_jeonse">전세보증금 (만원)</label><input id="jeonse" type="number" inputmode="numeric" value="30000"/></div>
-      <div class="fld"><label data-i18n="b_jeonse_lbl_deposit">전환 후 보증금 (만원)</label><input id="deposit" type="number" inputmode="numeric" value="5000"/></div>
-      <div class="fld"><label data-i18n="b_jeonse_lbl_rate1">전환율 (%/년)</label><input id="rate1" type="number" inputmode="decimal" value="5.5"/></div>
+      <div class="fld"><label for="jeonse" data-i18n="b_jeonse_lbl_jeonse">전세보증금 (만원)</label><input id="jeonse" type="number" inputmode="numeric" value="30000"/></div>
+      <div class="fld"><label for="deposit" data-i18n="b_jeonse_lbl_deposit">전환 후 보증금 (만원)</label><input id="deposit" type="number" inputmode="numeric" value="5000"/></div>
+      <div class="fld"><label for="rate1" data-i18n="b_jeonse_lbl_rate1">전환율 (%/년)</label><input id="rate1" type="number" inputmode="decimal" value="5.5"/></div>
       <div class="big"><div class="n" id="monthly">-</div><div class="u" data-i18n="b_jeonse_unit_monthly">예상 월세</div></div>
     </div>
     <div id="m-w2j" class="hide">
-      <div class="fld"><label data-i18n="b_jeonse_lbl_dep2">보증금 (만원)</label><input id="dep2" type="number" inputmode="numeric" value="5000"/></div>
-      <div class="fld"><label data-i18n="b_jeonse_lbl_rent2">월세 (만원)</label><input id="rent2" type="number" inputmode="decimal" value="115"/></div>
-      <div class="fld"><label data-i18n="b_jeonse_lbl_rate2">전환율 (%/년)</label><input id="rate2" type="number" inputmode="decimal" value="5.5"/></div>
+      <div class="fld"><label for="dep2" data-i18n="b_jeonse_lbl_dep2">보증금 (만원)</label><input id="dep2" type="number" inputmode="numeric" value="5000"/></div>
+      <div class="fld"><label for="rent2" data-i18n="b_jeonse_lbl_rent2">월세 (만원)</label><input id="rent2" type="number" inputmode="decimal" value="115"/></div>
+      <div class="fld"><label for="rate2" data-i18n="b_jeonse_lbl_rate2">전환율 (%/년)</label><input id="rate2" type="number" inputmode="decimal" value="5.5"/></div>
       <div class="big"><div class="n" id="jeonseOut">-</div><div class="u" data-i18n="b_jeonse_unit_jeonse_out">환산 전세금</div></div>
     </div>
     <div class="note" data-i18n="b_jeonse_note">월세 = (전세금−보증금) × 전환율 ÷ 12. 전환율은 지역·시점에 따라 다르며 법정 상한(기준금리+2%)이 적용될 수 있습니다. 참고용이며 모든 계산은 브라우저에서만 이루어집니다.</div>

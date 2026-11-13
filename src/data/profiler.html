@@ -78,9 +78,9 @@
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop">📄 <span data-i18n="b_profiler_drop"><strong>CSV 파일을 끌어다 놓거나 클릭</strong>해서 선택 (또는 아래에 붙여넣기)</span></div>
-    <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain" class="hide"/>
-    <textarea id="input" data-i18n-ph="b_profiler_input_ph" placeholder="이름,나이,도시&#10;홍길동,32,서울&#10;김영희,,부산"></textarea>
+    <div class="drop" id="drop">📄 <span id="lbl-file" data-i18n="b_profiler_drop"><strong>CSV 파일을 끌어다 놓거나 클릭</strong>해서 선택 (또는 아래에 붙여넣기)</span></div>
+    <input aria-labelledby="lbl-file" type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain" class="hide"/>
+    <textarea aria-label="이름,나이,도시&#10;홍길동,32,서울&#10;김영희,,부산" data-i18n-aria="b_profiler_input_ph" id="input" data-i18n-ph="b_profiler_input_ph" placeholder="이름,나이,도시&#10;홍길동,32,서울&#10;김영희,,부산"></textarea>
     <div class="opts">
       <label><input type="checkbox" id="hasHeader" checked/> <span data-i18n="b_profiler_header_label">첫 행을 헤더로</span></label>
       <label><span data-i18n="b_profiler_delim_label">구분자</span> <select id="delim">

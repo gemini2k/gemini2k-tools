@@ -70,11 +70,11 @@
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">📈</div><div><strong data-i18n="b_xlsxview_drop_label">엑셀 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.xlsx · .xls · .ods</div></div>
-    <input type="file" id="file" accept=".xlsx,.xls,.ods" class="hide"/>
+    <div class="drop" id="drop"><div class="big">📈</div><div><strong id="lbl-file" data-i18n="b_xlsxview_drop_label">엑셀 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.xlsx · .xls · .ods</div></div>
+    <input aria-labelledby="lbl-file" type="file" id="file" accept=".xlsx,.xls,.ods" class="hide"/>
     <div class="bar hide" id="bar">
       <div class="tabs" id="tabs"></div>
-      <input type="search" id="q" data-i18n-ph="b_xlsxview_search_ph" placeholder="셀 내용 검색…"/>
+      <input aria-label="셀 내용 검색…" data-i18n-aria="b_xlsxview_search_ph" type="search" id="q" data-i18n-ph="b_xlsxview_search_ph" placeholder="셀 내용 검색…"/>
     </div>
     <div class="tblwrap hide" id="tblwrap"></div>
     <div class="note" data-i18n="b_xlsxview_note">파일은 서버로 전송되지 않고 브라우저 안에서만 열립니다. 큰 시트는 처음 1,000행까지 표시합니다(검색은 표시된 범위에서 동작). 서식·수식 결과는 값으로 표시됩니다.</div>

@@ -157,7 +157,7 @@ input[type="file"].hidden,input[type="file"][hidden]{display:block!important;pos
   <!-- STEP 1 -->
   <section class="panel">
     <div class="panel-head"><span class="num">1</span><h2 data-i18n="b_mask_step1_title">텍스트 입력</h2><span class="hint" data-i18n="b_mask_step1_hint">붙여넣기 또는 텍스트 파일</span></div>
-    <textarea id="input" data-i18n-ph="b_mask_input_ph">여기에 텍스트를 붙여넣으세요. (.txt, .csv, .log, .json, .md 파일도 끌어다 놓거나 선택할 수 있습니다)</textarea>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="input" data-i18n-ph="b_mask_input_ph">여기에 텍스트를 붙여넣으세요. (.txt, .csv, .log, .json, .md 파일도 끌어다 놓거나 선택할 수 있습니다)</textarea>
     <div class="row">
       <button type="button" class="primary" id="runBtn" data-i18n="b_mask_run_btn">탐지·마스킹 실행</button>
       <label class="ghost" id="fileBtn" for="file" role="button" tabindex="0" style="display:inline-block;cursor:pointer" data-i18n="b_mask_file_btn">파일 선택</label>
@@ -189,8 +189,8 @@ input[type="file"].hidden,input[type="file"][hidden]{display:block!important;pos
     <h3 style="font-size:13px;margin:18px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em" data-i18n="b_mask_preview_label">탐지 위치 미리보기 (원본 강조)</h3>
     <div class="preview" id="preview"></div>
 
-    <h3 style="font-size:13px;margin:20px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em" data-i18n="b_mask_output_label">마스킹 결과</h3>
-    <textarea class="out" id="output" readonly></textarea>
+    <h3 id="lbl-output" style="font-size:13px;margin:20px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em" data-i18n="b_mask_output_label">마스킹 결과</h3>
+    <textarea aria-labelledby="lbl-output" class="out" id="output" readonly></textarea>
     <div class="actions">
       <button type="button" class="primary" id="copyBtn" data-i18n="b_mask_copy_btn">마스킹 결과 복사</button>
       <button type="button" class="ghost" id="downloadBtn" data-i18n="b_mask_download_btn">텍스트로 내려받기</button>

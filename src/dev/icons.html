@@ -27,8 +27,8 @@ input[type=range]{width:120px;}
   <h1 data-i18n="b_icons_title">SVG 아이콘 검색 <span style="font-size:.9rem;color:var(--muted)">(Lucide)</span></h1>
   <p class="sub" data-i18n="b_icons_sub">아이콘을 검색하고 클릭하면 SVG 코드가 복사됩니다.</p>
   <div class="card" style="max-width:none;">
-    <div class="row"><input type="text" id="q" data-i18n-ph="b_icons_search_ph" placeholder="아이콘 이름 검색 (영문, 예: arrow, home, user)" value="arrow">
-      <span data-i18n="b_icons_stroke_weight">굵기</span> <input type="range" id="sw" min="1" max="3" step="0.5" value="2"></div>
+    <div class="row"><input aria-label="아이콘 이름 검색 (영문, 예: arrow, home, user)" data-i18n-aria="b_icons_search_ph" type="text" id="q" data-i18n-ph="b_icons_search_ph" placeholder="아이콘 이름 검색 (영문, 예: arrow, home, user)" value="arrow">
+      <span id="lbl-sw" data-i18n="b_icons_stroke_weight">굵기</span> <input aria-labelledby="lbl-sw" type="range" id="sw" min="1" max="3" step="0.5" value="2"></div>
     <div class="cnt" id="cnt"></div>
     <div class="grid" id="grid"></div>
     <div class="note" data-i18n-html="b_icons_note">오픈소스 <b>Lucide</b>(ISC, <a href="https://github.com/lucide-icons/lucide" target="_blank" rel="noopener">lucide-icons/lucide</a>)를 자체 호스팅합니다. 성능을 위해 최대 120개까지 표시합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>

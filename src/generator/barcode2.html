@@ -25,12 +25,12 @@ select,input[type=text]{padding:.6rem .7rem;border:1px solid var(--border);borde
   <p class="sub" data-i18n="b_barcode2_sub">DataMatrix·PDF417·Aztec 등 산업용 2D/1D 바코드를 만들어 줍니다.</p>
   <div class="card">
     <div class="row">
-      <span data-i18n="b_barcode2_label_type">종류</span> <select id="type">
+      <span id="lbl-type" data-i18n="b_barcode2_label_type">종류</span> <select aria-labelledby="lbl-type" id="type">
         <option value="datamatrix">DataMatrix</option><option value="pdf417">PDF417</option><option value="azteccode">Aztec</option>
         <option value="qrcode">QR Code</option><option value="code128">Code 128</option><option value="code39">Code 39</option>
         <option value="ean13">EAN-13</option><option value="upca">UPC-A</option><option value="interleaved2of5">ITF</option><option value="gs1-128">GS1-128</option></select>
     </div>
-    <div class="row"><input type="text" id="text" value="1234-ABCD-5678"/><button class="btn" id="gen" type="button" data-i18n="b_barcode2_btn_gen">생성</button><button class="btn btn-ghost" id="png" type="button" data-i18n="b_barcode2_btn_png">⬇️ PNG</button></div>
+    <div class="row"><input aria-label="입력" data-i18n-aria="a11y.input" type="text" id="text" value="1234-ABCD-5678"/><button class="btn" id="gen" type="button" data-i18n="b_barcode2_btn_gen">생성</button><button class="btn btn-ghost" id="png" type="button" data-i18n="b_barcode2_btn_png">⬇️ PNG</button></div>
     <div class="err" id="err"></div>
     <canvas id="bc"></canvas>
     <div class="note" data-i18n-html="b_barcode2_note">오픈소스 <b>bwip-js</b>(MIT, <a href="https://github.com/metafloor/bwip-js" target="_blank" rel="noopener">metafloor/bwip-js</a>)를 자체 호스팅합니다. 100여 종 심볼을 지원합니다. EAN/UPC 등은 자릿수 규칙이 있어 형식에 맞아야 합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>

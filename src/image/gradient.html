@@ -81,7 +81,7 @@
       <button class="btn btn-ghost" id="add" type="button" data-i18n="b_gradient_btn_add">＋ 색상 추가</button>
       <button class="btn btn-ghost" id="random" type="button" data-i18n="b_gradient_btn_random">🎲 랜덤</button>
     </div>
-    <textarea class="css-out" id="css" readonly></textarea>
+    <textarea aria-label="결과" data-i18n-aria="a11y.output" class="css-out" id="css" readonly></textarea>
     <div class="actions" style="margin-top:.8rem;margin-bottom:0;">
       <button class="btn" id="copy" type="button" data-i18n="b_gradient_btn_copy">📋 CSS 복사</button>
       <button class="btn btn-ghost" id="dl" type="button" data-i18n="b_gradient_btn_dl">⬇️ PNG 내려받기</button>
@@ -134,9 +134,9 @@
     $('stops').innerHTML='';
     stops.forEach(function(st,i){
       var row=document.createElement('div'); row.className='stop';
-      row.innerHTML='<input type="color" value="'+st.c+'"/>'
-        +'<input type="text" value="'+st.c.toUpperCase()+'"/>'
-        +'<input type="range" min="0" max="100" value="'+st.p+'"/>'
+      row.innerHTML='<input type="color" aria-label="'+t('a11y.color')+' '+(i+1)+'" value="'+st.c+'"/>'
+        +'<input type="text" aria-label="'+t('a11y.color')+' '+(i+1)+' (HEX)" value="'+st.c.toUpperCase()+'"/>'
+        +'<input type="range" aria-label="'+t('a11y.position')+' '+(i+1)+'" min="0" max="100" value="'+st.p+'"/>'
         +'<span class="pos">'+st.p+'%</span>'
         +'<button class="del" title="'+t('b_gradient_del_title')+'" type="button">✕</button>';
       var col=row.children[0], hex=row.children[1], rng=row.children[2], pos=row.children[3], del=row.children[4];

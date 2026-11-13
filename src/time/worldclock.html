@@ -74,14 +74,14 @@
 
   <div class="card">
     <div class="wcrow">
-      <label class="chk"><input type="checkbox" id="custom"/> <span data-i18n="wc.custom">사용자 지정 시각</span></label>
-      <input type="date" id="refdate" style="width:auto;"/>
-      <input type="time" id="reftime" style="width:auto;"/>
-      <span class="lbl" data-i18n="wc.refcity" style="font-weight:700;font-size:.86rem;">기준 도시</span>
-      <select id="refzone"></select>
+      <label class="chk"><input type="checkbox" id="custom"/> <span id="lbl-refdate" data-i18n="wc.custom">사용자 지정 시각</span></label>
+      <input aria-labelledby="lbl-refdate" type="date" id="refdate" style="width:auto;"/>
+      <input aria-label="시간" data-i18n-aria="a11y.time" type="time" id="reftime" style="width:auto;"/>
+      <span id="lbl-refzone" class="lbl" data-i18n="wc.refcity" style="font-weight:700;font-size:.86rem;">기준 도시</span>
+      <select aria-labelledby="lbl-refzone" id="refzone"></select>
     </div>
     <div class="wcrow">
-      <select id="addsel"></select>
+      <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="addsel"></select>
       <button class="btn" id="add" data-i18n="wc.add">추가</button>
     </div>
     <div class="clocks" id="clocks"></div>

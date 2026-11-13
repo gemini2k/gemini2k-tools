@@ -24,8 +24,8 @@ table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.8rem;}th,t
   <h1 data-i18n="b_icalview_title">ICS 캘린더 뷰어</h1>
   <p class="sub" data-i18n="b_icalview_sub">ICS(iCalendar) 파일이나 내용을 넣으면 일정을 표로 정리해 줍니다.</p>
   <div class="card">
-    <div class="drop" id="drop"><span data-i18n="b_icalview_drop">📅 .ics 파일을 끌어다 놓거나 클릭해서 선택</span><input type="file" id="file" accept=".ics,text/calendar" hidden/></div>
-    <textarea id="in">BEGIN:VCALENDAR
+    <div class="drop" id="drop"><span data-i18n="b_icalview_drop">📅 .ics 파일을 끌어다 놓거나 클릭해서 선택</span><input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept=".ics,text/calendar" hidden/></div>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="in">BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
 SUMMARY:팀 회의

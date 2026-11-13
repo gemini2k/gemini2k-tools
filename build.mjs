@@ -69,7 +69,7 @@ const LANGS = Object.keys(I18N);
 const isToolKey = k => /^tool\.[a-z0-9]+\.[td]$/.test(k);
 // 페이지가 참조하는 i18n 키 스캔(data-i18n*/t()) → 정확히 한 페이지만 쓰는 키 = 페이지전용 → core 에서 빼고 페이지별 인라인(core 크기 고정·확장성).
 //   (JS 파일·여러 페이지 공용 키 gc./ak./공통 등은 refCount 0 또는 ≥2 라 core 유지)
-const KEYREF = /data-i18n(?:-ph|-html)?="([^"]+)"|[^A-Za-z0-9_$.]t\((['"])([^'"]+)\2\)/g;
+const KEYREF = /data-i18n(?:-ph|-html|-aria)?="([^"]+)"|[^A-Za-z0-9_$.]t\((['"])([^'"]+)\2\)/g;
 const refByFile = {}, refCount = {};
 for (const f of fs.readdirSync(DIST)) {
   if (!f.endsWith('.html')) continue;

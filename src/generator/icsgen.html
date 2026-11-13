@@ -26,13 +26,13 @@
   <h1 data-i18n="b_icsgen_title">캘린더 일정(ICS) 생성기</h1>
   <p class="sub" data-i18n-html="b_icsgen_sub">일정을 입력하면 <code>.ics</code> 파일을 만들어 줍니다. 구글·아웃룩·애플 캘린더에서 열면 바로 추가됩니다.</p>
   <div class="card">
-    <div class="field"><label data-i18n="b_icsgen_lbl_title">제목</label><input type="text" id="title" value="팀 회의"/></div>
-    <div class="field"><label data-i18n="b_icsgen_lbl_loc">장소</label><input type="text" id="loc" value="회의실 A"/></div>
+    <div class="field"><label for="title" data-i18n="b_icsgen_lbl_title">제목</label><input type="text" id="title" value="팀 회의"/></div>
+    <div class="field"><label for="loc" data-i18n="b_icsgen_lbl_loc">장소</label><input type="text" id="loc" value="회의실 A"/></div>
     <div class="field"><label class="chk"><input type="checkbox" id="allday"/> <span data-i18n="b_icsgen_allday">종일 일정</span></label></div>
-    <div class="two"><div class="field"><label data-i18n="b_icsgen_lbl_start">시작</label><input type="datetime-local" id="start"/></div>
-      <div class="field"><label data-i18n="b_icsgen_lbl_end">종료</label><input type="datetime-local" id="end"/></div></div>
-    <div class="field"><label data-i18n="b_icsgen_lbl_desc">설명</label><textarea id="desc"></textarea></div>
-    <div class="field"><label data-i18n="b_icsgen_lbl_alarm">알림</label><select id="alarm">
+    <div class="two"><div class="field"><label for="start" data-i18n="b_icsgen_lbl_start">시작</label><input type="datetime-local" id="start"/></div>
+      <div class="field"><label for="end" data-i18n="b_icsgen_lbl_end">종료</label><input type="datetime-local" id="end"/></div></div>
+    <div class="field"><label for="desc" data-i18n="b_icsgen_lbl_desc">설명</label><textarea id="desc"></textarea></div>
+    <div class="field"><label for="alarm" data-i18n="b_icsgen_lbl_alarm">알림</label><select id="alarm">
       <option value="" data-i18n="b_icsgen_alarm_none">없음</option>
       <option value="0" data-i18n="b_icsgen_alarm_at">시작 시각</option>
       <option value="10" data-i18n="b_icsgen_alarm_10m">10분 전</option>

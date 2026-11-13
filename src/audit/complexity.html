@@ -33,7 +33,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <h1 data-i18n="b_complexity_title">코드 복잡도 분석</h1>
   <p class="sub" data-i18n="b_complexity_sub">JavaScript 함수별 순환복잡도를 계산합니다.</p>
   <div class="card" style="max-width:none;">
-    <textarea class="in" id="in" spellcheck="false">function classify(n) {
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" class="in" id="in" spellcheck="false">function classify(n) {
   if (n < 0) return 'neg';
   else if (n === 0) return 'zero';
   for (var i = 0; i < n; i++) {

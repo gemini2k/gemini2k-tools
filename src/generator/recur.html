@@ -26,25 +26,25 @@ select,input{padding:.55rem .65rem;border:1px solid var(--border);border-radius:
   <h1 data-i18n="b_recur_title">반복 일정 규칙(RRULE) 생성기</h1>
   <p class="sub" data-i18n="b_recur_sub">반복 규칙을 만들고 다음 실행일을 미리 봅니다. 캘린더(iCalendar)에 그대로 넣을 수 있어요.</p>
   <div class="card">
-    <div class="field"><label data-i18n="b_recur_lbl_start">시작일시</label><input type="datetime-local" id="start"/></div>
-    <div class="field"><label data-i18n="b_recur_lbl_freq">반복 주기</label><div class="inline">
+    <div class="field"><label for="start" data-i18n="b_recur_lbl_start">시작일시</label><input type="datetime-local" id="start"/></div>
+    <div class="field"><label for="freq" data-i18n="b_recur_lbl_freq">반복 주기</label><div class="inline">
       <select id="freq">
         <option value="DAILY" data-i18n="b_recur_freq_daily">매일</option>
         <option value="WEEKLY" selected data-i18n="b_recur_freq_weekly">매주</option>
         <option value="MONTHLY" data-i18n="b_recur_freq_monthly">매월</option>
         <option value="YEARLY" data-i18n="b_recur_freq_yearly">매년</option>
       </select>
-      <span data-i18n="b_recur_lbl_interval">간격</span><input type="number" id="interval" value="1" min="1" style="width:70px;"><span id="iunit" data-i18n="b_recur_unit_weekly">주마다</span>
+      <span id="lbl-interval" data-i18n="b_recur_lbl_interval">간격</span><input aria-labelledby="lbl-interval" type="number" id="interval" value="1" min="1" style="width:70px;"><span id="iunit" data-i18n="b_recur_unit_weekly">주마다</span>
     </div></div>
     <div class="field" id="wdbox"><label data-i18n="b_recur_lbl_wd">요일 (매주)</label><div class="wd" id="wd"></div></div>
-    <div class="field"><label data-i18n="b_recur_lbl_end">종료</label><div class="inline">
+    <div class="field"><label for="endtype" data-i18n="b_recur_lbl_end">종료</label><div class="inline">
       <select id="endtype">
         <option value="count" data-i18n="b_recur_end_count">횟수</option>
         <option value="until" data-i18n="b_recur_end_until">날짜까지</option>
         <option value="never" data-i18n="b_recur_end_never">없음</option>
       </select>
-      <input type="number" id="count" value="10" min="1" style="width:80px;">
-      <input type="date" id="until" style="display:none;">
+      <input aria-label="입력" data-i18n-aria="a11y.input" type="number" id="count" value="10" min="1" style="width:80px;">
+      <input aria-label="날짜" data-i18n-aria="a11y.date" type="date" id="until" style="display:none;">
     </div></div>
     <div class="field"><label>RRULE</label><div class="out" id="rrule"></div><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_recur_btn_copy">📋 복사</button></div>
     <div class="field"><label data-i18n="b_recur_lbl_list">다음 일정 (최대 10개)</label><div class="list" id="list"></div></div>

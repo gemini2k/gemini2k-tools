@@ -30,11 +30,11 @@
   <p class="sub" data-i18n-html="b_baseball_sub">컴퓨터가 정한 <b>서로 다른 숫자</b>를 맞혀 보세요. 자리와 숫자가 맞으면 S(스트라이크), 숫자만 맞으면 B(볼)!</p>
   <div class="card">
     <div class="bar">
-      <select id="digits">
+      <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="digits">
         <option value="3" data-i18n="b_baseball_opt3">3자리</option>
         <option value="4" data-i18n="b_baseball_opt4">4자리</option>
       </select>
-      <input id="guess" inputmode="numeric" maxlength="4" data-i18n-ph="b_baseball_placeholder"/>
+      <input aria-label="입력" data-i18n-aria="a11y.input" id="guess" inputmode="numeric" maxlength="4" data-i18n-ph="b_baseball_placeholder"/>
       <button class="btn" id="go" type="button" data-i18n="b_baseball_btn_go">확인</button>
     </div>
     <div class="win" id="win"></div>

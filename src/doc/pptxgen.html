@@ -23,7 +23,7 @@
   <h1 data-i18n="b_pptxgen_title">텍스트 → PPT 생성기</h1>
   <p class="sub" data-i18n-html="b_pptxgen_sub">개요를 적으면 파워포인트(.pptx) 초안을 만들어 줍니다. <b># 제목</b>은 새 슬라이드, <b>-</b> 로 시작하면 글머리 기호입니다.</p>
   <div class="card">
-    <textarea id="in"># 분기 실적 보고
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="in"># 분기 실적 보고
 - 매출 12% 성장
 - 신규 고객 340명
 - 다음 분기 목표 공유
@@ -35,15 +35,15 @@
 
 # 감사합니다
 - 질문을 환영합니다</textarea>
-    <div class="row"><span data-i18n="b_pptxgen_theme_label">테마 색</span>
-      <select id="theme">
+    <div class="row"><span id="lbl-theme" data-i18n="b_pptxgen_theme_label">테마 색</span>
+      <select aria-labelledby="lbl-theme" id="theme">
         <option value="2563EB" data-i18n="b_pptxgen_opt_blue">블루</option>
         <option value="059669" data-i18n="b_pptxgen_opt_green">그린</option>
         <option value="DC2626" data-i18n="b_pptxgen_opt_red">레드</option>
         <option value="7C3AED" data-i18n="b_pptxgen_opt_purple">퍼플</option>
         <option value="111827" data-i18n="b_pptxgen_opt_dark">다크</option>
       </select>
-      <input type="text" id="fname" value="presentation" data-i18n-ph="b_pptxgen_fname_ph" placeholder="파일명"/>
+      <input aria-label="파일명" data-i18n-aria="b_pptxgen_fname_ph" type="text" id="fname" value="presentation" data-i18n-ph="b_pptxgen_fname_ph" placeholder="파일명"/>
       <button class="btn" id="gen" type="button" data-i18n="b_pptxgen_btn_gen">📊 PPTX 만들기</button>
       <span class="cnt" id="cnt"></span>
     </div>

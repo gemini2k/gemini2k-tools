@@ -28,18 +28,18 @@ textarea{min-height:90px;resize:vertical;}select{padding:.5rem;border:1px solid 
   <div class="card">
     <div class="seg" id="seg"><button data-m="sign" class="on" type="button" data-i18n="b_jwtsign_btn_sign">서명(발급)</button><button data-m="verify" type="button" data-i18n="b_jwtsign_btn_verify">검증</button></div>
     <div id="signbox">
-      <div class="field"><label data-i18n="b_jwtsign_lbl_payload">페이로드 (JSON)</label><textarea id="payload">{
+      <div class="field"><label for="payload" data-i18n="b_jwtsign_lbl_payload">페이로드 (JSON)</label><textarea id="payload">{
   "sub": "1234567890",
   "name": "홍길동",
   "role": "admin"
 }</textarea></div>
-      <div class="field"><label data-i18n="b_jwtsign_lbl_alg_secret">알고리즘 / 비밀키</label><div style="display:flex;gap:.5rem;"><select id="alg"><option>HS256</option><option>HS384</option><option>HS512</option></select><input type="text" id="secret" value="my-secret-key" style="flex:1;"/></div></div>
+      <div class="field"><label for="alg" data-i18n="b_jwtsign_lbl_alg_secret">알고리즘 / 비밀키</label><div style="display:flex;gap:.5rem;"><select id="alg"><option>HS256</option><option>HS384</option><option>HS512</option></select><input aria-label="입력" data-i18n-aria="a11y.input" type="text" id="secret" value="my-secret-key" style="flex:1;"/></div></div>
       <button class="btn" id="dosign" type="button" data-i18n="b_jwtsign_dosign">서명하기</button>
       <div class="field" style="margin-top:.7rem;"><label data-i18n="b_jwtsign_lbl_token">생성된 토큰</label><div class="out" id="token"></div></div>
     </div>
     <div id="verifybox" style="display:none;">
-      <div class="field"><label data-i18n="b_jwtsign_lbl_vtoken">JWT 토큰</label><textarea id="vtoken" placeholder="eyJ..."></textarea></div>
-      <div class="field"><label data-i18n="b_jwtsign_lbl_vsecret">비밀키</label><input type="text" id="vsecret" value="my-secret-key"/></div>
+      <div class="field"><label for="vtoken" data-i18n="b_jwtsign_lbl_vtoken">JWT 토큰</label><textarea id="vtoken" placeholder="eyJ..."></textarea></div>
+      <div class="field"><label for="vsecret" data-i18n="b_jwtsign_lbl_vsecret">비밀키</label><input type="text" id="vsecret" value="my-secret-key"/></div>
       <button class="btn" id="doverify" type="button" data-i18n="b_jwtsign_doverify">검증하기</button>
       <div class="field" style="margin-top:.7rem;"><label data-i18n="b_jwtsign_lbl_vresult">결과</label><div class="out" id="vresult"></div></div>
     </div>

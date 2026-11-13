@@ -24,12 +24,12 @@ button.mini{padding:.5rem .8rem;border:1px solid var(--border);border-radius:9px
   <h1 data-i18n="b_lottie_title">Lottie 애니메이션 뷰어</h1>
   <p class="sub" data-i18n="b_lottie_sub">Lottie 애니메이션(.json)을 불러와 재생하며 미리봅니다.</p>
   <div class="card">
-    <div class="drop" id="drop" data-i18n="b_lottie_drop_hint">✨ Lottie JSON 파일을 끌어다 놓거나 클릭해서 선택<input type="file" id="file" accept=".json,application/json" hidden/></div>
+    <div class="drop" id="drop" data-i18n="b_lottie_drop_hint">✨ Lottie JSON 파일을 끌어다 놓거나 클릭해서 선택<input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept=".json,application/json" hidden/></div>
     <div id="anim"></div>
     <div class="row">
       <button class="mini" id="play" type="button" data-i18n="b_lottie_btn_pause">⏸ 일시정지</button>
       <button class="mini" id="restart" type="button" data-i18n="b_lottie_btn_restart">↺ 처음부터</button>
-      <span data-i18n="b_lottie_label_speed">속도</span> <input type="range" id="speed" min="0.25" max="2" step="0.25" value="1"/><span id="sv">1x</span>
+      <span id="lbl-speed" data-i18n="b_lottie_label_speed">속도</span> <input aria-labelledby="lbl-speed" type="range" id="speed" min="0.25" max="2" step="0.25" value="1"/><span id="sv">1x</span>
       <label><input type="checkbox" id="loop" checked/> <span data-i18n="b_lottie_label_loop">반복</span></label>
     </div>
     <div class="note" data-i18n-html="b_lottie_note">오픈소스 <b>lottie-web</b>(MIT, <a href="https://github.com/airbnb/lottie-web" target="_blank" rel="noopener">airbnb/lottie-web</a>)을 자체 호스팅합니다. 처음에는 샘플 애니메이션이 표시됩니다. 모든 처리는 브라우저에서만 이루어집니다.</div>

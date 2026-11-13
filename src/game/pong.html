@@ -55,7 +55,7 @@
   <h1 data-i18n="b_pong_title">핑퐁 (Pong)</h1>
   <p class="sub" data-i18n="b_pong_sub">막대로 공을 받아쳐 상대를 뚫으세요. 11점 먼저 내면 승리! 컴퓨터와 1인, 또는 친구와 2인으로.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_pong_howto_title">조작법</b><ol>
+  <div class="howto"><span class="ic">📖</span><div><b id="lbl-mode" data-i18n="b_pong_howto_title">조작법</b><ol>
     <li data-i18n="b_pong_howto1">1인(vs 컴퓨터): 마우스나 손가락을 위아래로 움직여 <b>왼쪽</b> 막대를 조종합니다</li>
     <li data-i18n="b_pong_howto2">2인: 왼쪽 막대는 왼쪽 절반, 오른쪽 막대는 오른쪽 절반을 터치/드래그로 조종합니다</li>
     <li data-i18n="b_pong_howto3">화면을 클릭·터치하면 시작합니다</li>
@@ -63,11 +63,11 @@
 
   <div class="card">
     <div class="opts">
-      <select id="mode">
+      <select aria-labelledby="lbl-mode" id="mode">
         <option value="ai" data-i18n="b_pong_mode_ai">vs 컴퓨터</option>
         <option value="2p" data-i18n="b_pong_mode_2p">2인 대전</option>
       </select>
-      <select id="diff">
+      <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="diff">
         <option value="easy" data-i18n="b_pong_diff_easy">쉬움</option>
         <option value="normal" selected data-i18n="b_pong_diff_normal">보통</option>
         <option value="hard" data-i18n="b_pong_diff_hard">어려움</option>

@@ -26,9 +26,9 @@
   <h1 data-i18n="b_wifiqr_title">WiFi QR코드 생성기</h1>
   <p class="sub" data-i18n="b_wifiqr_sub">와이파이 이름과 비밀번호로 QR을 만들면, 스캔만으로 자동 연결됩니다. 매장·가정에 붙여두세요.</p>
   <div class="card">
-    <div class="fld"><label data-i18n="b_wifiqr_label_ssid">WiFi 이름 (SSID)</label><input id="ssid" type="text" value="MyWiFi"/></div>
-    <div class="fld"><label data-i18n="b_wifiqr_label_pw">비밀번호</label><input id="pw" type="text" value="password123"/></div>
-    <div class="fld"><label data-i18n="b_wifiqr_label_enc">보안 방식</label><select id="enc"><option value="WPA" data-i18n="b_wifiqr_opt_wpa">WPA/WPA2</option><option value="WEP" data-i18n="b_wifiqr_opt_wep">WEP</option><option value="nopass" data-i18n="b_wifiqr_opt_nopass">없음(개방)</option></select></div>
+    <div class="fld"><label for="ssid" data-i18n="b_wifiqr_label_ssid">WiFi 이름 (SSID)</label><input id="ssid" type="text" value="MyWiFi"/></div>
+    <div class="fld"><label for="pw" data-i18n="b_wifiqr_label_pw">비밀번호</label><input id="pw" type="text" value="password123"/></div>
+    <div class="fld"><label for="enc" data-i18n="b_wifiqr_label_enc">보안 방식</label><select id="enc"><option value="WPA" data-i18n="b_wifiqr_opt_wpa">WPA/WPA2</option><option value="WEP" data-i18n="b_wifiqr_opt_wep">WEP</option><option value="nopass" data-i18n="b_wifiqr_opt_nopass">없음(개방)</option></select></div>
     <label style="font-size:.85rem;font-weight:600;display:inline-flex;gap:.4rem;align-items:center;"><input type="checkbox" id="hidden"/> <span data-i18n="b_wifiqr_hidden">숨겨진 네트워크</span></label>
     <div class="qrwrap"><div id="qr"></div></div>
     <div class="actions"><button class="btn" id="png" type="button" data-i18n="b_wifiqr_btn_png">⬇️ PNG 다운로드</button></div>

@@ -65,8 +65,8 @@
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">🔲</div><div><strong data-i18n="b_imgmosaic_drop_main">이미지를 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG · WebP</div></div>
-    <input type="file" id="file" accept="image/*" class="hide"/>
+    <div class="drop" id="drop"><div class="big">🔲</div><div><strong id="lbl-file" data-i18n="b_imgmosaic_drop_main">이미지를 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">JPG · PNG · WebP</div></div>
+    <input aria-labelledby="lbl-file" type="file" id="file" accept="image/*" class="hide"/>
     <div class="opts hide" id="opts">
       <label><span data-i18n="b_imgmosaic_label_mode">방식</span> <select id="mode"><option value="mosaic" data-i18n="b_imgmosaic_opt_mosaic">모자이크</option><option value="blur" data-i18n="b_imgmosaic_opt_blur">블러</option><option value="black" data-i18n="b_imgmosaic_opt_black">검정 칠</option></select></label>
       <label><span data-i18n="b_imgmosaic_label_strength">강도</span> <input id="strength" type="range" min="5" max="40" value="14"/></label>

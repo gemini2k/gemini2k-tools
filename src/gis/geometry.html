@@ -80,9 +80,9 @@
     <div class="geo-grid">
       <div>
         <div class="lbl" style="font-weight:700;font-size:.9rem;margin-bottom:.4rem;">
-          <span data-i18n="gj.input">입력</span><span class="fmtbadge" id="detected" style="display:none;"></span>
+          <span id="lbl-gin" data-i18n="gj.input">입력</span><span class="fmtbadge" id="detected" style="display:none;"></span>
         </div>
-        <textarea id="gin" data-i18n-ph="gj.ph" placeholder="WKT, WKB/EWKB(16진), 또는 GeoJSON 을 붙여넣으세요…&#10;예) POINT(127.0 37.5)&#10;예) 0101000020E6100000...&#10;예) {&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[127,37.5]}"></textarea>
+        <textarea aria-labelledby="lbl-gin" id="gin" data-i18n-ph="gj.ph" placeholder="WKT, WKB/EWKB(16진), 또는 GeoJSON 을 붙여넣으세요…&#10;예) POINT(127.0 37.5)&#10;예) 0101000020E6100000...&#10;예) {&quot;type&quot;:&quot;Point&quot;,&quot;coordinates&quot;:[127,37.5]}"></textarea>
         <div class="row" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem;">
           <button class="btn" id="convertBtn" data-i18n="gj.convert">변환</button>
           <button class="btn btn-ghost" id="sampleBtn" data-i18n="gj.sample">예시</button>
@@ -99,15 +99,15 @@
     <div id="outputs" style="margin-top:1.2rem;display:none;">
       <div class="out-row">
         <div class="lbl">GeoJSON <button class="btn btn-ghost" data-copy="ogeojson" data-i18n="gj.copy">복사</button></div>
-        <textarea id="ogeojson" readonly></textarea>
+        <textarea aria-label="결과" data-i18n-aria="a11y.output" id="ogeojson" readonly></textarea>
       </div>
       <div class="out-row">
         <div class="lbl">WKT <button class="btn btn-ghost" data-copy="owkt" data-i18n="gj.copy">복사</button></div>
-        <textarea id="owkt" readonly style="min-height:48px;"></textarea>
+        <textarea aria-label="결과" data-i18n-aria="a11y.output" id="owkt" readonly style="min-height:48px;"></textarea>
       </div>
       <div class="out-row">
         <div class="lbl">WKB (hex) <button class="btn btn-ghost" data-copy="owkb" data-i18n="gj.copy">복사</button></div>
-        <textarea id="owkb" readonly style="min-height:48px;"></textarea>
+        <textarea aria-label="결과" data-i18n-aria="a11y.output" id="owkb" readonly style="min-height:48px;"></textarea>
       </div>
     </div>
     <p class="hint" data-i18n="gj.note">※ 좌표는 경위도(EPSG:4326, 경도·위도 순)로 간주해 미리보기·측정합니다. WKT 앞의 SRID= 표기는 읽어 표시하지만 변환은 좌표값 그대로 수행합니다. 모든 처리는 브라우저에서만 이루어집니다.</p>

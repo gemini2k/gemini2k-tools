@@ -33,7 +33,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <h1 data-i18n="b_combos_title">조합 테스트 케이스 생성</h1>
   <p class="sub" data-i18n="b_combos_sub">파라미터별 값을 입력하면 모든 조합(곱집합)을 표로 만듭니다.</p>
   <div class="card" style="max-width:none;">
-    <textarea class="in" id="in" spellcheck="false" style="min-height:120px">브라우저: Chrome, Safari, Edge\nOS: Windows, macOS, Android\n네트워크: WiFi, LTE</textarea><div class="frm" style="margin-top:.5rem"><button class="btn" id="run" type="button" data-i18n="b_combos_btn_run">조합 생성</button><button class="btn btn-ghost" id="csv" type="button">⬇️ CSV</button><span id="cnt" style="align-self:center;color:var(--muted)"></span></div><div class="err" id="err"></div><div class="res" id="res" style="overflow-x:auto"></div>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" class="in" id="in" spellcheck="false" style="min-height:120px">브라우저: Chrome, Safari, Edge\nOS: Windows, macOS, Android\n네트워크: WiFi, LTE</textarea><div class="frm" style="margin-top:.5rem"><button class="btn" id="run" type="button" data-i18n="b_combos_btn_run">조합 생성</button><button class="btn btn-ghost" id="csv" type="button">⬇️ CSV</button><span id="cnt" style="align-self:center;color:var(--muted)"></span></div><div class="err" id="err"></div><div class="res" id="res" style="overflow-x:auto"></div>
     <div class="note" data-i18n-html="b_combos_note">한 줄에 <code>파라미터: 값1, 값2, 값3</code> 형식으로 입력합니다. 조합 수 = 각 값 개수의 곱이므로 폭증 시 페어와이즈를 사용하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
   <section class="toolhelp">

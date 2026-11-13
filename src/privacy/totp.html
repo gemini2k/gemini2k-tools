@@ -26,10 +26,10 @@
   <h1 data-i18n="b_totp_title">TOTP 인증 코드 생성기</h1>
   <p class="sub" data-i18n="b_totp_sub">비밀 키(Secret)를 넣으면 30초마다 바뀌는 2단계 인증(OTP) 코드를 보여 줍니다.</p>
   <div class="card">
-    <div class="row"><label data-i18n="b_totp_label_secret">비밀 키</label><input type="text" id="secret" value="JBSWY3DPEHPK3PXP" placeholder="Base32 Secret"/></div>
-    <div class="row"><label data-i18n="b_totp_label_digits">자릿수</label><select id="digits"><option>6</option><option>7</option><option>8</option></select>
-      <label style="min-width:auto;" data-i18n="b_totp_label_period">주기(초)</label><select id="period"><option>30</option><option>60</option></select>
-      <label style="min-width:auto;" data-i18n="b_totp_label_algo">알고리즘</label><select id="algo"><option>SHA1</option><option>SHA256</option><option>SHA512</option></select></div>
+    <div class="row"><label for="secret" data-i18n="b_totp_label_secret">비밀 키</label><input type="text" id="secret" value="JBSWY3DPEHPK3PXP" placeholder="Base32 Secret"/></div>
+    <div class="row"><label for="digits" data-i18n="b_totp_label_digits">자릿수</label><select id="digits"><option>6</option><option>7</option><option>8</option></select>
+      <label for="period" style="min-width:auto;" data-i18n="b_totp_label_period">주기(초)</label><select id="period"><option>30</option><option>60</option></select>
+      <label for="algo" style="min-width:auto;" data-i18n="b_totp_label_algo">알고리즘</label><select id="algo"><option>SHA1</option><option>SHA256</option><option>SHA512</option></select></div>
     <div class="code" id="code">------</div>
     <div class="bar"><i id="prog" style="width:100%"></i></div>
     <div class="rem" id="rem"></div>

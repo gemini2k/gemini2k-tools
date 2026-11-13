@@ -24,13 +24,13 @@ select,input[type=number]{padding:.45rem;border:1px solid var(--border);border-r
   <p class="sub" data-i18n="b_rough_sub">손으로 그린 듯한 스케치 스타일 도형을 만들어 저장합니다.</p>
   <div class="card">
     <div class="row">
-      <span data-i18n="b_rough_lbl_shape">도형</span> <select id="shape"><option value="rectangle" data-i18n="b_rough_shape_rect">사각형</option><option value="ellipse" data-i18n="b_rough_shape_ellipse">타원</option><option value="circle" data-i18n="b_rough_shape_circle">원</option><option value="line" data-i18n="b_rough_shape_line">선</option><option value="arrow" data-i18n="b_rough_shape_arrow">화살표</option></select>
-      <span data-i18n="b_rough_lbl_roughness">거칠기</span> <input type="number" id="rough" value="1.5" step="0.5" min="0" max="5" style="width:60px;">
-      <span data-i18n="b_rough_lbl_fill">채움</span> <select id="fillstyle"><option value="hachure" data-i18n="b_rough_fill_hachure">빗금</option><option value="solid" data-i18n="b_rough_fill_solid">단색</option><option value="zigzag" data-i18n="b_rough_fill_zigzag">지그재그</option><option value="cross-hatch" data-i18n="b_rough_fill_crosshatch">교차</option><option value="none" data-i18n="b_rough_fill_none">없음</option></select>
+      <span id="lbl-shape" data-i18n="b_rough_lbl_shape">도형</span> <select aria-labelledby="lbl-shape" id="shape"><option value="rectangle" data-i18n="b_rough_shape_rect">사각형</option><option value="ellipse" data-i18n="b_rough_shape_ellipse">타원</option><option value="circle" data-i18n="b_rough_shape_circle">원</option><option value="line" data-i18n="b_rough_shape_line">선</option><option value="arrow" data-i18n="b_rough_shape_arrow">화살표</option></select>
+      <span id="lbl-rough" data-i18n="b_rough_lbl_roughness">거칠기</span> <input aria-labelledby="lbl-rough" type="number" id="rough" value="1.5" step="0.5" min="0" max="5" style="width:60px;">
+      <span id="lbl-fillstyle" data-i18n="b_rough_lbl_fill">채움</span> <select aria-labelledby="lbl-fillstyle" id="fillstyle"><option value="hachure" data-i18n="b_rough_fill_hachure">빗금</option><option value="solid" data-i18n="b_rough_fill_solid">단색</option><option value="zigzag" data-i18n="b_rough_fill_zigzag">지그재그</option><option value="cross-hatch" data-i18n="b_rough_fill_crosshatch">교차</option><option value="none" data-i18n="b_rough_fill_none">없음</option></select>
     </div>
     <div class="row">
-      <span data-i18n="b_rough_lbl_stroke">선색</span> <input type="color" id="stroke" value="#2563eb"> <span data-i18n="b_rough_lbl_fillcolor">채움색</span> <input type="color" id="fill" value="#93c5fd">
-      <span data-i18n="b_rough_lbl_sw">선굵기</span> <input type="number" id="sw" value="2" min="1" max="10" style="width:60px;">
+      <span id="lbl-stroke" data-i18n="b_rough_lbl_stroke">선색</span> <input aria-labelledby="lbl-stroke" type="color" id="stroke" value="#2563eb"> <span id="lbl-fill" data-i18n="b_rough_lbl_fillcolor">채움색</span> <input aria-labelledby="lbl-fill" type="color" id="fill" value="#93c5fd">
+      <span id="lbl-sw" data-i18n="b_rough_lbl_sw">선굵기</span> <input aria-labelledby="lbl-sw" type="number" id="sw" value="2" min="1" max="10" style="width:60px;">
       <button class="btn" id="add" type="button" data-i18n="b_rough_btn_draw">그리기</button><button class="btn btn-ghost" id="clear" type="button" data-i18n="b_rough_btn_clear">지우기</button><button class="btn btn-ghost" id="png" type="button" data-i18n="b_rough_btn_png">⬇️ PNG</button>
     </div>
     <canvas id="cv" width="520" height="360"></canvas>

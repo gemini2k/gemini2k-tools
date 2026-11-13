@@ -32,7 +32,7 @@
   <h1 data-i18n="b_json2ts_title">JSON → TypeScript 인터페이스</h1>
   <p class="sub" data-i18n="b_json2ts_sub">JSON 예시를 붙여넣으면 TypeScript interface 타입을 자동으로 만들어 줍니다.</p>
   <div class="card">
-    <textarea id="in">{"id":1,"name":"홍길동","tags":["a","b"],"profile":{"age":30,"vip":true},"score":null}</textarea>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="in">{"id":1,"name":"홍길동","tags":["a","b"],"profile":{"age":30,"vip":true},"score":null}</textarea>
     <div class="opts"><label><span data-i18n="b_json2ts_root_label">루트 이름</span> <input id="root" type="text" value="Root"/></label></div>
     <div class="actions"><button class="btn" id="run" type="button" data-i18n="b_json2ts_btn_convert">변환</button><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_json2ts_btn_copy">📋 복사</button></div>
     <div class="err" id="err"></div>

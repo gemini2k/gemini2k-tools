@@ -25,10 +25,10 @@ textarea{width:100%;min-height:300px;padding:.7rem;border:1px solid var(--border
   <h1>TypeScript → JavaScript</h1>
   <p class="sub" data-i18n="b_typescript_sub">TypeScript 코드를 JavaScript로 컴파일해 결과를 보여 줍니다.</p>
   <div class="card" style="max-width:none;">
-    <div class="row"><span data-i18n="b_typescript_target_label">타깃</span> <select id="target"><option>ESNext</option><option>ES2020</option><option selected>ES2017</option><option>ES2015</option><option>ES5</option></select>
-      <span data-i18n="b_typescript_module_label">모듈</span> <select id="module"><option>ESNext</option><option selected>CommonJS</option><option>None</option></select></div>
+    <div class="row"><span id="lbl-target" data-i18n="b_typescript_target_label">타깃</span> <select aria-labelledby="lbl-target" id="target"><option>ESNext</option><option>ES2020</option><option selected>ES2017</option><option>ES2015</option><option>ES5</option></select>
+      <span id="lbl-module" data-i18n="b_typescript_module_label">모듈</span> <select aria-labelledby="lbl-module" id="module"><option>ESNext</option><option selected>CommonJS</option><option>None</option></select></div>
     <div class="grid2">
-      <div><label class="lbl" data-i18n="b_typescript_input_label">TypeScript</label><textarea id="in">interface User { name: string; age: number; }
+      <div><label for="in" class="lbl" data-i18n="b_typescript_input_label">TypeScript</label><textarea id="in">interface User { name: string; age: number; }
 
 function greet(user: User): string {
   return `Hello, ${user.name} (${user.age})`;

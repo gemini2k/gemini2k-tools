@@ -33,7 +33,7 @@
   <h1 data-i18n="b_colorname_title">색 이름 변환기</h1>
   <p class="sub" data-i18n="b_colorname_sub">색을 고르면 가장 가까운 CSS 색상 이름을, 색 이름을 입력하면 HEX를 알려 줍니다. 줄을 클릭하면 복사돼요.</p>
   <div class="card">
-    <div class="row"><input id="pick" type="color" value="#4da3ff"/><input id="txt" type="text" value="#4DA3FF" data-i18n-ph="b_colorname_ph"/></div>
+    <div class="row"><input aria-label="색상" data-i18n-aria="a11y.color" id="pick" type="color" value="#4da3ff"/><input aria-label="입력" data-i18n-aria="a11y.input" id="txt" type="text" value="#4DA3FF" data-i18n-ph="b_colorname_ph"/></div>
     <div class="sw" id="sw"></div>
     <div id="res"></div>
     <div class="note" data-i18n="b_colorname_note">자주 쓰는 CSS 표준 색상 이름 124개 중 가장 가까운 이름을 RGB 거리로 찾습니다. 정확히 일치하지 않으면 '가장 가까운' 이름입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>

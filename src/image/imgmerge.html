@@ -71,7 +71,7 @@
 
   <div class="card">
     <div class="drop" id="drop"><div class="big">🧩</div><div><strong data-i18n="b_imgmerge_drop_label">이미지 여러 장을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;" data-i18n="b_imgmerge_drop_hint">JPG · PNG · WebP (여러 장)</div></div>
-    <input type="file" id="file" accept="image/*" multiple class="hide"/>
+    <input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept="image/*" multiple class="hide"/>
     <div class="thumbs" id="thumbs"></div>
     <div class="opts hide" id="opts">
       <label><span data-i18n="b_imgmerge_lbl_dir">방향</span> <select id="dir"><option value="v" data-i18n="b_imgmerge_opt_v">세로</option><option value="h" data-i18n="b_imgmerge_opt_h">가로</option><option value="grid" data-i18n="b_imgmerge_opt_grid">격자</option></select></label>

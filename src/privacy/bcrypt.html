@@ -28,13 +28,13 @@
   <h1 data-i18n="b_bcrypt_title">bcrypt 해시 생성·검증</h1>
   <p class="sub" data-i18n="b_bcrypt_sub">비밀번호를 bcrypt 해시로 만들고, 해시와 평문이 맞는지 확인합니다. 입력은 전송·저장되지 않습니다.</p>
   <div class="card">
-    <div class="fld"><label data-i18n="b_bcrypt_label_pw">평문 비밀번호</label><input id="pw" type="text" value="hunter2"/></div>
-    <div class="fld"><label data-i18n="b_bcrypt_label_rounds">Cost (라운드, 4~14)</label><input id="rounds" type="number" min="4" max="14" value="10"/></div>
+    <div class="fld"><label for="pw" data-i18n="b_bcrypt_label_pw">평문 비밀번호</label><input id="pw" type="text" value="hunter2"/></div>
+    <div class="fld"><label for="rounds" data-i18n="b_bcrypt_label_rounds">Cost (라운드, 4~14)</label><input id="rounds" type="number" min="4" max="14" value="10"/></div>
     <div class="actions"><button class="btn" id="gen" type="button" data-i18n="b_bcrypt_btn_gen">🔒 해시 생성</button><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_bcrypt_btn_copy">📋 복사</button></div>
     <div class="out" id="hash"></div>
     <hr/>
-    <div class="fld"><label data-i18n="b_bcrypt_label_vhash">검증할 해시</label><input id="vhash" type="text" placeholder="$2a$10$..."/></div>
-    <div class="fld"><label data-i18n="b_bcrypt_label_vpw">평문</label><input id="vpw" type="text" value="hunter2"/></div>
+    <div class="fld"><label for="vhash" data-i18n="b_bcrypt_label_vhash">검증할 해시</label><input id="vhash" type="text" placeholder="$2a$10$..."/></div>
+    <div class="fld"><label for="vpw" data-i18n="b_bcrypt_label_vpw">평문</label><input id="vpw" type="text" value="hunter2"/></div>
     <div class="actions"><button class="btn" id="verify" type="button" data-i18n="b_bcrypt_btn_verify">✔ 검증</button></div>
     <div class="verdict" id="verdict"></div>
     <div class="note" data-i18n-html="b_bcrypt_note">오픈소스 <b>bcryptjs</b>(MIT, <a href="https://github.com/dcodeIO/bcrypt.js" target="_blank" rel="noopener">dcodeIO/bcrypt.js</a>)를 자체 호스팅합니다. cost가 높을수록 안전하지만 느립니다(웹 권장 10~12). 모든 처리는 브라우저에서만 이루어집니다.</div>

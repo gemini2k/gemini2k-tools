@@ -72,11 +72,11 @@
       <button id="mGtoC" class="on" type="button" data-i18n="b_geojsoncsv_btn_g2c">GeoJSON → CSV</button>
       <button id="mCtoG" type="button" data-i18n="b_geojsoncsv_btn_c2g">CSV → GeoJSON</button>
     </div>
-    <label id="inLab" style="font-weight:700;font-size:.85rem;" data-i18n="b_geojsoncsv_in_geojson">GeoJSON 입력</label>
+    <label for="input" id="inLab" style="font-weight:700;font-size:.85rem;" data-i18n="b_geojsoncsv_in_geojson">GeoJSON 입력</label>
     <textarea id="input"></textarea>
     <div class="row hide" id="csvOpts">
-      <div class="fld"><label data-i18n="b_geojsoncsv_lon_col">경도(lon) 열</label><select id="lonCol"></select></div>
-      <div class="fld"><label data-i18n="b_geojsoncsv_lat_col">위도(lat) 열</label><select id="latCol"></select></div>
+      <div class="fld"><label for="lonCol" data-i18n="b_geojsoncsv_lon_col">경도(lon) 열</label><select id="lonCol"></select></div>
+      <div class="fld"><label for="latCol" data-i18n="b_geojsoncsv_lat_col">위도(lat) 열</label><select id="latCol"></select></div>
     </div>
     <div class="actions">
       <button class="btn" id="run" type="button" data-i18n="b_geojsoncsv_btn_run">변환</button>
@@ -85,7 +85,7 @@
       <button class="btn btn-ghost" id="dl" type="button" data-i18n="b_geojsoncsv_btn_dl">⬇️ 내려받기</button>
     </div>
     <div class="err" id="err"></div>
-    <label id="outLab" style="font-weight:700;font-size:.85rem;" data-i18n="b_geojsoncsv_out_csv">결과 (CSV)</label>
+    <label for="out" id="outLab" style="font-weight:700;font-size:.85rem;" data-i18n="b_geojsoncsv_out_csv">결과 (CSV)</label>
     <textarea id="out" class="out" readonly></textarea>
     <div class="note" data-i18n="b_geojsoncsv_note">GeoJSON→CSV는 Point 피처의 속성과 lon·lat를 표로 만듭니다(다른 도형은 geometry 유형만 표기). CSV→GeoJSON은 지정한 경도·위도 열로 Point 피처를 만들고 나머지 열을 속성으로 넣습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>

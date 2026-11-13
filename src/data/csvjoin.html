@@ -75,9 +75,9 @@
       <div><label class="lab" for="b" data-i18n="b_csvjoin_label_b">표 B (CSV)</label><textarea id="b" data-i18n-ph="b_csvjoin_ph_b" placeholder="id,부서&#10;1,영업&#10;2,개발"></textarea></div>
     </div>
     <div class="ctl">
-      <div class="fld"><label data-i18n="b_csvjoin_label_keyA">A 키 열</label><select id="keyA"></select></div>
-      <div class="fld"><label data-i18n="b_csvjoin_label_keyB">B 키 열</label><select id="keyB"></select></div>
-      <div class="fld"><label data-i18n="b_csvjoin_label_how">조인 방식</label><select id="how"><option value="inner" data-i18n="b_csvjoin_opt_inner">내부 조인(양쪽 모두)</option><option value="left" data-i18n="b_csvjoin_opt_left">왼쪽 조인(A 전부)</option></select></div>
+      <div class="fld"><label for="keyA" data-i18n="b_csvjoin_label_keyA">A 키 열</label><select id="keyA"></select></div>
+      <div class="fld"><label for="keyB" data-i18n="b_csvjoin_label_keyB">B 키 열</label><select id="keyB"></select></div>
+      <div class="fld"><label for="how" data-i18n="b_csvjoin_label_how">조인 방식</label><select id="how"><option value="inner" data-i18n="b_csvjoin_opt_inner">내부 조인(양쪽 모두)</option><option value="left" data-i18n="b_csvjoin_opt_left">왼쪽 조인(A 전부)</option></select></div>
       <div class="actions"><button class="btn" id="run" type="button" data-i18n="b_csvjoin_btn_run">결합</button><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_csvjoin_btn_sample">샘플</button></div>
     </div>
     <div id="result" class="hide">

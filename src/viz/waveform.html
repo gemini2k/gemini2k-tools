@@ -28,7 +28,7 @@
   <p class="sub" data-i18n="b_waveform_sub">오디오 파일을 올리면 파형을 그려 보여주고, 파형을 클릭하면 그 위치부터 재생합니다.</p>
   <div class="card">
     <div class="drop" id="drop"><div style="font-size:1.8rem">🎵</div><div><strong data-i18n="b_waveform_drop_hint">오디오 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">MP3 · WAV · OGG · M4A</div></div>
-    <input type="file" id="file" accept="audio/*" class="hide"/>
+    <input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept="audio/*" class="hide"/>
     <div id="wave"></div>
     <div class="actions hide" id="ctrl"><button class="btn" id="play" type="button" data-i18n="b_waveform_play">▶ 재생</button><label><span data-i18n="b_waveform_zoom">확대</span> <input id="zoom" type="range" min="0" max="200" value="0"/></label><span class="t" id="time">0:00</span></div>
     <div class="note" data-i18n-html="b_waveform_note">오픈소스 <b>wavesurfer.js</b>(BSD-3, <a href="https://github.com/katspaugh/wavesurfer.js" target="_blank" rel="noopener">katspaugh/wavesurfer.js</a>)를 자체 호스팅합니다. 오디오는 서버로 전송되지 않고 브라우저에서만 디코딩·표시됩니다.</div>

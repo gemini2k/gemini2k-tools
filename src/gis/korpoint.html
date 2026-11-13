@@ -80,11 +80,11 @@
     <div class="kp-grid">
       <div class="pane">
         <h3 data-i18n="kp.fwd">좌표 → 국가지점번호</h3>
-        <div class="fld"><label data-i18n="kp.crs">좌표계</label>
+        <div class="fld"><label for="crs" data-i18n="kp.crs">좌표계</label>
           <select id="crs"><option value="EPSG:4326">WGS84 경위도</option><option value="EPSG:5179">UTM-K (5179)</option><option value="EPSG:5186">중부원점 (5186)</option><option value="EPSG:3857">웹 메르카토르 (3857)</option></select>
         </div>
-        <div class="fld"><label id="lblx" data-i18n="kp.lon">경도(X)</label><input id="ix" type="text" placeholder="126.9779"></div>
-        <div class="fld"><label id="lbly" data-i18n="kp.lat">위도(Y)</label><input id="iy" type="text" placeholder="37.5663"></div>
+        <div class="fld"><label for="ix" id="lblx" data-i18n="kp.lon">경도(X)</label><input id="ix" type="text" placeholder="126.9779"></div>
+        <div class="fld"><label for="iy" id="lbly" data-i18n="kp.lat">위도(Y)</label><input id="iy" type="text" placeholder="37.5663"></div>
         <button class="btn" id="fwdBtn" data-i18n="kp.toCode">국가지점번호 계산</button>
         <div class="res big" id="outCode">—</div>
         <div class="err" id="errF"></div>
@@ -92,7 +92,7 @@
 
       <div class="pane">
         <h3 data-i18n="kp.rev">국가지점번호 → 좌표</h3>
-        <div class="fld"><label data-i18n="kp.code">국가지점번호</label><input id="icode" type="text" placeholder="다사 5381 5262"></div>
+        <div class="fld"><label for="icode" data-i18n="kp.code">국가지점번호</label><input id="icode" type="text" placeholder="다사 5381 5262"></div>
         <button class="btn" id="revBtn" data-i18n="kp.toCoord">좌표 계산</button>
         <div class="res" id="outCoord">—</div>
         <div class="err" id="errR"></div>

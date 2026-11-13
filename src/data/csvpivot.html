@@ -69,15 +69,15 @@
     <label for="input" style="font-weight:700;font-size:.85rem;" data-i18n="b_csvpivot_label_input">CSV 입력</label>
     <textarea id="input" data-i18n-ph="b_csvpivot_placeholder" placeholder="부서,이름,급여&#10;영업,홍길동,3000&#10;개발,김영희,3500&#10;영업,이철수,3200"></textarea>
     <div class="ctl">
-      <div class="fld"><label data-i18n="b_csvpivot_label_grp">그룹 기준 열</label><select id="grp"></select></div>
-      <div class="fld"><label data-i18n="b_csvpivot_label_agg">집계 방식</label><select id="agg">
+      <div class="fld"><label for="grp" data-i18n="b_csvpivot_label_grp">그룹 기준 열</label><select id="grp"></select></div>
+      <div class="fld"><label for="agg" data-i18n="b_csvpivot_label_agg">집계 방식</label><select id="agg">
         <option value="count" data-i18n="b_csvpivot_agg_count">개수</option>
         <option value="sum" data-i18n="b_csvpivot_agg_sum">합계</option>
         <option value="avg" data-i18n="b_csvpivot_agg_avg">평균</option>
         <option value="min" data-i18n="b_csvpivot_agg_min">최소</option>
         <option value="max" data-i18n="b_csvpivot_agg_max">최대</option>
       </select></div>
-      <div class="fld"><label data-i18n="b_csvpivot_label_val">값 열(개수 외)</label><select id="val"></select></div>
+      <div class="fld"><label for="val" data-i18n="b_csvpivot_label_val">값 열(개수 외)</label><select id="val"></select></div>
       <div class="actions"><button class="btn" id="run" type="button" data-i18n="b_csvpivot_btn_run">집계</button><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_csvpivot_btn_sample">샘플</button></div>
     </div>
     <div id="result" class="hide">

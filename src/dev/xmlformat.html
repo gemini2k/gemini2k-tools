@@ -57,14 +57,14 @@
   <h1 data-i18n="b_xmlformat_title">XML 포매터</h1>
   <p class="sub" data-i18n="b_xmlformat_sub">복잡한 XML을 보기 좋게 들여쓰기하거나 한 줄로 압축하고, 형식 오류를 확인합니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_xmlformat_howto_title">사용 방법</b><ol>
+  <div class="howto"><span class="ic">📖</span><div><b id="lbl-input" data-i18n="b_xmlformat_howto_title">사용 방법</b><ol>
     <li data-i18n="b_xmlformat_howto1">XML(RSS·SVG·설정 파일 등)을 붙여넣습니다</li>
     <li data-i18n="b_xmlformat_howto2">'정렬'로 들여쓰기, '압축'으로 한 줄로 만듭니다</li>
     <li data-i18n="b_xmlformat_howto3">형식 오류가 있으면 위치를 안내합니다. '복사'로 결과를 가져가세요</li>
   </ol></div></div>
 
   <div class="card">
-    <textarea id="input">&lt;rss version="2.0"&gt;&lt;channel&gt;&lt;title&gt;예시 피드&lt;/title&gt;&lt;item&gt;&lt;title&gt;첫 글&lt;/title&gt;&lt;link&gt;https://example.com&lt;/link&gt;&lt;/item&gt;&lt;/channel&gt;&lt;/rss&gt;</textarea>
+    <textarea aria-labelledby="lbl-input" id="input">&lt;rss version="2.0"&gt;&lt;channel&gt;&lt;title&gt;예시 피드&lt;/title&gt;&lt;item&gt;&lt;title&gt;첫 글&lt;/title&gt;&lt;link&gt;https://example.com&lt;/link&gt;&lt;/item&gt;&lt;/channel&gt;&lt;/rss&gt;</textarea>
     <div class="opts">
       <label><span data-i18n="b_xmlformat_indent_label">들여쓰기</span> <select id="indent"><option value="2" data-i18n="b_xmlformat_indent_space2">스페이스 2</option><option value="4" data-i18n="b_xmlformat_indent_space4">스페이스 4</option><option value="tab" data-i18n="b_xmlformat_indent_tab">탭</option></select></label>
     </div>

@@ -33,7 +33,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <h1 data-i18n="b_ddlparse_title">DDL → 테이블정의서</h1>
   <p class="sub" data-i18n="b_ddlparse_sub">CREATE TABLE 문을 테이블정의서 표로 변환합니다.</p>
   <div class="card" style="max-width:none;">
-    <textarea class="in" id="in" spellcheck="false">CREATE TABLE user_master (
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" class="in" id="in" spellcheck="false">CREATE TABLE user_master (
   user_id    BIGINT NOT NULL AUTO_INCREMENT,
   login_id   VARCHAR(50) NOT NULL,
   user_name  VARCHAR(100) NOT NULL,

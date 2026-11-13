@@ -75,12 +75,12 @@
       <div data-i18n-html="b_imgcrop_drop_main"><strong>이미지를 끌어다 놓거나 클릭</strong>해서 선택하세요</div>
       <div style="font-size:.82rem;margin-top:.4rem;" data-i18n="b_imgcrop_drop_formats">JPG · PNG · WebP · GIF</div>
     </div>
-    <input type="file" id="file" accept="image/*" class="hide"/>
+    <input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept="image/*" class="hide"/>
 
     <div id="editor" class="hide">
       <div class="toolbar">
-        <span class="lab" data-i18n="b_imgcrop_ratio_label">비율</span>
-        <select id="aspect">
+        <span id="lbl-aspect" class="lab" data-i18n="b_imgcrop_ratio_label">비율</span>
+        <select aria-labelledby="lbl-aspect" id="aspect">
           <option value="0" data-i18n="b_imgcrop_ratio_free">자유</option><option value="1">1:1</option>
           <option value="1.3333">4:3</option><option value="0.75">3:4</option>
           <option value="1.7778">16:9</option><option value="0.5625">9:16</option>
@@ -98,7 +98,7 @@
         </div>
       </div>
       <div class="out-opts">
-        <select id="fmt"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option></select>
+        <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="fmt"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option></select>
         <button class="btn" id="cropBtn" type="button" data-i18n="b_imgcrop_btn_crop">✂️ 자르기</button>
         <button class="btn btn-ghost" id="another" type="button" data-i18n="b_imgcrop_btn_another">다른 이미지</button>
       </div>

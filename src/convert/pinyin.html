@@ -27,7 +27,7 @@
   <h1 data-i18n="b_pinyin_title">중국어 병음(핀인) 변환기</h1>
   <p class="sub" data-i18n="b_pinyin_sub">중국어 한자를 입력하면 병음으로 바꿔 줍니다. 한자 위에 병음을 달아 볼 수도 있어요.</p>
   <div class="card">
-    <textarea id="in">你好，世界！欢迎使用拼音转换器。</textarea>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="in">你好，世界！欢迎使用拼音转换器。</textarea>
     <div class="opts"><label><span data-i18n="b_pinyin_tone_label">성조</span> <select id="tone"><option value="symbol" data-i18n="b_pinyin_tone_symbol">기호(nǐ)</option><option value="num" data-i18n="b_pinyin_tone_num">숫자(ni3)</option><option value="none" data-i18n="b_pinyin_tone_none">없음(ni)</option></select></label><label><input type="checkbox" id="ruby" checked/> <span data-i18n="b_pinyin_ruby_label">한자 위 병음</span></label></div>
     <div class="out" id="out"></div>
     <div class="actions"><button class="btn btn-ghost" id="copy" type="button">📋 <span data-i18n="b_pinyin_copy_btn">병음 복사</span></button></div>

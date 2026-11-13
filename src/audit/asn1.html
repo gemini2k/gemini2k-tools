@@ -33,7 +33,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <h1 data-i18n="b_asn1_title">ASN.1 / DER 디코더</h1>
   <p class="sub" data-i18n="b_asn1_sub">PEM 또는 16진수 DER의 ASN.1 구조를 계층으로 해석합니다.</p>
   <div class="card" style="max-width:none;">
-    <div class="frm"><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_asn1_sample_btn">예시(인증서) 넣기</button></div><textarea class="in" id="in" spellcheck="false" data-i18n-ph="b_asn1_placeholder">-----BEGIN CERTIFICATE----- 또는 16진수</textarea><div class="err" id="err"></div><div class="out" id="res" style="margin-top:.6rem;max-height:420px"></div>
+    <div class="frm"><button class="btn btn-ghost" id="sample" type="button" data-i18n="b_asn1_sample_btn">예시(인증서) 넣기</button></div><textarea aria-label="입력" data-i18n-aria="a11y.input" class="in" id="in" spellcheck="false" data-i18n-ph="b_asn1_placeholder">-----BEGIN CERTIFICATE----- 또는 16진수</textarea><div class="err" id="err"></div><div class="out" id="res" style="margin-top:.6rem;max-height:420px"></div>
     <div class="note" data-i18n-html="b_asn1_note">오픈소스 <b>jsrsasign</b>(MIT, <a href="https://github.com/kjur/jsrsasign" target="_blank" rel="noopener">kjur/jsrsasign</a>)을 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
   <section class="toolhelp">

@@ -27,7 +27,7 @@
   <h1 data-i18n="b_romanize_title">한글 로마자 변환기</h1>
   <p class="sub" data-i18n="b_romanize_sub">한글을 로마자(국어의 로마자 표기법 근사)로 바꿉니다. 이름·주소·간판 영문 표기에 참고하세요.</p>
   <div class="card">
-    <textarea id="in">안녕하세요 빛의여행</textarea>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="in">안녕하세요 빛의여행</textarea>
     <div class="opts"><label><input type="checkbox" id="cap"/> <span data-i18n="b_romanize_cap_label">단어 첫 글자 대문자</span></label> &nbsp; <label><input type="checkbox" id="phon" checked/> <span data-i18n="b_romanize_phon_label">발음 변화 반영 (사람 이름은 끄기)</span></label></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>

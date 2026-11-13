@@ -28,15 +28,15 @@ textarea{width:100%;min-height:110px;padding:.6rem .7rem;border:1px solid var(--
   <div class="card">
     <div class="seg" id="seg"><button data-m="make" class="on" type="button" data-i18n="b_patch_tab_make">패치 생성</button><button data-m="apply" type="button" data-i18n="b_patch_tab_apply">패치 적용</button></div>
     <div id="makebox">
-      <label class="lbl" data-i18n="b_patch_label_original">원본</label><textarea id="a">빠른 갈색 여우가 게으른 개를 뛰어넘었다.</textarea>
-      <label class="lbl" data-i18n="b_patch_label_modified">수정본</label><textarea id="b">빠른 갈색 여우가 아주 게으른 강아지를 뛰어넘는다.</textarea>
+      <label for="a" class="lbl" data-i18n="b_patch_label_original">원본</label><textarea id="a">빠른 갈색 여우가 게으른 개를 뛰어넘었다.</textarea>
+      <label for="b" class="lbl" data-i18n="b_patch_label_modified">수정본</label><textarea id="b">빠른 갈색 여우가 아주 게으른 강아지를 뛰어넘는다.</textarea>
       <div class="actions"><button class="btn" id="genpatch" type="button" data-i18n="b_patch_btn_generate">패치 만들기</button><button class="btn btn-ghost" id="copyp" type="button" data-i18n="b_patch_btn_copy">📋 패치 복사</button></div>
       <label class="lbl" data-i18n="b_patch_label_preview">변경 미리보기</label><div class="out diffview" id="diff"></div>
       <label class="lbl" data-i18n="b_patch_label_patchtext">패치 텍스트</label><div class="out" id="patch"></div>
     </div>
     <div id="applybox" style="display:none;">
-      <label class="lbl" data-i18n="b_patch_label_original">원본</label><textarea id="aa">빠른 갈색 여우가 게으른 개를 뛰어넘었다.</textarea>
-      <label class="lbl" data-i18n="b_patch_label_patchtext">패치 텍스트</label><textarea id="pp" data-i18n-ph="b_patch_ph_paste" placeholder="@@ ... @@ 형식의 패치를 붙여넣으세요"></textarea>
+      <label for="aa" class="lbl" data-i18n="b_patch_label_original">원본</label><textarea id="aa">빠른 갈색 여우가 게으른 개를 뛰어넘었다.</textarea>
+      <label for="pp" class="lbl" data-i18n="b_patch_label_patchtext">패치 텍스트</label><textarea id="pp" data-i18n-ph="b_patch_ph_paste" placeholder="@@ ... @@ 형식의 패치를 붙여넣으세요"></textarea>
       <div class="actions"><button class="btn" id="doapply" type="button" data-i18n="b_patch_btn_apply">적용하기</button></div>
       <label class="lbl" data-i18n="b_patch_label_result">결과</label><div class="out" id="applied"></div>
     </div>

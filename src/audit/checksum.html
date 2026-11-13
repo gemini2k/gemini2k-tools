@@ -33,7 +33,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <h1 data-i18n="b_checksum_title">파일 무결성 체크섬</h1>
   <p class="sub" data-i18n="b_checksum_sub">파일 또는 텍스트의 여러 해시를 한 번에 계산합니다.</p>
   <div class="card" style="max-width:none;">
-    <label class="drop" id="drop" for="file">📁 <span data-i18n="b_checksum_drop_label">파일을 끌어다 놓거나 클릭해서 선택</span><input type="file" id="file" hidden/></label><div style="text-align:center;color:var(--muted);font-size:.85rem;margin:.4rem 0"><span data-i18n="b_checksum_or_text">— 또는 텍스트 —</span></div><textarea class="in" id="txt" spellcheck="false" style="min-height:70px">Hello, 빛의여행!</textarea><div class="meta" id="meta" style="font-size:.85rem;color:var(--muted);margin:.4rem 0"></div><div class="res" id="res" style="overflow-x:auto"></div>
+    <label class="drop" id="drop" for="file">📁 <span data-i18n="b_checksum_drop_label">파일을 끌어다 놓거나 클릭해서 선택</span><input type="file" id="file" hidden/></label><div style="text-align:center;color:var(--muted);font-size:.85rem;margin:.4rem 0"><span id="lbl-txt" data-i18n="b_checksum_or_text">— 또는 텍스트 —</span></div><textarea aria-labelledby="lbl-txt" class="in" id="txt" spellcheck="false" style="min-height:70px">Hello, 빛의여행!</textarea><div class="meta" id="meta" style="font-size:.85rem;color:var(--muted);margin:.4rem 0"></div><div class="res" id="res" style="overflow-x:auto"></div>
     <div class="note" data-i18n-html="b_checksum_note">오픈소스 <b>hash-wasm</b>(MIT, <a href="https://github.com/Daninet/hash-wasm" target="_blank" rel="noopener">Daninet/hash-wasm</a>)을 자체 호스팅합니다. 파일은 업로드되지 않고 브라우저에서만 해시됩니다. 배포파일 검증·다운로드 무결성 확인에 사용하세요.</div>
   </div>
   <section class="toolhelp">

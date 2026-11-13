@@ -54,14 +54,14 @@
   <h1 data-i18n="b_stats_title">통계 분석기</h1>
   <p class="sub" data-i18n="b_stats_sub">숫자 목록을 붙여넣으면 기술통계(평균·중앙값·표준편차·사분위수 등)와 히스토그램을 보여 줍니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_stats_howto_title">사용 방법</b><ol>
+  <div class="howto"><span class="ic">📖</span><div><b id="lbl-data" data-i18n="b_stats_howto_title">사용 방법</b><ol>
     <li data-i18n="b_stats_howto_1">숫자를 붙여넣습니다(줄바꿈·쉼표·공백 모두 구분자로 인식)</li>
     <li data-i18n="b_stats_howto_2">아래에 평균·표준편차·분위수 등 통계와 히스토그램이 자동 계산됩니다</li>
     <li data-i18n="b_stats_howto_3">표본/모집단 표준편차를 함께 표시합니다</li>
   </ol></div></div>
 
   <div class="card">
-    <textarea id="data">23, 45, 12, 67, 34, 89, 21, 45, 56, 78, 33, 45, 60, 28, 41</textarea>
+    <textarea aria-labelledby="lbl-data" id="data">23, 45, 12, 67, 34, 89, 21, 45, 56, 78, 33, 45, 60, 28, 41</textarea>
     <div class="grid" id="grid"></div>
     <canvas id="cv" width="820" height="280"></canvas>
     <div class="note" data-i18n="b_stats_note">최빈값은 가장 자주 나온 값(여러 개면 모두), 사분위수는 Q1·Q2(중앙값)·Q3입니다. 표준편차/분산은 표본(n−1)과 모집단(n) 두 가지를 제공합니다. 모든 계산은 브라우저에서만 이루어집니다.</div>

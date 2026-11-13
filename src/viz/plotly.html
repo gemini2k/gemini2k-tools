@@ -23,12 +23,12 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
   <h1 data-i18n="b_plotly_title">3D·과학 차트 생성기</h1>
   <p class="sub" data-i18n="b_plotly_sub">3D 산점도·표면·등고선·히트맵·박스플롯 등 과학·통계용 차트를 만듭니다.</p>
   <div class="card" style="max-width:none;">
-    <div class="row"><span data-i18n="b_plotly_type_label">종류</span> <select id="type">
+    <div class="row"><span id="lbl-type" data-i18n="b_plotly_type_label">종류</span> <select aria-labelledby="lbl-type" id="type">
       <option value="surface" data-i18n="b_plotly_opt_surface">3D 표면(Surface)</option><option value="scatter3d" data-i18n="b_plotly_opt_scatter3d">3D 산점도</option>
       <option value="heatmap" data-i18n="b_plotly_opt_heatmap">히트맵</option><option value="contour" data-i18n="b_plotly_opt_contour">등고선</option><option value="box" data-i18n="b_plotly_opt_box">박스플롯</option></select>
       <button class="btn btn-ghost" id="png" type="button" data-i18n="b_plotly_btn_png">⬇️ PNG 저장</button></div>
     <div class="hint" id="hint"></div>
-    <textarea id="data"></textarea>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="data"></textarea>
     <div class="err" id="err"></div>
     <div id="chart"></div>
     <div class="note" data-i18n-html="b_plotly_note">오픈소스 <b>Plotly.js</b>(MIT, <a href="https://github.com/plotly/plotly.js" target="_blank" rel="noopener">plotly/plotly.js</a>)를 자체 호스팅합니다. 차트를 마우스로 돌리고 확대할 수 있습니다. 모든 처리는 브라우저에서만 이루어집니다.</div>

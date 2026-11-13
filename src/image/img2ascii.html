@@ -28,7 +28,7 @@
   <p class="sub" data-i18n="b_img2ascii_sub">사진을 글자로 그린 ASCII 아트로 바꿔 줍니다.</p>
   <div class="card">
     <div class="drop" id="drop"><div style="font-size:1.8rem">🖼️→🔤</div><div><strong data-i18n="b_img2ascii_drop_hint">이미지를 끌어다 놓거나 클릭</strong></div></div>
-    <input type="file" id="file" accept="image/*" class="hide"/>
+    <input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept="image/*" class="hide"/>
     <div class="opts hide" id="opts"><label><span data-i18n="b_img2ascii_width">너비</span> <input id="w" type="range" min="40" max="160" value="100"/><span id="wv">100</span></label><label><input type="checkbox" id="inv"/> <span data-i18n="b_img2ascii_invert">반전</span></label><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_img2ascii_copy">📋 복사</button></div>
     <div class="out hide" id="outwrap"><pre id="out"></pre></div>
     <div class="note" data-i18n="b_img2ascii_note">밝기를 글자 농도로 변환합니다. 너비가 클수록 정교하지만 무거워집니다. 어두운 배경이면 '반전'을 켜 보세요. 모든 처리는 브라우저에서만 이루어집니다.</div>

@@ -28,11 +28,11 @@
   <p class="sub" data-i18n="b_precision_sub">부동소수점 오차 없이 임의 자릿수로 정확하게 계산합니다. (예: 0.1 + 0.2 = 정확히 0.3)</p>
   <div class="card">
     <div class="calc">
-      <input type="text" id="a" value="0.1"/>
-      <select id="op"><option value="add">+</option><option value="sub">−</option><option value="mul">×</option><option value="div">÷</option><option value="pow">^</option></select>
-      <input type="text" id="b" value="0.2"/>
+      <input aria-label="입력" data-i18n-aria="a11y.input" type="text" id="a" value="0.1"/>
+      <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="op"><option value="add">+</option><option value="sub">−</option><option value="mul">×</option><option value="div">÷</option><option value="pow">^</option></select>
+      <input aria-label="입력" data-i18n-aria="a11y.input" type="text" id="b" value="0.2"/>
     </div>
-    <div class="row"><span data-i18n="b_precision_prec_label">정밀도(유효자릿수)</span> <input type="number" id="prec" value="40" min="1" max="1000"/></div>
+    <div class="row"><span id="lbl-prec" data-i18n="b_precision_prec_label">정밀도(유효자릿수)</span> <input aria-labelledby="lbl-prec" type="number" id="prec" value="40" min="1" max="1000"/></div>
     <div class="res"><div class="main" id="main"></div><div class="sub" id="sub"></div></div>
     <div class="note" data-i18n-html="b_precision_note">오픈소스 <b>decimal.js</b>(MIT, <a href="https://github.com/MikeMcl/decimal.js" target="_blank" rel="noopener">MikeMcl/decimal.js</a>)를 자체 호스팅합니다. 일반(부동소수) 결과와 비교해 보여 줍니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>

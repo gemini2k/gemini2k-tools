@@ -24,11 +24,11 @@
   <h1 data-i18n="b_rsakey_title">RSA 키쌍 생성기</h1>
   <p class="sub" data-i18n="b_rsakey_sub">RSA 공개키·개인키 쌍을 PEM 형식으로 만들어 줍니다. 모든 생성은 브라우저 안에서만 이루어집니다.</p>
   <div class="card">
-    <div class="row"><span data-i18n="b_rsakey_bits_label">키 길이</span> <select id="bits"><option value="2048" data-i18n="b_rsakey_bits_2048">2048비트 (권장)</option><option value="3072" data-i18n="b_rsakey_bits_3072">3072비트</option><option value="4096" data-i18n="b_rsakey_bits_4096">4096비트 (느림)</option></select>
+    <div class="row"><span id="lbl-bits" data-i18n="b_rsakey_bits_label">키 길이</span> <select aria-labelledby="lbl-bits" id="bits"><option value="2048" data-i18n="b_rsakey_bits_2048">2048비트 (권장)</option><option value="3072" data-i18n="b_rsakey_bits_3072">3072비트</option><option value="4096" data-i18n="b_rsakey_bits_4096">4096비트 (느림)</option></select>
       <button class="btn" id="gen" type="button" data-i18n="b_rsakey_btn_gen">🔑 키 생성</button><span id="status" style="color:var(--muted);font-size:.9rem;"></span></div>
     <div class="keys">
-      <div class="kbox"><h3 data-i18n="b_rsakey_pub_title">🔓 공개키 (Public Key)</h3><textarea id="pub" readonly data-i18n-ph="b_rsakey_pub_ph" placeholder="여기에 공개키가 표시됩니다"></textarea><button class="btn btn-ghost kbtn" id="cpub" type="button" data-i18n="b_rsakey_btn_copy">📋 복사</button></div>
-      <div class="kbox"><h3 data-i18n="b_rsakey_priv_title">🔒 개인키 (Private Key)</h3><textarea id="priv" readonly data-i18n-ph="b_rsakey_priv_ph" placeholder="여기에 개인키가 표시됩니다"></textarea><button class="btn btn-ghost kbtn" id="cpriv" type="button" data-i18n="b_rsakey_btn_copy">📋 복사</button></div>
+      <div class="kbox"><h3 id="lbl-pub" data-i18n="b_rsakey_pub_title">🔓 공개키 (Public Key)</h3><textarea aria-labelledby="lbl-pub" id="pub" readonly data-i18n-ph="b_rsakey_pub_ph" placeholder="여기에 공개키가 표시됩니다"></textarea><button class="btn btn-ghost kbtn" id="cpub" type="button" data-i18n="b_rsakey_btn_copy">📋 복사</button></div>
+      <div class="kbox"><h3 id="lbl-priv" data-i18n="b_rsakey_priv_title">🔒 개인키 (Private Key)</h3><textarea aria-labelledby="lbl-priv" id="priv" readonly data-i18n-ph="b_rsakey_priv_ph" placeholder="여기에 개인키가 표시됩니다"></textarea><button class="btn btn-ghost kbtn" id="cpriv" type="button" data-i18n="b_rsakey_btn_copy">📋 복사</button></div>
     </div>
     <div class="note" data-i18n-html="b_rsakey_note">오픈소스 <b>node-forge</b>(BSD-3-Clause, <a href="https://github.com/digitalbazaar/forge" target="_blank" rel="noopener">digitalbazaar/forge</a>)를 자체 호스팅합니다. 키는 서버로 전송되지 않고 이 브라우저에서만 생성됩니다. 개인키는 안전하게 보관하세요.</div>
   </div>

@@ -27,10 +27,10 @@ select{padding:.65rem;border:1px solid var(--border);border-radius:10px;backgrou
   <p class="sub" data-i18n="b_algebra_sub">수식을 전개·인수분해·간소화하고, 미분·적분·방정식 풀이까지 기호로 계산합니다.</p>
   <div class="card">
     <div class="row">
-      <select id="op"><option value="simplify" data-i18n="b_algebra_op_simplify">간소화</option><option value="expand" data-i18n="b_algebra_op_expand">전개</option><option value="factor" data-i18n="b_algebra_op_factor">인수분해</option><option value="diff" data-i18n="b_algebra_op_diff">미분</option><option value="integrate" data-i18n="b_algebra_op_integrate">적분</option><option value="solve" data-i18n="b_algebra_op_solve">방정식 풀이(=0)</option></select>
-      <input type="text" id="expr" value="(x+1)^2"/>
+      <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="op"><option value="simplify" data-i18n="b_algebra_op_simplify">간소화</option><option value="expand" data-i18n="b_algebra_op_expand">전개</option><option value="factor" data-i18n="b_algebra_op_factor">인수분해</option><option value="diff" data-i18n="b_algebra_op_diff">미분</option><option value="integrate" data-i18n="b_algebra_op_integrate">적분</option><option value="solve" data-i18n="b_algebra_op_solve">방정식 풀이(=0)</option></select>
+      <input aria-label="입력" data-i18n-aria="a11y.input" type="text" id="expr" value="(x+1)^2"/>
     </div>
-    <div class="varrow"><span data-i18n="b_algebra_var_label">변수</span> <input type="text" id="var" value="x"/> <span data-i18n="b_algebra_var_hint">(미분·적분·풀이에 사용)</span></div>
+    <div class="varrow"><span id="lbl-var" data-i18n="b_algebra_var_label">변수</span> <input aria-labelledby="lbl-var" type="text" id="var" value="x"/> <span data-i18n="b_algebra_var_hint">(미분·적분·풀이에 사용)</span></div>
     <div class="err" id="err"></div>
     <div class="res"><div class="main" id="main"></div></div>
     <div class="note" data-i18n-html="b_algebra_note">오픈소스 <b>nerdamer</b>(MIT, <a href="https://github.com/jiggzson/nerdamer" target="_blank" rel="noopener">jiggzson/nerdamer</a>)를 자체 호스팅합니다. 예: <code>x^2-1</code> 인수분해, <code>sin(x)</code> 미분, <code>x^2-4</code> 풀이. 모든 처리는 브라우저에서만 이루어집니다.</div>

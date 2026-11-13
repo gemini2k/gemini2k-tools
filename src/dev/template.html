@@ -26,7 +26,7 @@ textarea{width:100%;min-height:170px;padding:.6rem .7rem;border:1px solid var(--
   <p class="sub" data-i18n="b_template_sub">템플릿과 JSON 데이터를 합쳐 결과를 만듭니다. 메일 머지·반복·조건 출력에 좋아요.</p>
   <div class="card" style="max-width:none;">
     <div class="grid2">
-      <div><label class="lbl" data-i18n="b_template_lbl_tpl">템플릿 (Handlebars)</label><textarea id="tpl">안녕하세요 {{name}}님,
+      <div><label for="tpl" class="lbl" data-i18n="b_template_lbl_tpl">템플릿 (Handlebars)</label><textarea id="tpl">안녕하세요 {{name}}님,
 
 주문하신 상품 목록입니다:
 {{#each items}}
@@ -35,7 +35,7 @@ textarea{width:100%;min-height:170px;padding:.6rem .7rem;border:1px solid var(--
 
 {{#if vip}}VIP 고객 혜택이 적용되었습니다.{{/if}}
 감사합니다.</textarea></div>
-      <div><label class="lbl" data-i18n="b_template_lbl_data">데이터 (JSON)</label><textarea id="data">{
+      <div><label for="data" class="lbl" data-i18n="b_template_lbl_data">데이터 (JSON)</label><textarea id="data">{
   "name": "홍길동",
   "vip": true,
   "items": [

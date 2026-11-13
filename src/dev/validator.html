@@ -23,7 +23,7 @@ table{width:100%;border-collapse:collapse;margin-top:.9rem;font-size:.92rem;}th,
   <h1 data-i18n="b_validator_title">문자열 유효성 검사기</h1>
   <p class="sub" data-i18n="b_validator_sub">입력한 값이 어떤 형식으로 유효한지 한 번에 확인합니다.</p>
   <div class="card">
-    <input type="text" id="in" value="hello@example.com" data-i18n-ph="b_validator_placeholder" placeholder="값을 입력하세요"/>
+    <input aria-label="값을 입력하세요" data-i18n-aria="b_validator_placeholder" type="text" id="in" value="hello@example.com" data-i18n-ph="b_validator_placeholder" placeholder="값을 입력하세요"/>
     <table><thead><tr><th data-i18n="b_validator_th_format">형식</th><th data-i18n="b_validator_th_valid">유효 여부</th></tr></thead><tbody id="tb"></tbody></table>
     <div class="note" data-i18n-html="b_validator_note">오픈소스 <b>validator.js</b>(MIT, <a href="https://github.com/validatorjs/validator.js" target="_blank" rel="noopener">validatorjs/validator.js</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>

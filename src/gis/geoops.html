@@ -89,8 +89,8 @@
   <div class="card">
     <div class="op-grid">
       <div>
-        <div class="lbl" style="font-weight:700;font-size:.9rem;margin-bottom:.4rem;" data-i18n="go.input">입력 (WKT 또는 GeoJSON)</div>
-        <textarea id="oin" data-i18n-ph="go.ph" placeholder="WKT 또는 GeoJSON 을 붙여넣으세요…&#10;예) LINESTRING(127.0 37.5, 127.1 37.55, 127.05 37.6)"></textarea>
+        <div id="lbl-oin" class="lbl" style="font-weight:700;font-size:.9rem;margin-bottom:.4rem;" data-i18n="go.input">입력 (WKT 또는 GeoJSON)</div>
+        <textarea aria-labelledby="lbl-oin" id="oin" data-i18n-ph="go.ph" placeholder="WKT 또는 GeoJSON 을 붙여넣으세요…&#10;예) LINESTRING(127.0 37.5, 127.1 37.55, 127.05 37.6)"></textarea>
         <div class="row" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem;">
           <button class="btn btn-ghost" id="sampleBtn" data-i18n="go.sample">예시</button>
           <button class="btn btn-ghost" id="clearBtn" data-i18n="go.clear">지우기</button>
@@ -119,11 +119,11 @@
     <div id="outputs" style="margin-top:1rem;display:none;">
       <div class="out-row">
         <div class="lbl">GeoJSON <button class="btn btn-ghost" data-copy="ogeo" data-i18n="go.copy">복사</button></div>
-        <textarea id="ogeo" readonly></textarea>
+        <textarea aria-label="결과" data-i18n-aria="a11y.output" id="ogeo" readonly></textarea>
       </div>
       <div class="out-row">
         <div class="lbl">WKT <button class="btn btn-ghost" data-copy="owkt" data-i18n="go.copy">복사</button></div>
-        <textarea id="owkt" readonly style="min-height:44px;"></textarea>
+        <textarea aria-label="결과" data-i18n-aria="a11y.output" id="owkt" readonly style="min-height:44px;"></textarea>
       </div>
     </div>
     <p class="hint" data-i18n="go.note">※ 좌표는 경위도(EPSG:4326)로 간주합니다. 버퍼·단순화 거리는 미터 단위이며 측지 계산(Turf)을 사용합니다. 음수 버퍼는 폴리곤 축소입니다. 모든 처리는 브라우저에서만 이루어집니다.</p>
@@ -205,8 +205,8 @@
   function curOp(){ return (document.querySelector('input[name=op]:checked')||{}).value||'buffer'; }
   function renderParams(){
     var op=curOp(), html='';
-    if(op==='buffer') html='<div class="mdesc" data-i18n="go.d.buffer"></div><div class="fld" style="margin-top:.5rem;"><label data-i18n="go.p.dist">거리(m, 음수=축소)</label><input type="number" id="p_dist" value="100" step="10"></div>';
-    else if(op==='simplify') html='<div class="mdesc" data-i18n="go.d.simplify"></div><div class="fld" style="margin-top:.5rem;"><label data-i18n="go.p.tol">허용오차(m)</label><input type="number" id="p_tol" value="10" min="0" step="1"></div>';
+    if(op==='buffer') html='<div class="mdesc" data-i18n="go.d.buffer"></div><div class="fld" style="margin-top:.5rem;"><label for="p_dist" data-i18n="go.p.dist">거리(m, 음수=축소)</label><input type="number" id="p_dist" value="100" step="10"></div>';
+    else if(op==='simplify') html='<div class="mdesc" data-i18n="go.d.simplify"></div><div class="fld" style="margin-top:.5rem;"><label for="p_tol" data-i18n="go.p.tol">허용오차(m)</label><input type="number" id="p_tol" value="10" min="0" step="1"></div>';
     else if(op==='convex') html='<div class="mdesc" data-i18n="go.d.convex"></div>';
     else if(op==='centroid') html='<div class="mdesc" data-i18n="go.d.centroid"></div>';
     else if(op==='bbox') html='<div class="mdesc" data-i18n="go.d.bbox"></div>';

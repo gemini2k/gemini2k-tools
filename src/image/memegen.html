@@ -28,7 +28,7 @@
   <p class="sub" data-i18n="b_memegen_sub">사진을 올리고 글자를 얹어 짤방을 만드세요. 글자는 드래그로 이동·크기 조절돼요.</p>
   <div class="card">
     <div class="drop" id="drop"><div style="font-size:1.8rem">🖼️+🔤</div><div><strong data-i18n="b_memegen_drop_hint">사진을 끌어다 놓거나 클릭</strong></div></div>
-    <input type="file" id="file" accept="image/*" class="hide"/>
+    <input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept="image/*" class="hide"/>
     <div class="bar hide" id="bar">
       <button id="addTop" type="button" data-i18n="b_memegen_btn_add_top">＋ 위 자막</button><button id="addBottom" type="button" data-i18n="b_memegen_btn_add_bottom">＋ 아래 자막</button><button id="addText" type="button" data-i18n="b_memegen_btn_add_text">＋ 텍스트</button>
       <input id="color" type="color" value="#ffffff" data-i18n-ph="b_memegen_color_title" title="글자색"/><button id="del" type="button" data-i18n="b_memegen_btn_delete">🗑 삭제</button><button class="btn" id="png" type="button" data-i18n="b_memegen_btn_png">⬇️ PNG</button>

@@ -25,7 +25,7 @@ table{width:100%;border-collapse:collapse;font-size:.92rem;}td{padding:.5rem .6r
   <h1 data-i18n="b_pwstrength_title">비밀번호 강도 분석</h1>
   <p class="sub" data-i18n="b_pwstrength_sub">비밀번호의 강도를 점수·예상 해킹 시간으로 평가하고 개선점을 알려 줍니다.</p>
   <div class="card">
-    <input type="text" id="pw" value="P@ssw0rd123" data-i18n-ph="b_pwstrength_ph_input" placeholder="비밀번호를 입력하세요"/>
+    <input aria-label="비밀번호를 입력하세요" data-i18n-aria="b_pwstrength_ph_input" type="text" id="pw" value="P@ssw0rd123" data-i18n-ph="b_pwstrength_ph_input" placeholder="비밀번호를 입력하세요"/>
     <div class="bar"><i id="bar" style="width:0%"></i></div>
     <div class="lvl" id="lvl"></div>
     <table><tbody id="tb"></tbody></table>

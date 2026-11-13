@@ -23,11 +23,11 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
   <h1 data-i18n="b_echarts_title">고급 차트 생성기</h1>
   <p class="sub" data-i18n="b_echarts_sub">막대·선·원형은 물론 히트맵·레이더·게이지·산점도까지. 데이터를 넣고 차트 종류를 고르세요.</p>
   <div class="card" style="max-width:none;">
-    <div class="row"><span data-i18n="b_echarts_label_type">종류</span> <select id="type">
+    <div class="row"><span id="lbl-type" data-i18n="b_echarts_label_type">종류</span> <select aria-labelledby="lbl-type" id="type">
       <option value="bar" data-i18n="b_echarts_opt_bar">막대</option><option value="line" data-i18n="b_echarts_opt_line">선</option><option value="pie" data-i18n="b_echarts_opt_pie">원형</option>
       <option value="radar" data-i18n="b_echarts_opt_radar">레이더</option><option value="scatter" data-i18n="b_echarts_opt_scatter">산점도</option><option value="gauge" data-i18n="b_echarts_opt_gauge">게이지</option><option value="funnel" data-i18n="b_echarts_opt_funnel">깔때기</option></select>
       <button class="mini" id="dl" type="button" data-i18n="b_echarts_btn_save">⬇️ PNG 저장</button></div>
-    <textarea id="data" data-i18n-ph="b_echarts_textarea_ph">사과, 35
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="data" data-i18n-ph="b_echarts_textarea_ph">사과, 35
 바나나, 28
 체리, 42
 포도, 19

@@ -35,7 +35,7 @@
   <p class="sub" data-i18n="b_morse_sub">텍스트를 모스부호로, 모스부호를 텍스트로 변환하고 소리로 들어볼 수 있어요.</p>
   <div class="card">
     <div class="seg" id="seg"><button data-d="t2m" class="on" type="button" data-i18n="b_morse_dir_t2m">텍스트 → 모스</button><button data-d="m2t" type="button" data-i18n="b_morse_dir_m2t">모스 → 텍스트</button></div>
-    <textarea id="input" data-i18n-ph="b_morse_input_ph" placeholder="입력...">SOS gemini2k</textarea>
+    <textarea aria-label="입력..." data-i18n-aria="b_morse_input_ph" id="input" data-i18n-ph="b_morse_input_ph" placeholder="입력...">SOS gemini2k</textarea>
     <div class="actions"><button class="btn" id="copy" type="button" data-i18n="b_morse_btn_copy">📋 복사</button><button class="btn btn-ghost" id="play" type="button" data-i18n="b_morse_btn_play">🔊 소리 재생</button></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>

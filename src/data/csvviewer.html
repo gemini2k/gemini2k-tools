@@ -70,11 +70,11 @@
 
   <div class="card">
     <div class="drop" id="drop">📄 <strong data-i18n="b_csvviewer_drop_label">CSV 파일을 끌어다 놓거나 클릭</strong> (<span data-i18n="b_csvviewer_drop_hint">또는 아래에 붙여넣기</span>)</div>
-    <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain" class="hide"/>
-    <textarea id="input" data-i18n-ph="b_csvviewer_textarea_ph" placeholder="이름,나이,도시&#10;홍길동,32,서울"></textarea>
+    <input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain" class="hide"/>
+    <textarea aria-label="이름,나이,도시&#10;홍길동,32,서울" data-i18n-aria="b_csvviewer_textarea_ph" id="input" data-i18n-ph="b_csvviewer_textarea_ph" placeholder="이름,나이,도시&#10;홍길동,32,서울"></textarea>
     <div style="margin-top:.6rem;"><button class="btn" id="open" type="button" data-i18n="b_csvviewer_btn_open">열기</button> <button class="btn btn-ghost" id="sample" type="button" data-i18n="b_csvviewer_btn_sample">샘플</button></div>
     <div id="view" class="hide">
-      <div class="bar"><input id="q" type="text" data-i18n-ph="b_csvviewer_search_ph" placeholder="🔎 검색(행 거르기)"/><span id="cnt" style="color:var(--muted);font-size:.85rem;"></span></div>
+      <div class="bar"><input aria-label="🔎 검색(행 거르기)" data-i18n-aria="b_csvviewer_search_ph" id="q" type="text" data-i18n-ph="b_csvviewer_search_ph" placeholder="🔎 검색(행 거르기)"/><span id="cnt" style="color:var(--muted);font-size:.85rem;"></span></div>
       <div class="cols" id="cols"></div>
       <div class="tbl-scroll"><table id="tbl"></table></div>
       <div class="pager"><button id="prev" type="button" data-i18n="b_csvviewer_btn_prev">‹ 이전</button><span id="pinfo"></span><button id="next" type="button" data-i18n="b_csvviewer_btn_next">다음 ›</button></div>

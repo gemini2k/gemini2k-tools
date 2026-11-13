@@ -80,8 +80,8 @@
       <button class="btn btn-ghost" id="undo" data-i18n="dg.undo">↩ 실행취소</button>
     </div>
     <div class="dgopts">
-      <span class="lbl" data-i18n="dg.shape">도형</span>
-      <select id="shape">
+      <span id="lbl-shape" class="lbl" data-i18n="dg.shape">도형</span>
+      <select aria-labelledby="lbl-shape" id="shape">
         <option value="round" data-i18n="dg.s.round">둥근 사각형</option>
         <option value="rect" data-i18n="dg.s.rect">사각형</option>
         <option value="ellipse" data-i18n="dg.s.ellipse">타원</option>
@@ -93,18 +93,18 @@
       <label class="chk"><input type="checkbox" id="snap"/> <span data-i18n="dg.snap">격자 정렬</span></label>
     </div>
     <div class="dgopts">
-      <span class="lbl" data-i18n="dg.line">선</span>
-      <select id="line">
+      <span id="lbl-line" class="lbl" data-i18n="dg.line">선</span>
+      <select aria-labelledby="lbl-line" id="line">
         <option value="solid" data-i18n="dg.l.solid">실선</option>
         <option value="dashed" data-i18n="dg.l.dashed">점선</option>
       </select>
-      <span class="lbl" data-i18n="dg.route">경로</span>
-      <select id="route">
+      <span id="lbl-route" class="lbl" data-i18n="dg.route">경로</span>
+      <select aria-labelledby="lbl-route" id="route">
         <option value="straight" data-i18n="dg.r.straight">직선</option>
         <option value="ortho" data-i18n="dg.r.ortho">직각(ㄱ자)</option>
       </select>
       <span class="lbl" data-i18n="dg.arrow">화살표</span>
-      <select id="arrow">
+      <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="arrow">
         <option value="end" data-i18n="dg.a.end">끝 화살표</option>
         <option value="both" data-i18n="dg.a.both">양방향</option>
         <option value="none" data-i18n="dg.a.none">없음</option>

@@ -68,8 +68,8 @@
 
   <div class="card">
     <div class="drop" id="drop">📄 <strong data-i18n="b_csvclean_drop_label">CSV 파일을 끌어다 놓거나 클릭</strong> <span data-i18n="b_csvclean_drop_or">(또는 아래에 붙여넣기)</span></div>
-    <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain" class="hide"/>
-    <textarea id="input" data-i18n-ph="b_csvclean_input_ph" placeholder=" 이름 , 나이 ,도시&#10;홍길동,32,서울&#10;홍길동,32,서울&#10;,,"></textarea>
+    <input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain" class="hide"/>
+    <textarea aria-label=" 이름 , 나이 ,도시&#10;홍길동,32,서울&#10;홍길동,32,서울&#10;,," data-i18n-aria="b_csvclean_input_ph" id="input" data-i18n-ph="b_csvclean_input_ph" placeholder=" 이름 , 나이 ,도시&#10;홍길동,32,서울&#10;홍길동,32,서울&#10;,,"></textarea>
 
     <div class="opts">
       <label class="opt"><input type="checkbox" id="trim" checked/> <span data-i18n="b_csvclean_opt_trim">셀 앞뒤 공백 제거</span></label>
@@ -92,7 +92,7 @@
     <div id="result" class="hide">
       <div class="stat" id="stat"></div>
       <div class="arrow">↓</div>
-      <textarea id="output" readonly></textarea>
+      <textarea aria-label="결과" data-i18n-aria="a11y.output" id="output" readonly></textarea>
     </div>
     <div class="note" data-i18n-html="b_csvclean_note">
       중복 행은 모든 열 값이 같은 행을 처음 1건만 남기고 제거합니다. 헤더 정규화는 공백을 <code>_</code>로 바꾸고 소문자화하며 중복 이름에 번호를 붙입니다(<code>name</code>, <code>name_2</code>). 빈 값 채우기는 비어 있는 셀을 지정 값으로 대체합니다. 모든 처리는 브라우저에서만 이루어집니다.

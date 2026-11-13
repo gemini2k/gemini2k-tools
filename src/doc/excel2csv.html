@@ -65,8 +65,8 @@
   </ol></div></div>
 
   <div class="card">
-    <div class="drop" id="drop"><div class="big">📊</div><div><strong data-i18n="b_excel2csv_drop_main">엑셀 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.xlsx · .xls · .ods</div></div>
-    <input type="file" id="file" accept=".xlsx,.xls,.ods,.csv" class="hide"/>
+    <div class="drop" id="drop"><div class="big">📊</div><div><strong id="lbl-file" data-i18n="b_excel2csv_drop_main">엑셀 파일을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;">.xlsx · .xls · .ods</div></div>
+    <input aria-labelledby="lbl-file" type="file" id="file" accept=".xlsx,.xls,.ods,.csv" class="hide"/>
     <div class="meta hide" id="meta"></div>
     <div class="opts hide" id="opts">
       <label><span data-i18n="b_excel2csv_label_sheet">시트</span> <select id="sheet"></select></label>

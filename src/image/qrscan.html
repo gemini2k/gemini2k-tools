@@ -28,7 +28,7 @@
       <button class="btn" id="start" type="button" data-i18n="b_qrscan_btn_start">📷 카메라 스캔 시작</button>
       <button class="btn btn-ghost" id="stop" type="button" style="display:none;" data-i18n="b_qrscan_btn_stop">■ 중지</button>
       <button class="btn btn-ghost" id="filebtn" type="button" data-i18n="b_qrscan_btn_file">🖼️ 사진에서 읽기</button>
-      <input type="file" id="file" accept="image/*" hidden/>
+      <input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept="image/*" hidden/>
     </div>
     <div id="reader"></div>
     <div class="result" id="result" data-i18n="b_qrscan_placeholder">스캔 결과가 여기에 표시됩니다.</div>

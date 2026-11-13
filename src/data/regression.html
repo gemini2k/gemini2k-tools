@@ -55,14 +55,14 @@
   <h1 data-i18n="b_regression_title">상관·회귀 분석기</h1>
   <p class="sub" data-i18n="b_regression_sub">두 변수의 관계를 분석합니다. 피어슨 상관계수와 선형 회귀식, 결정계수(R²)를 구하고 산점도에 추세선을 그립니다.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_regression_howto_title">사용 방법</b><ol>
+  <div class="howto"><span class="ic">📖</span><div><b id="lbl-data" data-i18n="b_regression_howto_title">사용 방법</b><ol>
     <li data-i18n-html="b_regression_howto1">한 줄에 <code>x,y</code> 한 쌍씩 입력합니다(쉼표·탭·공백 구분)</li>
     <li data-i18n="b_regression_howto2">상관계수·회귀식·R²과 산점도+추세선이 자동 표시됩니다</li>
     <li data-i18n="b_regression_howto3">상관계수는 −1~+1, R²는 설명력(0~1)입니다</li>
   </ol></div></div>
 
   <div class="card">
-    <textarea id="data">1,2.1
+    <textarea aria-labelledby="lbl-data" id="data">1,2.1
 2,3.9
 3,6.2
 4,7.8

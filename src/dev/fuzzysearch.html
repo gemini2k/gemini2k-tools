@@ -27,7 +27,7 @@ textarea{min-height:130px;resize:vertical;font-family:ui-monospace,monospace;}
   <h1 data-i18n="b_fuzzysearch_title">퍼지 검색 테스터</h1>
   <p class="sub" data-i18n="b_fuzzysearch_sub">오타나 부분만 입력해도 비슷한 항목을 찾아 줍니다. 검색 기능 설계 전에 실험해 보세요.</p>
   <div class="card">
-    <label class="lbl" data-i18n="b_fuzzysearch_lbl_list">검색 대상 목록 (한 줄에 하나)</label>
+    <label for="list" class="lbl" data-i18n="b_fuzzysearch_lbl_list">검색 대상 목록 (한 줄에 하나)</label>
     <textarea id="list">서울특별시
 부산광역시
 대구광역시
@@ -39,9 +39,9 @@ textarea{min-height:130px;resize:vertical;font-family:ui-monospace,monospace;}
 경기도 수원시
 강원특별자치도 춘천시
 제주특별자치도</textarea>
-    <label class="lbl" data-i18n="b_fuzzysearch_lbl_query">검색어</label>
+    <label for="q" class="lbl" data-i18n="b_fuzzysearch_lbl_query">검색어</label>
     <input type="text" id="q" value="부산광역"/>
-    <div class="row"><span data-i18n="b_fuzzysearch_lbl_threshold">정밀도(threshold)</span> <input type="range" id="th" min="0" max="1" step="0.1" value="0.4" style="flex:1;"><span id="thv">0.4</span></div>
+    <div class="row"><span id="lbl-th" data-i18n="b_fuzzysearch_lbl_threshold">정밀도(threshold)</span> <input aria-labelledby="lbl-th" type="range" id="th" min="0" max="1" step="0.1" value="0.4" style="flex:1;"><span id="thv">0.4</span></div>
     <label class="lbl" data-i18n="b_fuzzysearch_lbl_result">결과 (점수 낮을수록 일치)</label>
     <div class="res" id="res"></div>
     <div class="note" data-i18n-html="b_fuzzysearch_note">오픈소스 <b>Fuse.js</b>(Apache-2.0, <a href="https://github.com/krisk/Fuse" target="_blank" rel="noopener">krisk/Fuse</a>)를 자체 호스팅합니다. threshold가 높을수록 더 느슨하게 일치시킵니다. 모든 처리는 브라우저에서만 이루어집니다.</div>

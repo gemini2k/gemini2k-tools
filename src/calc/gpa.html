@@ -58,7 +58,7 @@
   <p class="sub" data-i18n="b_gpa_sub">과목별 학점수와 성적을 넣으면 평점평균(GPA)을 계산합니다. 만점 기준을 고를 수 있습니다.</p>
 
   <div class="card">
-    <div class="scaleRow"><label style="margin:0;font-weight:700;" data-i18n="b_gpa_scale_label">만점 기준</label>
+    <div class="scaleRow"><label for="scale" style="margin:0;font-weight:700;" data-i18n="b_gpa_scale_label">만점 기준</label>
       <select id="scale">
         <option value="4.5" data-i18n="b_gpa_scale_45">4.5 만점 (국내 일반)</option>
         <option value="4.3" data-i18n="b_gpa_scale_43">4.3 만점</option>
@@ -114,7 +114,7 @@
   function gradeOpts(){ return ['A+','A','B+','B','C+','C','D+','D','F'].map(function(g){return '<option>'+g+'</option>';}).join('')+'<option value="EX">'+t('b_gpa_grade_ex')+'</option>'; }
   function addRow(nm,cr,gr){
     var d=document.createElement('div'); d.className='grow';
-    d.innerHTML='<input class="nm" type="text" placeholder="'+t('b_gpa_course_ph')+'" value="'+(nm||'')+'"/><input class="cr" type="number" min="0" max="9" step="0.5" value="'+(cr||3)+'"/><select class="gr">'+gradeOpts()+'</select><button class="del" type="button" title="'+t('b_gpa_del_title')+'">✕</button>';
+    d.innerHTML='<input class="nm" type="text" placeholder="'+t('b_gpa_course_ph')+'" value="'+(nm||'')+'"/><input class="cr" aria-label="'+t('a11y.credits')+'" type="number" min="0" max="9" step="0.5" value="'+(cr||3)+'"/><select class="gr" aria-label="'+t('a11y.grade')+'">'+gradeOpts()+'</select><button class="del" type="button" title="'+t('b_gpa_del_title')+'">✕</button>';
     $('rows').appendChild(d); if(gr) d.querySelector('.gr').value=gr; calc();
   }
   function calc(){

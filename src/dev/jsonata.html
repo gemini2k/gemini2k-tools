@@ -25,7 +25,7 @@ textarea{min-height:150px;resize:vertical;}#expr{font-weight:600;}
   <h1 data-i18n="b_jsonata_title">JSONata 쿼리·변환기</h1>
   <p class="sub" data-i18n="b_jsonata_sub">JSONata 표현식으로 JSON을 질의·필터·집계·재구성합니다.</p>
   <div class="card">
-    <label class="lbl" data-i18n="b_jsonata_lbl_data">JSON 데이터</label>
+    <label for="data" class="lbl" data-i18n="b_jsonata_lbl_data">JSON 데이터</label>
     <textarea id="data">{
   "orders": [
     { "item": "사과", "qty": 3, "price": 1000 },
@@ -33,7 +33,7 @@ textarea{min-height:150px;resize:vertical;}#expr{font-weight:600;}
     { "item": "체리", "qty": 2, "price": 3000 }
   ]
 }</textarea>
-    <label class="lbl" data-i18n="b_jsonata_lbl_expr">JSONata 표현식</label>
+    <label for="expr" class="lbl" data-i18n="b_jsonata_lbl_expr">JSONata 표현식</label>
     <input type="text" id="expr" value="$sum(orders.(qty * price))"/>
     <label class="lbl" data-i18n="b_jsonata_lbl_result">결과</label>
     <div class="err" id="err"></div>

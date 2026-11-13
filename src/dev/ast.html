@@ -25,11 +25,11 @@ textarea{width:100%;min-height:300px;padding:.7rem;border:1px solid var(--border
   <h1 data-i18n="b_ast_title">JavaScript AST 뷰어</h1>
   <p class="sub" data-i18n="b_ast_sub">자바스크립트 코드를 파싱해 추상 구문 트리(AST)를 보여 줍니다. 컴파일러·린터 학습에 좋아요.</p>
   <div class="card" style="max-width:none;">
-    <div class="row">ECMA <select id="ecma"><option>latest</option><option>2020</option><option>2017</option><option>2015</option><option>5</option></select>
-      sourceType <select id="stype"><option>module</option><option>script</option></select>
+    <div class="row">ECMA <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="ecma"><option>latest</option><option>2020</option><option>2017</option><option>2015</option><option>5</option></select>
+      sourceType <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="stype"><option>module</option><option>script</option></select>
       <label style="font-weight:600;font-size:.9rem;"><input type="checkbox" id="loc"/> <span data-i18n="b_ast_loc_label">위치정보(start/end) 표시</span></label></div>
     <div class="grid2">
-      <div><label class="lbl" data-i18n="b_ast_lbl_code">JavaScript 코드</label><textarea id="in">function fib(n) {
+      <div><label for="in" class="lbl" data-i18n="b_ast_lbl_code">JavaScript 코드</label><textarea id="in">function fib(n) {
   return n < 2 ? n : fib(n - 1) + fib(n - 2);
 }
 const arr = [1, 2, 3].map(x =&gt; x * 2);</textarea></div>

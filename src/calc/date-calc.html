@@ -74,10 +74,10 @@
   </div>
 
   <div class="card">
-    <label data-i18n="dt.diff.label">📏 두 날짜 사이 일수</label>
+    <label for="d1" data-i18n="dt.diff.label">📏 두 날짜 사이 일수</label>
     <div class="row">
       <input type="date" id="d1" style="flex:1;min-width:140px;"/>
-      <input type="date" id="d2" style="flex:1;min-width:140px;"/>
+      <input aria-label="날짜" data-i18n-aria="a11y.date" type="date" id="d2" style="flex:1;min-width:140px;"/>
     </div>
     <div class="result big" style="margin-top:1rem;"><span class="val" id="diff"></span></div>
   </div>

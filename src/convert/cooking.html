@@ -27,10 +27,10 @@
   <p class="sub" data-i18n="b_cooking_sub">컵·큰술·작은술·ml·g를 서로 변환합니다. 재료를 고르면 무게(g)도 환산돼요.</p>
   <div class="card">
     <div class="row">
-      <div class="fld"><label data-i18n="b_cooking_lbl_value">값</label><input id="v" type="number" inputmode="decimal" value="1"/></div>
-      <div class="fld"><label data-i18n="b_cooking_lbl_unit">단위</label><select id="u"><option value="cup" data-i18n="b_cooking_opt_cup">컵 (200ml)</option><option value="tbsp" data-i18n="b_cooking_opt_tbsp">큰술 (15ml)</option><option value="tsp" data-i18n="b_cooking_opt_tsp">작은술 (5ml)</option><option value="ml">ml</option><option value="g">g</option></select></div>
+      <div class="fld"><label for="v" data-i18n="b_cooking_lbl_value">값</label><input id="v" type="number" inputmode="decimal" value="1"/></div>
+      <div class="fld"><label for="u" data-i18n="b_cooking_lbl_unit">단위</label><select id="u"><option value="cup" data-i18n="b_cooking_opt_cup">컵 (200ml)</option><option value="tbsp" data-i18n="b_cooking_opt_tbsp">큰술 (15ml)</option><option value="tsp" data-i18n="b_cooking_opt_tsp">작은술 (5ml)</option><option value="ml">ml</option><option value="g">g</option></select></div>
     </div>
-    <div class="fld" style="margin-bottom:1rem;"><label data-i18n="b_cooking_lbl_ingredient">재료 (무게 환산용)</label><select id="ing"><option value="1" data-i18n="b_cooking_ing_water">물·우유 (1.0 g/ml)</option><option value="0.53" data-i18n="b_cooking_ing_flour">밀가루 (0.53)</option><option value="0.85" data-i18n="b_cooking_ing_sugar">설탕 (0.85)</option><option value="1.2" data-i18n="b_cooking_ing_salt">소금 (1.2)</option><option value="0.91" data-i18n="b_cooking_ing_oil">식용유 (0.91)</option><option value="0.96" data-i18n="b_cooking_ing_butter">버터 (0.96)</option><option value="0.8" data-i18n="b_cooking_ing_rice">쌀 (0.8)</option></select></div>
+    <div class="fld" style="margin-bottom:1rem;"><label for="ing" data-i18n="b_cooking_lbl_ingredient">재료 (무게 환산용)</label><select id="ing"><option value="1" data-i18n="b_cooking_ing_water">물·우유 (1.0 g/ml)</option><option value="0.53" data-i18n="b_cooking_ing_flour">밀가루 (0.53)</option><option value="0.85" data-i18n="b_cooking_ing_sugar">설탕 (0.85)</option><option value="1.2" data-i18n="b_cooking_ing_salt">소금 (1.2)</option><option value="0.91" data-i18n="b_cooking_ing_oil">식용유 (0.91)</option><option value="0.96" data-i18n="b_cooking_ing_butter">버터 (0.96)</option><option value="0.8" data-i18n="b_cooking_ing_rice">쌀 (0.8)</option></select></div>
     <div id="res"></div>
     <div class="note" data-i18n-html="b_cooking_note">한국 표준 계량컵 200ml, 큰술 15ml, 작은술 5ml 기준입니다. g 환산은 재료 밀도의 <b>근사값</b>이라 실제와 다소 차이가 있을 수 있습니다. 모든 계산은 브라우저에서만 이루어집니다.</div>
   </div>

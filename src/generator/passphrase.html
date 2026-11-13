@@ -35,8 +35,8 @@
     <div class="ent" id="ent"></div>
     <div class="out" id="out">…</div>
     <div class="opts">
-      <div class="r"><span data-i18n="b_passphrase_word_count">단어 수</span> <input id="words" type="number" min="2" max="10" value="4"/>
-        <span data-i18n="b_passphrase_separator">구분자</span> <select id="sep"><option value="-" data-i18n="b_passphrase_sep_hyphen">- 하이픈</option><option value="_" data-i18n="b_passphrase_sep_underscore">_ 밑줄</option><option value="." data-i18n="b_passphrase_sep_dot">. 점</option><option value=" " data-i18n="b_passphrase_sep_space">(공백)</option><option value="" data-i18n="b_passphrase_sep_none">(붙임)</option></select></div>
+      <div class="r"><span id="lbl-words" data-i18n="b_passphrase_word_count">단어 수</span> <input aria-labelledby="lbl-words" id="words" type="number" min="2" max="10" value="4"/>
+        <span id="lbl-sep" data-i18n="b_passphrase_separator">구분자</span> <select aria-labelledby="lbl-sep" id="sep"><option value="-" data-i18n="b_passphrase_sep_hyphen">- 하이픈</option><option value="_" data-i18n="b_passphrase_sep_underscore">_ 밑줄</option><option value="." data-i18n="b_passphrase_sep_dot">. 점</option><option value=" " data-i18n="b_passphrase_sep_space">(공백)</option><option value="" data-i18n="b_passphrase_sep_none">(붙임)</option></select></div>
       <div class="r"><label><input type="checkbox" id="cap" checked/> <span data-i18n="b_passphrase_opt_cap">첫 글자 대문자</span></label><label><input type="checkbox" id="num" checked/> <span data-i18n="b_passphrase_opt_num">숫자 추가</span></label></div>
       <button class="btn" id="gen" type="button" style="width:100%;" data-i18n="b_passphrase_btn_gen">🔄 새로 생성</button>
     </div>

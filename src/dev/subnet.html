@@ -25,9 +25,9 @@ table{width:100%;border-collapse:collapse;font-size:.95rem;}td{padding:.55rem .6
   <h1 data-i18n="b_subnet_title">서브넷 계산기 (CIDR)</h1>
   <p class="sub" data-i18n="b_subnet_sub">CIDR 표기로 네트워크 주소·브로드캐스트·마스크·사용 가능 호스트 범위를 계산합니다.</p>
   <div class="card">
-    <div class="row"><input type="text" id="ip" value="192.168.10.0" data-i18n-ph="b_subnet_ph_ip" placeholder="IP 주소"/>
+    <div class="row"><input aria-label="IP 주소" data-i18n-aria="b_subnet_ph_ip" type="text" id="ip" value="192.168.10.0" data-i18n-ph="b_subnet_ph_ip" placeholder="IP 주소"/>
       <span style="font-size:1.3rem;">/</span>
-      <select id="cidr"></select></div>
+      <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="cidr"></select></div>
     <div class="err" id="err"></div>
     <table><tbody id="tb"></tbody></table>
     <div class="note" data-i18n="b_subnet_note">IPv4 기준입니다. /31·/32는 호스트 계산 규칙이 특수하여 별도 표기합니다. 모든 계산은 브라우저에서만 이루어집니다.</div>

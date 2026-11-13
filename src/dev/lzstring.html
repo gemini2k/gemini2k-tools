@@ -26,8 +26,8 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
   <p class="sub" data-i18n="b_lzstring_sub">긴 텍스트·JSON을 짧은 문자열로 압축합니다. URL 파라미터나 localStorage에 담기 좋아요.</p>
   <div class="card">
     <div class="seg" id="seg"><button data-d="c" class="on" type="button" data-i18n="b_lzstring_btn_compress">압축</button><button data-d="d" type="button" data-i18n="b_lzstring_btn_decompress">해제</button></div>
-    <div class="row"><span data-i18n="b_lzstring_label_mode">방식</span> <select id="mode"><option value="EncodedURIComponent" data-i18n="b_lzstring_mode_url">URL용(UTF-safe)</option><option value="Base64" data-i18n="b_lzstring_mode_base64">Base64</option><option value="UTF16" data-i18n="b_lzstring_mode_utf16">UTF16(최소크기)</option></select></div>
-    <textarea id="in">{"user":"홍길동","prefs":{"theme":"dark","lang":"ko"},"items":[1,2,3,4,5,6,7,8,9,10]}</textarea>
+    <div class="row"><span id="lbl-mode" data-i18n="b_lzstring_label_mode">방식</span> <select aria-labelledby="lbl-mode" id="mode"><option value="EncodedURIComponent" data-i18n="b_lzstring_mode_url">URL용(UTF-safe)</option><option value="Base64" data-i18n="b_lzstring_mode_base64">Base64</option><option value="UTF16" data-i18n="b_lzstring_mode_utf16">UTF16(최소크기)</option></select></div>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="in">{"user":"홍길동","prefs":{"theme":"dark","lang":"ko"},"items":[1,2,3,4,5,6,7,8,9,10]}</textarea>
     <div class="meta" id="meta"></div>
     <div class="arrow">↓</div>
     <div class="out" id="out"></div>

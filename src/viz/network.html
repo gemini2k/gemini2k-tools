@@ -23,9 +23,9 @@ textarea{width:100%;min-height:130px;padding:.7rem;border:1px solid var(--border
   <h1 data-i18n="b_network_title">네트워크 그래프 시각화</h1>
   <p class="sub" data-i18n="b_network_sub">관계(연결) 목록을 적으면 관계도를 그려 줍니다. 드래그·줌이 되고 PNG로 저장할 수 있어요.</p>
   <div class="card" style="max-width:none;">
-    <div class="row"><span data-i18n="b_network_layout_label">배치</span> <select id="layout"><option value="cose" data-i18n="b_network_layout_cose">자동(힘기반)</option><option value="circle" data-i18n="b_network_layout_circle">원형</option><option value="grid" data-i18n="b_network_layout_grid">격자</option><option value="concentric" data-i18n="b_network_layout_concentric">동심원</option><option value="breadthfirst" data-i18n="b_network_layout_tree">트리</option></select>
+    <div class="row"><span id="lbl-layout" data-i18n="b_network_layout_label">배치</span> <select aria-labelledby="lbl-layout" id="layout"><option value="cose" data-i18n="b_network_layout_cose">자동(힘기반)</option><option value="circle" data-i18n="b_network_layout_circle">원형</option><option value="grid" data-i18n="b_network_layout_grid">격자</option><option value="concentric" data-i18n="b_network_layout_concentric">동심원</option><option value="breadthfirst" data-i18n="b_network_layout_tree">트리</option></select>
       <button class="mini" id="fit" type="button" data-i18n="b_network_btn_fit">화면 맞춤</button><button class="mini" id="dl" type="button" data-i18n="b_network_btn_png">⬇️ PNG 저장</button></div>
-    <textarea id="data">철수 - 영희
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="data">철수 - 영희
 철수 - 민수
 영희 - 지영
 민수 - 지영

@@ -78,14 +78,14 @@
     </div>
 
     <div id="pane-text">
-      <textarea id="txt" data-i18n-ph="b_hash_txt_ph" placeholder="해시를 만들 텍스트를 입력하세요…"></textarea>
+      <textarea aria-label="해시를 만들 텍스트를 입력하세요…" data-i18n-aria="b_hash_txt_ph" id="txt" data-i18n-ph="b_hash_txt_ph" placeholder="해시를 만들 텍스트를 입력하세요…"></textarea>
     </div>
     <div id="pane-file" style="display:none;">
       <div class="drop" id="drop">
         <div style="font-size:1.6rem;">📄</div>
         <div data-i18n="b_hash_drop_hint">파일을 끌어다 놓거나 클릭해서 선택</div>
         <div id="fname" style="font-size:.82rem;margin-top:.3rem;"></div>
-        <input id="file" type="file" hidden/>
+        <input aria-label="파일 선택" data-i18n-aria="a11y.file" id="file" type="file" hidden/>
       </div>
     </div>
 

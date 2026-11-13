@@ -172,7 +172,7 @@
   function addCol(name,type){
     var d=document.createElement('div'); d.className='crow';
     d.innerHTML='<input class="cn" type="text" value="'+(name||'')+'" placeholder="'+t('b_mockdata_col_ph')+'"/>'
-      +'<select class="ct">'+TYPES.map(function(tmp){return '<option value="'+tmp[0]+'"'+(tmp[0]===type?' selected':'')+'>'+tmp[1]+'</option>';}).join('')+'</select>'
+      +'<select class="ct" aria-label="'+t('a11y.coltype')+'">'+TYPES.map(function(tmp){return '<option value="'+tmp[0]+'"'+(tmp[0]===type?' selected':'')+'>'+tmp[1]+'</option>';}).join('')+'</select>'
       +'<button class="del" type="button" title="'+t('b_mockdata_del_title')+'">✕</button>';
     $('cols').appendChild(d);
   }

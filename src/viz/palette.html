@@ -56,7 +56,7 @@
   <p class="sub" data-i18n="b_palette_sub">기준 색 하나로 보색·유사·삼각 배색과 명도·채도 변형 팔레트를 만듭니다. 색을 클릭하면 HEX가 복사됩니다.</p>
 
   <div class="card">
-    <div class="pickrow"><input id="picker" type="color" value="#5B5BF5"/><input id="hex" type="text" value="#5B5BF5"/><span style="color:var(--muted);font-size:.85rem;" data-i18n="b_palette_base_label">기준 색</span></div>
+    <div class="pickrow"><input aria-label="색상" data-i18n-aria="a11y.color" id="picker" type="color" value="#5B5BF5"/><input aria-label="입력" data-i18n-aria="a11y.input" id="hex" type="text" value="#5B5BF5"/><span style="color:var(--muted);font-size:.85rem;" data-i18n="b_palette_base_label">기준 색</span></div>
     <div id="out"></div>
     <div class="note" data-i18n="b_palette_note">HSL 색상환을 기준으로 배색을 계산합니다. 보색(180°), 유사색(±30°), 삼각(120°), 사각(90°) 배색과, 같은 색의 명도(Shade)·옅은 톤(Tint)을 제공합니다. 색을 클릭하면 HEX 코드가 복사됩니다. 모든 처리는 브라우저에서 이루어집니다.</div>
   </div>

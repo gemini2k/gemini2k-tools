@@ -73,9 +73,9 @@
     <div id="map"></div>
     <div class="stat" id="stat"></div>
     <div class="out-h"><b data-i18n="b_drawmap_wkt_label">WKT (경위도, EPSG:4326)</b><button class="cp" data-t="wkt" data-i18n="b_drawmap_copy">복사</button></div>
-    <textarea id="wkt" readonly></textarea>
+    <textarea aria-label="결과" data-i18n-aria="a11y.output" id="wkt" readonly></textarea>
     <div class="out-h"><b data-i18n="b_drawmap_geojson_label">GeoJSON</b><button class="cp" data-t="geojson" data-i18n="b_drawmap_copy">복사</button></div>
-    <textarea id="geojson" readonly></textarea>
+    <textarea aria-label="결과" data-i18n-aria="a11y.output" id="geojson" readonly></textarea>
     <div class="note" data-i18n="b_drawmap_note">3D를 쓰지 않는 표준 OpenLayers 지도입니다. 좌표는 경위도(WGS84)로 출력됩니다. 면적·길이는 측지 계산(구면)으로 근삿값이며, 정밀 용도는 검증해 사용하세요. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>
 

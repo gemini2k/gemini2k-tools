@@ -33,7 +33,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <h1 data-i18n="b_junitview_title">JUnit/xUnit 결과 뷰어</h1>
   <p class="sub" data-i18n="b_junitview_sub">테스트 결과 XML을 통과/실패/스킵으로 집계하고 실패를 보여 줍니다.</p>
   <div class="card" style="max-width:none;">
-    <textarea class="in" id="in" spellcheck="false">&lt;testsuite name="suite" tests="4" failures="1" skipped="1" time="2.5"&gt;\n  &lt;testcase name="login_ok" classname="AuthTest" time="0.3"/&gt;\n  &lt;testcase name="login_fail" classname="AuthTest" time="0.2"&gt;&lt;failure message="expected 200 got 500"&gt;assert&lt;/failure&gt;&lt;/testcase&gt;\n  &lt;testcase name="logout" classname="AuthTest" time="0.1"/&gt;\n  &lt;testcase name="reset_pw" classname="AuthTest"&gt;&lt;skipped/&gt;&lt;/testcase&gt;\n&lt;/testsuite&gt;</textarea><div class="res" id="res" style="margin-top:.6rem"></div><div class="err" id="err"></div>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" class="in" id="in" spellcheck="false">&lt;testsuite name="suite" tests="4" failures="1" skipped="1" time="2.5"&gt;\n  &lt;testcase name="login_ok" classname="AuthTest" time="0.3"/&gt;\n  &lt;testcase name="login_fail" classname="AuthTest" time="0.2"&gt;&lt;failure message="expected 200 got 500"&gt;assert&lt;/failure&gt;&lt;/testcase&gt;\n  &lt;testcase name="logout" classname="AuthTest" time="0.1"/&gt;\n  &lt;testcase name="reset_pw" classname="AuthTest"&gt;&lt;skipped/&gt;&lt;/testcase&gt;\n&lt;/testsuite&gt;</textarea><div class="res" id="res" style="margin-top:.6rem"></div><div class="err" id="err"></div>
     <div class="note" data-i18n="b_junitview_note">JUnit/xUnit 표준 XML(testsuite/testcase)을 인식합니다. 파일은 업로드되지 않고 브라우저에서만 파싱됩니다.</div>
   </div>
   <section class="toolhelp">

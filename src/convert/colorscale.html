@@ -27,11 +27,11 @@ select,input[type=number]{padding:.5rem .6rem;border:1px solid var(--border);bor
   <h1 data-i18n="b_colorscale_title">색상 스케일 생성기</h1>
   <p class="sub" data-i18n="b_colorscale_sub">두 색(또는 세 색) 사이를 부드럽게 잇는 색상 스케일을 만들어, 차트·히트맵·디자인용 색 코드를 뽑아 줍니다.</p>
   <div class="card">
-    <div class="row"><label data-i18n="b_colorscale_start">시작</label><input type="color" id="c1" value="#2563eb"/>
-      <label data-i18n="b_colorscale_mid">중간(선택)</label><input type="color" id="c2" value="#ffffff"/><label><input type="checkbox" id="usemid"/> <span data-i18n="b_colorscale_use">사용</span></label>
-      <label data-i18n="b_colorscale_end">끝</label><input type="color" id="c3" value="#dc2626"/></div>
-    <div class="row"><label data-i18n="b_colorscale_steps">단계 수</label><input type="number" id="steps" value="9" min="2" max="20"/>
-      <label data-i18n="b_colorscale_interp">보간</label><select id="mode"><option value="rgb">RGB</option><option value="lab" selected data-i18n="b_colorscale_opt_lab">LAB(부드러움)</option><option value="lch">LCH</option><option value="hsl">HSL</option></select>
+    <div class="row"><label for="c1" data-i18n="b_colorscale_start">시작</label><input type="color" id="c1" value="#2563eb"/>
+      <label for="c2" data-i18n="b_colorscale_mid">중간(선택)</label><input type="color" id="c2" value="#ffffff"/><label><input type="checkbox" id="usemid"/> <span data-i18n="b_colorscale_use">사용</span></label>
+      <label for="c3" data-i18n="b_colorscale_end">끝</label><input type="color" id="c3" value="#dc2626"/></div>
+    <div class="row"><label for="steps" data-i18n="b_colorscale_steps">단계 수</label><input type="number" id="steps" value="9" min="2" max="20"/>
+      <label for="mode" data-i18n="b_colorscale_interp">보간</label><select id="mode"><option value="rgb">RGB</option><option value="lab" selected data-i18n="b_colorscale_opt_lab">LAB(부드러움)</option><option value="lch">LCH</option><option value="hsl">HSL</option></select>
       <button class="btn btn-ghost" id="copy" type="button" data-i18n="b_colorscale_copy_all">📋 전체 복사</button></div>
     <div class="gradbar" id="grad"></div>
     <div class="swatches" id="sw"></div>

@@ -24,8 +24,8 @@
   <h1 data-i18n="b_colorblind_title">색각이상(색맹) 시뮬레이터</h1>
   <p class="sub" data-i18n="b_colorblind_sub">이미지가 색각이상 사용자에게 어떻게 보이는지 보여 줍니다. 웹·디자인 접근성 점검에 활용하세요.</p>
   <div class="card">
-    <div class="drop" id="drop" data-i18n="b_colorblind_drop">🖼️ 이미지를 끌어다 놓거나 클릭해서 선택</div><input type="file" id="file" accept="image/*" hidden/>
-    <div class="row"><span data-i18n="b_colorblind_type_label">유형</span> <select id="type">
+    <div class="drop" id="drop" data-i18n="b_colorblind_drop">🖼️ 이미지를 끌어다 놓거나 클릭해서 선택</div><input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept="image/*" hidden/>
+    <div class="row"><span id="lbl-type" data-i18n="b_colorblind_type_label">유형</span> <select aria-labelledby="lbl-type" id="type">
       <option value="protanopia" data-i18n="b_colorblind_opt_protanopia">적색맹 (Protanopia)</option>
       <option value="deuteranopia" selected data-i18n="b_colorblind_opt_deuteranopia">녹색맹 (Deuteranopia)</option>
       <option value="tritanopia" data-i18n="b_colorblind_opt_tritanopia">청색맹 (Tritanopia)</option>

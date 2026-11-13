@@ -35,7 +35,7 @@
   <p class="sub" data-i18n="b_unicodeconv_sub">문자를 코드포인트·이스케이프·UTF-8 바이트로 보고, 반대로 이스케이프를 문자로 되돌립니다.</p>
   <div class="card">
     <div class="seg" id="seg"><button data-d="enc" class="on" type="button" data-i18n="b_unicodeconv_btn_enc">문자 → 코드</button><button data-d="dec" type="button" data-i18n="b_unicodeconv_btn_dec">이스케이프 → 문자</button></div>
-    <textarea id="in">가A€😀</textarea>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="in">가A€😀</textarea>
     <div id="res"></div>
     <div class="note" data-i18n="b_unicodeconv_note">'이스케이프 → 문자'는 \uXXXX, \u{XXXXX}, U+XXXX, &amp;#xXXXX; 형태를 인식해 문자로 되돌립니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>

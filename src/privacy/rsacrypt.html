@@ -28,10 +28,10 @@ textarea{width:100%;padding:.6rem .7rem;border:1px solid var(--border);border-ra
   <div class="card">
     <div class="actions"><button class="btn" id="genkey" type="button" data-i18n="b_rsacrypt_btn_genkey">🔑 샘플 키쌍 생성</button><span id="gstatus" style="color:var(--muted);font-size:.9rem;align-self:center;"></span></div>
     <div class="keys">
-      <div class="field"><label data-i18n="b_rsacrypt_label_pub">공개키 (암호화용)</label><textarea id="pub" placeholder="-----BEGIN PUBLIC KEY-----"></textarea></div>
-      <div class="field"><label data-i18n="b_rsacrypt_label_priv">개인키 (복호화용)</label><textarea id="priv" placeholder="-----BEGIN RSA PRIVATE KEY-----"></textarea></div>
+      <div class="field"><label for="pub" data-i18n="b_rsacrypt_label_pub">공개키 (암호화용)</label><textarea id="pub" placeholder="-----BEGIN PUBLIC KEY-----"></textarea></div>
+      <div class="field"><label for="priv" data-i18n="b_rsacrypt_label_priv">개인키 (복호화용)</label><textarea id="priv" placeholder="-----BEGIN RSA PRIVATE KEY-----"></textarea></div>
     </div>
-    <div class="field"><label data-i18n="b_rsacrypt_label_msg">메시지</label><textarea id="msg" class="msg" data-i18n-ph="b_rsacrypt_msg_default">안녕하세요, 비밀 메시지입니다.</textarea></div>
+    <div class="field"><label for="msg" data-i18n="b_rsacrypt_label_msg">메시지</label><textarea id="msg" class="msg" data-i18n-ph="b_rsacrypt_msg_default">안녕하세요, 비밀 메시지입니다.</textarea></div>
     <div class="actions"><button class="btn" id="enc" type="button" data-i18n="b_rsacrypt_btn_enc">🔒 암호화</button><button class="btn" id="dec" type="button" data-i18n="b_rsacrypt_btn_dec">🔓 복호화</button><button class="btn btn-ghost" id="copy" type="button" data-i18n="b_rsacrypt_btn_copy">📋 복사</button></div>
     <div class="field"><label data-i18n="b_rsacrypt_label_out">결과</label><div class="out" id="out"></div></div>
     <div class="note" data-i18n-html="b_rsacrypt_note">오픈소스 <b>JSEncrypt</b>(MIT, <a href="https://github.com/travist/jsencrypt" target="_blank" rel="noopener">travist/jsencrypt</a>)를 자체 호스팅합니다. RSA는 짧은 메시지에 적합합니다(긴 글은 길이 제한). 키·메시지는 전송되지 않고 브라우저에서만 처리됩니다.</div>

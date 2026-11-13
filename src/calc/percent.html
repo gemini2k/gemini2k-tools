@@ -65,22 +65,22 @@
 
   <div class="card">
     <div class="pcard">
-      <h3 data-i18n="pct.q1">① A는 B의 몇 %인가</h3>
-      <div class="pline"><input id="a1" type="number" value="30"/> <span data-i18n="pct.c1a">는</span> <input id="b1" type="number" value="200"/> <span data-i18n="pct.c1b">의</span> <span class="eq">=</span> <span class="out" id="o1">15%</span></div>
+      <h3 id="lbl-a1" data-i18n="pct.q1">① A는 B의 몇 %인가</h3>
+      <div class="pline"><input aria-labelledby="lbl-a1" id="a1" type="number" value="30"/> <span id="lbl-b1" data-i18n="pct.c1a">는</span> <input aria-labelledby="lbl-b1" id="b1" type="number" value="200"/> <span data-i18n="pct.c1b">의</span> <span class="eq">=</span> <span class="out" id="o1">15%</span></div>
     </div>
     <div class="pcard">
-      <h3 data-i18n="pct.q2">② B의 A%는 얼마인가</h3>
-      <div class="pline"><input id="a2" type="number" value="15"/> <span data-i18n="pct.c2">% 의</span> <input id="b2" type="number" value="200"/> <span class="eq">=</span> <span class="out" id="o2">30</span></div>
+      <h3 id="lbl-a2" data-i18n="pct.q2">② B의 A%는 얼마인가</h3>
+      <div class="pline"><input aria-labelledby="lbl-a2" id="a2" type="number" value="15"/> <span id="lbl-b2" data-i18n="pct.c2">% 의</span> <input aria-labelledby="lbl-b2" id="b2" type="number" value="200"/> <span class="eq">=</span> <span class="out" id="o2">30</span></div>
     </div>
     <div class="pcard">
-      <h3 data-i18n="pct.q3">③ A에서 B로 몇 % 증감</h3>
-      <div class="pline"><input id="a3" type="number" value="200"/> <span data-i18n="pct.c3a">에서</span> <input id="b3" type="number" value="260"/> <span data-i18n="pct.c3b">로</span> <span class="eq">=</span> <span class="out" id="o3">+30%</span></div>
+      <h3 id="lbl-a3" data-i18n="pct.q3">③ A에서 B로 몇 % 증감</h3>
+      <div class="pline"><input aria-labelledby="lbl-a3" id="a3" type="number" value="200"/> <span id="lbl-b3" data-i18n="pct.c3a">에서</span> <input aria-labelledby="lbl-b3" id="b3" type="number" value="260"/> <span data-i18n="pct.c3b">로</span> <span class="eq">=</span> <span class="out" id="o3">+30%</span></div>
     </div>
     <div class="pcard">
-      <h3 data-i18n="pct.q4">④ A를 N% 증가/감소</h3>
-      <div class="pline"><input id="a4" type="number" value="200"/> <span data-i18n="pct.c4">를</span>
-        <input id="n4" type="number" value="10"/> %
-        <select id="m4"><option value="up" data-i18n="pct.up">증가</option><option value="down" data-i18n="pct.down">감소</option></select>
+      <h3 id="lbl-a4" data-i18n="pct.q4">④ A를 N% 증가/감소</h3>
+      <div class="pline"><input aria-labelledby="lbl-a4" id="a4" type="number" value="200"/> <span id="lbl-n4" data-i18n="pct.c4">를</span>
+        <input aria-labelledby="lbl-n4" id="n4" type="number" value="10"/> %
+        <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="m4"><option value="up" data-i18n="pct.up">증가</option><option value="down" data-i18n="pct.down">감소</option></select>
         <span class="eq">=</span> <span class="out" id="o4">220</span></div>
     </div>
     <div class="note" data-i18n="pct.note">

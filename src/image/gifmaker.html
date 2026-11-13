@@ -29,7 +29,7 @@
   <p class="sub" data-i18n="b_gifmaker_sub">이미지 여러 장을 순서대로 합쳐 움직이는 GIF를 만듭니다.</p>
   <div class="card">
     <div class="drop" id="drop"><div style="font-size:1.8rem">🎬</div><div><strong data-i18n="b_gifmaker_drop_main">이미지 여러 장을 끌어다 놓거나 클릭</strong></div><div style="font-size:.82rem;margin-top:.3rem;" data-i18n="b_gifmaker_drop_hint">2장 이상</div></div>
-    <input type="file" id="file" accept="image/*" multiple class="hide"/>
+    <input aria-label="파일 선택" data-i18n-aria="a11y.file" type="file" id="file" accept="image/*" multiple class="hide"/>
     <div class="thumbs" id="thumbs"></div>
     <div class="opts hide" id="opts"><label><span data-i18n="b_gifmaker_label_delay">프레임 간격(ms)</span> <input id="delay" type="number" min="50" max="2000" value="400"/></label><label><span data-i18n="b_gifmaker_label_width">가로(px)</span> <input id="w" type="number" min="60" max="800" value="320"/></label></div>
     <div class="actions hide" id="actions"><button class="btn" id="make" type="button" data-i18n="b_gifmaker_btn_make">🎬 GIF 만들기</button></div>

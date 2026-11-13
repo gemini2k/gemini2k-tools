@@ -33,7 +33,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <h1 data-i18n="b_jshint_title">JavaScript 코드 린트</h1>
   <p class="sub" data-i18n="b_jshint_sub">코드의 잠재 오류·미사용 변수·위험 패턴을 정적 분석으로 찾습니다.</p>
   <div class="card" style="max-width:none;">
-    <textarea class="in" id="in" spellcheck="false">function add(a,b){\n  var unused = 1;\n  if (a == b) return\n  return a+b\n}</textarea><div class="res" id="res" style="margin-top:.6rem"></div>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" class="in" id="in" spellcheck="false">function add(a,b){\n  var unused = 1;\n  if (a == b) return\n  return a+b\n}</textarea><div class="res" id="res" style="margin-top:.6rem"></div>
     <div class="note" data-i18n-html="b_jshint_note">오픈소스 <b>JSHint</b>(MIT, <a href="https://github.com/jshint/jshint" target="_blank" rel="noopener">jshint/jshint</a>)를 자체 호스팅합니다. 모든 분석은 브라우저에서만 이루어집니다.</div>
   </div>
   <section class="toolhelp">

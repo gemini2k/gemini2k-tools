@@ -31,7 +31,7 @@
   <h1 data-i18n="b_numformat_title">숫자 포맷 변환기</h1>
   <p class="sub" data-i18n="b_numformat_sub">큰 숫자를 천 단위 콤마, 한국식 만·억·조 단위, 통화·퍼센트 등으로 보기 좋게 바꿉니다. 줄을 클릭하면 복사돼요.</p>
   <div class="card">
-    <input class="in" id="in" type="text" inputmode="decimal" value="1234567.89" data-i18n-ph="b_numformat_input_ph"/>
+    <input aria-label="입력" data-i18n-aria="a11y.input" class="in" id="in" type="text" inputmode="decimal" value="1234567.89" data-i18n-ph="b_numformat_input_ph"/>
     <div id="res"></div>
     <div class="note" data-i18n="b_numformat_note">콤마·통화기호를 무시하고 지수 표기(1e5)와 한글 단위(3억 2천만)도 읽습니다. 한글 단위는 만(10^4)·억(10^8)·조(10^12) 기준입니다. 모든 처리는 브라우저에서만 이루어집니다.</div>
   </div>

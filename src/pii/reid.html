@@ -270,12 +270,12 @@ input[type="file"].hidden,input[type="file"][hidden]{display:block!important;pos
     <input type="file" id="file" accept=".xlsx,.xls,.csv,.tsv,.txt,text/csv,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="hidden">
     <div id="sheetPick" class="hidden" style="margin-top:14px">
       <div class="data-summary">
-        <span style="color:var(--muted)" data-i18n="b_reid_sheet_pick">엑셀에 시트가 여러 개입니다. 분석할 시트를 고르세요:</span>
-        <select id="sheetSelect" style="background:#0A1322;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--mono);font-size:13px"></select>
+        <span id="lbl-sheetSelect" style="color:var(--muted)" data-i18n="b_reid_sheet_pick">엑셀에 시트가 여러 개입니다. 분석할 시트를 고르세요:</span>
+        <select aria-labelledby="lbl-sheetSelect" id="sheetSelect" style="background:#0A1322;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--mono);font-size:13px"></select>
       </div>
     </div>
     <div id="pasteArea" class="hidden" style="margin-top:14px">
-      <textarea id="pasteInput" data-i18n-ph="b_reid_paste_ph" placeholder="첫 줄은 헤더(열 이름). 쉼표 또는 탭으로 구분된 표 형태로 붙여넣으세요."></textarea>
+      <textarea aria-label="첫 줄은 헤더(열 이름). 쉼표 또는 탭으로 구분된 표 형태로 붙여넣으세요." data-i18n-aria="b_reid_paste_ph" id="pasteInput" data-i18n-ph="b_reid_paste_ph" placeholder="첫 줄은 헤더(열 이름). 쉼표 또는 탭으로 구분된 표 형태로 붙여넣으세요."></textarea>
       <div class="btn-row" style="justify-content:flex-start;margin-top:10px">
         <button type="button" class="primary" id="parsePaste" data-i18n="b_reid_btn_load">불러오기</button>
       </div>
@@ -295,12 +295,12 @@ input[type="file"].hidden,input[type="file"][hidden]{display:block!important;pos
     </div>
     <div id="cols" class="cols"></div>
     <div class="controls">
-      <div class="target"><span data-i18n="b_reid_target_k">목표 k 값</span>
-        <input type="number" id="targetK" value="5" min="2" max="9999">
+      <div class="target"><span id="lbl-targetK" data-i18n="b_reid_target_k">목표 k 값</span>
+        <input aria-labelledby="lbl-targetK" type="number" id="targetK" value="5" min="2" max="9999">
         <span class="tip" data-i18n-html="b_reid_tip_k" title="이 값 미만의 동질집합에 속한 레코드를 '위험'으로 집계합니다. 국내 실무에서는 통상 k≥3~5를 권고합니다.">＊</span>
       </div>
-      <div class="target" id="gridWrap" style="display:none"><span data-i18n="b_reid_grid_size">공간 그리드 크기(m)</span>
-        <input type="number" id="gridSize" value="1000" min="1">
+      <div class="target" id="gridWrap" style="display:none"><span id="lbl-gridSize" data-i18n="b_reid_grid_size">공간 그리드 크기(m)</span>
+        <input aria-labelledby="lbl-gridSize" type="number" id="gridSize" value="1000" min="1">
         <span class="tip" data-i18n-html="b_reid_tip_grid" title="위도·경도를 이 크기의 격자 셀로 일반화한 뒤, 셀을 준식별자로 삼아 공간 k-익명성을 평가합니다.">＊</span>
       </div>
       <button type="button" class="primary" id="analyzeBtn" data-i18n="b_reid_btn_analyze">위험성 분석</button>

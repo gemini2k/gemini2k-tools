@@ -64,7 +64,7 @@
   <h1 data-i18n="b_minesweeper_title">지뢰찾기</h1>
   <p class="sub" data-i18n="b_minesweeper_sub">숫자는 주변 8칸의 지뢰 개수입니다. 추리해서 지뢰가 아닌 칸을 모두 여세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_minesweeper_howto_title">조작법</b><ol>
+  <div class="howto"><span class="ic">📖</span><div><b id="lbl-level" data-i18n="b_minesweeper_howto_title">조작법</b><ol>
     <li data-i18n="b_minesweeper_howto1">칸을 클릭(터치)하면 열립니다. 첫 클릭은 항상 안전합니다</li>
     <li data-i18n-html="b_minesweeper_howto2">지뢰가 의심되면 깃발: PC는 <b>우클릭</b>, 모바일은 <b>🚩 깃발 모드</b>를 켜고 탭</li>
     <li data-i18n="b_minesweeper_howto3">지뢰를 누르면 끝, 지뢰 아닌 칸을 모두 열면 승리!</li>
@@ -73,7 +73,7 @@
   <div class="card">
     <div class="gbar">
       <div class="left">
-        <select id="level">
+        <select aria-labelledby="lbl-level" id="level">
           <option value="9,9,10" data-i18n="b_minesweeper_level_easy">쉬움 9×9 (10)</option>
           <option value="12,12,24" selected data-i18n="b_minesweeper_level_normal">보통 12×12 (24)</option>
           <option value="14,14,45" data-i18n="b_minesweeper_level_hard">어려움 14×14 (45)</option>

@@ -23,12 +23,12 @@
   <h1 data-i18n="b_prettier_title">Prettier 코드 포매터</h1>
   <p class="sub" data-i18n="b_prettier_sub">JS·CSS·HTML·JSON·마크다운 코드를 Prettier 규칙으로 깔끔하게 정렬합니다.</p>
   <div class="card">
-    <div class="row"><span data-i18n="b_prettier_lang_label">언어</span> <select id="lang"><option value="babel">JavaScript</option><option value="css">CSS</option><option value="html">HTML</option><option value="json">JSON</option><option value="markdown">Markdown</option></select>
-      <span data-i18n="b_prettier_indent_label">들여쓰기</span> <select id="tab"><option value="2" data-i18n="b_prettier_indent_2">2칸</option><option value="4" data-i18n="b_prettier_indent_4">4칸</option></select>
+    <div class="row"><span id="lbl-lang" data-i18n="b_prettier_lang_label">언어</span> <select aria-labelledby="lbl-lang" id="lang"><option value="babel">JavaScript</option><option value="css">CSS</option><option value="html">HTML</option><option value="json">JSON</option><option value="markdown">Markdown</option></select>
+      <span id="lbl-tab" data-i18n="b_prettier_indent_label">들여쓰기</span> <select aria-labelledby="lbl-tab" id="tab"><option value="2" data-i18n="b_prettier_indent_2">2칸</option><option value="4" data-i18n="b_prettier_indent_4">4칸</option></select>
       <label style="font-weight:600;font-size:.9rem;"><input type="checkbox" id="semi" checked/> <span data-i18n="b_prettier_semi">세미콜론</span></label>
       <label style="font-weight:600;font-size:.9rem;"><input type="checkbox" id="single"/> <span data-i18n="b_prettier_single_quote">작은따옴표</span></label>
-      <button class="btn" id="run" type="button" data-i18n="b_prettier_run">정렬</button><button class="btn btn-ghost" id="copy" type="button">📋 <span data-i18n="b_prettier_copy">복사</span></button></div>
-    <textarea id="in">const x={a:1,b:2,c:[1,2,3]};function foo(a,b){return a+b}
+      <button class="btn" id="run" type="button" data-i18n="b_prettier_run">정렬</button><button class="btn btn-ghost" id="copy" type="button">📋 <span id="lbl-in" data-i18n="b_prettier_copy">복사</span></button></div>
+    <textarea aria-labelledby="lbl-in" id="in">const x={a:1,b:2,c:[1,2,3]};function foo(a,b){return a+b}
 const arr=[1,2,3].map(x=>x*2).filter(x=>x>2)</textarea>
     <div class="err" id="err"></div>
     <div class="note" data-i18n-html="b_prettier_note">오픈소스 <b>Prettier</b>(MIT, <a href="https://github.com/prettier/prettier" target="_blank" rel="noopener">prettier/prettier</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>

@@ -27,7 +27,7 @@
   <h1 data-i18n="b_sqlplay_title">SQL 연습장 <span style="font-size:.9rem;color:var(--muted)">(SQLite)</span></h1>
   <p class="sub" data-i18n="b_sqlplay_sub">브라우저에서 진짜 SQLite를 실행합니다. 쿼리를 작성해 바로 결과를 확인하세요. SQL 학습·테스트에 좋아요.</p>
   <div class="card" style="max-width:none;">
-    <textarea id="sql">SELECT name, dept, salary FROM emp WHERE salary >= 3000 ORDER BY salary DESC;</textarea>
+    <textarea aria-label="입력" data-i18n-aria="a11y.input" id="sql">SELECT name, dept, salary FROM emp WHERE salary >= 3000 ORDER BY salary DESC;</textarea>
     <div class="actions"><button class="btn" id="run" type="button" data-i18n="b_sqlplay_btn_run">▶ 실행 (Ctrl+Enter)</button><button class="btn btn-ghost" id="reset" type="button" data-i18n="b_sqlplay_btn_reset">샘플 DB 초기화</button></div>
     <div class="err" id="err"></div>
     <div class="tblwrap" id="result"></div>

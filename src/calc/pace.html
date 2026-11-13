@@ -27,8 +27,8 @@
   <h1 data-i18n="b_pace_h1">러닝 페이스 계산기</h1>
   <p class="sub" data-i18n="b_pace_sub">달린 거리와 시간으로 페이스(분/km)와 속도를 계산하고 코스별 예상 기록을 보여 줍니다.</p>
   <div class="card">
-    <div class="fld"><label data-i18n="b_pace_lbl_dist">거리 (km)</label><input id="dist" type="number" inputmode="decimal" value="5"/></div>
-    <div class="fld"><label data-i18n="b_pace_lbl_time">시간 (시 : 분 : 초)</label><div class="trow"><input id="hh" type="number" value="0" data-i18n-ph="b_pace_ph_h" placeholder="시"/><input id="mm" type="number" value="30" data-i18n-ph="b_pace_ph_m" placeholder="분"/><input id="ss" type="number" value="0" data-i18n-ph="b_pace_ph_s" placeholder="초"/></div></div>
+    <div class="fld"><label for="dist" data-i18n="b_pace_lbl_dist">거리 (km)</label><input id="dist" type="number" inputmode="decimal" value="5"/></div>
+    <div class="fld"><label for="hh" data-i18n="b_pace_lbl_time">시간 (시 : 분 : 초)</label><div class="trow"><input id="hh" type="number" value="0" data-i18n-ph="b_pace_ph_h" placeholder="시"/><input aria-label="분" data-i18n-aria="b_pace_ph_m" id="mm" type="number" value="30" data-i18n-ph="b_pace_ph_m" placeholder="분"/><input aria-label="초" data-i18n-aria="b_pace_ph_s" id="ss" type="number" value="0" data-i18n-ph="b_pace_ph_s" placeholder="초"/></div></div>
     <div class="big"><div class="n" id="pace">-</div><div class="u"><span data-i18n="b_pace_unit_pace">페이스 (분/km)</span> · <span id="speed">-</span></div></div>
     <table class="tbl"><thead><tr><th data-i18n="b_pace_th_course">코스</th><th data-i18n="b_pace_th_time">예상 기록</th></tr></thead><tbody id="rows"></tbody></table>
     <div class="note" data-i18n="b_pace_note">예상 기록은 동일 페이스 유지를 가정한 단순 계산으로, 거리가 길수록 실제보다 빠르게 나옵니다(참고용). 모든 계산은 브라우저에서만 이루어집니다.</div>

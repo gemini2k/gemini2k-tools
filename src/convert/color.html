@@ -61,18 +61,18 @@
 
   <div class="card">
     <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
-      <input type="color" id="picker" value="#5b5bf5" style="width:80px;height:80px;border:1px solid var(--border);border-radius:14px;padding:0;background:none;cursor:pointer;"/>
+      <input aria-label="색상" data-i18n-aria="a11y.color" type="color" id="picker" value="#5b5bf5" style="width:80px;height:80px;border:1px solid var(--border);border-radius:14px;padding:0;background:none;cursor:pointer;"/>
       <div id="sw" style="flex:1;min-width:140px;height:80px;border-radius:14px;border:1px solid var(--border);background:#5b5bf5;"></div>
     </div>
 
     <label for="hex" style="margin-top:1.3rem;">HEX</label>
     <div class="result"><span class="val" id="hex-v">#5B5BF5</span><button class="btn btn-ghost" data-copy="hex-v" style="padding:.5rem .8rem;" data-i18n="pw.copy">복사</button></div>
 
-    <label style="margin-top:1rem;">RGB</label>
+    <label for="r" style="margin-top:1rem;">RGB</label>
     <div class="row" style="gap:.5rem;">
       <input type="number" id="r" min="0" max="255" value="91" style="flex:1;min-width:70px;"/>
-      <input type="number" id="g" min="0" max="255" value="91" style="flex:1;min-width:70px;"/>
-      <input type="number" id="b" min="0" max="255" value="245" style="flex:1;min-width:70px;"/>
+      <input aria-label="입력" data-i18n-aria="a11y.input" type="number" id="g" min="0" max="255" value="91" style="flex:1;min-width:70px;"/>
+      <input aria-label="입력" data-i18n-aria="a11y.input" type="number" id="b" min="0" max="255" value="245" style="flex:1;min-width:70px;"/>
       <button class="btn btn-ghost" data-copy="rgb-v" style="padding:.5rem .8rem;" data-i18n="pw.copy">복사</button>
     </div>
     <p class="hint" id="rgb-v" style="font-family:ui-monospace,monospace;">rgb(91, 91, 245)</p>

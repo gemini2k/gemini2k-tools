@@ -24,8 +24,8 @@
   <p class="sub" data-i18n="b_codeeditor_sub">문법 강조가 되는 코드 에디터입니다. JavaScript는 '실행'으로 결과를 바로 확인하세요.</p>
   <div class="card" style="max-width:none;">
     <div class="bar">
-      <select id="lang"><option value="javascript">JavaScript</option><option value="html">HTML</option><option value="css">CSS</option><option value="json">JSON</option><option value="python">Python</option><option value="sql">SQL</option></select>
-      <select id="theme"><option value="github" data-i18n="b_codeeditor_theme_light">라이트</option><option value="monokai" data-i18n="b_codeeditor_theme_dark">다크</option></select>
+      <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="lang"><option value="javascript">JavaScript</option><option value="html">HTML</option><option value="css">CSS</option><option value="json">JSON</option><option value="python">Python</option><option value="sql">SQL</option></select>
+      <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="theme"><option value="github" data-i18n="b_codeeditor_theme_light">라이트</option><option value="monokai" data-i18n="b_codeeditor_theme_dark">다크</option></select>
       <button class="btn" id="run" type="button" data-i18n="b_codeeditor_btn_run">▶ 실행(JS)</button>
       <button class="btn btn-ghost" id="dl" type="button" data-i18n="b_codeeditor_btn_save">⬇️ 저장</button>
     </div>
@@ -77,7 +77,7 @@ for (let i = 1; i <= 5; i++) {
 <script>
   var $=function(id){return document.getElementById(id);};
   ace.config.set('basePath','/vendor/ace-1.32/');
-  var ed=ace.edit('editor'); var th0=document.documentElement.getAttribute('data-theme')==='dark'?'monokai':'github'; $('theme').value=th0; ed.setTheme('ace/theme/'+th0); ed.session.setMode('ace/mode/javascript'); ed.setOptions({fontSize:'14px',showPrintMargin:false,useWorker:false});
+  var ed=ace.edit('editor'); var th0=document.documentElement.getAttribute('data-theme')==='dark'?'monokai':'github'; $('theme').value=th0; ed.setTheme('ace/theme/'+th0); try{ ed.textInput.getElement().setAttribute('aria-label',t('a11y.input')); }catch(e){} ed.session.setMode('ace/mode/javascript'); ed.setOptions({fontSize:'14px',showPrintMargin:false,useWorker:false});
   $('lang').addEventListener('change',function(){ ed.session.setMode('ace/mode/'+$('lang').value); $('run').style.display=$('lang').value==='javascript'?'':'none'; });
   $('theme').addEventListener('change',function(){ ed.setTheme('ace/theme/'+$('theme').value); });
   // 자동 저장(이 브라우저에만): 코드·언어를 localStorage 에 보관

@@ -26,7 +26,7 @@ table{width:100%;border-collapse:collapse;font-size:.95rem;}td{padding:.55rem .6
   <p class="sub" data-i18n="b_phone_sub">전화번호를 국가별 표준 표기와 국제표기(E.164)로 바꾸고, 유효한 번호인지 확인합니다.</p>
   <div class="card">
     <div class="row">
-      <select id="cc">
+      <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="cc">
         <option value="KR" data-i18n="b_phone_opt_kr">🇰🇷 대한민국</option>
         <option value="US" data-i18n="b_phone_opt_us">🇺🇸 미국</option>
         <option value="JP" data-i18n="b_phone_opt_jp">🇯🇵 일본</option>
@@ -36,7 +36,7 @@ table{width:100%;border-collapse:collapse;font-size:.95rem;}td{padding:.55rem .6
         <option value="FR" data-i18n="b_phone_opt_fr">🇫🇷 프랑스</option>
         <option value="AU" data-i18n="b_phone_opt_au">🇦🇺 호주</option>
       </select>
-      <input type="text" id="num" value="01012345678" data-i18n-ph="b_phone_input_ph" placeholder="전화번호 입력"/>
+      <input aria-label="전화번호 입력" data-i18n-aria="b_phone_input_ph" type="text" id="num" value="01012345678" data-i18n-ph="b_phone_input_ph" placeholder="전화번호 입력"/>
     </div>
     <table><tbody id="tb"></tbody></table>
     <div class="note" data-i18n-html="b_phone_note">오픈소스 <b>libphonenumber-js</b>(MIT, <a href="https://github.com/catamphetamine/libphonenumber-js" target="_blank" rel="noopener">catamphetamine/libphonenumber-js</a>)를 자체 호스팅합니다. 모든 처리는 브라우저에서만 이루어집니다.</div>

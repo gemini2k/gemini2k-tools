@@ -21,7 +21,7 @@
 <div class="card">
 <div class="seg" id="seg"><button data-m="zip" class="on" type="button" data-i18n="b_zipmaker_tab_zip">압축(ZIP 만들기)</button><button data-m="unzip" type="button" data-i18n="b_zipmaker_tab_unzip">풀기(ZIP 열기)</button></div>
 <div class="drop" id="drop"><div style="font-size:1.8rem">🗜️</div><div><strong id="droptxt" data-i18n="b_zipmaker_drop_zip">파일들을 끌어다 놓거나 클릭</strong></div></div>
-<input type="file" id="file" multiple class="hide"/>
+<input aria-labelledby="droptxt" type="file" id="file" multiple class="hide"/>
 <div class="list" id="list"></div>
 <div class="actions" id="zipact"><button class="btn" id="make" type="button" data-i18n="b_zipmaker_btn_download">⬇️ ZIP 다운로드</button></div>
 <div class="note" data-i18n-html="b_zipmaker_note">오픈소스 <b>JSZip</b>(MIT)을 자체 호스팅합니다. 파일은 서버로 전송되지 않고 브라우저에서만 압축·해제됩니다.</div>

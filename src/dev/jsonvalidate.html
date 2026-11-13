@@ -28,7 +28,7 @@ textarea{width:100%;min-height:200px;padding:.7rem;border:1px solid var(--border
   <p class="sub" data-i18n="b_jsonvalidate_sub">JSON 데이터가 JSON Schema(draft-04~2020-12) 규칙에 맞는지 확인하고, 어긋난 부분을 알려 줍니다.</p>
   <div class="card" style="max-width:none;">
     <div class="grid2">
-      <div><label class="lbl" data-i18n="b_jsonvalidate_label_schema">JSON Schema</label><textarea id="schema">{
+      <div><label for="schema" class="lbl" data-i18n="b_jsonvalidate_label_schema">JSON Schema</label><textarea id="schema">{
   "type": "object",
   "required": ["name", "age"],
   "properties": {
@@ -37,7 +37,7 @@ textarea{width:100%;min-height:200px;padding:.7rem;border:1px solid var(--border
     "email": { "type": "string", "format": "email" }
   }
 }</textarea></div>
-      <div><label class="lbl" data-i18n="b_jsonvalidate_label_data">검증할 데이터</label><textarea id="data">{
+      <div><label for="data" class="lbl" data-i18n="b_jsonvalidate_label_data">검증할 데이터</label><textarea id="data">{
   "name": "홍길동",
   "age": -5,
   "email": "not-an-email"

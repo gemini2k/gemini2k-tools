@@ -55,7 +55,7 @@
   <h1 data-i18n="b_gomoku_title">오목</h1>
   <p class="sub" data-i18n="b_gomoku_sub">가로·세로·대각선으로 같은 돌 5개를 먼저 이으면 승리! 친구와 2인으로, 또는 컴퓨터와 대결하세요.</p>
 
-  <div class="howto"><span class="ic">📖</span><div><b data-i18n="b_gomoku_howto_title">조작법</b><ol>
+  <div class="howto"><span class="ic">📖</span><div><b id="lbl-mode" data-i18n="b_gomoku_howto_title">조작법</b><ol>
     <li data-i18n="b_gomoku_howto_1">'2인 대전' 또는 'vs 컴퓨터'와 난이도를 고릅니다</li>
     <li data-i18n="b_gomoku_howto_2">교차점을 클릭(터치)해 돌을 놓습니다 (사람이 검은 돌 ●로 먼저)</li>
     <li data-i18n="b_gomoku_howto_3">한 줄로 5개를 만들면 승리합니다</li>
@@ -63,11 +63,11 @@
 
   <div class="card">
     <div class="opts">
-      <select id="mode">
+      <select aria-labelledby="lbl-mode" id="mode">
         <option value="ai" data-i18n="b_gomoku_mode_ai">vs 컴퓨터</option>
         <option value="2p" data-i18n="b_gomoku_mode_2p">2인 대전</option>
       </select>
-      <select id="diff">
+      <select aria-label="옵션 선택" data-i18n-aria="a11y.select" id="diff">
         <option value="easy" data-i18n="b_gomoku_diff_easy">쉬움</option>
         <option value="normal" selected data-i18n="b_gomoku_diff_normal">보통</option>
         <option value="hard" data-i18n="b_gomoku_diff_hard">어려움</option>
