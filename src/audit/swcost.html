@@ -34,10 +34,10 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <p class="sub" data-i18n="b_swcost_sub">기능점수 기반 개발원가와 투입 인월(MM)을 추정합니다.</p>
   <div class="card" style="max-width:none;">
     <div class="frm">
-    <label><span data-i18n="b_swcost_lbl_fp">기능점수(FP)</span><input type="number" id="fp" value="500"></label>
-    <label><span data-i18n="b_swcost_lbl_rate">FP 단가(원)</span><input type="number" id="rate" value="553000"></label>
-    <label><span data-i18n="b_swcost_lbl_adj">보정계수</span><input type="number" id="adj" value="1.0" step="0.05"></label>
-    <label><span data-i18n="b_swcost_lbl_prod">생산성(FP/MM)</span><input type="number" id="prod" value="20"></label>
+    <label><span data-i18n="b_swcost_lbl_fp">기능점수(FP)</span><input min="0" type="number" id="fp" value="500"></label>
+    <label><span data-i18n="b_swcost_lbl_rate">FP 단가(원)</span><input min="0" type="number" id="rate" value="553000"></label>
+    <label><span data-i18n="b_swcost_lbl_adj">보정계수</span><input min="0" type="number" id="adj" value="1.0" step="0.05"></label>
+    <label><span data-i18n="b_swcost_lbl_prod">생산성(FP/MM)</span><input min="0" type="number" id="prod" value="20"></label>
   </div><div class="res" id="res"></div>
     <div class="note" data-i18n="b_swcost_note">FP단가는 예시 기본값이며 매년 고시되는 'SW사업 대가산정 가이드' 값으로 바꿔 쓰세요. 보정계수(규모·연계·성능 등)는 사업 특성에 맞게 조정합니다. 참고용 추정입니다.</div>
   </div>

@@ -33,7 +33,7 @@
   <p class="sub" data-i18n="b_duedate_sub">마지막 생리 시작일을 넣으면 출산 예정일과 현재 임신 주수를 알려 줍니다(참고용).</p>
   <div class="card">
     <div class="fld"><label for="lmp" data-i18n="b_duedate_lbl_lmp">마지막 생리 시작일 (LMP)</label><input id="lmp" type="date"/></div>
-    <div class="fld"><label for="cycle" data-i18n="b_duedate_lbl_cycle">평균 생리주기 (일)</label><input id="cycle" type="number" value="28"/></div>
+    <div class="fld"><label for="cycle" data-i18n="b_duedate_lbl_cycle">평균 생리주기 (일)</label><input id="cycle" type="number" value="28" min="20" max="45"/></div>
     <div class="big"><div class="n" id="due">-</div><div class="u" data-i18n="b_duedate_lbl_due">출산 예정일</div></div>
     <div class="grid">
       <div class="item"><div class="l" data-i18n="b_duedate_lbl_weeks">현재 임신 주수</div><div class="v" id="weeks">-</div></div>
@@ -121,7 +121,7 @@
     }
     return 'D+'+(- left);
   }
-  function calc(){ var v=$('lmp').value; if(!v)return; var q=v.split('-'); var lmp=new Date(+q[0],+q[1]-1,+q[2]); var cyc=+$('cycle').value||28; // 로컬 자정 기준(UTC 파싱 시 한국에서 하루 어긋남)
+  function calc(){ var v=$('lmp').value; if(!v)return; var q=v.split('-'); var lmp=new Date(+q[0],+q[1]-1,+q[2]); var cyc=Math.min(45,Math.max(20,+$('cycle').value||28)); // 주기 20~45일로 제한 // 로컬 자정 기준(UTC 파싱 시 한국에서 하루 어긋남)
     var due=new Date(lmp); due.setDate(due.getDate()+280+(cyc-28));
     var today=new Date(); today.setHours(0,0,0,0);
     var days=Math.round((today-lmp)/86400000); var w=Math.floor(days/7), d=days%7;

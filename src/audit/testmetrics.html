@@ -34,14 +34,14 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <p class="sub" data-i18n="b_testmetrics_sub">결함밀도·통과율·결함제거효율(DRE)을 산출합니다.</p>
   <div class="card" style="max-width:none;">
     <div class="frm">
-    <label><span data-i18n="b_testmetrics_lbl_def">총 결함 수</span><input type="number" id="def" value="48"></label>
-    <label><span data-i18n="b_testmetrics_lbl_kloc">규모(KLOC)</span><input type="number" id="kloc" value="12"></label>
-    <label><span data-i18n="b_testmetrics_lbl_tc">테스트케이스</span><input type="number" id="tc" value="200"></label>
-    <label><span data-i18n="b_testmetrics_lbl_pass">통과 수</span><input type="number" id="pass" value="185"></label>
+    <label><span data-i18n="b_testmetrics_lbl_def">총 결함 수</span><input min="0" type="number" id="def" value="48"></label>
+    <label><span data-i18n="b_testmetrics_lbl_kloc">규모(KLOC)</span><input min="0" type="number" id="kloc" value="12"></label>
+    <label><span data-i18n="b_testmetrics_lbl_tc">테스트케이스</span><input min="0" type="number" id="tc" value="200"></label>
+    <label><span data-i18n="b_testmetrics_lbl_pass">통과 수</span><input min="0" type="number" id="pass" value="185"></label>
   </div><div class="frm">
-    <label><span data-i18n="b_testmetrics_lbl_pre">출시 전 결함</span><input type="number" id="pre" value="42"></label>
-    <label><span data-i18n="b_testmetrics_lbl_post">출시 후 결함</span><input type="number" id="post" value="6"></label>
-    <label><span data-i18n="b_testmetrics_lbl_uptime">총 가동시간(h)</span><input type="number" id="uptime" value="720"></label>
+    <label><span data-i18n="b_testmetrics_lbl_pre">출시 전 결함</span><input min="0" type="number" id="pre" value="42"></label>
+    <label><span data-i18n="b_testmetrics_lbl_post">출시 후 결함</span><input min="0" type="number" id="post" value="6"></label>
+    <label><span data-i18n="b_testmetrics_lbl_uptime">총 가동시간(h)</span><input min="0" type="number" id="uptime" value="720"></label>
   </div><div class="res" id="res"></div>
     <div class="note" data-i18n="b_testmetrics_note">결함밀도 = 결함 ÷ KLOC. DRE = 출시 전 결함 ÷ (출시 전 + 출시 후 결함) × 100. 값이 높을수록 결함을 잘 걸러낸 것입니다.</div>
   </div>

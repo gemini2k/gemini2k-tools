@@ -34,10 +34,10 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <p class="sub" data-i18n="b_roi_sub">투자 대비 효과(ROI)와 총소유비용(TCO), 투자 회수기간을 산출합니다.</p>
   <div class="card" style="max-width:none;">
     <div class="frm">
-    <label><span data-i18n="b_roi_lbl_inv">초기 투자비(원)</span><input type="number" id="inv" value="500000000"></label>
+    <label><span data-i18n="b_roi_lbl_inv">초기 투자비(원)</span><input min="0" type="number" id="inv" value="500000000"></label>
     <label><span data-i18n="b_roi_lbl_op">연간 운영비(원)</span><input type="number" id="op" value="50000000"></label>
-    <label><span data-i18n="b_roi_lbl_ben">연간 효과(원)</span><input type="number" id="ben" value="200000000"></label>
-    <label><span data-i18n="b_roi_lbl_yr">분석기간(년)</span><input type="number" id="yr" value="5"></label>
+    <label><span data-i18n="b_roi_lbl_ben">연간 효과(원)</span><input min="0" type="number" id="ben" value="200000000"></label>
+    <label><span data-i18n="b_roi_lbl_yr">분석기간(년)</span><input min="0" type="number" id="yr" value="5"></label>
   </div><div class="res" id="res"></div>
     <div class="note" data-i18n="b_roi_note">ROI = (누적 순효과 ÷ 총비용) × 100. 회수기간은 연간 순효과로 초기 투자비를 회수하는 데 걸리는 기간입니다. 참고용 추정입니다.</div>
   </div>

@@ -115,6 +115,26 @@
   else document.addEventListener('DOMContentLoaded', build);
 })();
 
+/* 숫자 입력 범위 가드 — 페이지마다 따로 막지 않고 input[type=number] 의 min/max 속성을 공통 적용.
+   - 입력 중(input): min 이 0 이상인 칸에 음수가 들어오면 부호를 뗀다(붙여넣기 포함). 도구 로직보다 먼저(캡처) 실행.
+   - 입력 완료(change): min/max 밖이면 범위 끝값으로 맞추고 input 이벤트를 다시 보내 재계산.
+     (입력 중에는 하한을 강제하지 않는다 — "15"를 치려고 "1"을 친 순간 min=10 으로 바뀌면 안 되므로) */
+(function(){
+  function num(el){ return el && el.tagName === 'INPUT' && el.type === 'number' && !el.readOnly; }
+  document.addEventListener('input', function(e){
+    var el = e.target; if (!num(el) || el.min === '' || +el.min < 0) return;
+    var v = parseFloat(el.value); if (v < 0) el.value = String(-v);
+  }, true);
+  document.addEventListener('change', function(e){
+    var el = e.target; if (!num(el) || el.value === '') return;
+    var v = parseFloat(el.value); if (isNaN(v)) return;
+    var c = v;
+    if (el.min !== '' && !isNaN(+el.min) && c < +el.min) c = +el.min;
+    if (el.max !== '' && !isNaN(+el.max) && c > +el.max) c = +el.max;
+    if (c !== v){ el.value = String(c); el.dispatchEvent(new Event('input', { bubbles:true })); }
+  }, true);
+})();
+
 /* 무거운 라이브러리 비동기 로드 — 셸·본문이 먼저 뜨고, 라이브러리는 뒤에서 받는다.
    loadVendor('/vendor/x/x.js', onReady, statusEl[, '2.8MB'])
    - statusEl: 불러오는 동안 안내 문구를 보여줄 요소(결과 영역 등). 완료되면 비우고 onReady 호출.

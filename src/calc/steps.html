@@ -26,8 +26,8 @@
   <h1 data-i18n="b_steps_title">걸음 수 → 거리·칼로리</h1>
   <p class="sub" data-i18n="b_steps_sub">하루 걸음 수로 걸은 거리와 소모 칼로리를 계산합니다(참고용).</p>
   <div class="card">
-    <div class="fld"><label for="steps" data-i18n="b_steps_label_steps">걸음 수</label><input id="steps" type="number" inputmode="numeric" value="8000"/></div>
-    <div class="row"><div class="fld"><label for="h" data-i18n="b_steps_label_height">키 (cm)</label><input id="h" type="number" value="170"/></div><div class="fld"><label for="wt" data-i18n="b_steps_label_weight">체중 (kg)</label><input id="wt" type="number" value="65"/></div></div>
+    <div class="fld"><label for="steps" data-i18n="b_steps_label_steps">걸음 수</label><input min="0" id="steps" type="number" inputmode="numeric" value="8000"/></div>
+    <div class="row"><div class="fld"><label for="h" data-i18n="b_steps_label_height">키 (cm)</label><input min="0" id="h" type="number" value="170"/></div><div class="fld"><label for="wt" data-i18n="b_steps_label_weight">체중 (kg)</label><input min="0" id="wt" type="number" value="65"/></div></div>
     <div class="grid">
       <div class="item"><div class="l" data-i18n="b_steps_res_dist">이동 거리</div><div class="v" id="dist">-</div></div>
       <div class="item"><div class="l" data-i18n="b_steps_res_kcal">소모 칼로리</div><div class="v" id="kcal">-</div></div>

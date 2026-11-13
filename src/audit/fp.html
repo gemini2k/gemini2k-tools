@@ -34,11 +34,11 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <p class="sub" data-i18n="b_fp_sub">데이터·트랜잭션 기능 개수로 미보정 기능점수(UFP)를 추정합니다.</p>
   <div class="card" style="max-width:none;">
     <div class="frm">
-    <label><span data-i18n="b_fp_lbl_ilf">내부논리파일(ILF)</span><input type="number" id="ilf" value="8"></label>
-    <label><span data-i18n="b_fp_lbl_eif">외부연계파일(EIF)</span><input type="number" id="eif" value="3"></label>
-    <label><span data-i18n="b_fp_lbl_ei">외부입력(EI)</span><input type="number" id="ei" value="20"></label>
-    <label><span data-i18n="b_fp_lbl_eo">외부출력(EO)</span><input type="number" id="eo" value="12"></label>
-    <label><span data-i18n="b_fp_lbl_eq">외부조회(EQ)</span><input type="number" id="eq" value="15"></label>
+    <label><span data-i18n="b_fp_lbl_ilf">내부논리파일(ILF)</span><input min="0" type="number" id="ilf" value="8"></label>
+    <label><span data-i18n="b_fp_lbl_eif">외부연계파일(EIF)</span><input min="0" type="number" id="eif" value="3"></label>
+    <label><span data-i18n="b_fp_lbl_ei">외부입력(EI)</span><input min="0" type="number" id="ei" value="20"></label>
+    <label><span data-i18n="b_fp_lbl_eo">외부출력(EO)</span><input min="0" type="number" id="eo" value="12"></label>
+    <label><span data-i18n="b_fp_lbl_eq">외부조회(EQ)</span><input min="0" type="number" id="eq" value="15"></label>
   </div><div class="res" id="res"></div>
     <div class="note" data-i18n="b_fp_note">간이법(평균복잡도) 가중치: 내부논리파일 7.5 · 외부연계파일 5.4 · 외부입력 4.0 · 외부출력 5.2 · 외부조회 3.9. 실제 대가산정은 보정계수가 필요합니다.</div>
   </div>

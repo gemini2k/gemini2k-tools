@@ -34,10 +34,10 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <p class="sub" data-i18n="b_evm_sub">계획가치·획득가치·실제원가로 일정·원가 성과지표를 산출합니다.</p>
   <div class="card" style="max-width:none;">
     <div class="frm">
-    <label><span data-i18n="b_evm_lbl_bac">BAC 총예산</span><input type="number" id="bac" value="100000000"></label>
-    <label><span data-i18n="b_evm_lbl_pv">PV 계획가치</span><input type="number" id="pv" value="40000000"></label>
-    <label><span data-i18n="b_evm_lbl_ev">EV 획득가치</span><input type="number" id="ev" value="35000000"></label>
-    <label><span data-i18n="b_evm_lbl_ac">AC 실제원가</span><input type="number" id="ac" value="42000000"></label>
+    <label><span data-i18n="b_evm_lbl_bac">BAC 총예산</span><input min="0" type="number" id="bac" value="100000000"></label>
+    <label><span data-i18n="b_evm_lbl_pv">PV 계획가치</span><input min="0" type="number" id="pv" value="40000000"></label>
+    <label><span data-i18n="b_evm_lbl_ev">EV 획득가치</span><input min="0" type="number" id="ev" value="35000000"></label>
+    <label><span data-i18n="b_evm_lbl_ac">AC 실제원가</span><input min="0" type="number" id="ac" value="42000000"></label>
   </div><div class="res" id="res"></div>
     <div class="note" data-i18n="b_evm_note">SPI/CPI ≥ 1 이면 일정/원가 양호, &lt; 1 이면 지연/초과입니다. EAC는 현재 효율(CPI) 유지 가정의 최종 예상원가입니다.</div>
   </div>

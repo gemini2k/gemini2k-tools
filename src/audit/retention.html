@@ -35,7 +35,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
   <div class="card" style="max-width:none;">
     <div class="frm">
     <label><span data-i18n="b_retention_label_start">수집일</span><input type="date" id="start"></label>
-    <label><span data-i18n="b_retention_label_num">보유기간</span><input type="number" id="num" value="3"></label>
+    <label><span data-i18n="b_retention_label_num">보유기간</span><input type="number" id="num" value="3" min="0" max="1000"></label>
     <label><span data-i18n="b_retention_label_unit">단위</span><select id="unit"><option value="y" data-i18n="b_retention_unit_y">년</option><option value="m" data-i18n="b_retention_unit_m">개월</option><option value="d" data-i18n="b_retention_unit_d">일</option></select></label>
   </div><div class="res" id="res"></div>
     <div class="note" data-i18n="b_retention_note">법정 보유기간 예: 계약·청약철회 5년, 대금결제 5년, 소비자 불만·분쟁 3년, 표시·광고 6개월, 통신비밀보호법 접속기록 3개월(통신) 등. 실제 적용 법령을 확인하세요.</div>
@@ -81,7 +81,7 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
 var $=function(i){return document.getElementById(i);};function pad(n){return(n<10?'0':'')+n;}
   (function(){var n=new Date();$('start').value=n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate());})();
   function run(){var s=new Date($('start').value);if(isNaN(s)){$('res').innerHTML=t('b_retention_err_no_date');return;}
-    var num=+$('num').value||0,u=$('unit').value,d=new Date(s);
+    var num=Math.min(1000,Math.max(0,Math.round(+$('num').value||0))),u=$('unit').value,d=new Date(s);
     if(u==='y')d.setFullYear(d.getFullYear()+num);else if(u==='m')d.setMonth(d.getMonth()+num);else d.setDate(d.getDate()+num);
     var days=Math.ceil((d-new Date())/86400000);
     var daysLabel=days<0?t('b_retention_expired').replace('{n}',(-days)):'D-'+days;
