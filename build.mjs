@@ -377,6 +377,15 @@ for (const f of pageFiles) {
 // (b) 언어 변형 생성
 const langUrls = [];
 let langPages = 0;
+// 정보 페이지 외국어 본문 조각: 첫 줄 <!--META {"title","desc"}--> + article 안쪽 HTML (.frag 는 배포 복사 대상 아님)
+const DOC_FRAG = {};
+{ const dir = path.join(SRC, '_site', 'i18n');
+  if (fs.existsSync(dir)) for (const f of fs.readdirSync(dir)) {
+    const m = f.match(/^([\w-]+)\.(en|zh|ja)\.frag$/); if (!m) continue;
+    const raw = fs.readFileSync(path.join(dir, f), 'utf8').replace(/^﻿/, '');
+    const mm = raw.match(/^<!--META (\{[\s\S]*?\})-->\r?\n/); if (!mm) throw new Error('META 줄 누락: ' + f);
+    DOC_FRAG[m[1] + '.html.' + m[2]] = { meta: JSON.parse(mm[1]), body: raw.slice(mm[0].length).trimEnd() };
+  } }
 function localize(html, file, lang, htmlLang) {
   const loc = file === 'index.html' ? BASE + '/' + lang + '/' : BASE + '/' + lang + '/' + file;
   html = html.replace(/<html lang="[^"]*"/, '<html lang="' + htmlLang + '"');
@@ -399,6 +408,12 @@ function localize(html, file, lang, htmlLang) {
     const lab = I18N[lang]['cat.' + slug2cat[file]] || slug2cat[file]; title = CAT_H1[lang](lab) + ' — ' + SITE[lang];
     const cb = catBody(slug2cat[file], lang); desc = cb.blurb + '.';
     html = html.replace(/(<div class="toolwrap">\n)[\s\S]*?(<\/div>\n<script src="tool-shell\.js)/, (m, a1, a2) => a1 + cb.html + a2);   // 본문 정적 번역
+  }
+  else if (DOC_FRAG[file + '.' + lang]) {   // 소개·문의·개인정보·약관: src/_site/i18n/<page>.<lang>.frag 로 본문 정적 번역
+    const fr = DOC_FRAG[file + '.' + lang]; title = fr.meta.title; desc = fr.meta.desc;
+    const n0 = html.length;
+    html = html.replace(/(<article class="doc">)[\s\S]*?(<\/article>)/, (m, a1, a2) => a1 + '\n' + fr.body + '\n  ' + a2);
+    if (html.length === n0 && html.indexOf(fr.body) < 0) console.warn('  ⚠ 문서 본문 교체 실패:', lang, file);
   }
   if (title) { html = html.replace(/<title>[^<]*<\/title>/, '<title>' + attrEsc(title) + '</title>'); html = html.replace(/(<meta property="og:title" content=")[^"]*(")/, '$1' + attrEsc(title) + '$2'); html = html.replace(/(<meta name="twitter:title" content=")[^"]*(")/, '$1' + attrEsc(title) + '$2'); }
   if (desc) { html = html.replace(/(<meta name="description" content=")[^"]*(")/, '$1' + attrEsc(desc) + '$2'); html = html.replace(/(<meta property="og:description" content=")[^"]*(")/, '$1' + attrEsc(desc) + '$2'); html = html.replace(/(<meta name="twitter:description" content=")[^"]*(")/, '$1' + attrEsc(desc) + '$2'); }
