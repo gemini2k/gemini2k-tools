@@ -102,6 +102,7 @@
 </div>
 
 <script src="tool-shell.js"></script>
+<script src="jsonbig.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
   function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
@@ -155,14 +156,14 @@
   function run(){
     $('err').textContent='';
     var src=$('json').value.trim(); if(!src){ $('out').value=''; return; }
-    var data; try{ data=JSON.parse(src); }catch(e){ $('err').textContent=t('b_jsonpath_err_invalid_json'); $('out').value=''; return; }
+    var data; try{ data=JSONB.parse(src); }catch(e){ $('err').textContent=t('b_jsonpath_err_invalid_json'); $('out').value=''; return; }
     var p=$('path').value.trim();
-    if(!p){ $('out').value=JSON.stringify(data,null,2); return; }
+    if(!p){ $('out').value=JSONB.stringify(data,null,2); return; }
     var toks; try{ toks=tokens(p); }catch(e){ $('err').textContent=t('b_jsonpath_err_invalid_path')+' — '+p.slice(0,e.pos)+' ⟶ '+(p.slice(e.pos)||'∅'); $('out').value=''; return; }
-    if(!toks.length){ $('out').value=JSON.stringify(data,null,2); return; }
+    if(!toks.length){ $('out').value=JSONB.stringify(data,null,2); return; }
     var res=query(data, toks).filter(function(v){return v!==undefined;});
     var out = res.length<=1 ? (res.length?res[0]:undefined) : res;
-    $('out').value = out===undefined ? t('b_jsonpath_no_match') : JSON.stringify(out,null,2);
+    $('out').value = out===undefined ? t('b_jsonpath_no_match') : JSONB.stringify(out,null,2);
   }
   ['json','path'].forEach(function(id){ $(id).addEventListener('input', run); });
   $('copy').addEventListener('click', function(){ if($('out').value) navigator.clipboard.writeText($('out').value).then(function(){toast(t('b_jsonpath_toast_copied'));}); });

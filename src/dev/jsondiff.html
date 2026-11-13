@@ -72,6 +72,7 @@
   </section>
 </div>
 <script src="tool-shell.js"></script>
+<script src="jsonbig.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   function isObj(v){return v&&typeof v==='object';}
@@ -86,10 +87,10 @@
       else if(JSON.stringify(av)!==JSON.stringify(bv)) out.push(['chg',p,av,bv]);
     });
   }
-  function fmt(v){ return v===undefined?'∅':JSON.stringify(v); }
+  function fmt(v){ return v===undefined?'∅':JSONB.stringify(v); }
   function run(){ $('err').textContent=''; var A,B;
-    try{A=JSON.parse($('a').value);}catch(e){$('err').textContent=t('b_jsondiff_err_a')+e.message;return;}
-    try{B=JSON.parse($('b').value);}catch(e){$('err').textContent=t('b_jsondiff_err_b')+e.message;return;}
+    try{A=JSONB.parse($('a').value);}catch(e){$('err').textContent=t('b_jsondiff_err_a')+e.message;return;}
+    try{B=JSONB.parse($('b').value);}catch(e){$('err').textContent=t('b_jsondiff_err_b')+e.message;return;}
     var out=[]; diff(A,B,'',out);
     var na=out.filter(function(d){return d[0]==='add';}).length, nd=out.filter(function(d){return d[0]==='del';}).length, nc=out.filter(function(d){return d[0]==='chg';}).length;
     $('sum').innerHTML='<span class="sbox" style="color:#16a34a">＋'+t('b_jsondiff_added')+' '+na+'</span><span class="sbox" style="color:#b91c1c">－'+t('b_jsondiff_deleted')+' '+nd+'</span><span class="sbox" style="color:#b45309">≠'+t('b_jsondiff_changed')+' '+nc+'</span>';

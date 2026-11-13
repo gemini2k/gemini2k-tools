@@ -70,12 +70,13 @@ textarea{min-height:150px;resize:vertical;}#expr{font-weight:600;}
   </section>
 </div>
 <script src="tool-shell.js"></script>
+<script src="jsonbig.js"></script>
 <script src="/vendor/jsonata-2/jsonata.min.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   function run(){ $('err').textContent='';
-    var data; try{ data=JSON.parse($('data').value); }catch(e){ $('err').textContent='⚠️ '+t('b_jsonata_err_json')+e.message; $('out').textContent=''; return; }
-    try{ var ex=jsonata($('expr').value); ex.evaluate(data).then(function(res){ $('out').textContent=res===undefined?t('b_jsonata_no_result'):JSON.stringify(res,null,2); })
+    var data; try{ data=JSONB.parse($('data').value); }catch(e){ $('err').textContent='⚠️ '+t('b_jsonata_err_json')+e.message; $('out').textContent=''; return; }
+    try{ var ex=jsonata($('expr').value); ex.evaluate(data).then(function(res){ $('out').textContent=res===undefined?t('b_jsonata_no_result'):JSONB.stringify(res,null,2); })
         .catch(function(e){ $('err').textContent='⚠️ '+e.message; $('out').textContent=''; }); }
     catch(e){ $('err').textContent='⚠️ '+t('b_jsonata_err_expr')+e.message; $('out').textContent=''; } }
   window.onI18n=run;

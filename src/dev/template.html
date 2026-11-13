@@ -85,13 +85,14 @@ textarea{width:100%;min-height:170px;padding:.6rem .7rem;border:1px solid var(--
   </section>
 </div>
 <script src="tool-shell.js"></script>
+<script src="jsonbig.js"></script>
 <script src="/vendor/handlebars-4/handlebars.min.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
   function run(){ $('err').textContent='';
-    var data; try{ data=JSON.parse($('data').value); }catch(e){ $('err').textContent='⚠️ '+t('b_template_err_json')+e.message; return; }
-    try{ var tpl=Handlebars.compile($('tpl').value); $('out').textContent=tpl(data); window._o=$('out').textContent; }
+    var data; try{ data=JSONB.parse($('data').value); }catch(e){ $('err').textContent='⚠️ '+t('b_template_err_json')+e.message; return; }
+    try{ var tpl=Handlebars.compile($('tpl').value); $('out').textContent=JSONB.unmark(tpl(data)); window._o=$('out').textContent; }
     catch(e){ $('err').textContent='⚠️ '+t('b_template_err_tpl')+e.message; } }
   var _t; ['tpl','data'].forEach(function(id){$(id).addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(run,300);});});
   $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_template_toast_copy'));});});

@@ -115,6 +115,7 @@
 </div>
 
 <script src="tool-shell.js"></script>
+<script src="jsonbig.js"></script>
 <script src="/vendor/js-yaml-4.1.0/js-yaml.min.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
@@ -124,7 +125,7 @@
     var inp=$('input').value, ind=parseInt($('indent').value,10); $('err').textContent='';
     if(!inp.trim()){ $('out').textContent=''; return; }
     try{
-      if(dir==='j2y'){ var obj=JSON.parse(inp); $('out').textContent=jsyaml.dump(obj,{indent:ind,lineWidth:-1,noRefs:true}); }
+      if(dir==='j2y'){ var obj=JSONB.parse(inp); $('out').textContent=JSONB.unmark(jsyaml.dump(obj,{indent:ind,lineWidth:-1,noRefs:true})); }
       else { var o=jsyaml.load(inp); $('out').textContent=JSON.stringify(o,null,ind); }
     }catch(e){ $('out').textContent=''; $('err').textContent='⚠️ '+(dir==='j2y'?'JSON':'YAML')+' '+t('b_jsonyaml_err_fmt')+(e.message||e); }
   }

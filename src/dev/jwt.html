@@ -111,6 +111,7 @@
 </div>
 
 <script src="tool-shell.js"></script>
+<script src="jsonbig.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
   function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }
@@ -124,7 +125,7 @@
     for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
     return new TextDecoder('utf-8').decode(bytes);
   }
-  function pretty(jsonStr){ return JSON.stringify(JSON.parse(jsonStr), null, 2); }
+  function pretty(jsonStr){ return JSONB.stringify(JSONB.parse(jsonStr), null, 2); }
 
   var _localeMap = {ko:'ko-KR',en:'en-US',zh:'zh-CN',ja:'ja-JP'};
   function fmtTime(sec){

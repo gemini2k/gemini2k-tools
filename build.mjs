@@ -197,7 +197,7 @@ for (const f of fs.readdirSync(DIST)){
 
 // 2.5) 앱 코드 캐시버스팅 — 배포마다 ?v= 갱신해 모바일 캐시 staleness 방지 (vendor/fonts 는 불변이라 제외)
 const VER = Date.now().toString(36);
-const APP = ['style.css','ga.js','theme.js','i18n.js','i18n-core.js','tools.js','tool-shell.js','audit-kit.js','help-export.js'];
+const APP = ['style.css','ga.js','theme.js','i18n.js','i18n-core.js','tools.js','tool-shell.js','audit-kit.js','help-export.js','jsonbig.js'];
 const appRe = new RegExp('(src|href)="(' + APP.map(f=>f.replace(/\./g,'\\.')).join('|') + ')"', 'g');
 const PWA_HEAD = '<link rel="manifest" href="/manifest.json"/><meta name="theme-color" content="#1AA3E0"/>'
   + '<meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="default"/>'

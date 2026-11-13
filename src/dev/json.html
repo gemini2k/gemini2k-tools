@@ -128,6 +128,7 @@
 </div>
 
 <script src="tool-shell.js"></script>
+<script src="jsonbig.js"></script>
 <script>
   function T(k){ return window.t ? window.t(k) : k; }
   function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1700);}
@@ -147,16 +148,16 @@
   function validate(){
     var t=input.value.trim();
     if(!t){ setStatus('','' ); return null; }
-    try{ var v=JSON.parse(t); setStatus('ok', T('jn.valid')); return v; }
+    try{ var v=JSONB.parse(t); setStatus('ok', T('jn.valid')); return v; }
     catch(e){ setStatus('err', T('jn.error').replace('{m}', e.message)); return undefined; }
   }
   function run(min){
     lastMin=min;
     var t=input.value.trim();
     if(!t){ setStatus('', T('jn.empty')); output.value=''; return; }
-    var v; try{ v=JSON.parse(t); }catch(e){ setStatus('err', T('jn.error').replace('{m}', e.message)); output.value=''; return; }
+    var v; try{ v=JSONB.parse(t); }catch(e){ setStatus('err', T('jn.error').replace('{m}', e.message)); output.value=''; return; }
     if(sortChk.checked) v=sortDeep(v);
-    output.value = min ? JSON.stringify(v) : JSON.stringify(v, null, indentVal());
+    output.value = min ? JSONB.stringify(v) : JSONB.stringify(v, null, indentVal());  // 큰 정수·긴 소수 원문 보존
     setStatus('ok', T('jn.valid'));
   }
   input.addEventListener('input', function(){ run(lastMin); });

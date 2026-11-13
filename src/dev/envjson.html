@@ -74,6 +74,7 @@ DEBUG=true</textarea>
   </section>
 </div>
 <script src="tool-shell.js"></script>
+<script src="jsonbig.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
@@ -86,8 +87,8 @@ DEBUG=true</textarea>
     if(end>0) v=v.slice(1,end);                 // 따옴표 값: 닫는 따옴표 뒤(# 주석 등)는 버린다
     else v=v.replace(/\s+#.*$/,'');             // 따옴표 없는 값: 공백 뒤 # 부터는 주석
     o[m[1]]=v; }); return JSON.stringify(o,null,2); }
-  function j2e(s){ var o=JSON.parse(s); return Object.keys(o).map(function(k){ var v=o[k]; if(v===null)v='';
-    v=typeof v==='object'?JSON.stringify(v):String(v); if(/[\s#"'=]/.test(v))v='"'+v.replace(/"/g,'\\"')+'"'; return k+'='+v; }).join('\n'); }
+  function j2e(s){ var o=JSONB.parse(s); return Object.keys(o).map(function(k){ var v=o[k]; if(v===null)v='';
+    v=JSONB.unmark(typeof v==='object'?JSONB.stringify(v):String(v)); if(/[\s#"'=]/.test(v))v='"'+v.replace(/"/g,'\\"')+'"'; return k+'='+v; }).join('\n'); }
   function run(){ $('err').textContent=''; try{ $('out').textContent = dir==='e2j'? e2j($('in').value) : j2e($('in').value); }
     catch(e){ $('out').textContent=''; $('err').textContent='⚠️ '+e.message; } }
   $('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;dir=b.dataset.d;Array.prototype.forEach.call($('seg').children,function(x){x.classList.toggle('on',x===b);});
