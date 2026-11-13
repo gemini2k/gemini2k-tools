@@ -73,8 +73,8 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     </dl>
   </section>
 </div>
-<script src="/vendor/acorn-8/acorn.js"></script><script src="tool-shell.js"></script>
-<script>
+<script src="tool-shell.js"></script>
+<script src="/vendor/acorn-8/acorn.js"></script><script>
 var $=function(i){return document.getElementById(i);};
   function walk(node,fn){if(!node||typeof node.type!=='string')return;fn(node);for(var k in node){if(k==='type')continue;var v=node[k];if(Array.isArray(v))v.forEach(function(c){if(c&&c.type)walk(c,fn);});else if(v&&v.type)walk(v,fn);}}
   function cc(node){var c=1;walk(node,function(n){if(/IfStatement|ForStatement|ForInStatement|ForOfStatement|WhileStatement|DoWhileStatement|CatchClause|ConditionalExpression/.test(n.type))c++;else if(n.type==='SwitchCase'&&n.test)c++;else if(n.type==='LogicalExpression'&&(n.operator==='&&'||n.operator==='||'))c++;});return c;}

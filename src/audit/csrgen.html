@@ -67,8 +67,8 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     </dl>
   </section>
 </div>
-<script src="/vendor/jsrsasign-11/jsrsasign-all-min.js"></script><script src="tool-shell.js"></script>
-<script>
+<script src="tool-shell.js"></script>
+<script src="/vendor/jsrsasign-11/jsrsasign-all-min.js"></script><script>
 var $=function(i){return document.getElementById(i);};$("gen").addEventListener("click",function(){$("st2").textContent=t('b_csrgen_status_generating');$("gen").disabled=true;setTimeout(function(){try{var kp=KEYUTIL.generateKeypair("RSA",+$("bits").value);var dn="/C="+$("c").value+"/ST="+$("st").value+"/L="+$("l").value+"/O="+$("o").value+"/OU="+$("ou").value+"/CN="+$("cn").value;var csr=KJUR.asn1.csr.CSRUtil.newCSRPEM({subject:{str:dn},sbjpubkey:kp.pubKeyObj,sigalg:"SHA256withRSA",sbjprvkey:kp.prvKeyObj});$("csr").value=csr;$("key").value=KEYUTIL.getPEM(kp.prvKeyObj,"PKCS8PRV");$("st2").textContent=t('b_csrgen_status_done');}catch(e){$("st2").textContent="⚠️ "+e.message;}$("gen").disabled=false;},30);});
 </script>
 </body>

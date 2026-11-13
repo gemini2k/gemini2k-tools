@@ -28,8 +28,6 @@
 <script src="theme.js"></script>
 <script src="i18n.js"></script>
 <script src="tools.js"></script>
-<script src="/vendor/proj4-2.15.0/proj4.js"></script>
-<script src="/vendor/ol-7.5.2/ol.js"></script>
 <style>
   #din{ width:100%; min-height:110px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.85rem; line-height:1.55; }
   .ctrls{ display:flex; flex-wrap:wrap; gap:.6rem; align-items:flex-end; margin-top:.8rem; }
@@ -37,10 +35,10 @@
   .ctrls label{ font-size:.78rem; font-weight:700; color:var(--muted); }
   .ctrls select, .ctrls input[type=number]{ width:auto; min-width:90px; padding:.5rem .6rem; }
   .methods{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1rem; }
-  .methods label{ border:1px solid var(--border); border-radius:10px; padding:.55rem .8rem; cursor:pointer; font-size:.88rem; background:#fafbff; }
+  .methods label{ border:1px solid var(--border); border-radius:10px; padding:.55rem .8rem; cursor:pointer; font-size:.88rem; background:var(--surface-2); }
   .methods label.on{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent); font-weight:700; }
   .methods input{ display:none; }
-  .params{ margin-top:.8rem; padding:.8rem 1rem; border:1px dashed var(--border); border-radius:12px; background:#fafbff; }
+  .params{ margin-top:.8rem; padding:.8rem 1rem; border:1px dashed var(--border); border-radius:12px; background:var(--surface-2); }
   .params .row{ display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end; }
   .mdesc{ font-size:.82rem; color:var(--muted); margin:.2rem 0 .7rem; }
   #dmap{ width:100%; height:400px; border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-top:1rem; }
@@ -49,7 +47,7 @@
   .legend{ display:flex; gap:1rem; margin-top:.5rem; font-size:.82rem; color:var(--muted); }
   .legend i{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:.3rem; vertical-align:middle; }
   .stats{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
-  .stat{ background:#fafbff; border:1px solid var(--border); border-radius:10px; padding:.5rem .8rem; font-size:.85rem; }
+  .stat{ background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:.5rem .8rem; font-size:.85rem; }
   .stat b{ color:var(--accent); }
   .err{ color:#c0392b; font-size:.88rem; margin-top:.5rem; min-height:1.2em; }
 </style>
@@ -173,6 +171,8 @@
 </div>
 
 <script src="tool-shell.js"></script>
+<script src="/vendor/proj4-2.15.0/proj4.js"></script>
+<script src="/vendor/ol-7.5.2/ol.js"></script>
 <script>
   function T(k){ return window.t ? window.t(k) : k; }
   function $(id){ return document.getElementById(id); }

@@ -79,8 +79,8 @@ textarea{width:100%;min-height:260px;padding:.7rem;border:1px solid var(--border
     </dl>
   </section>
 </div>
-<script src="/vendor/less-4/less.min.js"></script>
 <script src="tool-shell.js"></script>
+<script src="/vendor/less-4/less.min.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}

@@ -28,8 +28,6 @@
 <script src="theme.js"></script>
 <script src="i18n.js"></script>
 <script src="tools.js"></script>
-<script src="/vendor/proj4-2.15.0/proj4.js"></script>
-<script src="/vendor/ol-7.5.2/ol.js"></script>
 <style>
   #cin{ width:100%; min-height:120px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.85rem; line-height:1.55; }
   .ctrls{ display:flex; flex-wrap:wrap; gap:.6rem; align-items:flex-end; margin-top:.8rem; }
@@ -40,10 +38,10 @@
   #cmap .ol-viewport, #cmap .ol-viewport canvas{ cursor:grab; }
   #cmap .ol-viewport:active, #cmap .ol-viewport:active canvas{ cursor:grabbing; }
   .stats{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; }
-  .stat{ background:#fafbff; border:1px solid var(--border); border-radius:10px; padding:.5rem .8rem; font-size:.85rem; }
+  .stat{ background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:.5rem .8rem; font-size:.85rem; }
   .stat b{ color:var(--accent); }
   .err{ color:#c0392b; font-size:.88rem; margin-top:.5rem; min-height:1.2em; }
-  .ol-popup{ position:absolute; background:#fff; border:1px solid var(--border); border-radius:10px; padding:.6rem .8rem; font-size:.82rem; box-shadow:0 6px 20px rgba(0,0,0,.15); max-width:280px; max-height:200px; overflow:auto; transform:translate(-50%,-100%); margin-top:-12px; pointer-events:auto; }
+  .ol-popup{ position:absolute; background:var(--surface); color:var(--text); border:1px solid var(--border); border-radius:10px; padding:.6rem .8rem; font-size:.82rem; box-shadow:0 6px 20px rgba(0,0,0,.15); max-width:280px; max-height:200px; overflow:auto; transform:translate(-50%,-100%); margin-top:-12px; pointer-events:auto; }
   .ol-popup table{ border-collapse:collapse; }
   .ol-popup td{ padding:1px 6px 1px 0; vertical-align:top; }
   .ol-popup td:first-child{ color:var(--muted); font-weight:600; white-space:nowrap; }
@@ -154,6 +152,8 @@
 </div>
 
 <script src="tool-shell.js"></script>
+<script src="/vendor/proj4-2.15.0/proj4.js"></script>
+<script src="/vendor/ol-7.5.2/ol.js"></script>
 <script>
   function T(k){ return window.t ? window.t(k) : k; }
   function $(id){ return document.getElementById(id); }

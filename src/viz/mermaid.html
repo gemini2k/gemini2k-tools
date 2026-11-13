@@ -15,7 +15,7 @@
   .ex{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem;}.ex button{padding:.35rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-family:inherit;cursor:pointer;font-size:.82rem;}
   textarea{width:100%;min-height:160px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);font-family:ui-monospace,monospace;font-size:.86rem;color:var(--text);resize:vertical;}
   .err{color:#e0563b;font-size:.84rem;min-height:1.1em;margin:.4rem 0;}
-  .prev{border:1px solid var(--border);border-radius:11px;background:#fff;padding:1rem;text-align:center;overflow:auto;margin-top:.6rem;}
+  .prev{border:1px solid var(--border);border-radius:11px;background:#fff;color:#475569;padding:1rem;text-align:center;overflow:auto;margin-top:.6rem;}
   .actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.7rem;}
   .note{margin-top:1.1rem;font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--accent-soft);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;}
 </style>
@@ -71,7 +71,6 @@
     </dl>
   </section>
 </div>
-<script src="/vendor/mermaid-10/mermaid.min.js"></script>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
@@ -84,16 +83,15 @@
     pie:'pie title 점유율\n  "A" : 45\n  "B" : 30\n  "C" : 25'
   };
   function isDark(){ return document.documentElement.getAttribute('data-theme')==='dark'; }
-  function initTheme(th){ mermaid.initialize({startOnLoad:false, theme: th, securityLevel:'strict'}); }
-  initTheme(isDark()?'dark':'default');
+  function initTheme(th){ if(!window.mermaid) return; mermaid.initialize({startOnLoad:false, theme: th, securityLevel:'strict'}); }
   var seq=0;
   // 내보내기용: 화면 테마와 무관하게 라이트(default) 테마로 다시 그린 SVG
-  function lightSvg(){ var code=$('in').value.trim(); if(!code) return Promise.reject();
+  function lightSvg(){ var code=$('in').value.trim(); if(!code||!window.mermaid) return Promise.reject();
     initTheme('default');
     var restore=function(){ initTheme(isDark()?'dark':'default'); };
     return mermaid.render('mx'+(seq++),code).then(function(r){ restore(); return r.svg; },function(e){ restore(); throw e; }); }
   try{ new MutationObserver(function(){ initTheme(isDark()?'dark':'default'); render(); }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); }catch(e){}
-  function render(){ var code=$('in').value.trim(); $('err').textContent=''; if(!code){$('prev').innerHTML='';return;}
+  function render(){ if(!window.mermaid) return; var code=$('in').value.trim(); $('err').textContent=''; if(!code){$('prev').innerHTML='';return;}
     var mid='m'+(seq++);
     mermaid.render(mid,code).then(function(r){ $('prev').innerHTML=r.svg; window._svg=r.svg; })
       .catch(function(e){ $('err').textContent=t('b_mermaid_err_syntax')+(e&&e.message?e.message.split('\n')[0]:e); });
@@ -114,7 +112,8 @@
       var a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='mermaid.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},100); };
     img.onerror=function(){toast(t('b_mermaid_toast_png_fail'));}; img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data);
     }).catch(function(){ toast(t('b_mermaid_toast_png_fail')); }); });
-  $('in').value=EX.flow; render();
+  $('in').value=EX.flow;
+  loadVendor('/vendor/mermaid-10/mermaid.min.js',function(){ initTheme(isDark()?'dark':'default'); render(); },$('prev'),'1.0MB');
 </script>
 </body>
 </html>

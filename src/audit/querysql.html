@@ -71,8 +71,8 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     </dl>
   </section>
 </div>
-<script src="/vendor/alasql-4/alasql.min.js"></script><script src="tool-shell.js"></script>
-<script>
+<script src="tool-shell.js"></script>
+<script src="/vendor/alasql-4/alasql.min.js"></script><script>
 var $=function(i){return document.getElementById(i);};function parse(){var raw=$("data").value.replace(/\\n/g,"\n").trim();if($("fmt").value==="json")return JSON.parse(raw);var ls=raw.split(/\r?\n/).filter(Boolean);var h=ls[0].split(",").map(function(x){return x.trim();});return ls.slice(1).map(function(l){var c=l.split(",");var o={};h.forEach(function(k,i){var v=(c[i]||"").trim();o[k]=/^-?\d+(\.\d+)?$/.test(v)?+v:v;});return o;});}function run(){$("err").textContent="";try{var rows=parse();["t","data"].forEach(function(tn){alasql("DROP TABLE IF EXISTS "+tn);alasql("CREATE TABLE "+tn);alasql.tables[tn].data=rows;});var r=alasql($("q").value);if(!Array.isArray(r)){$("res").innerHTML="<div class=\"ak-rate\">"+t('b_querysql_done')+"</div>";return;}if(!r.length){$("res").innerHTML="("+t('b_querysql_zero_rows')+")";return;}var cols=Object.keys(r[0]);var html="<table><tr>"+cols.map(function(c){return "<td><b>"+c+"</b></td>";}).join("")+"</tr>"+r.slice(0,200).map(function(row){return "<tr>"+cols.map(function(c){return "<td>"+(row[c]==null?"":String(row[c]))+"</td>";}).join("")+"</tr>";}).join("")+"</table>";$("res").innerHTML="<div class=\"ak-rate\"><b>"+r.length+t('b_querysql_rows_unit')+"</b></div>"+html;}catch(e){$("res").innerHTML="";$("err").textContent="⚠️ "+e.message;}}$("run").addEventListener("click",run);["data","q","fmt"].forEach(function(i){$(i).addEventListener("change",run);});window.onI18n=run;run();
 </script>
 </body>

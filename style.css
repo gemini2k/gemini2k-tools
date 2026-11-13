@@ -7,6 +7,7 @@
   --accent:#2563EB; --accent-d:#1D4ED8; --accent-soft:#EAF1FE;
   --border:#DDE3EC; --ok:#0EA46A; --radius:10px; --maxw:1080px;
   --input-bg:#FFFFFF;
+  --surface-2:#FAFBFF; --hover:#F3F4F6;
   --font:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,"D2Coding",monospace;
   --shadow:0 1px 2px rgba(15,23,42,.04);
@@ -17,6 +18,7 @@
   --ground:#0B1120; --surface:#121A2B; --text:#E5EAF2; --muted:#94A3B8;
   --accent:#5B8DEF; --accent-d:#7BA5F5; --accent-soft:#16233B;
   --border:#243049; --input-bg:#0F1726;
+  --surface-2:#172036; --hover:#1E2A42;
   --shadow:0 1px 2px rgba(0,0,0,.35);
   --shadow-lg:0 12px 30px -16px rgba(0,0,0,.75);
 }
@@ -234,7 +236,13 @@ input[type=text],input[type=url],input[type=number],input[type=date],textarea,se
   background:var(--input-bg);font-size:1rem;font-family:inherit;color:var(--text);}
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
 textarea{min-height:200px;resize:vertical;line-height:1.7;}
-input[type=text],input[type=url],input[type=number],input[type=date],textarea{cursor:text;}  /* 텍스트 입력은 I-beam 유지 */
+input[type=text],input[type=url],input[type=number],input[type=date],textarea{cursor:text;}
+/* 공용 규칙에서 빠진 입력 타입: 레이아웃은 각 페이지에 맡기고 테마 색만 맞춤 */
+input[type=search],input[type=email],input[type=tel],input[type=password],input[type=time],input[type=datetime-local],input[type=month],input[type=week]{background:var(--input-bg);color:var(--text);border-color:var(--border);}
+/* OpenLayers 지도 컨트롤(확대·축소 등) 다크모드 */
+:root[data-theme="dark"] .ol-control{background:rgba(18,26,43,.6);}
+:root[data-theme="dark"] .ol-control button{background:var(--surface);color:var(--text);}
+:root[data-theme="dark"] .ol-control button:hover,:root[data-theme="dark"] .ol-control button:focus{background:var(--hover);}  /* 텍스트 입력은 I-beam 유지 */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.75rem 1.3rem;
   border:0;border-radius:10px;background:var(--accent);color:#fff;font-weight:700;font-size:.95rem;
   transition:background .15s,transform .05s;}
@@ -269,7 +277,7 @@ input[type=range]{width:100%;accent-color:var(--accent);}
 
 /* 토스트 */
 .toast{position:fixed;left:50%;bottom:2rem;transform:translateX(-50%) translateY(20px);
-  background:var(--text);color:#fff;padding:.7rem 1.2rem;border-radius:999px;font-size:.9rem;font-weight:600;
+  background:var(--text);color:var(--ground);padding:.7rem 1.2rem;border-radius:999px;font-size:.9rem;font-weight:600;
   opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 

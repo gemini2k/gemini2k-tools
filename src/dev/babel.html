@@ -73,17 +73,16 @@ const { a, ...rest } = { a: 1, b: 2, c: 3 };</textarea></div>
     </dl>
   </section>
 </div>
-<script src="/vendor/babel-7/babel.min.js"></script>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
-  function run(){ try{ var presets=['env']; if($('jsx').checked)presets.push('react');
+  function run(){ if(!window.Babel) return; try{ var presets=['env']; if($('jsx').checked)presets.push('react');
       var res=Babel.transform($('in').value,{presets:presets}); $('out').textContent=res.code; window._o=res.code; }
     catch(e){ $('out').textContent='⚠️ '+e.message; window._o=''; } }
   var _t; $('in').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(run,300);}); $('jsx').addEventListener('change',run);
   $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_babel_copied'));});});
-  run();
+  loadVendor('/vendor/babel-7/babel.min.js',run,$('out'),'0.6MB');
 </script>
 </body>
 </html>

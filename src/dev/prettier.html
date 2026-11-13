@@ -68,13 +68,13 @@ const arr=[1,2,3].map(x=>x*2).filter(x=>x>2)</textarea>
     </dl>
   </section>
 </div>
+<script src="tool-shell.js"></script>
 <script src="/vendor/prettier-3/standalone.js"></script>
 <script src="/vendor/prettier-3/babel.js"></script>
 <script src="/vendor/prettier-3/estree.js"></script>
 <script src="/vendor/prettier-3/postcss.js"></script>
 <script src="/vendor/prettier-3/html.js"></script>
 <script src="/vendor/prettier-3/markdown.js"></script>
-<script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}

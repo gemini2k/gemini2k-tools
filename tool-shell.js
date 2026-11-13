@@ -114,3 +114,33 @@
   if (document.body) build();
   else document.addEventListener('DOMContentLoaded', build);
 })();
+
+/* 무거운 라이브러리 비동기 로드 — 셸·본문이 먼저 뜨고, 라이브러리는 뒤에서 받는다.
+   loadVendor('/vendor/x/x.js', onReady, statusEl[, '2.8MB'])
+   - statusEl: 불러오는 동안 안내 문구를 보여줄 요소(결과 영역 등). 완료되면 비우고 onReady 호출.
+   - 같은 src 를 여러 번 불러도 한 번만 받는다. 실패 시 statusEl 에 안내. */
+(function(){
+  var MSG = {
+    ko:['라이브러리를 불러오는 중…','라이브러리를 불러오지 못했습니다. 네트워크를 확인하고 새로고침하세요.'],
+    en:['Loading library…','Could not load the library. Check your connection and reload.'],
+    zh:['正在加载库…','无法加载库。请检查网络后刷新页面。'],
+    ja:['ライブラリを読み込み中…','ライブラリを読み込めませんでした。接続を確認して再読み込みしてください。']
+  };
+  function msg(i){ var l = (window.curLang && window.curLang()) || 'ko'; return (MSG[l] || MSG.ko)[i]; }
+  var pending = {};
+  window.loadVendor = function(src, onReady, statusEl, size){
+    var shown = false;
+    if (statusEl){ statusEl.textContent = msg(0) + (size ? ' (' + size + ')' : ''); statusEl.setAttribute('aria-busy','true'); shown = true; }
+    function done(){ if (shown){ statusEl.textContent = ''; statusEl.removeAttribute('aria-busy'); } if (onReady) onReady(); }
+    function fail(){ if (statusEl){ statusEl.textContent = '⚠️ ' + msg(1); statusEl.removeAttribute('aria-busy'); } }
+    var p = pending[src];
+    if (!p){
+      p = pending[src] = { state:0, ok:[], ng:[] };
+      var s = document.createElement('script'); s.src = src; s.async = true;
+      s.onload = function(){ p.state = 1; p.ok.forEach(function(f){ f(); }); };
+      s.onerror = function(){ p.state = 2; delete pending[src]; p.ng.forEach(function(f){ f(); }); };
+      document.head.appendChild(s);
+    }
+    if (p.state === 1) done(); else { p.ok.push(done); p.ng.push(fail); }
+  };
+})();

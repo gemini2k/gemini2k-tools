@@ -24,7 +24,6 @@
 <script src="i18n.js"></script>
 <script src="tools.js"></script>
 <script src="csvutil.js"></script>
-<script src="/vendor/proj4-2.15.0/proj4.js"></script>
 <style>
   textarea{width:100%;min-height:120px;padding:.7rem .8rem;border:1px solid var(--border);border-radius:11px;background:var(--input-bg);
     font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;color:var(--text);resize:vertical;}
@@ -120,6 +119,7 @@
 </div>
 
 <script src="tool-shell.js"></script>
+<script src="/vendor/proj4-2.15.0/proj4.js"></script>
 <script>
   var $ = function(id){ return document.getElementById(id); };
   function toast(m){ var el=$('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('show');},1500); }

@@ -66,8 +66,8 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     </dl>
   </section>
 </div>
-<script src="/vendor/jsrsasign-11/jsrsasign-all-min.js"></script><script src="tool-shell.js"></script>
-<script>
+<script src="tool-shell.js"></script>
+<script src="/vendor/jsrsasign-11/jsrsasign-all-min.js"></script><script>
 var $=function(i){return document.getElementById(i);};function run(){$("err").textContent="";var tmp=$("in").value.trim();if(!tmp){$("res").textContent="";return;}try{var hex;if(/-----BEGIN/.test(tmp)){hex=pemtohex(tmp);}else{hex=tmp.replace(/[^0-9a-fA-F]/g,"");}$("res").textContent=ASN1HEX.dump(hex);}catch(e){$("res").textContent="";$("err").textContent=t('b_asn1_err_parse')+e.message;}}$("sample").addEventListener("click",function(){var kp=KEYUTIL.generateKeypair("RSA",512);var c=new KJUR.asn1.x509.Certificate({version:3,serial:{int:1},issuer:{str:"/CN=Sample CA"},notbefore:"240101000000Z",notafter:"340101000000Z",subject:{str:"/CN=gemini2k.co.kr/O=gemini2k/C=KR"},sbjpubkey:kp.pubKeyObj,sigalg:"SHA256withRSA",cakey:kp.prvKeyObj});$("in").value=c.getPEM();run();});var _t;$("in").addEventListener("input",function(){clearTimeout(_t);_t=setTimeout(run,300);});
 </script>
 </body>

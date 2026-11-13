@@ -66,8 +66,8 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     </dl>
   </section>
 </div>
-<script src="/vendor/forge-1/forge.min.js"></script><script src="audit-kit.js"></script><script src="tool-shell.js"></script>
-<script>
+<script src="tool-shell.js"></script>
+<script src="/vendor/forge-1/forge.min.js"></script><script src="audit-kit.js"></script><script>
 var $=function(i){return document.getElementById(i);};
   function dn(a){return a.map(function(x){return x.shortName+'='+x.value;}).join(', ');}
   function run(){$('err').textContent='';var pem=$('in').value.trim();if(!pem){$('res').innerHTML='';return;}

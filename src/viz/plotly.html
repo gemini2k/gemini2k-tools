@@ -67,7 +67,6 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
     </dl>
   </section>
 </div>
-<script src="/vendor/plotly-2/plotly.min.js"></script>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
@@ -80,7 +79,7 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
   };
   var hintKeys={surface:'b_plotly_hint_surface',scatter3d:'b_plotly_hint_scatter3d',heatmap:'b_plotly_hint_heatmap',contour:'b_plotly_hint_contour',box:'b_plotly_hint_box'};
   function matrix(){ return $('data').value.split(/\r?\n/).map(function(l){return l.split(',').map(Number).filter(function(n){return !isNaN(n);});}).filter(function(r){return r.length;}); }
-  function render(){ $('err').textContent=''; var tmp=$('type').value; var acc=(getComputedStyle(document.documentElement).getPropertyValue('--accent')||'#2563eb').trim();
+  function render(){ if(!window.Plotly) return; $('err').textContent=''; var tmp=$('type').value; var acc=(getComputedStyle(document.documentElement).getPropertyValue('--accent')||'#2563eb').trim();
     try{ var data,layout={margin:{l:40,r:10,t:20,b:40},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:getComputedStyle(document.body).color}};
       if(tmp==='surface'){ data=[{z:matrix(),type:'surface',colorscale:'Viridis'}]; }
       else if(tmp==='scatter3d'){ var m=matrix(); data=[{x:m.map(function(r){return r[0];}),y:m.map(function(r){return r[1];}),z:m.map(function(r){return r[2];}),mode:'markers',type:'scatter3d',marker:{size:5,color:m.map(function(r){return r[2];}),colorscale:'Viridis'}}]; }
@@ -95,11 +94,12 @@ textarea{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--border
   $('png').addEventListener('click',function(){ var gd=$('chart'); if(!gd||!gd.data)return;
     var lay=JSON.parse(JSON.stringify(gd.layout||{})); lay.paper_bgcolor='#ffffff'; lay.plot_bgcolor='#ffffff'; lay.font=Object.assign({},lay.font,{color:'#222222'});
     ['scene'].forEach(function(k){ if(lay[k]) ['xaxis','yaxis','zaxis'].forEach(function(a){ if(lay[k][a]){ delete lay[k][a].color; delete lay[k][a].gridcolor; } }); });
-    Plotly.downloadImage({data:gd.data,layout:lay},{format:'png',width:1000,height:560,filename:'chart'}); });
+    if(!window.Plotly) return; Plotly.downloadImage({data:gd.data,layout:lay},{format:'png',width:1000,height:560,filename:'chart'}); });
   // 테마 전환 시 화면 차트 글자색 다시 맞춤
   try{ new MutationObserver(function(){ render(); }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']}); }catch(e){}
   window.onI18n=function(){ $('hint').textContent=t(hintKeys[$('type').value]); };
-  $('data').value=demos.surface; $('hint').textContent=t(hintKeys.surface); render();
+  $('data').value=demos.surface; $('hint').textContent=t(hintKeys.surface);
+  loadVendor('/vendor/plotly-2/plotly.min.js',render,$('chart'),'1.1MB');
 </script>
 </body>
 </html>

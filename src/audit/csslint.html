@@ -66,8 +66,8 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     </dl>
   </section>
 </div>
-<script src="/vendor/csslint-1/csslint.js"></script><script src="tool-shell.js"></script>
-<script>
+<script src="tool-shell.js"></script>
+<script src="/vendor/csslint-1/csslint.js"></script><script>
 var $=function(i){return document.getElementById(i);};function run(){var css=$("in").value.replace(/\\n/g,"\n");var r;try{r=CSSLint.verify(css);}catch(e){$("res").textContent="⚠️ "+e.message;return;}var msgs=r.messages||[];if(!msgs.length){$("res").innerHTML="<span style=\"color:#16a34a\">"+t('b_csslint_no_issues')+"</span>";return;}$("res").innerHTML="<div class=\"ak-rate\"><b>"+msgs.length+t('b_csslint_issues_count')+"</b></div><table>"+msgs.map(function(m){var c=m.type==="error"?"#dc2626":"#d97706";return "<tr><td style=\"white-space:nowrap;color:"+c+"\">L"+(m.line||"-")+"</td><td>"+(m.message||"").replace(/</g,"&lt;")+"</td></tr>";}).join("")+"</table>";}var _t;$("in").addEventListener("input",function(){clearTimeout(_t);_t=setTimeout(run,300);});window.onI18n=run;run();
 </script>
 </body>

@@ -72,12 +72,12 @@ for (let i = 1; i <= 5; i++) {
     </dl>
   </section>
 </div>
-<script src="/vendor/ace-1.32/ace.js"></script>
 <script src="tool-shell.js"></script>
+<script src="/vendor/ace-1.32/ace.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   ace.config.set('basePath','/vendor/ace-1.32/');
-  var ed=ace.edit('editor'); ed.setTheme('ace/theme/github'); ed.session.setMode('ace/mode/javascript'); ed.setOptions({fontSize:'14px',showPrintMargin:false,useWorker:false});
+  var ed=ace.edit('editor'); var th0=document.documentElement.getAttribute('data-theme')==='dark'?'monokai':'github'; $('theme').value=th0; ed.setTheme('ace/theme/'+th0); ed.session.setMode('ace/mode/javascript'); ed.setOptions({fontSize:'14px',showPrintMargin:false,useWorker:false});
   $('lang').addEventListener('change',function(){ ed.session.setMode('ace/mode/'+$('lang').value); $('run').style.display=$('lang').value==='javascript'?'':'none'; });
   $('theme').addEventListener('change',function(){ ed.setTheme('ace/theme/'+$('theme').value); });
   // 자동 저장(이 브라우저에만): 코드·언어를 localStorage 에 보관

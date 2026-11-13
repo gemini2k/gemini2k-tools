@@ -66,8 +66,8 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     </dl>
   </section>
 </div>
-<script src="/vendor/hashwasm-4/hash-wasm.min.js"></script><script src="audit-kit.js"></script><script src="tool-shell.js"></script>
-<script>
+<script src="tool-shell.js"></script>
+<script src="/vendor/hashwasm-4/hash-wasm.min.js"></script><script src="audit-kit.js"></script><script>
 var $=function(i){return document.getElementById(i);};var HW=window.hashwasm;function calc(bytes){var jobs=[["MD5",HW.md5(bytes)],["SHA-1",HW.sha1(bytes)],["SHA-256",HW.sha256(bytes)],["SHA-512",HW.sha512(bytes)],["SHA3-256",HW.sha3(bytes,256)],["BLAKE2b-256",HW.blake2b(bytes,256)],["CRC32",HW.crc32(bytes)]];Promise.all(jobs.map(function(j){return j[1];})).then(function(vals){$("res").innerHTML="<table>"+jobs.map(function(j,i){return "<tr><td style=\"white-space:nowrap\">"+j[0]+"</td><td style=\"font-family:ui-monospace,monospace;font-size:.8rem;word-break:break-all;cursor:pointer\" onclick=\"navigator.clipboard&&navigator.clipboard.writeText(this.textContent)\">"+vals[i]+"</td></tr>";}).join("")+"</table>";}).catch(function(e){$("res").textContent="⚠️ "+e.message;});}function fromText(){$("meta").textContent=t('b_checksum_meta_text')+(new Blob([$("txt").value]).size)+t('b_checksum_meta_bytes');calc(new TextEncoder().encode($("txt").value));}$("txt").addEventListener("input",fromText);$("file").addEventListener("change",function(){var f=$("file").files[0];if(!f)return;$("meta").textContent=t('b_checksum_meta_file')+f.name+" ("+(f.size/1024).toFixed(1)+"KB)";var r=new FileReader();r.onload=function(){calc(new Uint8Array(r.result));};r.readAsArrayBuffer(f);$("drop").firstChild&&($("drop").childNodes[0].nodeValue="📁 "+f.name);});window.onI18n=fromText;fromText();
 </script>
 </body>

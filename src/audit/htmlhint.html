@@ -66,8 +66,8 @@ textarea.in{width:100%;min-height:120px;padding:.7rem;border:1px solid var(--bor
     </dl>
   </section>
 </div>
-<script src="/vendor/htmlhint-1/htmlhint.min.js"></script><script src="tool-shell.js"></script>
-<script>
+<script src="tool-shell.js"></script>
+<script src="/vendor/htmlhint-1/htmlhint.min.js"></script><script>
 var $=function(i){return document.getElementById(i);};var HH=(window.HTMLHint&&window.HTMLHint.HTMLHint)?window.HTMLHint.HTMLHint:window.HTMLHint;function run(){var html=$("in").value.replace(/\\n/g,"\n");var msgs=[];try{msgs=HH.verify(html);}catch(e){$("res").textContent="⚠️ "+e.message;return;}if(!msgs.length){$("res").innerHTML="<span style=\"color:#16a34a\">"+t('b_htmlhint_no_issues')+"</span>";return;}$("res").innerHTML="<div class=\"ak-rate\"><b>"+msgs.length+t('b_htmlhint_count_unit')+"</b></div><table>"+msgs.map(function(m){var c=m.type==="error"?"#dc2626":"#d97706";return "<tr><td style=\"white-space:nowrap;color:"+c+"\">L"+m.line+":"+m.col+"</td><td>"+m.message.replace(/</g,"&lt;")+" <span style=\"color:var(--muted)\">("+m.rule.id+")</span></td></tr>";}).join("")+"</table>";}var _t;$("in").addEventListener("input",function(){clearTimeout(_t);_t=setTimeout(run,300);});window.onI18n=run;run();
 </script>
 </body>

@@ -28,17 +28,15 @@
 <script src="theme.js"></script>
 <script src="i18n.js"></script>
 <script src="tools.js"></script>
-<script src="/vendor/proj4-2.15.0/proj4.js"></script>
-<script src="/vendor/ol-7.5.2/ol.js"></script>
 <style>
   .kp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
   @media(max-width:820px){ .kp-grid{ grid-template-columns:1fr; } }
-  .pane{ border:1px solid var(--border); border-radius:12px; padding:1rem 1.1rem; background:#fafbff; }
+  .pane{ border:1px solid var(--border); border-radius:12px; padding:1rem 1.1rem; background:var(--surface-2); }
   .pane h3{ font-size:.95rem; margin:0 0 .7rem; }
   .pane .fld{ display:flex; flex-direction:column; gap:.25rem; margin-bottom:.6rem; }
   .pane label{ font-size:.78rem; font-weight:700; color:var(--muted); }
   .pane input, .pane select{ width:100%; padding:.55rem .65rem; }
-  .res{ margin-top:.7rem; padding:.6rem .8rem; border:1px solid var(--border); border-radius:10px; background:#fff; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.95rem; word-break:break-all; min-height:1.2em; }
+  .res{ margin-top:.7rem; padding:.6rem .8rem; border:1px solid var(--border); border-radius:10px; background:var(--surface); font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.95rem; word-break:break-all; min-height:1.2em; }
   .res.big{ font-size:1.15rem; font-weight:700; color:var(--accent); }
   .res .sub{ display:block; font-size:.8rem; color:var(--muted); font-weight:400; margin-top:.2rem; }
   .err{ color:#c0392b; font-size:.85rem; margin-top:.4rem; min-height:1.1em; }
@@ -143,6 +141,8 @@
 </div>
 
 <script src="tool-shell.js"></script>
+<script src="/vendor/proj4-2.15.0/proj4.js"></script>
+<script src="/vendor/ol-7.5.2/ol.js"></script>
 <script>
   function T(k){ return window.t ? window.t(k) : k; }
   function $(id){ return document.getElementById(id); }

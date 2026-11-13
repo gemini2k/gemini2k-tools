@@ -76,12 +76,11 @@ console.log(msg);</textarea></div>
     </dl>
   </section>
 </div>
-<script src="/vendor/typescript-5/typescript.js"></script>
 <script src="tool-shell.js"></script>
 <script>
   var $=function(id){return document.getElementById(id);};
   function toast(m){var el=$('toast');if(!el)return;el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},1400);}
-  function run(){ try{
+  function run(){ if(!window.ts) return; try{
       var tmap={ESNext:ts.ScriptTarget.ESNext,ES2020:ts.ScriptTarget.ES2020,ES2017:ts.ScriptTarget.ES2017,ES2015:ts.ScriptTarget.ES2015,ES5:ts.ScriptTarget.ES5};
       var mmap={ESNext:ts.ModuleKind.ESNext,CommonJS:ts.ModuleKind.CommonJS,None:ts.ModuleKind.None};
       var res=ts.transpileModule($('in').value,{compilerOptions:{target:tmap[$('target').value],module:mmap[$('module').value]}});
@@ -90,7 +89,8 @@ console.log(msg);</textarea></div>
   var _t; $('in').addEventListener('input',function(){clearTimeout(_t);_t=setTimeout(run,350);});
   ['target','module'].forEach(function(id){$(id).addEventListener('change',run);});
   $('copy').addEventListener('click',function(){if(window._o)navigator.clipboard.writeText(window._o).then(function(){toast(t('b_typescript_copied'));});});
-  run();
+  $('out').removeAttribute('data-i18n'); // 결과 영역은 스크립트가 채움 — 늦게 도는 번역이 결과를 덮어쓰지 않게
+  loadVendor('/vendor/typescript-5/typescript.js',run,$('out'),'1.5MB');
 </script>
 </body>
 </html>
