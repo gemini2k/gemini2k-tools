@@ -69,7 +69,7 @@ const LANGS = Object.keys(I18N);
 const isToolKey = k => /^tool\.[a-z0-9]+\.[td]$/.test(k);
 // 페이지가 참조하는 i18n 키 스캔(data-i18n*/t()) → 정확히 한 페이지만 쓰는 키 = 페이지전용 → core 에서 빼고 페이지별 인라인(core 크기 고정·확장성).
 //   (JS 파일·여러 페이지 공용 키 gc./ak./공통 등은 refCount 0 또는 ≥2 라 core 유지)
-const KEYREF = /data-i18n(?:-ph|-html|-aria)?="([^"]+)"|[^A-Za-z0-9_$.]t\((['"])([^'"]+)\2\)/g;
+const KEYREF = /data-i18n(?:-ph|-html|-aria|-title)?="([^"]+)"|[^A-Za-z0-9_$.]t\((['"])([^'"]+)\2\)/g;
 const refByFile = {}, refCount = {};
 for (const f of fs.readdirSync(DIST)) {
   if (!f.endsWith('.html')) continue;
@@ -77,6 +77,13 @@ for (const f of fs.readdirSync(DIST)) {
   const set = refByFile[f] = new Set(); let m; KEYREF.lastIndex = 0;
   while ((m = KEYREF.exec(h))) { const k = m[1] || m[3]; if (k && I18N.ko[k] != null && !isToolKey(k)) set.add(k); }
   set.forEach(k => { refCount[k] = (refCount[k] || 0) + 1; });
+}
+// 공용 JS(tool-shell·theme·audit-kit 등)가 쓰는 키는 모든 페이지 공용 → core 유지.
+//   (HTML 에서 한 곳만 data-i18n 으로 참조해도 refCount 1 이 되어 페이지전용으로 잘못 빠지던 문제 — 셸 헤더·푸터 미번역 원인)
+for (const f of fs.readdirSync(ROOT)) {
+  if (!f.endsWith('.js') || f === 'i18n.js' || f === 'tools.js') continue;
+  const js = fs.readFileSync(path.join(ROOT, f), 'utf8'); let m; KEYREF.lastIndex = 0;
+  while ((m = KEYREF.exec(js))) { const k = m[1] || m[3]; if (k && I18N.ko[k] != null) refCount[k] = (refCount[k] || 0) + 2; }
 }
 const isPageKey = k => refCount[k] === 1;   // 한 페이지 전용 본문키
 // i18n-core.js 생성 (tool.*.t/.d + 페이지전용 본문키 제거 → 크기 고정)
@@ -129,6 +136,83 @@ const CAT_BLURB = {
 const CATS = []; TOOLS.forEach(t => { if (CATS.indexOf(t.cat) < 0) CATS.push(t.cat); });
 for (const c of CATS) if (!CAT_SLUG[c]) throw new Error('카테고리 슬러그 누락: ' + c);
 const catUrl = c => '/cat-' + CAT_SLUG[c] + '.html';
+// 카테고리 페이지 외국어 정적 본문(소개문·안내문) — 도구 카드 이름/설명은 I18N 의 tool.*.t/.d 사용
+const CAT_BLURB_L = {
+  en: { text:'Tools for writing and documents: character counter, text diff, case conversion and more',
+    calc:'Everyday and finance calculators: loan interest, percentages, VAT, area and more',
+    fortune:'Just-for-fun personality and fortune tools such as MBTI, saju and biorhythm (for reference only)',
+    gen:'Instant generators for QR codes, passwords, UUIDs, barcodes and more',
+    convert:'Converters for units, colors, lunar dates, encodings and other formats',
+    image:'Photo tools: compress, resize, crop, watermark, remove EXIF and more',
+    pdf:'PDF tools: merge, split, convert to images, extract text and more',
+    audit:'Specialist IT audit and verification tools: RTM, risk register, test cases, EVM and more',
+    security:'Security checks: CVSS, code weaknesses, secret scanning, security headers and more',
+    dev:'Developer helpers for JSON, regex, JWT, hashes, Base64 and more',
+    time:'Time and date tools: world clock, timer, business-day calculator and more',
+    pii:'De-identification tools: PII masking, detection, pseudonymization and re-identification risk (processed only in your browser)',
+    gis:'GIS tools: coordinate transformation, web maps, WKT/GeoJSON, spatial de-identification and more',
+    data:'Data analysis tools: CSV cleaning, joins, pivots, statistics, regression and more',
+    health:'Health reference calculators: BMI, calories, heart rate, sleep and more (not medical advice)',
+    game:'Games you can play right in the browser: 2048, block puzzles, 3D games and more',
+    viz:'Visualization tools: charts, diagrams, mind maps, color palettes and more',
+    doc:'Document converters: Excel↔CSV and text extraction from Word, PowerPoint and HWPX' },
+  zh: { text:'字数统计、文本对比、大小写转换等文字与文档工具',
+    calc:'贷款利息、百分比、增值税、面积换算等日常与金融计算器',
+    fortune:'MBTI、四柱、生物节律等娱乐性心理与运势工具（仅供参考）',
+    gen:'二维码、密码、UUID、条形码等即时生成工具',
+    convert:'单位、颜色、农历、编码等格式转换工具',
+    image:'图片压缩、调整尺寸、裁剪、水印、删除 EXIF 等图片编辑工具',
+    pdf:'PDF 合并、拆分、转图片、提取文字等 PDF 工具',
+    audit:'需求跟踪矩阵（RTM）、风险登记册、测试用例、挣值管理（EVM）等信息系统审计验证工具',
+    security:'CVSS、安全弱点、密钥扫描、安全响应头检查等安全诊断工具',
+    dev:'JSON、正则表达式、JWT、哈希、Base64 等开发辅助工具',
+    time:'世界时钟、计时器、工作日计算等时间与日期工具',
+    pii:'个人信息遮盖、检测、假名化、再识别风险评估等去标识化工具（仅在浏览器内处理）',
+    gis:'坐标系转换、网络地图、WKT/GeoJSON、空间去标识化等地理信息（GIS）工具',
+    data:'CSV 清洗、合并、透视、统计、回归分析等数据分析工具',
+    health:'BMI、卡路里、心率、睡眠等健康参考计算器（非医疗建议）',
+    game:'2048、方块消除、3D 游戏等可在浏览器中直接玩的游戏',
+    viz:'图表、流程图、思维导图、配色等可视化工具',
+    doc:'Excel↔CSV 以及 Word、PPT、HWPX 文本提取等文档转换工具' },
+  ja: { text:'文字数カウント・テキスト比較・大文字小文字変換など文章作業のためのツール',
+    calc:'ローン利息・パーセント・付加価値税・面積など日常とお金の計算ツール',
+    fortune:'MBTI・四柱推命・バイオリズムなど楽しむための心理・占いツール（参考用）',
+    gen:'QRコード・パスワード・UUID・バーコードなどをすぐに作れる生成ツール',
+    convert:'単位・色・旧暦・エンコードなど形式を変換するツール',
+    image:'画像の圧縮・リサイズ・切り抜き・透かし・EXIF削除などの写真編集ツール',
+    pdf:'PDFの結合・分割・画像変換・テキスト抽出などのPDFツール',
+    audit:'要件トレーサビリティ表（RTM）・リスク管理台帳・テストケース・EVMなど情報システム監理・検証の専門ツール',
+    security:'CVSS・セキュリティ上の弱点・シークレットスキャン・セキュリティヘッダー点検などの診断ツール',
+    dev:'JSON・正規表現・JWT・ハッシュ・Base64など開発者向け補助ツール',
+    time:'世界時計・タイマー・営業日計算など時間と日付のツール',
+    pii:'個人情報のマスキング・検出・仮名化・再識別リスク評価など匿名化の専門ツール（ブラウザ内だけで処理）',
+    gis:'座標系変換・Web地図・WKT/GeoJSON・空間匿名化など空間情報（GIS）ツール',
+    data:'CSVの整形・結合・ピボット・統計・回帰分析などのデータ分析ツール',
+    health:'BMI・カロリー・心拍数・睡眠など健康の目安を計算するツール（医療上の助言ではありません）',
+    game:'2048・ブロックパズル・3Dゲームなどブラウザですぐ遊べるゲーム',
+    viz:'グラフ・ダイアグラム・マインドマップ・配色などの可視化ツール',
+    doc:'Excel↔CSV、Word・PowerPoint・HWPXのテキスト抽出などの文書変換ツール' } };
+const CAT_NOTE = {
+  ko: n => ' <b>' + n + '종</b>. 모두 100% 브라우저에서 동작하고 설치가 필요 없으며 입력 데이터는 서버로 전송되지 않습니다.',
+  en: n => ' <b>' + n + ' tools</b>. All run 100% in your browser with nothing to install, and your input is never sent to a server.',
+  zh: n => ' <b>共 ' + n + ' 个</b>。全部在浏览器中运行，无需安装，输入的数据不会发送到服务器。',
+  ja: n => ' <b>' + n + '種</b>。すべてブラウザ内で動作し、インストール不要、入力データはサーバーに送信されません。' };
+const CAT_H1 = { ko: l => l + ' 도구', en: l => l + ' tools', zh: l => l + '工具', ja: l => l + 'ツール' };
+// 카테고리 페이지 본문(toolwrap 안쪽). ko 는 원본, 외국어판은 localize 에서 이 함수로 교체.
+function catBody(cat, lang){
+  const slug = CAT_SLUG[cat], D = I18N[lang] || I18N.ko, label = D['cat.'+cat] || I18N.ko['cat.'+cat] || cat;
+  const list = TOOLS.filter(t => t.cat === cat);
+  const blurb = lang === 'ko' ? (CAT_BLURB[slug] || (label + ' 관련 도구')) : ((CAT_BLURB_L[lang]||{})[slug] || CAT_H1[lang](label));
+  const cards = list.map(t => {
+    const nm = esc(D['tool.'+t.key+'.t'] || I18N.ko['tool.'+t.key+'.t'] || t.key);
+    const d  = esc(D['tool.'+t.key+'.d'] || I18N.ko['tool.'+t.key+'.d'] || '');
+    return '<a class="tool" href="' + t.h + '"><span class="ic ' + t.chip + '">' + t.ic + '</span>'
+      + '<div><h3>' + nm + '</h3><p>' + d + '</p></div></a>';
+  }).join('');
+  return { blurb, html: '<h1>' + esc(CAT_H1[lang](label)) + '</h1>\n'
+    + '<p class="sub">' + esc(blurb) + CAT_NOTE[lang](list.length) + '</p>\n'
+    + '<div class="grid">' + cards + '</div>\n' };
+}
 function buildCatPage(cat){
   const slug = CAT_SLUG[cat], label = (I18N.ko && I18N.ko['cat.'+cat]) || cat;
   const list = TOOLS.filter(t => t.cat === cat);
@@ -137,12 +221,6 @@ function buildCatPage(cat){
   const desc = blurb + ' ' + n + '종. 모두 브라우저에서 즉시 실행되고 설치가 필요 없으며 입력 데이터는 서버로 전송되지 않습니다.';
   const ogdesc = blurb + ' ' + n + '종. 브라우저에서 즉시, 설치·가입 없이.';
   const title = label + ' 도구 모음 (' + n + '종) — 빛의여행(gemini2k) 도구';
-  const cards = list.map(t => {
-    const nm = esc((I18N.ko && I18N.ko['tool.'+t.key+'.t']) || t.key);
-    const d  = esc((I18N.ko && I18N.ko['tool.'+t.key+'.d']) || '');
-    return '<a class="tool" href="' + t.h + '"><span class="ic ' + t.chip + '">' + t.ic + '</span>'
-      + '<div><h3>' + nm + '</h3><p>' + d + '</p></div></a>';
-  }).join('');
   const bc = { '@context':'https://schema.org','@type':'BreadcrumbList','itemListElement':[
     { '@type':'ListItem','position':1,'name':'홈','item':BASE+'/' },
     { '@type':'ListItem','position':2,'name':label,'item':url } ] };
@@ -168,9 +246,7 @@ function buildCatPage(cat){
     + '<script type="application/ld+json">' + ldEscCat(JSON.stringify(bc)) + '</script>\n'
     + '<script type="application/ld+json">' + ldEscCat(JSON.stringify(il)) + '</script>\n'
     + '</head>\n<body>\n<div class="toolwrap">\n'
-    + '<h1>' + esc(label) + ' 도구</h1>\n'
-    + '<p class="sub">' + esc(blurb) + ' <b>' + n + '종</b>. 모두 100% 브라우저에서 동작하고 설치가 필요 없으며 입력 데이터는 서버로 전송되지 않습니다.</p>\n'
-    + '<div class="grid">' + cards + '</div>\n'
+    + catBody(cat, 'ko').html
     + '</div>\n<script src="tool-shell.js"></script>\n</body>\n</html>\n';
 }
 let catPages = 0;
@@ -319,7 +395,11 @@ function localize(html, file, lang, htmlLang) {
   const cur = byHref[file];
   if (cur && I18N[lang]) { const t = I18N[lang]['tool.' + cur.key + '.t'], d = I18N[lang]['tool.' + cur.key + '.d']; if (t) title = t + ' — ' + SITE[lang]; if (d) desc = d; }
   else if (file === 'index.html') { title = IDX_TITLE[lang]; desc = IDX_DESC[lang]; }
-  else if (slug2cat[file] && I18N[lang]) { const lab = I18N[lang]['cat.' + slug2cat[file]] || slug2cat[file]; title = lab + ' — ' + SITE[lang]; }
+  else if (slug2cat[file] && I18N[lang]) {
+    const lab = I18N[lang]['cat.' + slug2cat[file]] || slug2cat[file]; title = CAT_H1[lang](lab) + ' — ' + SITE[lang];
+    const cb = catBody(slug2cat[file], lang); desc = cb.blurb + '.';
+    html = html.replace(/(<div class="toolwrap">\n)[\s\S]*?(<\/div>\n<script src="tool-shell\.js)/, (m, a1, a2) => a1 + cb.html + a2);   // 본문 정적 번역
+  }
   if (title) { html = html.replace(/<title>[^<]*<\/title>/, '<title>' + attrEsc(title) + '</title>'); html = html.replace(/(<meta property="og:title" content=")[^"]*(")/, '$1' + attrEsc(title) + '$2'); html = html.replace(/(<meta name="twitter:title" content=")[^"]*(")/, '$1' + attrEsc(title) + '$2'); }
   if (desc) { html = html.replace(/(<meta name="description" content=")[^"]*(")/, '$1' + attrEsc(desc) + '$2'); html = html.replace(/(<meta property="og:description" content=")[^"]*(")/, '$1' + attrEsc(desc) + '$2'); html = html.replace(/(<meta name="twitter:description" content=")[^"]*(")/, '$1' + attrEsc(desc) + '$2'); }
   return absolutize(html);

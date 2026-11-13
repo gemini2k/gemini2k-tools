@@ -17,9 +17,14 @@
   function syncBtn(b, th){
     th = th || effective();
     b.textContent = (th === 'dark') ? '☀️' : '🌙';
-    b.setAttribute('aria-label', (th === 'dark') ? 'Light mode' : 'Dark mode');
-    b.setAttribute('title', (th === 'dark') ? '라이트 모드' : '다크 모드');
+    var k = (th === 'dark') ? 'theme.light' : 'theme.dark';
+    // window.t 는 일부 페이지가 전역 변수(t)로 덮어쓰므로 사전(I18N)을 직접 조회
+    var L = (typeof window.curLang === 'function' && window.curLang()) || 'ko', D = window.I18N || {};
+    var lab = (D[L] && D[L][k]) || ((D.ko && D.ko[k]) || ((th === 'dark') ? '라이트 모드' : '다크 모드'));
+    b.setAttribute('aria-label', lab);
+    b.setAttribute('title', lab);
   }
+  window.__themeSync = function(){ btns.forEach(function(b){ syncBtn(b); }); };   // i18n apply 후 언어 맞춤
   window.toggleTheme = function(){
     var next = (effective() === 'dark') ? 'light' : 'dark';
     try { localStorage.setItem(KEY, next); } catch(e){}

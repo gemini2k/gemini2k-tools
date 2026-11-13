@@ -59,7 +59,7 @@ window.AuditKit = (function () {
     }
     function render() {
       table.innerHTML = '<thead><tr>' + cols.map(function (c) { return '<th' + (c.w ? ' style="min-width:' + c.w + '"' : '') + '>' + esc(c.label) + '</th>'; }).join('') + '<th class="ak-x"></th></tr></thead><tbody>' +
-        rows.map(function (r, ri) { return '<tr>' + cols.map(function (c) { return '<td>' + field(r, ri, c) + '</td>'; }).join('') + '<td class="ak-x"><button class="ak-del" data-ri="' + ri + '" aria-label="삭제">✕</button></td></tr>'; }).join('') +
+        rows.map(function (r, ri) { return '<tr>' + cols.map(function (c) { return '<td>' + field(r, ri, c) + '</td>'; }).join('') + '<td class="ak-x"><button class="ak-del" data-ri="' + ri + '" aria-label="' + esc(L('a11y.delete', '삭제')) + '">✕</button></td></tr>'; }).join('') +
         '</tbody>'; renderSummary();
     }
     table.addEventListener('input', function (e) { var t = e.target; if (t.dataset && t.dataset.ri != null) { rows[+t.dataset.ri][t.dataset.k] = t.value; persist(); } });

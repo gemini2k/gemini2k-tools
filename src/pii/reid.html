@@ -257,7 +257,7 @@ input[type="file"].hidden,input[type="file"][hidden]{display:block!important;pos
   <!-- STEP 1: input -->
   <section class="panel">
     <div class="panel-head"><span class="num">1</span><h2 data-i18n="b_reid_step1_title">데이터 불러오기</h2><span class="hint" data-i18n="b_reid_step1_hint">Excel · CSV · TSV · 붙여넣기</span></div>
-    <div id="drop" class="drop" tabindex="0" role="button" aria-label="파일을 선택하거나 끌어다 놓기">
+    <div id="drop" class="drop" tabindex="0" role="button" aria-label="파일을 선택하거나 끌어다 놓기" data-i18n-aria="a11y.dropfile">
       <label for="file" style="cursor:pointer;display:inline-block"><strong data-i18n="b_reid_drop_label">파일을 끌어다 놓거나 눌러서 선택</strong></label>
       <div class="small" data-i18n="b_reid_drop_small">Excel / CSV / TSV 파일 (.xlsx, .xls, .csv, .tsv, .txt)</div>
       <div class="or" data-i18n="b_reid_drop_or">— 또는 —</div>
@@ -297,11 +297,11 @@ input[type="file"].hidden,input[type="file"][hidden]{display:block!important;pos
     <div class="controls">
       <div class="target"><span id="lbl-targetK" data-i18n="b_reid_target_k">목표 k 값</span>
         <input aria-labelledby="lbl-targetK" type="number" id="targetK" value="5" min="2" max="9999">
-        <span class="tip" data-i18n-html="b_reid_tip_k" title="이 값 미만의 동질집합에 속한 레코드를 '위험'으로 집계합니다. 국내 실무에서는 통상 k≥3~5를 권고합니다.">＊</span>
+        <span class="tip" data-i18n-html="b_reid_tip_k" title="이 값 미만의 동질집합에 속한 레코드를 '위험'으로 집계합니다. 국내 실무에서는 통상 k≥3~5를 권고합니다." data-i18n-title="b_reid_tip_k">＊</span>
       </div>
       <div class="target" id="gridWrap" style="display:none"><span id="lbl-gridSize" data-i18n="b_reid_grid_size">공간 그리드 크기(m)</span>
         <input aria-labelledby="lbl-gridSize" type="number" id="gridSize" value="1000" min="1">
-        <span class="tip" data-i18n-html="b_reid_tip_grid" title="위도·경도를 이 크기의 격자 셀로 일반화한 뒤, 셀을 준식별자로 삼아 공간 k-익명성을 평가합니다.">＊</span>
+        <span class="tip" data-i18n-html="b_reid_tip_grid" title="위도·경도를 이 크기의 격자 셀로 일반화한 뒤, 셀을 준식별자로 삼아 공간 k-익명성을 평가합니다." data-i18n-title="b_reid_tip_grid">＊</span>
       </div>
       <button type="button" class="primary" id="analyzeBtn" data-i18n="b_reid_btn_analyze">위험성 분석</button>
     </div>
@@ -333,7 +333,7 @@ input[type="file"].hidden,input[type="file"][hidden]{display:block!important;pos
 
     <div id="geoBlock" class="hidden">
       <h3 style="font-size:14px;margin:26px 0 0;color:var(--muted);font-family:var(--mono);letter-spacing:.04em" data-i18n="b_reid_geo_title">공간 분포 · 격자 셀 위험</h3>
-      <svg id="scatter" class="scatter" viewBox="0 0 600 380" preserveAspectRatio="xMidYMid meet" role="img" aria-label="좌표 산점도"></svg>
+      <svg id="scatter" class="scatter" viewBox="0 0 600 380" preserveAspectRatio="xMidYMid meet" role="img" aria-label="좌표 산점도" data-i18n-aria="a11y.scatter"></svg>
       <div class="scatter-legend">
         <span><i style="background:var(--red)"></i><span data-i18n="b_reid_scatter_risky">목표 k 미만 셀 (위험)</span></span>
         <span><i style="background:var(--teal)"></i><span data-i18n="b_reid_scatter_safe">목표 k 이상 셀</span></span>
@@ -414,13 +414,13 @@ input[type="file"].hidden,input[type="file"][hidden]{display:block!important;pos
 
   <footer>
     <strong style="color:var(--muted)" data-i18n="b_reid_footer_def_label">지표 정의 ·</strong>
-    <code>k-익명성</code> <span data-i18n="b_reid_footer_k">동일 준식별자 조합(동질집합) 중 가장 작은 집합의 크기.</span>
-    <code>l-다양성</code> <span data-i18n="b_reid_footer_l">각 동질집합의 민감정보 값 다양성(고유값 수 및 엔트로피 기반).</span>
-    <code>t-근접성</code> <span data-i18n="b_reid_footer_t">각 집합의 민감정보 분포와 전체 분포의 거리 — 범주형은 총변동거리(TVD), 수치·순서형은 정렬 EMD를 사용. 값이 작을수록 안전합니다.</span>
+    <code data-i18n="a11y.kanon">k-익명성</code> <span data-i18n="b_reid_footer_k">동일 준식별자 조합(동질집합) 중 가장 작은 집합의 크기.</span>
+    <code data-i18n="a11y.ldiv">l-다양성</code> <span data-i18n="b_reid_footer_l">각 동질집합의 민감정보 값 다양성(고유값 수 및 엔트로피 기반).</span>
+    <code data-i18n="a11y.tclose">t-근접성</code> <span data-i18n="b_reid_footer_t">각 집합의 민감정보 분포와 전체 분포의 거리 — 범주형은 총변동거리(TVD), 수치·순서형은 정렬 EMD를 사용. 값이 작을수록 안전합니다.</span>
     <br><br>
     <span data-i18n="b_reid_footer_disclaimer">이 도구는 적정성 판단을 보조하기 위한 정량 지표를 제공하며, 가명·익명처리의 법적 적정성에 대한 최종 판단을 대신하지 않습니다. 실제 처리·결합 시에는 관련 고시와 기관 심의를 함께 따르세요.</span>
     <br><br>
-    © 빛의여행(gemini2k) 도구 · <span data-i18n="b_reid_footer_contact">문의</span> <a href="mailto:gemini2k@naver.com" style="color:var(--teal)">gemini2k@naver.com</a> · <a href="privacy.html" style="color:var(--muted)" data-i18n="b_reid_footer_privacy">개인정보처리방침</a> · <a href="index.html" style="color:var(--muted)" data-i18n="b_reid_footer_all_tools">전체 도구 →</a>
+    © <span data-i18n="shell.site">빛의여행(gemini2k) 도구</span> · <span data-i18n="b_reid_footer_contact">문의</span> <a href="mailto:gemini2k@naver.com" style="color:var(--teal)">gemini2k@naver.com</a> · <a href="privacy.html" style="color:var(--muted)" data-i18n="b_reid_footer_privacy">개인정보처리방침</a> · <a href="index.html" style="color:var(--muted)" data-i18n="b_reid_footer_all_tools">전체 도구 →</a>
   </footer>
 </div>
 

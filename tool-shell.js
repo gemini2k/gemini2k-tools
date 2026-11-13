@@ -8,7 +8,7 @@
      <script> ...도구 로직... </script>
    헤더/뒤로가기/푸터/토스트(#toast)는 이 셸이 자동 생성한다. */
 (function(){
-  var LOGO = '<svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행">'
+  var LOGO = '<svg class="mk" viewBox="0 0 32 32" width="30" height="30" role="img" aria-label="빛의여행" data-i18n-aria="shell.site">'
     + '<defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">'
     + '<stop stop-color="#15C39A"/><stop offset=".5" stop-color="#1AA3E0"/><stop offset="1" stop-color="#3D7BF0"/>'
     + '</linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/>'
@@ -16,7 +16,7 @@
     + '<text x="15.5" y="22.2" text-anchor="middle" font-family="\'Pretendard Variable\',Pretendard,system-ui,sans-serif" font-size="12.5" font-weight="800" letter-spacing="-.5" fill="#fff">G2K</text></svg>';
 
   var HEADER = '<header class="top"><div class="top-in">'
-    + '<a class="logo" href="index.html">' + LOGO + '<span class="logo-t"> 빛의여행(gemini2k) 도구</span></a>'
+    + '<a class="logo" href="index.html">' + LOGO + ' <span class="logo-t" data-i18n="shell.site">빛의여행(gemini2k) 도구</span></a>'
     + '<nav>'
     + '<button id="themeBtn" class="theme-btn" type="button" aria-label="theme">🌙</button>'
     + '<select id="langsel" aria-label="language" style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:inherit;font-size:.88rem;color:var(--text);">'
@@ -38,10 +38,10 @@
     + '</nav>';
 
   var FOOTER = '<footer class="foot"><div class="foot-in">'
-    + '<span>© 빛의여행(gemini2k) 도구</span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>'
+    + '<span>© <span data-i18n="shell.site">빛의여행(gemini2k) 도구</span></span><span data-i18n="foot.tail">· 모든 처리는 브라우저에서</span>'
     + '<a href="mailto:gemini2k@naver.com" data-i18n="foot.contact">· 문의 gemini2k@naver.com</a>'
     + '<a href="privacy.html" data-i18n="foot.policy">· 개인정보처리방침</a>'
-    + '<a href="about.html">· 소개</a><a href="terms.html">· 이용약관</a><a href="contact.html">· 문의하기</a>'
+    + '<a href="about.html" data-i18n="foot.about">· 소개</a><a href="terms.html" data-i18n="foot.terms">· 이용약관</a><a href="contact.html" data-i18n="foot.contactpage">· 문의하기</a>'
     + '<span class="sp"></span><a href="index.html" data-i18n="foot.more">다른 도구 보기 →</a>'
     + '</div>' + CATNAV_HTML + '</footer>';
 
@@ -70,6 +70,22 @@
       + '<span data-i18n="rel.title">관련 도구</span></div><div class="relgrid">'+cards+'</div></section>';
   }
 
+  // 도움말(.toolhelp) 고정 소제목을 i18n 키로 연결 — 외국어판에서 제목·소제목이 번역되도록.
+  var HELP_H3 = {'무엇을 하는 도구인가':'th.what','언제 쓰나':'th.when','사용 방법':'th.how','결과 해석':'th.result','주의할 점':'th.caution','자주 묻는 질문':'th.faq'};
+  function helpHeads(){
+    var box = document.querySelector('.toolhelp'); if (!box) return;
+    box.querySelectorAll('h3').forEach(function(h){ var k = HELP_H3[h.textContent.trim()]; if (k && !h.hasAttribute('data-i18n')) h.setAttribute('data-i18n', k); });
+    var h2 = box.querySelector('h2'), T = window.TOOLS;
+    if (h2 && T && !h2.querySelector('[data-i18n]') && / 사용 안내$/.test(h2.textContent.trim())){
+      var file = location.pathname.split('/').pop() || 'index.html';
+      for (var i=0;i<T.length;i++) if (T[i].h === file){
+        var name = h2.textContent.trim().replace(/ 사용 안내$/, '');   // 한국어는 원래 제목 그대로 유지
+        h2.innerHTML = '<span data-i18n="tool.'+T[i].key+'.t">'+name.replace(/</g,'&lt;')+'</span> <span data-i18n="th.guide">사용 안내</span>';
+        break;
+      }
+    }
+  }
+
   function build(){
     var body = document.body; if (!body) return;
     if (!document.querySelector('header.top'))
@@ -84,6 +100,7 @@
     if (!document.getElementById('toast'))
       body.insertAdjacentHTML('beforeend', TOAST);
     if (window.initThemeToggle) window.initThemeToggle(document.getElementById('themeBtn'));
+    helpHeads();
     // 모바일/인앱 브라우저 파일 업로드 호환: 터치 기기에서 파일 input 을 드롭존 위 투명 오버레이로 만들어
     // 탭하면 '네이티브' 파일 선택창이 열리게 한다(인앱 브라우저는 JS input.click() 을 막는 경우가 많음).
     // 데스크톱은 기존 동작(드래그·JS클릭) 유지.
